@@ -2,10 +2,17 @@ package frc.robot.Subsystems.Swerve;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -18,6 +25,7 @@ public class Swerve extends SubsystemBase {
     private final GyroIO gyroIO;
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
     private final SwerveModule[] modules;
+    private final SwerveDriveOdometry odometry;
 
     public Swerve(GyroIO gyroIO, SwerveModuleIO flIO, SwerveModuleIO frIO, SwerveModuleIO blIO, SwerveModuleIO brIO) {
         this.gyroIO = gyroIO;
@@ -28,12 +36,29 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(brIO, 3)
         };
 
+        odometry = new SwerveDriveOdometry(SwerveConstants.swerveKinematics, getYaw(), getModulePositions());
+
         Timer.delay(1.0);
 
         resetModulesToAbsolute();
+
+        AutoBuilder.configureHolonomic(
+            this::getPose,
+            this::resetOdemetry,
+            this::getChassisSpeeds,
+            this::drive,
+            new HolonomicPathFollowerConfig(
+                new PIDConstants(SwerveConstants.translationKP, SwerveConstants.translationKI, SwerveConstants.translationKD),
+                new PIDConstants(SwerveConstants.rotationKP, SwerveConstants.rotationKI, SwerveConstants.rotationKD),
+                SwerveConstants.maxSpeed,
+                SwerveConstants.driveBaseRadius,
+                new ReplanningConfig(true, true)),
+            this);
     }
 
     public void periodic() {
+        odometry.update(getYaw(), getModulePositions());  
+
         gyroIO.updateInputs(gyroInputs);
         Logger.processInputs("Swerve/Gyro", gyroInputs);
         for (SwerveModule module : modules) {
@@ -122,6 +147,18 @@ public class Swerve extends SubsystemBase {
             positions[mod.index] = mod.getPosition();
         }
         return positions;
+    }
+
+    public ChassisSpeeds getChassisSpeeds() {
+        return SwerveConstants.swerveKinematics.toChassisSpeeds(getModuleStates());
+    }
+
+    public Pose2d getPose() {
+        return odometry.getPoseMeters();
+    }
+
+    public void resetOdemetry(Pose2d pose) {
+        odometry.resetPosition(getYaw(), getModulePositions(), pose);
     }
 
     public void resetModulesToAbsolute() {

@@ -10,19 +10,45 @@ import edu.wpi.first.math.util.Units;
 import frc.lib.util.ModuleConstants;
 
 public class Constants {
+    public static final Mode currentMode = Mode.REAL;
+
+    public static enum Mode {
+        /** Running on a real robot. */
+        REAL,
+
+        /** Running a physics simulator. */
+        SIM,
+
+        /** Replaying from a log file. */
+        REPLAY
+    }
+
     public static final class SwerveConstants {
         public static final String canivore = "CANt_open_file";
 
         public static final int pigeonID = 1;
 
         public static final double maxSpeed = 4.5;
+        public static final double maxAngularVelocity = Math.PI;
+
+        public static final double stickDeadband = 0.05;
 
         /* Drivetrain Constants */
         public static final double trackWidth = 0.521; // 20.5 in -> meters
         public static final double wheelBase = 0.521; // meters
+        public static final double driveBaseRadius = Math.sqrt(2 * Math.pow(wheelBase, 2));
         public static final double wheelCircumference = Units.inchesToMeters(4.0);
         public static final double angleGearRatio = ((150.0 / 7.0) / 1.0);
         public static final double driveGearRatio = (6.12 / 1.0);
+
+        /* Auto Constants */
+        public static final double translationKP = 0.0;
+        public static final double translationKI = 0.0;
+        public static final double translationKD = 0.0;
+
+        public static final double rotationKP = 0.0;
+        public static final double rotationKI = 0.0;
+        public static final double rotationKD = 0.0;
 
         /* Swerve Kinematics */
         public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
