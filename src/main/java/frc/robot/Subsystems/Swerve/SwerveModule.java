@@ -22,13 +22,17 @@ public class SwerveModule {
     public final int index;
 
     private Rotation2d angleOffset;
-    private Rotation2d lastAngle;
+    private Rotation2d lastAngle = new Rotation2d();
+
+    private SwerveModuleState desiredState = new SwerveModuleState();
 
     private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(SwerveConstants.driveKS, SwerveConstants.driveKV, SwerveConstants.driveKA);
 
     public SwerveModule(SwerveModuleIO io, int index) {
         this.io = io;
         this.index = index;
+
+        angleOffset = io.getModuleOffset();
 
         resetToAbsolute();
     }
@@ -55,10 +59,10 @@ public class SwerveModule {
     private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop) {
         if (isOpenLoop) {
             double percentOutput = desiredState.speedMetersPerSecond / SwerveConstants.maxSpeed;
-            io.setDrive(new DutyCycleOut(percentOutput).withEnableFOC(true));
+            io.setDrive(new DutyCycleOut(percentOutput).withEnableFOC(SwerveConstants.useFOC));
         } else {
             double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond, SwerveConstants.wheelCircumference, SwerveConstants.driveGearRatio);
-            io.setDrive(new VelocityDutyCycle(velocity).withEnableFOC(true).withFeedForward(feedforward.calculate(desiredState.speedMetersPerSecond)));
+            io.setDrive(new VelocityDutyCycle(velocity).withEnableFOC(SwerveConstants.useFOC).withFeedForward(feedforward.calculate(desiredState.speedMetersPerSecond)));
         }
     }
 
@@ -68,7 +72,7 @@ public class SwerveModule {
                 : desiredState.angle; // Prevent rotating module if speed is less then 1%. Prevents Jittering.
         Rotation2d oldAngle = getAngle();
         angle = optimizeTurn(oldAngle, angle);
-        io.setAngle(new PositionDutyCycle(Conversions.degreesToFalcon(angle.getDegrees(), SwerveConstants.angleGearRatio)).withEnableFOC(true).withSlot(0));
+        io.setAngle(new PositionDutyCycle(Conversions.degreesToFalcon(angle.getDegrees(), SwerveConstants.angleGearRatio)).withEnableFOC(SwerveConstants.useFOC).withSlot(0));
         lastAngle = angle;
     }
 
@@ -87,7 +91,6 @@ public class SwerveModule {
             degrees = degrees + 360;
         }
         return degrees;
-
     }
 
     public double makePositiveDegrees(Rotation2d anAngle) {
@@ -125,9 +128,9 @@ public class SwerveModule {
 
     public void resetToAbsolute() {
         double absolutePosition = Conversions.degreesToFalcon(
-                makePositiveDegrees(getCanCoder().getDegrees() - angleOffset.getDegrees()),
+                makePositiveDegrees(getCanCoder().getDegrees() - angleOffset.getDegrees() + 180),
                 SwerveConstants.angleGearRatio);
-        io.setAngle(new PositionDutyCycle(absolutePosition).withEnableFOC(true).withSlot(0));
+        io.setAngle(new PositionDutyCycle(absolutePosition).withEnableFOC(SwerveConstants.useFOC).withSlot(0));
     }
 
     public SwerveModuleState getState() {
@@ -135,6 +138,10 @@ public class SwerveModule {
                 Conversions.falconToMPS(inputs.driveVelocity, SwerveConstants.wheelCircumference,
                         SwerveConstants.driveGearRatio),
                 getAngle());
+    }
+
+    public SwerveModuleState getDesiredState() {
+        return desiredState;
     }
 
     public SwerveModulePosition getPosition() {

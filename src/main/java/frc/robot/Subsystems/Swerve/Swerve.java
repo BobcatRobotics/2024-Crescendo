@@ -26,6 +26,9 @@ public class Swerve extends SubsystemBase {
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
     private final SwerveModule[] modules;
     private final SwerveDriveOdometry odometry;
+    
+    private final double[] desiredModuleStates = new double[8];
+    private final double[] moduleStates = new double[8];
 
     public Swerve(GyroIO gyroIO, SwerveModuleIO flIO, SwerveModuleIO frIO, SwerveModuleIO blIO, SwerveModuleIO brIO) {
         this.gyroIO = gyroIO;
@@ -65,14 +68,22 @@ public class Swerve extends SubsystemBase {
             module.periodic();
         }
 
-        if (DriverStation.isDisabled()) {
-            resetModulesToAbsolute();
-        }
+        // if (DriverStation.isDisabled()) {
+        //     resetModulesToAbsolute();
+        // }
 
         for(SwerveModule mod : modules){
             SmartDashboard.putNumber("Mod " + mod.index + " Cancoder", mod.getCanCoder().getDegrees());
             SmartDashboard.putNumber("Mod " + mod.index + " Velocity", mod.getState().speedMetersPerSecond);
+            desiredModuleStates[mod.index*2+1] = mod.getDesiredState().speedMetersPerSecond;
+            desiredModuleStates[mod.index*2] = mod.getDesiredState().angle.getRadians();
+            moduleStates[mod.index*2+1] = mod.getState().speedMetersPerSecond;
+            moduleStates[mod.index*2] = mod.getState().angle.getRadians();
         }
+
+        Logger.recordOutput("Swerve/DesiredModuleStates", desiredModuleStates);
+        Logger.recordOutput("Swerve/ModuleStates", moduleStates);
+        Logger.recordOutput("Swerve/Rotation", getYaw().getRadians());
     }
 
     public Rotation2d getYaw() {

@@ -26,9 +26,9 @@ import frc.robot.Subsystems.Swerve.SwerveModuleIOSim;
 
 public class RobotContainer {
   /* Joysticks + Gamepad */
-  private final CommandJoystick rotate = new CommandJoystick(0);
-  private final CommandJoystick strafe = new CommandJoystick(1);
-  private final CommandJoystick gp = new CommandJoystick(2);
+  // private final CommandJoystick rotate = new CommandJoystick(0);
+  // private final CommandJoystick strafe = new CommandJoystick(1);
+  public final CommandJoystick gp = new CommandJoystick(2);
 
   /* Subsystems */
   public final Swerve m_swerve;
@@ -72,7 +72,7 @@ public class RobotContainer {
 
     /* Auto Chooser */
     autoChooser.addDefaultOption("Do Nothing", Commands.none());
-    autoChooser.addOption("Path 1", new PathPlannerAuto("Path 1"));
+    autoChooser.addOption("Path 1", new PathPlannerAuto("Auto 1"));
 
     /* Auto Events */
     NamedCommands.registerCommand("Auto Event", new InstantCommand());
@@ -81,17 +81,29 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    // m_swerve.setDefaultCommand(
+    //     new TeleopSwerve(
+    //         m_swerve,
+    //         -strafe.getRawAxis(Joystick.AxisType.kY.value)
+    //             * Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value)),
+    //         -strafe.getRawAxis(Joystick.AxisType.kX.value)
+    //             * Math.abs(strafe.getRawAxis(Joystick.AxisType.kX.value)),
+    //         -rotate.getRawAxis(Joystick.AxisType.kX.value),
+    //         false,
+    //         -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
+    //         -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2  // Fine tune
+    //     ));
     m_swerve.setDefaultCommand(
         new TeleopSwerve(
             m_swerve,
-            -strafe.getRawAxis(Joystick.AxisType.kY.value)
-                * Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value)),
-            -strafe.getRawAxis(Joystick.AxisType.kX.value)
-                * Math.abs(strafe.getRawAxis(Joystick.AxisType.kX.value)),
-            -rotate.getRawAxis(Joystick.AxisType.kX.value),
+            -gp.getRawAxis(1)
+                * Math.abs(gp.getRawAxis(1)),
+            -gp.getRawAxis(0)
+                * Math.abs(gp.getRawAxis(0)),
+            -gp.getRawAxis(2),
             false,
-            -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
-            -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2  // Fine tune
+            0.0,
+            0.0
         ));
   }
 
