@@ -15,7 +15,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -111,8 +110,7 @@ public class Swerve extends SubsystemBase {
             rotation
         );
 
-        SwerveModuleState[] swerveModuleStates =
-        SwerveConstants.swerveKinematics.toSwerveModuleStates(desiredSpeeds);
+        SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates(desiredSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxSpeed);
 
         for(SwerveModule mod : modules){
@@ -127,12 +125,6 @@ public class Swerve extends SubsystemBase {
 
         for(SwerveModule mod : modules){
             mod.setDesiredState(swerveModuleStates[mod.index], true);
-        }
-    }
-
-    public void enableBrakeMode(boolean enable) {
-        for (SwerveModule mod : modules) {
-            mod.setDriveBrakeMode(enable);
         }
     }
 

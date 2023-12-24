@@ -9,8 +9,6 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -96,14 +94,14 @@ public class RobotContainer {
     m_swerve.setDefaultCommand(
         new TeleopSwerve(
             m_swerve,
-            -gp.getRawAxis(1)
+            () -> -gp.getRawAxis(1)
                 * Math.abs(gp.getRawAxis(1)),
-            -gp.getRawAxis(0)
+            () -> -gp.getRawAxis(0)
                 * Math.abs(gp.getRawAxis(0)),
-            -gp.getRawAxis(2),
-            false,
-            0.0,
-            0.0
+            () -> -gp.getRawAxis(2),
+            () ->false,
+            () ->0.0,
+            () ->0.0
         ));
   }
 
