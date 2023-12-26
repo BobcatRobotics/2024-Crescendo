@@ -28,6 +28,7 @@ public class Swerve extends SubsystemBase {
     
     private final double[] desiredModuleStates = new double[8];
     private final double[] moduleStates = new double[8];
+    private final double[] desiredAngles = new double[4];
 
     public Swerve(GyroIO gyroIO, SwerveModuleIO flIO, SwerveModuleIO frIO, SwerveModuleIO blIO, SwerveModuleIO brIO) {
         this.gyroIO = gyroIO;
@@ -78,11 +79,13 @@ public class Swerve extends SubsystemBase {
             desiredModuleStates[mod.index*2] = mod.getDesiredState().angle.getRadians();
             moduleStates[mod.index*2+1] = mod.getState().speedMetersPerSecond;
             moduleStates[mod.index*2] = mod.getState().angle.getRadians();
+            desiredAngles[mod.index] = mod.getDesiredState().angle.getDegrees();
         }
 
         Logger.recordOutput("Swerve/DesiredModuleStates", desiredModuleStates);
         Logger.recordOutput("Swerve/ModuleStates", moduleStates);
         Logger.recordOutput("Swerve/Rotation", getYaw().getRadians());
+        Logger.recordOutput("Swerve/DesiredAngles", desiredAngles);
     }
 
     public Rotation2d getYaw() {

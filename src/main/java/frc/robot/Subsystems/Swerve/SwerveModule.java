@@ -54,6 +54,7 @@ public class SwerveModule {
         desiredState = ModuleState.optimize(desiredState, getState().angle);
         setAngle(desiredState);
         setSpeed(desiredState, isOpenLoop);
+        this.desiredState = desiredState;
     }
 
     private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop) {

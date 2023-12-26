@@ -22,6 +22,8 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
     private final Rotation2d angleOffset;
 
     public SwerveModuleIOFalcon(ModuleConstants moduleConstants) {
+        this.angleOffset = moduleConstants.angleOffset;
+
         /* Angle Encoder Config */
         angleEncoder = new CANcoder(moduleConstants.cancoderID, SwerveConstants.canivore);
         configAngleEncoder();
@@ -33,8 +35,6 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         /* Drive Motor Config */
         driveMotor = new TalonFX(moduleConstants.driveMotorID, SwerveConstants.canivore);
         configDriveMotor();
-
-        this.angleOffset = moduleConstants.angleOffset;
     }
 
     public void updateInputs(SwerveModuleIOInputs inputs) {
