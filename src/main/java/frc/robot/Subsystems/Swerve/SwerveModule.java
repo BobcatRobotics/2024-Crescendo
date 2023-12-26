@@ -3,16 +3,13 @@ package frc.robot.Subsystems.Swerve;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.lib.util.SwerveConversions;
-import frc.lib.util.ModuleState;
 import frc.robot.Constants.SwerveConstants;
 
 public class SwerveModule {
@@ -21,7 +18,6 @@ public class SwerveModule {
 
     public final int index;
 
-    private Rotation2d angleOffset;
     private Rotation2d lastAngle = new Rotation2d();
 
     private SwerveModuleState desiredState = new SwerveModuleState();
@@ -31,10 +27,6 @@ public class SwerveModule {
     public SwerveModule(SwerveModuleIO io, int index) {
         this.io = io;
         this.index = index;
-
-        angleOffset = io.getModuleOffset();
-
-        resetToAbsolute();
     }
 
     public void periodic() {
@@ -42,16 +34,8 @@ public class SwerveModule {
         Logger.processInputs("Swerve/SwerveModule" + Integer.toString(index), inputs);
     }
 
-    public void setDriveBrakeMode(boolean brakeMode) {
-        io.setDriveNeutralMode(brakeMode ? NeutralModeValue.Brake : NeutralModeValue.Coast);
-    }
-
-    public void setAngleBrakeMode(boolean brakeMode) {
-        io.setAngleNeutralMode(brakeMode ? NeutralModeValue.Brake : NeutralModeValue.Coast);
-    }
-
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
-        desiredState = ModuleState.optimize(desiredState, getState().angle);
+        desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
         setAngle(desiredState);
         setSpeed(desiredState, isOpenLoop);
         this.desiredState = desiredState;
@@ -73,16 +57,17 @@ public class SwerveModule {
                 : desiredState.angle; // Prevent rotating module if speed is less then 1%. Prevents Jittering.
         Rotation2d oldAngle = getAngle();
         angle = optimizeTurn(oldAngle, angle);
-        io.setAngle(new PositionDutyCycle(SwerveConversions.degreesToRotations(angle.getDegrees(), SwerveConstants.angleGearRatio)).withEnableFOC(SwerveConstants.useFOC).withSlot(0));
+        
+        io.setAnglePosition(angle.getRotations());
         lastAngle = angle;
     }
 
     private Rotation2d getAngle() {
-        return Rotation2d.fromDegrees(SwerveConversions.rotationsToDegrees(inputs.anglePosition, SwerveConstants.angleGearRatio));
+        return Rotation2d.fromDegrees(inputs.anglePosition);
     }
 
     public Rotation2d getCanCoder() {
-        return Rotation2d.fromDegrees(inputs.canCoderPosition);
+        return Rotation2d.fromRotations(inputs.canCoderPosition);
     }
 
     public double makePositiveDegrees(double anAngle) {
@@ -127,18 +112,18 @@ public class SwerveModule {
         return Rotation2d.fromDegrees(makePositiveDegrees(steerAngle));
     }
 
-    public void resetToAbsolute() {
-        double absolutePosition = SwerveConversions.degreesToRotations(
-                makePositiveDegrees(getCanCoder().getDegrees() - angleOffset.getDegrees()),
-                SwerveConstants.angleGearRatio);
-        io.setAngle(new PositionDutyCycle(absolutePosition).withEnableFOC(SwerveConstants.useFOC).withSlot(0));
-    }
+    // public void resetToAbsolute() {
+    //     double absolutePosition = SwerveConversions.degreesToRotations(
+    //             makePositiveDegrees(getCanCoder().getDegrees() - angleOffset.getDegrees()),
+    //             SwerveConstants.angleGearRatio);
+    //     io.setAngle(new PositionDutyCycle(absolutePosition).withEnableFOC(SwerveConstants.useFOC).withSlot(0));
+    // }
 
     public SwerveModuleState getState() {
         return new SwerveModuleState(
                 SwerveConversions.RPSToMPS(inputs.driveVelocity, SwerveConstants.wheelCircumference,
                         SwerveConstants.driveGearRatio),
-                getAngle());
+                getCanCoder());
     }
 
     public SwerveModuleState getDesiredState() {
@@ -149,7 +134,7 @@ public class SwerveModule {
         return new SwerveModulePosition(
                 SwerveConversions.rotationsToMeters(inputs.drivePosition, SwerveConstants.wheelCircumference,
                         SwerveConstants.driveGearRatio),
-                getAngle());
+                getCanCoder());
     }
 
     public double getDistanceMeters() {

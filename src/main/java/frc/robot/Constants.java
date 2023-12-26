@@ -63,7 +63,7 @@ public class Constants {
         public static final InvertedValue angleMotorInvert = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
 
-        public static final double angleKP = 0.003;
+        public static final double angleKP = 0.1;
         public static final double angleKI = 0.0;
         public static final double angleKD = 0.0;
 

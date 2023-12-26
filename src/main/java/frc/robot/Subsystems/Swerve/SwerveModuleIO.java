@@ -24,7 +24,7 @@ public interface SwerveModuleIO {
 
     public default void setDriveNeutralMode(NeutralModeValue mode) {}
 
-    public default void setAngle(ControlRequest request) {}
+    public default void setAnglePosition(double position) {}
 
     public default void setAngleNeutralMode(NeutralModeValue mode) {}
 

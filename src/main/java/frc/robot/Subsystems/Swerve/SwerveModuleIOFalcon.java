@@ -7,10 +7,10 @@ import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import frc.lib.util.ModuleConstants;
 import frc.robot.Constants.SwerveConstants;
 
@@ -19,11 +19,7 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
     private final TalonFX angleMotor;
     private final CANcoder angleEncoder;
 
-    private final Rotation2d angleOffset;
-
     public SwerveModuleIOFalcon(ModuleConstants moduleConstants) {
-        this.angleOffset = moduleConstants.angleOffset;
-
         /* Angle Encoder Config */
         angleEncoder = new CANcoder(moduleConstants.cancoderID, SwerveConstants.canivore);
         configAngleEncoder();
@@ -43,7 +39,7 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
 
         inputs.anglePosition = angleMotor.getPosition().getValueAsDouble();
 
-        inputs.canCoderPosition = angleEncoder.getAbsolutePosition().getValueAsDouble()*360;
+        inputs.canCoderPosition = angleEncoder.getAbsolutePosition().getValueAsDouble();
     }
 
     /* ----- Drive motor methods ----- */
@@ -98,11 +94,15 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         config.MotorOutput.Inverted = SwerveConstants.angleMotorInvert;
         config.MotorOutput.NeutralMode = SwerveConstants.angleNeutralMode;
 
+        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+        config.Feedback.FeedbackRemoteSensorID = angleEncoder.getDeviceID();
+        config.Feedback.RotorToSensorRatio = SwerveConstants.angleGearRatio;
+
         angleMotor.getConfigurator().apply(config);
     }
 
-    public void setAngle(ControlRequest request) {
-        angleMotor.setControl(request);
+    public void setAnglePosition(double position) {
+        angleMotor.setControl(new PositionDutyCycle(position).withEnableFOC(SwerveConstants.useFOC).withSlot(0));
     }
 
     public void setAngleNeutralMode(NeutralModeValue mode) {
@@ -115,11 +115,7 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         angleEncoder.getConfigurator().apply(config);
 
         config.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
-        config.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+        config.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
         angleEncoder.getConfigurator().apply(config);
-    }
-
-    public Rotation2d getModuleOffset() {
-        return angleOffset;
     }
 }
