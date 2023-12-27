@@ -2,15 +2,16 @@ package frc.robot.Subsystems.Swerve;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import frc.lib.util.ModuleConstants;
 import frc.robot.Constants.SwerveConstants;
 
@@ -19,33 +20,59 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
     private final TalonFX angleMotor;
     private final CANcoder angleEncoder;
 
+    private final Rotation2d encoderOffset;
+
+    private final VelocityDutyCycle driveRequest;
+    private final PositionDutyCycle angleRequest;
+
     public SwerveModuleIOFalcon(ModuleConstants moduleConstants) {
-        /* Angle Encoder Config */
-        angleEncoder = new CANcoder(moduleConstants.cancoderID, SwerveConstants.canivore);
-        configAngleEncoder();
+        encoderOffset = moduleConstants.angleOffset;
 
-        /* Angle Motor Config */
-        angleMotor = new TalonFX(moduleConstants.angleMotorID, SwerveConstants.canivore);
-        configAngleMotor();
-
-        /* Drive Motor Config */
         driveMotor = new TalonFX(moduleConstants.driveMotorID, SwerveConstants.canivore);
-        configDriveMotor();
+        angleMotor = new TalonFX(moduleConstants.angleMotorID, SwerveConstants.canivore);
+        angleEncoder = new CANcoder(moduleConstants.cancoderID, SwerveConstants.canivore);
+
+        driveRequest = new VelocityDutyCycle(0.0).withEnableFOC(SwerveConstants.useFOC).withSlot(0);
+        angleRequest = new PositionDutyCycle(0.0).withEnableFOC(SwerveConstants.useFOC).withSlot(0);
     }
 
     public void updateInputs(SwerveModuleIOInputs inputs) {
-        inputs.drivePosition = driveMotor.getPosition().getValueAsDouble();
-        inputs.driveVelocity = driveMotor.getVelocity().getValueAsDouble();
+        inputs.drivePositionRot = driveMotor.getPosition().getValueAsDouble() / SwerveConstants.driveGearRatio;
+        inputs.driveVelocityRotPerSec = driveMotor.getVelocity().getValueAsDouble() / SwerveConstants.driveGearRatio;
+        inputs.drivePercentOut = driveMotor.getDutyCycle().getValueAsDouble();
 
-        inputs.anglePosition = angleMotor.getPosition().getValueAsDouble();
+        inputs.anglePositionRot = angleMotor.getPosition().getValueAsDouble() / SwerveConstants.angleGearRatio;
 
-        inputs.canCoderPosition = angleEncoder.getAbsolutePosition().getValueAsDouble();
+        inputs.canCoderPositionRot = Rotation2d.fromRadians(MathUtil.angleModulus(Rotation2d.fromRotations(angleEncoder.getAbsolutePosition().getValueAsDouble()).minus(encoderOffset).getRadians())).getRotations();
     }
 
-    /* ----- Drive motor methods ----- */
-    private void configDriveMotor(){        
+    public void setDriveVelocity(double velocity) {
+        driveMotor.setControl(driveRequest.withVelocity(velocity));
+    }
+
+    public void stopDrive() {
+        driveMotor.stopMotor();
+    }
+
+    public void setDriveNeutralMode(NeutralModeValue mode) {
+        driveMotor.setNeutralMode(mode);
+    }
+
+    public void setAnglePosition(double position) {
+        angleMotor.setControl(angleRequest.withPosition(position));
+    }
+
+    public void stopAngle() {
+        angleMotor.stopMotor();
+    }
+
+    public void setAngleNeutralMode(NeutralModeValue mode) {
+        angleMotor.setNeutralMode(mode);
+    }
+
+    public void configDriveMotor() {
         TalonFXConfiguration config = new TalonFXConfiguration();
-        driveMotor.getConfigurator().apply(config);
+        driveMotor.getConfigurator().apply(new TalonFXConfiguration());
 
         config.Slot0.kP = SwerveConstants.driveKP;
         config.Slot0.kI = SwerveConstants.driveKI;
@@ -69,18 +96,9 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         driveMotor.setControl(new PositionDutyCycle(0).withEnableFOC(SwerveConstants.useFOC).withSlot(0));
     }
 
-    public void setDrive(ControlRequest request) {
-        driveMotor.setControl(request);
-    }
-
-    public void setDriveNeutralMode(NeutralModeValue mode) {
-        driveMotor.setNeutralMode(mode);
-    }
-
-    /* ----- Angle motor methods ----- */
-    private void configAngleMotor(){
+    public void configAngleMotor() {
         TalonFXConfiguration config = new TalonFXConfiguration();
-        angleMotor.getConfigurator().apply(config);
+        angleMotor.getConfigurator().apply(new TalonFXConfiguration());
 
         config.Slot0.kP = SwerveConstants.angleKP;
         config.Slot0.kI = SwerveConstants.angleKI;
@@ -94,25 +112,14 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         config.MotorOutput.Inverted = SwerveConstants.angleMotorInvert;
         config.MotorOutput.NeutralMode = SwerveConstants.angleNeutralMode;
 
-        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-        config.Feedback.FeedbackRemoteSensorID = angleEncoder.getDeviceID();
-        config.Feedback.RotorToSensorRatio = SwerveConstants.angleGearRatio;
+        config.ClosedLoopGeneral.ContinuousWrap = true;
 
         angleMotor.getConfigurator().apply(config);
     }
 
-    public void setAnglePosition(double position) {
-        angleMotor.setControl(new PositionDutyCycle(position).withEnableFOC(SwerveConstants.useFOC).withSlot(0));
-    }
-
-    public void setAngleNeutralMode(NeutralModeValue mode) {
-        angleMotor.setNeutralMode(mode);
-    }
-
-    /* ----- Angle encoder methods ----- */
-    private void configAngleEncoder(){        
+    public void configAngleEncoder() {
         CANcoderConfiguration config = new CANcoderConfiguration();
-        angleEncoder.getConfigurator().apply(config);
+        angleEncoder.getConfigurator().apply(new CANcoderConfiguration());
 
         config.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
         config.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
