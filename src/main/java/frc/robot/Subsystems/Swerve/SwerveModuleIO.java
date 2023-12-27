@@ -12,6 +12,7 @@ public interface SwerveModuleIO {
         public double drivePercentOut = 0.0;
         
         public double anglePositionRot = 0.0;
+        public double anglePercentOut = 0.0;
         
         public double canCoderPositionRot = 0.0;
     }

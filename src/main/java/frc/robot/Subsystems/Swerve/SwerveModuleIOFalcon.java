@@ -7,6 +7,7 @@ import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
@@ -42,6 +43,7 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         inputs.drivePercentOut = driveMotor.getDutyCycle().getValueAsDouble();
 
         inputs.anglePositionRot = angleMotor.getPosition().getValueAsDouble() / SwerveConstants.angleGearRatio;
+        inputs.anglePercentOut = angleMotor.getDutyCycle().getValueAsDouble();
 
         inputs.canCoderPositionRot = Rotation2d.fromRadians(MathUtil.angleModulus(Rotation2d.fromRotations(angleEncoder.getAbsolutePosition().getValueAsDouble()).minus(encoderOffset).getRadians())).getRotations();
     }
@@ -113,6 +115,9 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         config.MotorOutput.NeutralMode = SwerveConstants.angleNeutralMode;
 
         config.ClosedLoopGeneral.ContinuousWrap = true;
+
+        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+        config.Feedback.FeedbackRemoteSensorID = angleEncoder.getDeviceID();
 
         angleMotor.getConfigurator().apply(config);
     }
