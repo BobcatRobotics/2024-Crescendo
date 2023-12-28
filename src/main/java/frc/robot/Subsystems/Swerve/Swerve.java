@@ -81,9 +81,6 @@ public class Swerve extends SubsystemBase {
             for (SwerveModule mod : modules) {
                 mod.stop();
             }
-
-            Logger.recordOutput("Swerve/DesiredModuleStates", new double[8]);
-            Logger.recordOutput("Swerve/ModuleStates", new double[8]);
         }
     }
 

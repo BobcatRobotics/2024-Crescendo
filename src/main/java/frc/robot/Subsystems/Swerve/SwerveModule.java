@@ -4,6 +4,8 @@ import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -16,13 +18,20 @@ public class SwerveModule {
 
     public final int index;
 
-    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(SwerveConstants.driveKS, SwerveConstants.driveKV, SwerveConstants.driveKA);
+    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(SwerveConstants.driveKS,
+            SwerveConstants.driveKV, SwerveConstants.driveKA);
+    private PIDController angleController = new PIDController(SwerveConstants.angleKP, SwerveConstants.angleKI,
+            SwerveConstants.angleKD);
 
     private SwerveModuleState desiredState = new SwerveModuleState();
+
+    private Rotation2d lastAngle;
 
     public SwerveModule(SwerveModuleIO io, int index) {
         this.io = io;
         this.index = index;
+
+        lastAngle = getState().angle;
     }
 
     public void periodic() {
@@ -33,12 +42,23 @@ public class SwerveModule {
     public SwerveModuleState setDesiredState(SwerveModuleState state) {
         SwerveModuleState optimizedState = SwerveModuleState.optimize(state, getAngle());
 
-        io.setAnglePosition(optimizedState.angle.getRotations());
+        Rotation2d angle = (Math.abs(desiredState.speedMetersPerSecond) <= (SwerveConstants.maxSpeed * 0.01))
+                ? lastAngle
+                : optimizedState.angle;
+
+        double output = MathUtil.clamp(
+                angleController.calculate(getAngle().getRadians(), optimizedState.angle.getRadians()), -1.0, 1.0);
+        io.setAnglePercentOut(-output);
+        Logger.recordOutput("Swerve/Module" + Integer.toString(index), output);
+
+        // Update velocity based on turn error
+        optimizedState.speedMetersPerSecond *= Math.cos(angleController.getPositionError());
 
         double velocity = optimizedState.speedMetersPerSecond / SwerveConstants.wheelCircumference;
-        io.setDriveVelocity(feedforward.calculate(velocity));
+        io.setDriveVelocity(-feedforward.calculate(velocity));
 
         desiredState = optimizedState;
+        lastAngle = angle;
         return optimizedState;
     }
 

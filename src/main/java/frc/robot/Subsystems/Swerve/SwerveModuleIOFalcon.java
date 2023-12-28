@@ -2,14 +2,11 @@ package frc.robot.Subsystems.Swerve;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,7 +21,7 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
     private final Rotation2d encoderOffset;
 
     private final VelocityDutyCycle driveRequest;
-    private final PositionDutyCycle angleRequest;
+    private final DutyCycleOut angleRequest;
 
     public SwerveModuleIOFalcon(ModuleConstants moduleConstants) {
         encoderOffset = moduleConstants.angleOffset;
@@ -34,7 +31,7 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         driveMotor = new TalonFX(moduleConstants.driveMotorID, SwerveConstants.canivore);
 
         driveRequest = new VelocityDutyCycle(0.0).withEnableFOC(SwerveConstants.useFOC).withSlot(0);
-        angleRequest = new PositionDutyCycle(0.0).withEnableFOC(SwerveConstants.useFOC).withSlot(0);
+        angleRequest = new DutyCycleOut(0.0).withEnableFOC(SwerveConstants.useFOC);
     }
 
     public void updateInputs(SwerveModuleIOInputs inputs) {
@@ -46,7 +43,7 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         inputs.anglePercentOut = angleMotor.getDutyCycle().getValueAsDouble();
 
         inputs.canCoderPositionRot = Rotation2d.fromRadians(MathUtil.angleModulus(Rotation2d.fromRotations(angleEncoder.getAbsolutePosition().getValueAsDouble()).minus(encoderOffset).getRadians())).getRotations();
-        inputs.rawCanCoderPositionDeg = Rotation2d.fromRadians(MathUtil.angleModulus(Rotation2d.fromRotations(angleEncoder.getAbsolutePosition().getValueAsDouble()).minus(encoderOffset).getRadians())).getDegrees();
+        inputs.rawCanCoderPositionDeg = Rotation2d.fromRotations(angleEncoder.getAbsolutePosition().getValueAsDouble()).getDegrees();
     }
 
     public void setDriveVelocity(double velocity) {
@@ -61,8 +58,8 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         driveMotor.setNeutralMode(mode);
     }
 
-    public void setAnglePosition(double position) {
-        angleMotor.setControl(angleRequest.withPosition(position*SwerveConstants.angleGearRatio));
+    public void setAnglePercentOut(double percent) {
+        angleMotor.setControl(angleRequest.withOutput(percent));
     }
 
     public void stopAngle() {
@@ -105,10 +102,6 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         TalonFXConfiguration config = new TalonFXConfiguration();
         angleMotor.getConfigurator().apply(new TalonFXConfiguration());
 
-        config.Slot0.kP = SwerveConstants.angleKP;
-        config.Slot0.kI = SwerveConstants.angleKI;
-        config.Slot0.kD = SwerveConstants.angleKD;
-
         config.CurrentLimits.SupplyCurrentLimitEnable = SwerveConstants.angleSupplyCurrentLimitEnable;
         config.CurrentLimits.SupplyCurrentLimit = SwerveConstants.angleSupplyCurrentLimit;
         config.CurrentLimits.SupplyCurrentThreshold = SwerveConstants.angleSupplyCurrentThreshold;
@@ -117,22 +110,17 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         config.MotorOutput.Inverted = SwerveConstants.angleMotorInvert;
         config.MotorOutput.NeutralMode = SwerveConstants.angleNeutralMode;
 
-        config.ClosedLoopGeneral.ContinuousWrap = true;
-
-        config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-        config.Feedback.FeedbackRemoteSensorID = angleEncoder.getDeviceID();
-
         angleMotor.getConfigurator().apply(config);
 
-        angleMotor.getConfigurator().setPosition(Rotation2d.fromRadians(MathUtil.angleModulus(Rotation2d.fromRotations(angleEncoder.getAbsolutePosition().getValueAsDouble()).minus(encoderOffset).getRadians())).getRotations()*SwerveConstants.angleGearRatio);
+        // angleMotor.getConfigurator().setPosition(Rotation2d.fromRadians(MathUtil.angleModulus(Rotation2d.fromRotations(angleEncoder.getAbsolutePosition().getValueAsDouble()).minus(encoderOffset).getRadians())).getRotations()*SwerveConstants.angleGearRatio);
     }
 
     public void configAngleEncoder() {
         CANcoderConfiguration config = new CANcoderConfiguration();
         angleEncoder.getConfigurator().apply(new CANcoderConfiguration());
 
-        config.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
-        config.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+        config.MagnetSensor.AbsoluteSensorRange = SwerveConstants.sensorRange;
+        config.MagnetSensor.SensorDirection = SwerveConstants.sensorDirection;
 
         angleEncoder.getConfigurator().apply(config);
     }
