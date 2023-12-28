@@ -78,4 +78,8 @@ public class SwerveModule {
     public SwerveModuleState getDesiredState() {
         return desiredState;
     }
+
+    public double getRawCanCoder() {
+        return inputs.rawCanCoderPositionRot;
+    }
 }

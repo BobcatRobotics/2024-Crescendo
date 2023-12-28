@@ -15,6 +15,7 @@ public interface SwerveModuleIO {
         public double anglePercentOut = 0.0;
         
         public double canCoderPositionRot = 0.0;
+        public double rawCanCoderPositionRot = 0.0;
     }
 
     public default void updateInputs(SwerveModuleIOInputs inputs) {}

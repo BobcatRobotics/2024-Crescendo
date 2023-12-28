@@ -29,9 +29,9 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
     public SwerveModuleIOFalcon(ModuleConstants moduleConstants) {
         encoderOffset = moduleConstants.angleOffset;
 
-        driveMotor = new TalonFX(moduleConstants.driveMotorID, SwerveConstants.canivore);
-        angleMotor = new TalonFX(moduleConstants.angleMotorID, SwerveConstants.canivore);
         angleEncoder = new CANcoder(moduleConstants.cancoderID, SwerveConstants.canivore);
+        angleMotor = new TalonFX(moduleConstants.angleMotorID, SwerveConstants.canivore);
+        driveMotor = new TalonFX(moduleConstants.driveMotorID, SwerveConstants.canivore);
 
         driveRequest = new VelocityDutyCycle(0.0).withEnableFOC(SwerveConstants.useFOC).withSlot(0);
         angleRequest = new PositionDutyCycle(0.0).withEnableFOC(SwerveConstants.useFOC).withSlot(0);
@@ -46,6 +46,7 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         inputs.anglePercentOut = angleMotor.getDutyCycle().getValueAsDouble();
 
         inputs.canCoderPositionRot = Rotation2d.fromRadians(MathUtil.angleModulus(Rotation2d.fromRotations(angleEncoder.getAbsolutePosition().getValueAsDouble()).minus(encoderOffset).getRadians())).getRotations();
+        inputs.rawCanCoderPositionRot = Rotation2d.fromRadians(MathUtil.angleModulus(Rotation2d.fromRotations(angleEncoder.getAbsolutePosition().getValueAsDouble()).minus(encoderOffset).getRadians())).getRotations();
     }
 
     public void setDriveVelocity(double velocity) {
@@ -61,7 +62,7 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
     }
 
     public void setAnglePosition(double position) {
-        angleMotor.setControl(angleRequest.withPosition(position));
+        angleMotor.setControl(angleRequest.withPosition(position*SwerveConstants.angleGearRatio));
     }
 
     public void stopAngle() {
@@ -94,8 +95,10 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
 
         config.MotorOutput.Inverted = SwerveConstants.driveMotorInvert;
         config.MotorOutput.NeutralMode = SwerveConstants.driveNeutralMode;
+
         driveMotor.getConfigurator().apply(config);
-        driveMotor.setControl(new PositionDutyCycle(0).withEnableFOC(SwerveConstants.useFOC).withSlot(0));
+
+        driveMotor.getConfigurator().setPosition(0);
     }
 
     public void configAngleMotor() {
@@ -120,6 +123,8 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         config.Feedback.FeedbackRemoteSensorID = angleEncoder.getDeviceID();
 
         angleMotor.getConfigurator().apply(config);
+
+        angleMotor.getConfigurator().setPosition(Rotation2d.fromRadians(MathUtil.angleModulus(Rotation2d.fromRotations(angleEncoder.getAbsolutePosition().getValueAsDouble()).minus(encoderOffset).getRadians())).getRotations()*SwerveConstants.angleGearRatio);
     }
 
     public void configAngleEncoder() {
@@ -128,6 +133,7 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
 
         config.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
         config.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+
         angleEncoder.getConfigurator().apply(config);
     }
 }
