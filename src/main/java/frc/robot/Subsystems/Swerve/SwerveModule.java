@@ -20,6 +20,8 @@ public class SwerveModule {
 
     private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(SwerveConstants.driveKS,
             SwerveConstants.driveKV, SwerveConstants.driveKA);
+    private PIDController driveController = new PIDController(SwerveConstants.driveKP, SwerveConstants.driveKI,
+            SwerveConstants.driveKD);
     private PIDController angleController = new PIDController(SwerveConstants.angleKP, SwerveConstants.angleKI,
             SwerveConstants.angleKD);
 
@@ -48,14 +50,19 @@ public class SwerveModule {
 
         double output = MathUtil.clamp(
                 angleController.calculate(getAngle().getRadians(), optimizedState.angle.getRadians()), -1.0, 1.0);
-        io.setAnglePercentOut(-output);
-        Logger.recordOutput("Swerve/Module" + Integer.toString(index), output);
+        io.setAnglePercentOut(output);
 
         // Update velocity based on turn error
         optimizedState.speedMetersPerSecond *= Math.cos(angleController.getPositionError());
 
         double velocity = optimizedState.speedMetersPerSecond / SwerveConstants.wheelCircumference;
-        io.setDriveVelocity(-feedforward.calculate(velocity));
+        double velocityOut = MathUtil.clamp(
+                driveController.calculate(inputs.driveVelocityRotPerSec, velocity) + feedforward.calculate(velocity),
+                -1.0, 1.0);
+        if (velocity == 0) {
+            velocityOut = 0;
+        }
+        io.setDrivePercentOut(velocityOut);
 
         desiredState = optimizedState;
         lastAngle = angle;

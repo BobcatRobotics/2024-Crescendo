@@ -3,7 +3,6 @@ package frc.robot.Subsystems.Swerve;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -20,17 +19,20 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
 
     private final Rotation2d encoderOffset;
 
-    private final VelocityDutyCycle driveRequest;
+    private final DutyCycleOut driveRequest;
     private final DutyCycleOut angleRequest;
 
     public SwerveModuleIOFalcon(ModuleConstants moduleConstants) {
         encoderOffset = moduleConstants.angleOffset;
 
         angleEncoder = new CANcoder(moduleConstants.cancoderID, SwerveConstants.canivore);
+        configAngleEncoder();
         angleMotor = new TalonFX(moduleConstants.angleMotorID, SwerveConstants.canivore);
+        configAngleMotor();
         driveMotor = new TalonFX(moduleConstants.driveMotorID, SwerveConstants.canivore);
+        configDriveMotor();
 
-        driveRequest = new VelocityDutyCycle(0.0).withEnableFOC(SwerveConstants.useFOC).withSlot(0);
+        driveRequest = new DutyCycleOut(0.0).withEnableFOC(SwerveConstants.useFOC);
         angleRequest = new DutyCycleOut(0.0).withEnableFOC(SwerveConstants.useFOC);
     }
 
@@ -46,8 +48,8 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         inputs.rawCanCoderPositionDeg = Rotation2d.fromRotations(angleEncoder.getAbsolutePosition().getValueAsDouble()).getDegrees();
     }
 
-    public void setDriveVelocity(double velocity) {
-        driveMotor.setControl(driveRequest.withVelocity(velocity));
+    public void setDrivePercentOut(double percent) {
+        driveMotor.setControl(driveRequest.withOutput(percent));
     }
 
     public void stopDrive() {
@@ -73,10 +75,6 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
     public void configDriveMotor() {
         TalonFXConfiguration config = new TalonFXConfiguration();
         driveMotor.getConfigurator().apply(new TalonFXConfiguration());
-
-        config.Slot0.kP = SwerveConstants.driveKP;
-        config.Slot0.kI = SwerveConstants.driveKI;
-        config.Slot0.kD = SwerveConstants.driveKD;
 
         config.CurrentLimits.SupplyCurrentLimitEnable = SwerveConstants.driveSupplyCurrentLimitEnable;
         config.CurrentLimits.SupplyCurrentLimit = SwerveConstants.driveSupplyCurrentLimit;

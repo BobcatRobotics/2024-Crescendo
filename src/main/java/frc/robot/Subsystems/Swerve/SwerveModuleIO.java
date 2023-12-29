@@ -20,7 +20,7 @@ public interface SwerveModuleIO {
 
     public default void updateInputs(SwerveModuleIOInputs inputs) {}
 
-    public default void setDriveVelocity(double percent) {}
+    public default void setDrivePercentOut(double percent) {}
 
     public default void stopDrive() {}
 

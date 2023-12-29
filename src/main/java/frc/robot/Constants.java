@@ -65,7 +65,7 @@ public class Constants {
         public static final InvertedValue angleMotorInvert = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
 
-        public static final double angleKP = 0.1;
+        public static final double angleKP = 0.3;
         public static final double angleKI = 0.0;
         public static final double angleKD = 0.0;
 
@@ -107,7 +107,7 @@ public class Constants {
             public static final int cancoderID = 1;
             public static final int angleMotorID = 2;
             public static final int driveMotorID = 1;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(186.4160);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(173.3203);
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
@@ -117,7 +117,7 @@ public class Constants {
             public static final int cancoderID = 2;
             public static final int angleMotorID = 4;
             public static final int driveMotorID = 3;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(171.2109);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(188.7012);
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
@@ -127,7 +127,7 @@ public class Constants {
             public static final int cancoderID = 3;
             public static final int angleMotorID = 6;
             public static final int driveMotorID = 5;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(305.3320);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(54.7559);
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
@@ -137,7 +137,7 @@ public class Constants {
             public static final int cancoderID = 4;
             public static final int angleMotorID = 8;
             public static final int driveMotorID = 7;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(254.8828);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(105.1172);
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
