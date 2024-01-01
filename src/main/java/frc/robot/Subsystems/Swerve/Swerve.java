@@ -178,10 +178,12 @@ public class Swerve extends SubsystemBase {
 
     public void zeroGyro() {
         gyroIO.setYaw(0);
+        lastYaw = Rotation2d.fromDegrees(0);
     }
 
     public void reverseZeroGyro() {
         gyroIO.setYaw(180);
+        lastYaw = Rotation2d.fromDegrees(180);
     }
 
     public void configToX() {
