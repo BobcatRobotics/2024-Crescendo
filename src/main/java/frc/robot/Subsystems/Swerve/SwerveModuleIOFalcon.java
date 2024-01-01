@@ -41,7 +41,6 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         inputs.driveVelocityRotPerSec = driveMotor.getVelocity().getValueAsDouble() / SwerveConstants.driveGearRatio;
         inputs.drivePercentOut = driveMotor.getDutyCycle().getValueAsDouble();
 
-        inputs.anglePositionRot = angleMotor.getPosition().getValueAsDouble() / SwerveConstants.angleGearRatio;
         inputs.anglePercentOut = angleMotor.getDutyCycle().getValueAsDouble();
 
         inputs.canCoderPositionRot = Rotation2d.fromRadians(MathUtil.angleModulus(Rotation2d.fromRotations(angleEncoder.getAbsolutePosition().getValueAsDouble()).minus(encoderOffset).getRadians())).getRotations();

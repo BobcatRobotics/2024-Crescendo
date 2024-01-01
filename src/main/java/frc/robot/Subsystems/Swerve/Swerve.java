@@ -18,6 +18,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
 
 public class Swerve extends SubsystemBase {
@@ -28,6 +29,8 @@ public class Swerve extends SubsystemBase {
 
     private final double[] swerveModuleStates = new double[8];
     private final double[] desiredSwerveModuleStates = new double[8];
+
+    private Rotation2d lastYaw = new Rotation2d();
 
     public Swerve(GyroIO gyroIO, SwerveModuleIO flIO, SwerveModuleIO frIO, SwerveModuleIO blIO, SwerveModuleIO brIO) {
         this.gyroIO = gyroIO;
@@ -57,12 +60,21 @@ public class Swerve extends SubsystemBase {
     }
 
     public void periodic() {
-        odometry.update(getYaw(), getModulePositions());
-
         gyroIO.updateInputs(gyroInputs);
+
         Logger.processInputs("Swerve/Gyro", gyroInputs);
         for (SwerveModule module : modules) {
             module.periodic();
+        }
+
+        if (gyroInputs.connected) { // Use gyro when connected
+            Rotation2d yaw = getYaw();
+            odometry.update(yaw, getModulePositions());
+            lastYaw = yaw;
+        } else { // If disconnected or sim, use angular velocity
+            Rotation2d yaw = lastYaw.plus(Rotation2d.fromRadians(getChassisSpeeds().omegaRadiansPerSecond * Constants.loopPeriodSecs));
+            odometry.update(yaw, getModulePositions());
+            lastYaw = yaw;
         }
 
         for (SwerveModule mod : modules) {
@@ -73,7 +85,7 @@ public class Swerve extends SubsystemBase {
             swerveModuleStates[mod.index * 2] = mod.getState().angle.getRadians();
         }
 
-        Logger.recordOutput("Swerve/Rotation", getYaw().getRadians());
+        Logger.recordOutput("Swerve/Rotation", odometry.getPoseMeters().getRotation().getRadians());
         Logger.recordOutput("Swerve/DesiredModuleStates", desiredSwerveModuleStates);
         Logger.recordOutput("Swerve/ModuleStates", swerveModuleStates);
 
@@ -85,7 +97,11 @@ public class Swerve extends SubsystemBase {
     }
 
     public Rotation2d getYaw() {
-        return Rotation2d.fromDegrees(gyroInputs.yawPositionDeg);
+        if (gyroInputs.connected) {
+            return Rotation2d.fromDegrees(gyroInputs.yawPositionDeg);
+        } else {
+            return lastYaw;
+        }
     }
 
     public double getPitch() {
