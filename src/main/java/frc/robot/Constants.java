@@ -49,11 +49,11 @@ public class Constants {
         public static final double driveGearRatio = (6.12 / 1.0);
 
         /* Auto Constants */
-        public static final double translationKP = 0.0;
+        public static final double translationKP = 1;
         public static final double translationKI = 0.0;
         public static final double translationKD = 0.0;
 
-        public static final double rotationKP = 0.0;
+        public static final double rotationKP = 2;
         public static final double rotationKI = 0.0;
         public static final double rotationKD = 0.0;
 

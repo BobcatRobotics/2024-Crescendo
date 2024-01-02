@@ -88,6 +88,7 @@ public class Swerve extends SubsystemBase {
         Logger.recordOutput("Swerve/Rotation", odometry.getPoseMeters().getRotation().getRadians());
         Logger.recordOutput("Swerve/DesiredModuleStates", desiredSwerveModuleStates);
         Logger.recordOutput("Swerve/ModuleStates", swerveModuleStates);
+        Logger.recordOutput("Swerve/Pose", getPose());
 
         if (DriverStation.isDisabled()) {
             for (SwerveModule mod : modules) {
