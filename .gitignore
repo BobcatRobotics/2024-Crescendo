@@ -170,5 +170,8 @@ out/
 
 # Simulation GUI and other tools window save file
 *-window.json
+simgui*.json
+networktables.json
 
+# AdvantageKit version file
 src/main/java/frc/robot/BuildConstants.java
