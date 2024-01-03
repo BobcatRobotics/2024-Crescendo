@@ -98,9 +98,9 @@ public class Swerve extends SubsystemBase {
     }
 
     public Rotation2d getYaw() {
-        if (gyroInputs.connected) {
+        if (gyroInputs.connected) { // Use gyro when connected
             return Rotation2d.fromDegrees(gyroInputs.yawPositionDeg);
-        } else {
+        } else { // If disconnected or sim, use angular velocity
             return lastYaw;
         }
     }

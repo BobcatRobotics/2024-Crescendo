@@ -18,7 +18,7 @@ public class SwerveModule {
 
     public final int index;
 
-    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(SwerveConstants.driveKS,
+    private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(SwerveConstants.driveKS,
             SwerveConstants.driveKV, SwerveConstants.driveKA);
     private PIDController driveController = new PIDController(SwerveConstants.driveKP, SwerveConstants.driveKI,
             SwerveConstants.driveKD);
@@ -48,6 +48,8 @@ public class SwerveModule {
                 ? lastAngle
                 : optimizedState.angle;
 
+        // It is important that we use radians for the PID
+        // so we can update the drive speed as shown below
         double output = MathUtil.clamp(
                 angleController.calculate(getAngle().getRadians(), optimizedState.angle.getRadians()), -1.0, 1.0);
         io.setAnglePercentOut(output);
@@ -57,7 +59,8 @@ public class SwerveModule {
 
         double velocity = optimizedState.speedMetersPerSecond / SwerveConstants.wheelCircumference;
         double velocityOut = MathUtil.clamp(
-                driveController.calculate(inputs.driveVelocityRotPerSec, velocity) + feedforward.calculate(velocity),
+                driveController.calculate(inputs.driveVelocityRotPerSec, velocity)
+                        + driveFeedforward.calculate(velocity),
                 -1.0, 1.0);
         if (velocity == 0) {
             velocityOut = 0;

@@ -44,7 +44,7 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         inputs.anglePercentOut = angleMotor.getDutyCycle().getValueAsDouble();
 
         inputs.canCoderPositionRot = Rotation2d.fromRadians(MathUtil.angleModulus(Rotation2d.fromRotations(angleEncoder.getAbsolutePosition().getValueAsDouble()).minus(encoderOffset).getRadians())).getRotations();
-        inputs.rawCanCoderPositionDeg = Rotation2d.fromRotations(angleEncoder.getAbsolutePosition().getValueAsDouble()).getDegrees();
+        inputs.rawCanCoderPositionDeg = Rotation2d.fromRotations(angleEncoder.getAbsolutePosition().getValueAsDouble()).getDegrees(); // Used only for shuffleboard to display values to get offsets
     }
 
     public void setDrivePercentOut(double percent) {
@@ -108,8 +108,6 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         config.MotorOutput.NeutralMode = SwerveConstants.angleNeutralMode;
 
         angleMotor.getConfigurator().apply(config);
-
-        // angleMotor.getConfigurator().setPosition(Rotation2d.fromRadians(MathUtil.angleModulus(Rotation2d.fromRotations(angleEncoder.getAbsolutePosition().getValueAsDouble()).minus(encoderOffset).getRadians())).getRotations()*SwerveConstants.angleGearRatio);
     }
 
     public void configAngleEncoder() {

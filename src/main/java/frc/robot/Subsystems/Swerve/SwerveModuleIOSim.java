@@ -16,6 +16,7 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
     private double drivePercentOut = 0.0;
 
     public SwerveModuleIOSim() {
+        // Using flywheels to simulate motors
         driveSim = new FlywheelSim(DCMotor.getFalcon500(1), SwerveConstants.driveGearRatio, 0.025);
         angleSim = new FlywheelSim(DCMotor.getFalcon500(1), SwerveConstants.angleGearRatio, 0.004);
     }

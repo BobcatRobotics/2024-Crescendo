@@ -34,17 +34,19 @@ public class TeleopSwerve extends Command {
 
     @Override
     public void execute() {
-        /* Get Values, Deadband*/
+        /* Get Values, Deadband */
         double translationVal = MathUtil.applyDeadband(translation.getAsDouble(), SwerveConstants.stickDeadband);
         double strafeVal = MathUtil.applyDeadband(strafe.getAsDouble(), SwerveConstants.stickDeadband);
         double rotationVal = MathUtil.applyDeadband(rotation.getAsDouble(), SwerveConstants.stickDeadband); //from 0 to one
 
+        /* If joysticks not receiving any normal input, use twist values for fine adjust */
         if (strafeVal == 0.0) {
             strafeVal = fineStrafe.getAsDouble();
         } 
         if(translationVal == 0.0) {
             translationVal = fineTrans.getAsDouble();
         }
+
         /* Drive */
         swerve.drive(
             new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed), 
