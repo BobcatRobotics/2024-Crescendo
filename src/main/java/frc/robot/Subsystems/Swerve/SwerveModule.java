@@ -41,11 +41,6 @@ public class SwerveModule {
         Logger.processInputs("Swerve/Module" + Integer.toString(index), inputs);
     }
 
-    /**
-     * Sets the swerve module to the desired state
-     * @param state the desired state of the swerve module
-     * @return the optimized swerve module state that it was set to
-     */
     public SwerveModuleState setDesiredState(SwerveModuleState state) {
         SwerveModuleState optimizedState = SwerveModuleState.optimize(state, getAngle());
 
@@ -77,82 +72,43 @@ public class SwerveModule {
         return optimizedState;
     }
 
-    /**
-     * Stops the drive and angle motors
-     */
     public void stop() {
         io.stopAngle();
         io.stopDrive();
     }
 
-    /**
-     * Sets the neutral mode of the angle motor
-     * @param mode the mode to set it to
-     */
     public void setAngleNeutralMode(NeutralModeValue mode) {
         io.setAngleNeutralMode(mode);
     }
 
-    /**
-     * Sets the neutral mode of the drive motor
-     * @param mode the mode to set it to
-     */
     public void setDriveNeutralMode(NeutralModeValue mode) {
         io.setDriveNeutralMode(mode);
     }
 
-    /**
-     * Gets the current angle of the swerve module from the CANcoder
-     * @return the angle of the module
-     */
     public Rotation2d getAngle() {
         return Rotation2d.fromRotations(inputs.canCoderPositionRot);
     }
 
-    /**
-     * Gets the current position of the drive motor in meters
-     * @return drive motor position, in meters
-     */
     public double getPositionMeters() {
         return inputs.drivePositionRot * SwerveConstants.wheelCircumference;
     }
 
-    /**
-     * Gets the current velocity of the drive motor in meters per second
-     * @return velocity, in meter per second
-     */
     public double getVelocityMetersPerSec() {
         return inputs.driveVelocityRotPerSec * SwerveConstants.wheelCircumference;
     }
 
-    /**
-     * Gets the current position of the swerve module
-     * @return the swerve module position
-     */
     public SwerveModulePosition getPosition() {
         return new SwerveModulePosition(getPositionMeters(), getAngle());
     }
 
-    /**
-     * Gets the current state of the swerve module
-     * @return the swerve module state
-     */
     public SwerveModuleState getState() {
         return new SwerveModuleState(getVelocityMetersPerSec(), getAngle());
     }
 
-    /**
-     * Gets the current desired state that the swerve module has been set to
-     * @return the desired state
-     */
     public SwerveModuleState getDesiredState() {
         return desiredState;
     }
 
-    /**
-     * Gets the raw value of the CANcoder, before the offset is applied. Used only for SmartDashboard
-     * @return CANcoder position, in degrees
-     */
     public double getRawCanCoder() {
         return inputs.rawCanCoderPositionDeg;
     }

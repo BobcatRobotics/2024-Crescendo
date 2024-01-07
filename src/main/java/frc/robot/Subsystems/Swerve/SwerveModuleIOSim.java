@@ -42,37 +42,23 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
         inputs.anglePercentOut = anglePercentOut;
     }
 
-    /**
-     * Sets the percent out of the drive motor
-     * @param percent percent to set it to, from -1.0 to 1.0
-     */
     public void setDrivePercentOut(double percent) {
         double volts = MathUtil.clamp(percent * 12, -12.0, 12.0);
         drivePercentOut = volts / 12;
         driveSim.setInputVoltage(volts);
     }
 
-    /**
-     * Stops the drive motor
-     */
     public void stopDrive() {
         driveSim.setInputVoltage(0);
         drivePercentOut = 0;
     }
 
-    /**
-     * Sets the percent out of the angle motor
-     * @param percent percent to set it to, from -1.0 to 1.0
-     */
     public void setAnglePercentOut(double percent) {
         double volts = MathUtil.clamp(percent * 12, -12.0, 12.0);
         anglePercentOut = volts / 12;
         angleSim.setInputVoltage(volts);
     }
 
-    /**
-     * Stops the angle motor
-     */
     public void stopAngle() {
         angleSim.setInputVoltage(0);
         anglePercentOut = 0;
