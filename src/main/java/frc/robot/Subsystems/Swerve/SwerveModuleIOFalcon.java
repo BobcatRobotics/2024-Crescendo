@@ -47,30 +47,55 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         inputs.rawCanCoderPositionDeg = Rotation2d.fromRotations(angleEncoder.getAbsolutePosition().getValueAsDouble()).getDegrees(); // Used only for shuffleboard to display values to get offsets
     }
 
+    /**
+     * Sets the percent out of the drive motor
+     * @param percent percent to set it to, from -1.0 to 1.0
+     */
     public void setDrivePercentOut(double percent) {
         driveMotor.setControl(driveRequest.withOutput(percent));
     }
 
+    /**
+     * Stops the drive motor
+     */
     public void stopDrive() {
         driveMotor.stopMotor();
     }
 
+    /**
+     * Sets the neutral mode of the drive motor
+     * @param mode mode to set it to
+     */
     public void setDriveNeutralMode(NeutralModeValue mode) {
         driveMotor.setNeutralMode(mode);
     }
 
+    /**
+     * Sets the percent out of the angle motor
+     * @param percent percent to set it to, from -1.0 to 1.0
+     */
     public void setAnglePercentOut(double percent) {
         angleMotor.setControl(angleRequest.withOutput(percent));
     }
 
+    /**
+     * Stops the angle motor
+     */
     public void stopAngle() {
         angleMotor.stopMotor();
     }
 
+    /**
+     * Sets the neutral mode of the angle motor
+     * @param mode mode to set it to
+     */
     public void setAngleNeutralMode(NeutralModeValue mode) {
         angleMotor.setNeutralMode(mode);
     }
 
+    /**
+     * Applies all configurations to the drive motor
+     */
     public void configDriveMotor() {
         TalonFXConfiguration config = new TalonFXConfiguration();
         driveMotor.getConfigurator().apply(new TalonFXConfiguration());
@@ -95,6 +120,9 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         driveMotor.getConfigurator().setPosition(0);
     }
 
+    /**
+     * Applies all configurations to the angle motor
+     */
     public void configAngleMotor() {
         TalonFXConfiguration config = new TalonFXConfiguration();
         angleMotor.getConfigurator().apply(new TalonFXConfiguration());
@@ -110,6 +138,10 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         angleMotor.getConfigurator().apply(config);
     }
 
+
+    /**
+     * Applies all configurations to the angle absolute encoder
+     */
     public void configAngleEncoder() {
         CANcoderConfiguration config = new CANcoderConfiguration();
         angleEncoder.getConfigurator().apply(new CANcoderConfiguration());

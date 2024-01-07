@@ -23,6 +23,10 @@ public class GyroIOPigeon2 implements GyroIO {
         inputs.rollPositionDeg = pigeon.getRoll().getValueAsDouble();
     }
 
+    /**
+     * Sets the current Gyro yaw
+     * @param yaw value to set yaw to, in degrees
+     */
     public void setYaw(double yaw) {
         pigeon.setYaw(yaw);
     }
