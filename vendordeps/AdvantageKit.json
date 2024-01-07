@@ -6,24 +6,24 @@
     "frcYear": "2024",
     "mavenUrls": [],
     "jsonUrl": "https://github.com/Mechanical-Advantage/AdvantageKit/releases/latest/download/AdvantageKit.json",
-    "javaDependencies": [        
+    "javaDependencies": [
         {
             "groupId": "org.littletonrobotics.akit.junction",
             "artifactId": "wpilib-shim",
             "version": "3.0.0-beta-6"
-        },        
+        },
         {
             "groupId": "org.littletonrobotics.akit.junction",
             "artifactId": "junction-core",
             "version": "3.0.0-beta-6"
-        },        
+        },
         {
             "groupId": "org.littletonrobotics.akit.conduit",
             "artifactId": "conduit-api",
             "version": "3.0.0-beta-6"
         }
     ],
-    "jniDependencies": [        
+    "jniDependencies": [
         {
             "groupId": "org.littletonrobotics.akit.conduit",
             "artifactId": "conduit-wpilibio",
