@@ -97,6 +97,10 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+    /**
+     * Gets the current yaw of the gyro or the estimated yaw if the gyro is disconnected
+     * @return current yaw of the gyro
+     */
     public Rotation2d getYaw() {
         if (gyroInputs.connected) { // Use gyro when connected
             return Rotation2d.fromDegrees(gyroInputs.yawPositionDeg);
@@ -105,14 +109,28 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+    /**
+     * Gets the current pitch of the gyro
+     * @return current pitch of the gyro
+     */
     public double getPitch() {
         return gyroInputs.pitchPositionDeg;
     }
 
+    /**
+     * Gets the current roll of the gyro
+     * @return current roll of the gyro
+     */
     public double getRoll() {
         return gyroInputs.rollPositionDeg;
     }
 
+    /**
+     * Makes the swerve drive move
+     * @param translation desired x and y speeds of the swerve drive in meters per second
+     * @param rotation desired rotation speed of the swerve drive in radians per second
+     * @param fieldRelative whether the values should be field relative or not
+     */
     public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
         ChassisSpeeds desiredSpeeds = fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
                 translation.getX(),
@@ -132,6 +150,10 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+    /**
+     * Make the swerve drive move
+     * @param targetSpeeds the desired chassis speeds
+     */
     public void drive(ChassisSpeeds targetSpeeds) {
         SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates(targetSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxSpeed);
@@ -141,6 +163,10 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+    /**
+     * Sets all of the modules to their desired states
+     * @param desiredStates array of states for the modules to be set to
+     */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveConstants.maxSpeed);
 
@@ -149,6 +175,10 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+    /**
+     * Gets all of the current module states
+     * @return array of the current module states
+     */
     public SwerveModuleState[] getModuleStates() {
         SwerveModuleState[] states = new SwerveModuleState[4];
         for (SwerveModule mod : modules) {
@@ -157,6 +187,10 @@ public class Swerve extends SubsystemBase {
         return states;
     }
 
+    /**
+     * Gets all of the current module positions
+     * @return array of the current module positions
+     */
     public SwerveModulePosition[] getModulePositions() {
         SwerveModulePosition[] positions = new SwerveModulePosition[4];
         for (SwerveModule mod : modules) {
@@ -165,28 +199,49 @@ public class Swerve extends SubsystemBase {
         return positions;
     }
 
+    /**
+     * Gets ths current chassis speeds
+     * @return current chassis speeds
+     */
     public ChassisSpeeds getChassisSpeeds() {
         return SwerveConstants.swerveKinematics.toChassisSpeeds(getModuleStates());
     }
 
+    /**
+     * Gets the current pose, according to our odometry
+     * @return current pose in meters
+     */
     public Pose2d getPose() {
         return odometry.getPoseMeters();
     }
 
+    /**
+     * Resets our odometry to desired pose
+     * @param pose pose to set odometry to
+     */
     public void resetOdemetry(Pose2d pose) {
         odometry.resetPosition(getYaw(), getModulePositions(), pose);
     }
 
+    /**
+     * Sets the current gyro yaw to 0 degrees
+     */
     public void zeroGyro() {
         gyroIO.setYaw(0);
         lastYaw = Rotation2d.fromDegrees(0);
     }
 
+    /**
+     * Sets the current gyro yaw to 180 degrees
+     */
     public void reverseZeroGyro() {
         gyroIO.setYaw(180);
         lastYaw = Rotation2d.fromDegrees(180);
     }
 
+    /**
+     * Sets the modules to an X shape to make the robot harder to push
+     */
     public void configToX() {
         modules[0].setDesiredState(new SwerveModuleState(1, new Rotation2d(Math.toRadians(45))));
         modules[1].setDesiredState(new SwerveModuleState(1, new Rotation2d(Math.toRadians(315))));
@@ -194,6 +249,9 @@ public class Swerve extends SubsystemBase {
         modules[3].setDesiredState(new SwerveModuleState(1, new Rotation2d(Math.toRadians(45))));
     }
 
+    /**
+     * Stops the swerve drive
+     */
     public void stop() {
         drive(new ChassisSpeeds());
     }
