@@ -33,6 +33,8 @@ public class SwerveModule {
         this.io = io;
         this.index = index;
 
+        angleController.enableContinuousInput(0, 2 * Math.PI);
+
         lastAngle = getState().angle;
     }
 

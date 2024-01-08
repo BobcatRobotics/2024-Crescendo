@@ -80,12 +80,12 @@ public class Swerve extends SubsystemBase {
         for (SwerveModule mod : modules) {
             SmartDashboard.putNumber("Mod " + mod.index + " Angle", mod.getRawCanCoder());
             desiredSwerveModuleStates[mod.index * 2 + 1] = mod.getDesiredState().speedMetersPerSecond;
-            desiredSwerveModuleStates[mod.index * 2] = mod.getDesiredState().angle.getRadians();
+            desiredSwerveModuleStates[mod.index * 2] = mod.getDesiredState().angle.getDegrees();
             swerveModuleStates[mod.index * 2 + 1] = mod.getState().speedMetersPerSecond;
-            swerveModuleStates[mod.index * 2] = mod.getState().angle.getRadians();
+            swerveModuleStates[mod.index * 2] = mod.getState().angle.getDegrees();
         }
 
-        Logger.recordOutput("Swerve/Rotation", odometry.getPoseMeters().getRotation().getRadians());
+        Logger.recordOutput("Swerve/Rotation", odometry.getPoseMeters().getRotation().getDegrees());
         Logger.recordOutput("Swerve/DesiredModuleStates", desiredSwerveModuleStates);
         Logger.recordOutput("Swerve/ModuleStates", swerveModuleStates);
         Logger.recordOutput("Swerve/Pose", getPose());
