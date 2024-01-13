@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 2,
-      "y": 2
+      "x": 1.2153924307848636,
+      "y": 4.834801977296262
     },
-    "rotation": 0
+    "rotation": 139.00780454236175
   },
   "command": {
     "type": "sequential",
@@ -14,11 +14,12 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Example Path"
+            "pathName": "Outta the way"
           }
         }
       ]
     }
   },
-  "folder": null
+  "folder": null,
+  "choreoAuto": false
 }

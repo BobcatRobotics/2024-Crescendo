@@ -25,9 +25,10 @@ import frc.robot.Subsystems.Swerve.SwerveModuleIOSim;
 
 public class RobotContainer {
   /* Joysticks + Gamepad */
-  private final CommandJoystick rotate = new CommandJoystick(0);
-  private final CommandJoystick strafe = new CommandJoystick(1);
+  private final CommandJoystick rotate = new CommandJoystick(1);
+  private final CommandJoystick strafe = new CommandJoystick(0);
   private final CommandJoystick gp = new CommandJoystick(2);
+
 
   /* Subsystems */
   public final Swerve m_swerve;
@@ -79,7 +80,7 @@ public class RobotContainer {
      * Please give descriptive names
     */
     autoChooser.addDefaultOption("Do Nothing", Commands.none());
-    autoChooser.addOption("Auto 1", new PathPlannerAuto("Auto 1"));
+    autoChooser.addOption("straight line", new PathPlannerAuto("Auto 1"));
 
     /* Auto Events
      * 
@@ -103,31 +104,36 @@ public class RobotContainer {
    */
   private void configureBindings() {
     /* Drive with joysticks */
-    // m_swerve.setDefaultCommand(
-    //     new TeleopSwerve(
-    //         m_swerve,
-    //         () -> -strafe.getRawAxis(Joystick.AxisType.kY.value)
-    //             * Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value)),
-    //         () -> -strafe.getRawAxis(Joystick.AxisType.kX.value)
-    //             * Math.abs(strafe.getRawAxis(Joystick.AxisType.kX.value)),
-    //         () -> -rotate.getRawAxis(Joystick.AxisType.kX.value),
-    //         () -> false,
-    //         () -> -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
-    //         () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2 // Fine tune
-    //     ));
-    /* Drive with gamepad */
     m_swerve.setDefaultCommand(
         new TeleopSwerve(
             m_swerve,
-            () -> -gp.getRawAxis(Joystick.AxisType.kY.value)
-                * Math.abs(gp.getRawAxis(Joystick.AxisType.kY.value)),
-            () -> -gp.getRawAxis(Joystick.AxisType.kX.value)
-                * Math.abs(gp.getRawAxis(Joystick.AxisType.kX.value)),
-            () -> -gp.getRawAxis(Joystick.AxisType.kZ.value),
+            () -> -strafe.getRawAxis(Joystick.AxisType.kY.value)
+                * Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value)),
+            () -> -strafe.getRawAxis(Joystick.AxisType.kX.value)
+                * Math.abs(strafe.getRawAxis(Joystick.AxisType.kX.value)),
+            () -> -rotate.getRawAxis(Joystick.AxisType.kX.value),
             () -> false,
-            () -> 0.0,
-            () -> 0.0
+            () -> -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
+            () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2 // Fine tune
         ));
+      rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
+
+      rotate.button(1).onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
+    /* Drive with gamepad */
+    // m_swerve.setDefaultCommand(
+    //     new TeleopSwerve(
+    //         m_swerve,
+    //         () -> -gp.getRawAxis(Joystick.AxisType.kY.value)
+    //             * Math.abs(gp.getRawAxis(Joystick.AxisType.kY.value)),
+    //         () -> -gp.getRawAxis(Joystick.AxisType.kX.value)
+    //             * Math.abs(gp.getRawAxis(Joystick.AxisType.kX.value)),
+    //         () -> -gp.getRawAxis(Joystick.AxisType.kZ.value),
+    //         () -> false,
+    //         () -> 0.0,
+    //         () -> 0.0
+    //     ));
+
+        
   }
 
   public Command getAutonomousCommand() {

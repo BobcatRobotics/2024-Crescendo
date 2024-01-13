@@ -45,7 +45,7 @@ public class Swerve extends SubsystemBase {
 
         AutoBuilder.configureHolonomic(
                 this::getPose,
-                this::resetOdemetry,
+                this::resetOdometry,
                 this::getChassisSpeeds,
                 this::drive,
                 new HolonomicPathFollowerConfig(
@@ -70,7 +70,7 @@ public class Swerve extends SubsystemBase {
                 this);
     }
 
-    public void periodic() {
+    public void periodic(){
         gyroIO.updateInputs(gyroInputs);
 
         Logger.processInputs("Swerve/Gyro", gyroInputs);
@@ -100,7 +100,6 @@ public class Swerve extends SubsystemBase {
         Logger.recordOutput("Swerve/DesiredModuleStates", desiredSwerveModuleStates);
         Logger.recordOutput("Swerve/ModuleStates", swerveModuleStates);
         Logger.recordOutput("Swerve/Pose", getPose());
-
         if (DriverStation.isDisabled()) {
             for (SwerveModule mod : modules) {
                 mod.stop();
@@ -120,6 +119,8 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+
+
     /**
      * Gets the current pitch of the gyro
      * @return current pitch of the gyro
@@ -127,7 +128,8 @@ public class Swerve extends SubsystemBase {
     public double getPitch() {
         return gyroInputs.pitchPositionDeg;
     }
-
+    
+    
     /**
      * Gets the current roll of the gyro
      * @return current roll of the gyro
@@ -165,7 +167,8 @@ public class Swerve extends SubsystemBase {
      * Make the swerve drive move
      * @param targetSpeeds the desired chassis speeds
      */
-    public void drive(ChassisSpeeds targetSpeeds) {
+    public void drive(ChassisSpeeds targetSpeeds) { //debug note: chassis speeds are being set correctly
+       Logger.recordOutput("Swerve/ChassisSpeeds", targetSpeeds); 
         SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates(targetSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxSpeed);
 
@@ -230,7 +233,7 @@ public class Swerve extends SubsystemBase {
      * Resets our odometry to desired pose
      * @param pose pose to set odometry to
      */
-    public void resetOdemetry(Pose2d pose) {
+    public void resetOdometry(Pose2d pose) {
         odometry.resetPosition(getYaw(), getModulePositions(), pose);
     }
 

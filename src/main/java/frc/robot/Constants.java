@@ -33,27 +33,27 @@ public class Constants {
 
         public static final int pigeonID = 1;
 
-        public static final double maxSpeed = 4.5;
-        public static final double maxAngularVelocity = Math.PI;
+        public static final double maxSpeed = 4.5; 
+        public static final double maxAngularVelocity = Math.PI/2;
 
         public static final double stickDeadband = 0.05;
 
-        public static final boolean useFOC = false;
+        public static final boolean useFOC = true;
 
         /* Drivetrain Constants */
         public static final double trackWidth = 0.521; // 20.5 in -> meters
         public static final double wheelBase = 0.521; // meters
-        public static final double driveBaseRadius = Math.sqrt(2 * Math.pow(wheelBase, 2));
-        public static final double wheelCircumference = Units.inchesToMeters(4.0);
+        public static final double driveBaseRadius = Math.sqrt(2 * Math.pow(wheelBase/2, 2));
+        public static final double wheelCircumference = Units.inchesToMeters(4.0)*Math.PI;
         public static final double angleGearRatio = ((150.0 / 7.0) / 1.0);
-        public static final double driveGearRatio = (6.12 / 1.0);
+        public static final double driveGearRatio =  (6.12 / 1.0);
 
         /* Auto Constants */
-        public static final double translationKP = 1;
+        public static final double translationKP = 6;
         public static final double translationKI = 0.0;
         public static final double translationKD = 0.0;
 
-        public static final double rotationKP = 2;
+        public static final double rotationKP = 10;
         public static final double rotationKI = 0.0;
         public static final double rotationKD = 0.0;
 
