@@ -4,6 +4,7 @@ import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -34,7 +35,9 @@ public class Constants {
         public static final int pigeonID = 1;
 
         public static final double maxSpeed = 4.5; 
-        public static final double maxAngularVelocity = Math.PI/2;
+        public static final double maxAccel = 3; 
+        public static final double maxAngularVelocity = Math.PI;
+        public static final double maxAngularAcceleration = Math.PI/2;
 
         public static final double stickDeadband = 0.05;
 
@@ -49,13 +52,15 @@ public class Constants {
         public static final double driveGearRatio =  (6.12 / 1.0);
 
         /* Auto Constants */
-        public static final double translationKP = 6;
+        public static final double translationKP = 4;
         public static final double translationKI = 0.0;
         public static final double translationKD = 0.0;
 
         public static final double rotationKP = 10;
         public static final double rotationKI = 0.0;
         public static final double rotationKD = 0.0;
+
+
 
         /* Swerve Kinematics */
         public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(

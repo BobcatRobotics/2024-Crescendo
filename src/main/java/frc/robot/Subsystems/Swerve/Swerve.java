@@ -1,8 +1,10 @@
 package frc.robot.Subsystems.Swerve;
 
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -17,6 +19,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
@@ -30,6 +33,9 @@ public class Swerve extends SubsystemBase {
     private final double[] swerveModuleStates = new double[8];
     private final double[] desiredSwerveModuleStates = new double[8];
 
+    private final LoggedDashboardNumber driveToPoseX = new LoggedDashboardNumber("desired x");
+    private final LoggedDashboardNumber driveToPoseY = new LoggedDashboardNumber("desired y");    
+    Pose2d desiredPose = new Pose2d();
     private Rotation2d lastYaw = new Rotation2d();
 
     public Swerve(GyroIO gyroIO, SwerveModuleIO flIO, SwerveModuleIO frIO, SwerveModuleIO blIO, SwerveModuleIO brIO) {
@@ -95,7 +101,8 @@ public class Swerve extends SubsystemBase {
             swerveModuleStates[mod.index * 2 + 1] = mod.getState().speedMetersPerSecond;
             swerveModuleStates[mod.index * 2] = mod.getState().angle.getDegrees();
         }
-
+        
+        
         Logger.recordOutput("Swerve/Rotation", odometry.getPoseMeters().getRotation().getDegrees());
         Logger.recordOutput("Swerve/DesiredModuleStates", desiredSwerveModuleStates);
         Logger.recordOutput("Swerve/ModuleStates", swerveModuleStates);
@@ -105,6 +112,15 @@ public class Swerve extends SubsystemBase {
                 mod.stop();
             }
         }
+        desiredPose = new Pose2d(driveToPoseX.get(), driveToPoseY.get(), new Rotation2d());
+        Logger.recordOutput("Swerve/DesiredPose", desiredPose);
+    
+    }
+
+
+    public Pose2d getPathfindingPose(){
+        
+        return desiredPose;
     }
 
     /**
@@ -269,4 +285,10 @@ public class Swerve extends SubsystemBase {
     public void stop() {
         drive(new ChassisSpeeds());
     }
+
+    public Command driveToPose(Pose2d pose){
+        
+        return AutoBuilder.pathfindToPose(pose, new PathConstraints(Constants.SwerveConstants.maxSpeed, Constants.SwerveConstants.maxAccel, Constants.SwerveConstants.maxAngularVelocity, Constants.SwerveConstants.maxAngularAcceleration));
+    }
+
 }
