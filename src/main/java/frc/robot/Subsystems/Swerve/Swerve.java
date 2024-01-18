@@ -171,6 +171,8 @@ public class Swerve extends SubsystemBase {
                         translation.getY(),
                         rotation);
 
+        desiredSpeeds = ChassisSpeeds.discretize(desiredSpeeds, Constants.loopPeriodSecs);
+
         SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates(desiredSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxSpeed);
 
@@ -183,8 +185,9 @@ public class Swerve extends SubsystemBase {
      * Make the swerve drive move
      * @param targetSpeeds the desired chassis speeds
      */
-    public void drive(ChassisSpeeds targetSpeeds) { //debug note: chassis speeds are being set correctly
-       Logger.recordOutput("Swerve/ChassisSpeeds", targetSpeeds); 
+    public void drive(ChassisSpeeds targetSpeeds) {
+        targetSpeeds = ChassisSpeeds.discretize(targetSpeeds, Constants.loopPeriodSecs);
+        
         SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates(targetSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxSpeed);
 
