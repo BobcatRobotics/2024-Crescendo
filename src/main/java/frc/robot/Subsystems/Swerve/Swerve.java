@@ -1,10 +1,15 @@
 package frc.robot.Subsystems.Swerve;
 
+import java.util.Optional;
+
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -37,6 +42,7 @@ public class Swerve extends SubsystemBase {
     private final LoggedDashboardNumber driveToPoseY = new LoggedDashboardNumber("desired y");    
     Pose2d desiredPose = new Pose2d();
     private Rotation2d lastYaw = new Rotation2d();
+    
 
     public Swerve(GyroIO gyroIO, SwerveModuleIO flIO, SwerveModuleIO frIO, SwerveModuleIO blIO, SwerveModuleIO brIO) {
         this.gyroIO = gyroIO;
@@ -74,7 +80,20 @@ public class Swerve extends SubsystemBase {
                     return false;
                 },
                 this);
+                PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
     }
+    public Optional<Rotation2d> getRotationTargetOverride(){
+        if(getRotationTarget() != null){
+            return Optional.of(getRotationTarget());
+        }else{
+            return Optional.empty();
+        }
+    }
+
+    public Rotation2d getRotationTarget(){
+        return null; //TODO: the rotation2d this returns will override the one in pathplanner, if null, the default pathplanner rotation will be used
+    }
+    
 
     public void periodic(){
         gyroIO.updateInputs(gyroInputs);
@@ -182,6 +201,7 @@ public class Swerve extends SubsystemBase {
     }
 
     /**
+     * 
      * Make the swerve drive move
      * @param targetSpeeds the desired chassis speeds
      */

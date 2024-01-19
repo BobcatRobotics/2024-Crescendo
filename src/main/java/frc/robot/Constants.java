@@ -34,7 +34,7 @@ public class Constants {
 
         public static final int pigeonID = 1;
 
-        public static final double maxSpeed = 4.5; 
+        public static final double maxSpeed = 4.5; // max MODULE speed, NOT max chassis speed
         public static final double maxAccel = 3; 
         public static final double maxAngularVelocity = Math.PI;
         public static final double maxAngularAcceleration = Math.PI/2;
@@ -52,11 +52,11 @@ public class Constants {
         public static final double driveGearRatio =  (6.12 / 1.0);
 
         /* Auto Constants */
-        public static final double translationKP = 4;
+        public static final double translationKP = 20;
         public static final double translationKI = 0.0;
         public static final double translationKD = 0.0;
 
-        public static final double rotationKP = 10;
+        public static final double rotationKP = 100;
         public static final double rotationKI = 0.0;
         public static final double rotationKD = 0.0;
 
@@ -149,5 +149,15 @@ public class Constants {
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
+    }
+    public static final class FieldConstants{
+        //1 is closest to AMP, 5 is closest to SOURCE
+        public static final Translation2d centerlineNote1 = new Translation2d(0,0);
+        public static final Translation2d centerlineNote2 = new Translation2d(0,0);
+        public static final Translation2d centerlineNote3 = new Translation2d(0,0);
+        public static final Translation2d centerlineNote4 = new Translation2d(0,0);
+        public static final Translation2d centerlineNote5 = new Translation2d(0,0);
+
+
     }
 }
