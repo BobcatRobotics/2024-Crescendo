@@ -5,42 +5,39 @@
 package frc.robot.Subsystems.Vision;
 
 import org.littletonrobotics.junction.AutoLog;
-import org.littletonrobotics.junction.LogTable;
-import org.littletonrobotics.junction.inputs.LoggableInputs;
+
+
+import edu.wpi.first.networktables.NetworkTable;
+
+import frc.robot.LimelightHelpers;
 
 /** Vision subsystem hardware interface. */
 public interface VisionIO {
   /** The set of loggable inputs for the vision subsystem. */
   
   @AutoLog
-  public static class VisionIOInputs implements LoggableInputs{  
-    public double captureTimestamp = 0.0;
-    public double[] cornerX = new double[] {};
-    public double[] cornerY = new double[] {};
-    public boolean simpleValid = false;
-    public double simpleAngle = 0.0;
-  
-
-    public void toLog(LogTable table) {
-      table.put("CaptureTimestamp", captureTimestamp);
-      table.put("CornerX", cornerX);
-      table.put("CornerY", cornerY);
-      table.put("SimpleValid", simpleValid);
-      table.put("SimpleAngle", simpleAngle);
+  public static class VisionIOInputs{  
+      LimelightHelpers.LimelightResults limeResults = LimelightHelpers.getLatestResults("");
+      NetworkTable limeTable = LimelightHelpers.getLimelightNTTable("");
+      LEDMode ledMode = LEDMode.FORCEOFF;
+      double pipelineID = 0;
+      double pipelineLatency = 0;
+      double ta = LimelightHelpers.getTA(null);
+      boolean tv = LimelightHelpers.getTV(null);
+      double tx = LimelightHelpers.getTX(null);
+      double ty = LimelightHelpers.getTY(null);
+      double fiducialID = LimelightHelpers.getFiducialID(null);
+      
     }
-
-    public void fromLog(LogTable table) {
-      captureTimestamp = table.get("CaptureTimestamp", captureTimestamp);
-      cornerX = table.get("CornerX", cornerX);
-      cornerY = table.get("CornerY", cornerY);
-      simpleValid = table.get("SimpleValid", simpleValid);
-      simpleAngle = table.get("SimpleAngle", simpleAngle);
-    }
-  }
       /** Updates the set of loggable inputs. */
     public default void updateInputs(VisionIOInputs inputs) {}
 
       /** Sets the pipeline number. */
-    public default void setPipeline(int pipeline) {}
+    public default void setLEDS(LEDMode mode) {}
+
+    public default void setPipeline(int index){}
+
+
+    
   
 }

@@ -165,6 +165,7 @@ public class Constants {
         public static final double verticalFOV = 49.7; //degrees obviously
         public static final double horizontalFOV = 63.3;
         public static final double limelightMountHeight = 0;//TODO: find this
+        public static final int detectorPiplineIndex = 9; //TODO find this
 
     }
 }

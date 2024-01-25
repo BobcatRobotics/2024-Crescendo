@@ -4,52 +4,60 @@
 
 package frc.robot.Subsystems.Vision;
 
-import java.util.ArrayList;
-import java.util.List;
 
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.LimelightHelpers;
 
 public class VisionIOLimelight implements VisionIO{
   /** Creates a new VisionIOLimelight. */
-  public double captureTimestamp = 0.0;
-  public double[] cornerX = new double[] {};
-  public double[] cornerY = new double[] {};
-  public boolean simpleValid = false;
-  public double simpleAngle = 0.0;
-  
-  private final NetworkTableEntry ledEntry = NetworkTableInstance.getDefault()
-    .getTable("limelight").getEntry("ledMode");
-  private final NetworkTableEntry pipelineEntry = NetworkTableInstance
-      .getDefault().getTable("limelight").getEntry("pipeline");
-  private final NetworkTableEntry validEntry =
-      NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv");
-  private final NetworkTableEntry latencyEntry =
-      NetworkTableInstance.getDefault().getTable("limelight").getEntry("tl");
-  private final NetworkTableEntry dataEntry = NetworkTableInstance.getDefault()
-      .getTable("limelight").getEntry("tcornxy");
-  private final NetworkTableEntry simpleAngleEntry =
-      NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx");
+  LEDMode currentLedMode = LEDMode.FORCEOFF;
 
   public VisionIOLimelight() {
-      
+
   }
 
   @Override
-  public synchronized void updateInputs(VisionIOInputs inputs) {
-    inputs.captureTimestamp = captureTimestamp;
-    inputs.cornerX = cornerX;
-    inputs.cornerY = cornerY;
-    inputs.simpleValid = simpleValid;
-    inputs.simpleAngle = simpleAngle;
+  public void updateInputs(VisionIOInputs inputs) {
+    inputs.limeResults = LimelightHelpers.getLatestResults(null);
+    inputs.limeTable = LimelightHelpers.getLimelightNTTable(null);
+    inputs.ledMode = currentLedMode;
+    inputs.pipelineID = LimelightHelpers.getCurrentPipelineIndex(null);
+    inputs.pipelineLatency = LimelightHelpers.getLatency_Pipeline(null);
+    inputs.ta = LimelightHelpers.getTA(null);
+    inputs.tv = LimelightHelpers.getTV(null);
+    inputs.tx = LimelightHelpers.getTX(null);
+    inputs.ty = LimelightHelpers.getTY(null);
+    inputs.fiducialID = LimelightHelpers.getFiducialID(null);
+  
   }
 
 
 
   @Override
-  public void setPipeline(int pipeline) {
-    ledEntry.setInteger(pipeline);
+  public void setLEDS(LEDMode mode) {
+    switch (mode) {
+      case FORCEBLINK:
+        LimelightHelpers.setLEDMode_ForceBlink(null);
+        currentLedMode = LEDMode.FORCEBLINK;
+        break;
+      case FORCEOFF:
+        LimelightHelpers.setLEDMode_ForceOff(null);
+        currentLedMode = LEDMode.FORCEOFF;
+      case FORCEON:
+        LimelightHelpers.setLEDMode_ForceOn(null);
+        currentLedMode = LEDMode.FORCEON;
+      case PIPELINECONTROL:
+        LimelightHelpers.setLEDMode_PipelineControl(null);
+        currentLedMode = LEDMode.PIPELINECONTROL;
+      default:
+        LimelightHelpers.setLEDMode_ForceOff(null);
+        currentLedMode = LEDMode.FORCEOFF;
+        break;
+    }
+  }
+
+  @Override
+  public void setPipeline(int index){    
+    LimelightHelpers.setPipelineIndex(null, index);
   }
 
   

@@ -4,8 +4,9 @@
 
 package frc.robot.Subsystems.Vision;
 
+import org.littletonrobotics.junction.AutoLogOutput;
+
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -16,14 +17,14 @@ public class Vision extends SubsystemBase{
   public Vision(VisionIO io) {
     this.io = io;
     this.inputs = new VisionIOInputsAutoLogged();
-
     
+    io.setLEDS(LEDMode.FORCEOFF);
+    io.setPipeline(Constants.LimelightConstants.detectorPiplineIndex);
   }
 
   @Override
   public void periodic(){
-  SmartDashboard.putNumberArray("cornerx", inputs.cornerX);
-  SmartDashboard.putNumberArray("cornerx", inputs.cornerY);
+    io.updateInputs(inputs);
   }
 
 
@@ -32,11 +33,14 @@ public class Vision extends SubsystemBase{
    * @param widthPercent [0,1], percentage of the vertical width of the image that the note is taking up
    * @return distance in meters
    */
-  public double distanceFromCameraPercentage(double widthPercent){
+  @AutoLogOutput
+    public double distanceFromCameraPercentage(double widthPercent){
     double horizontalLength = Constants.FieldConstants.noteDiameter / widthPercent;
     double cornerFOVAngle = Units.degreesToRadians(90 - (Constants.LimelightConstants.horizontalFOV/2));
     double hypotDist = (horizontalLength/2)*Math.tan(cornerFOVAngle); //distance from note to camera
     double intakeDist = Math.sqrt((hypotDist*hypotDist) - (Constants.LimelightConstants.limelightMountHeight*Constants.LimelightConstants.limelightMountHeight)); //distance to intake
     return intakeDist;
   }
+
+ 
 }
