@@ -4,16 +4,22 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import frc.robot.Commands.DriveToPose;
 import frc.robot.Commands.TeleopSwerve;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Subsystems.Swerve.GyroIO;
@@ -25,9 +31,10 @@ import frc.robot.Subsystems.Swerve.SwerveModuleIOSim;
 
 public class RobotContainer {
   /* Joysticks + Gamepad */
-  private final CommandJoystick rotate = new CommandJoystick(0);
-  private final CommandJoystick strafe = new CommandJoystick(1);
+  private final CommandJoystick rotate = new CommandJoystick(1);
+  private final CommandJoystick strafe = new CommandJoystick(0);
   private final CommandJoystick gp = new CommandJoystick(2);
+  
 
   /* Subsystems */
   public final Swerve m_swerve;
@@ -79,7 +86,7 @@ public class RobotContainer {
      * Please give descriptive names
     */
     autoChooser.addDefaultOption("Do Nothing", Commands.none());
-    autoChooser.addOption("Auto 1", new PathPlannerAuto("Auto 1"));
+    autoChooser.addOption("outta the way", new PathPlannerAuto("Auto 1"));
 
     /* Auto Events
      * 
@@ -89,45 +96,55 @@ public class RobotContainer {
     NamedCommands.registerCommand("Auto Event", new InstantCommand());
 
     configureBindings();
+
   }
 
   /*
    * IMPORTANT NOTE:
    * When a gamepad value is needed by a command, don't
    * pass the gamepad to the command, instead have the
-   * constructor for the command take an arguement that
-   * is a suppluer of the value that is needed. To supply
+   * constructor for the command take an argument that
+   * is a supplier of the value that is needed. To supply
    * the values, use an anonymous function like this:
    * 
    * () -> buttonOrAxisValue
    */
   private void configureBindings() {
     /* Drive with joysticks */
-    // m_swerve.setDefaultCommand(
-    //     new TeleopSwerve(
-    //         m_swerve,
-    //         () -> -strafe.getRawAxis(Joystick.AxisType.kY.value)
-    //             * Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value)),
-    //         () -> -strafe.getRawAxis(Joystick.AxisType.kX.value)
-    //             * Math.abs(strafe.getRawAxis(Joystick.AxisType.kX.value)),
-    //         () -> -rotate.getRawAxis(Joystick.AxisType.kX.value),
-    //         () -> false,
-    //         () -> -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
-    //         () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2 // Fine tune
-    //     ));
-    /* Drive with gamepad */
     m_swerve.setDefaultCommand(
         new TeleopSwerve(
             m_swerve,
-            () -> -gp.getRawAxis(Joystick.AxisType.kY.value)
-                * Math.abs(gp.getRawAxis(Joystick.AxisType.kY.value)),
-            () -> -gp.getRawAxis(Joystick.AxisType.kX.value)
-                * Math.abs(gp.getRawAxis(Joystick.AxisType.kX.value)),
-            () -> -gp.getRawAxis(Joystick.AxisType.kZ.value),
+            () -> -strafe.getRawAxis(Joystick.AxisType.kY.value)
+                * Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value)),
+            () -> -strafe.getRawAxis(Joystick.AxisType.kX.value)
+                * Math.abs(strafe.getRawAxis(Joystick.AxisType.kX.value)),
+            () -> -rotate.getRawAxis(Joystick.AxisType.kX.value),
             () -> false,
-            () -> 0.0,
-            () -> 0.0
+            () -> -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
+            () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2 // Fine tune
         ));
+      rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
+
+      rotate.button(1).onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
+
+      strafe.button(1).onTrue(new DriveToPose(m_swerve));
+      
+
+    /* Drive with gamepad */
+    // m_swerve.setDefaultCommand(
+    //     new TeleopSwerve(
+    //         m_swerve,
+    //         () -> -gp.getRawAxis(Joystick.AxisType.kY.value)
+    //             * Math.abs(gp.getRawAxis(Joystick.AxisType.kY.value)),
+    //         () -> -gp.getRawAxis(Joystick.AxisType.kX.value)
+    //             * Math.abs(gp.getRawAxis(Joystick.AxisType.kX.value)),
+    //         () -> -gp.getRawAxis(Joystick.AxisType.kZ.value),
+    //         () -> false,
+    //         () -> 0.0,
+    //         () -> 0.0
+    //     ));
+
+        
   }
 
   public Command getAutonomousCommand() {

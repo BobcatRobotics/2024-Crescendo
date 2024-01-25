@@ -18,6 +18,7 @@ public class GyroIOPigeon2 implements GyroIO {
     }
 
     public void updateInputs(GyroIOInputs inputs) {
+        inputs.connected = true;
         inputs.yawPositionDeg = pigeon.getYaw().getValueAsDouble();
         inputs.pitchPositionDeg = pigeon.getPitch().getValueAsDouble();
         inputs.rollPositionDeg = pigeon.getRoll().getValueAsDouble();

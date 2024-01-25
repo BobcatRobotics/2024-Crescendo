@@ -1,8 +1,15 @@
 package frc.robot.Subsystems.Swerve;
 
+import java.util.Optional;
+
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -17,6 +24,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
@@ -30,7 +38,11 @@ public class Swerve extends SubsystemBase {
     private final double[] swerveModuleStates = new double[8];
     private final double[] desiredSwerveModuleStates = new double[8];
 
+    private final LoggedDashboardNumber driveToPoseX = new LoggedDashboardNumber("desired x");
+    private final LoggedDashboardNumber driveToPoseY = new LoggedDashboardNumber("desired y");    
+    Pose2d desiredPose = new Pose2d();
     private Rotation2d lastYaw = new Rotation2d();
+    
 
     public Swerve(GyroIO gyroIO, SwerveModuleIO flIO, SwerveModuleIO frIO, SwerveModuleIO blIO, SwerveModuleIO brIO) {
         this.gyroIO = gyroIO;
@@ -45,7 +57,7 @@ public class Swerve extends SubsystemBase {
 
         AutoBuilder.configureHolonomic(
                 this::getPose,
-                this::resetOdemetry,
+                this::resetOdometry,
                 this::getChassisSpeeds,
                 this::drive,
                 new HolonomicPathFollowerConfig(
@@ -68,9 +80,22 @@ public class Swerve extends SubsystemBase {
                     return false;
                 },
                 this);
+                PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
+    }
+    public Optional<Rotation2d> getRotationTargetOverride(){
+        if(getRotationTarget() != null){
+            return Optional.of(getRotationTarget());
+        }else{
+            return Optional.empty();
+        }
     }
 
-    public void periodic() {
+    public Rotation2d getRotationTarget(){
+        return null; //TODO: the rotation2d this returns will override the one in pathplanner, if null, the default pathplanner rotation will be used
+    }
+    
+
+    public void periodic(){
         gyroIO.updateInputs(gyroInputs);
 
         Logger.processInputs("Swerve/Gyro", gyroInputs);
@@ -95,17 +120,26 @@ public class Swerve extends SubsystemBase {
             swerveModuleStates[mod.index * 2 + 1] = mod.getState().speedMetersPerSecond;
             swerveModuleStates[mod.index * 2] = mod.getState().angle.getDegrees();
         }
-
+        
+        
         Logger.recordOutput("Swerve/Rotation", odometry.getPoseMeters().getRotation().getDegrees());
         Logger.recordOutput("Swerve/DesiredModuleStates", desiredSwerveModuleStates);
         Logger.recordOutput("Swerve/ModuleStates", swerveModuleStates);
         Logger.recordOutput("Swerve/Pose", getPose());
-
         if (DriverStation.isDisabled()) {
             for (SwerveModule mod : modules) {
                 mod.stop();
             }
         }
+        desiredPose = new Pose2d(driveToPoseX.get(), driveToPoseY.get(), new Rotation2d());
+        Logger.recordOutput("Swerve/DesiredPose", desiredPose);
+    
+    }
+
+
+    public Pose2d getPathfindingPose(){
+        
+        return desiredPose;
     }
 
     /**
@@ -120,6 +154,8 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+
+
     /**
      * Gets the current pitch of the gyro
      * @return current pitch of the gyro
@@ -127,7 +163,8 @@ public class Swerve extends SubsystemBase {
     public double getPitch() {
         return gyroInputs.pitchPositionDeg;
     }
-
+    
+    
     /**
      * Gets the current roll of the gyro
      * @return current roll of the gyro
@@ -153,6 +190,8 @@ public class Swerve extends SubsystemBase {
                         translation.getY(),
                         rotation);
 
+        desiredSpeeds = ChassisSpeeds.discretize(desiredSpeeds, Constants.loopPeriodSecs);
+
         SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates(desiredSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxSpeed);
 
@@ -162,10 +201,13 @@ public class Swerve extends SubsystemBase {
     }
 
     /**
+     * 
      * Make the swerve drive move
      * @param targetSpeeds the desired chassis speeds
      */
     public void drive(ChassisSpeeds targetSpeeds) {
+        targetSpeeds = ChassisSpeeds.discretize(targetSpeeds, Constants.loopPeriodSecs);
+        
         SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates(targetSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxSpeed);
 
@@ -230,7 +272,7 @@ public class Swerve extends SubsystemBase {
      * Resets our odometry to desired pose
      * @param pose pose to set odometry to
      */
-    public void resetOdemetry(Pose2d pose) {
+    public void resetOdometry(Pose2d pose) {
         odometry.resetPosition(getYaw(), getModulePositions(), pose);
     }
 
@@ -266,4 +308,10 @@ public class Swerve extends SubsystemBase {
     public void stop() {
         drive(new ChassisSpeeds());
     }
+
+    public Command driveToPose(Pose2d pose){
+        
+        return AutoBuilder.pathfindToPose(pose, new PathConstraints(Constants.SwerveConstants.maxSpeed, Constants.SwerveConstants.maxAccel, Constants.SwerveConstants.maxAngularVelocity, Constants.SwerveConstants.maxAngularAcceleration));
+    }
+
 }

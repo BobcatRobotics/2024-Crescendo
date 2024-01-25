@@ -4,6 +4,7 @@ import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -33,29 +34,33 @@ public class Constants {
 
         public static final int pigeonID = 1;
 
-        public static final double maxSpeed = 4.5;
+        public static final double maxSpeed = 4.5; // max MODULE speed, NOT max chassis speed
+        public static final double maxAccel = 3; 
         public static final double maxAngularVelocity = Math.PI;
+        public static final double maxAngularAcceleration = Math.PI/2;
 
         public static final double stickDeadband = 0.05;
 
-        public static final boolean useFOC = false;
+        public static final boolean useFOC = true;
 
         /* Drivetrain Constants */
         public static final double trackWidth = 0.521; // 20.5 in -> meters
         public static final double wheelBase = 0.521; // meters
-        public static final double driveBaseRadius = Math.sqrt(2 * Math.pow(wheelBase, 2));
-        public static final double wheelCircumference = Units.inchesToMeters(4.0);
+        public static final double driveBaseRadius = Math.sqrt(2 * Math.pow(wheelBase/2, 2));
+        public static final double wheelCircumference = Units.inchesToMeters(4.0)*Math.PI;
         public static final double angleGearRatio = ((150.0 / 7.0) / 1.0);
-        public static final double driveGearRatio = (6.12 / 1.0);
+        public static final double driveGearRatio =  (6.12 / 1.0);
 
         /* Auto Constants */
-        public static final double translationKP = 1;
+        public static final double translationKP = 20;
         public static final double translationKI = 0.0;
         public static final double translationKD = 0.0;
 
-        public static final double rotationKP = 2;
+        public static final double rotationKP = 100;
         public static final double rotationKI = 0.0;
         public static final double rotationKD = 0.0;
+
+
 
         /* Swerve Kinematics */
         public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
@@ -144,5 +149,15 @@ public class Constants {
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
+    }
+    public static final class FieldConstants{
+        //1 is closest to AMP, 5 is closest to SOURCE
+        public static final Translation2d centerlineNote1 = new Translation2d(0,0);
+        public static final Translation2d centerlineNote2 = new Translation2d(0,0);
+        public static final Translation2d centerlineNote3 = new Translation2d(0,0);
+        public static final Translation2d centerlineNote4 = new Translation2d(0,0);
+        public static final Translation2d centerlineNote5 = new Translation2d(0,0);
+
+
     }
 }
