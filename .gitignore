@@ -174,6 +174,3 @@ simgui*.json
 networktables.json
 logs/
 ctre_sim/
-
-# AdvantageKit version file
-src/main/java/frc/robot/BuildConstants.java
