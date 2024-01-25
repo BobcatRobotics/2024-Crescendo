@@ -158,6 +158,13 @@ public class Constants {
         public static final Translation2d centerlineNote4 = new Translation2d(0,0);
         public static final Translation2d centerlineNote5 = new Translation2d(0,0);
 
+        public static final double noteDiameter = Units.inchesToMeters(14);
+    }
+
+    public static final class LimelightConstants{
+        public static final double verticalFOV = 49.7; //degrees obviously
+        public static final double horizontalFOV = 63.3;
+        public static final double limelightMountHeight = 0;//TODO: find this
 
     }
 }

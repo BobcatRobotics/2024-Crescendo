@@ -4,34 +4,39 @@
 
 package frc.robot.Subsystems.Vision;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Subsystems.Vision.VisionIO;
-public class Vision extends Command {
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+
+public class Vision extends SubsystemBase{
   /** Creates a new Vision. */
   VisionIO io;
   VisionIOInputsAutoLogged inputs;
   public Vision(VisionIO io) {
     this.io = io;
     this.inputs = new VisionIOInputsAutoLogged();
+
+    
   }
 
-  // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    System.out.println(inputs.cornerX);
+  public void periodic(){
+  SmartDashboard.putNumberArray("cornerx", inputs.cornerX);
+  SmartDashboard.putNumberArray("cornerx", inputs.cornerY);
   }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
+  /**
+   * 
+   * @param widthPercent [0,1], percentage of the vertical width of the image that the note is taking up
+   * @return distance in meters
+   */
+  public double distanceFromCameraPercentage(double widthPercent){
+    double horizontalLength = Constants.FieldConstants.noteDiameter / widthPercent;
+    double cornerFOVAngle = Units.degreesToRadians(90 - (Constants.LimelightConstants.horizontalFOV/2));
+    double hypotDist = (horizontalLength/2)*Math.tan(cornerFOVAngle); //distance from note to camera
+    double intakeDist = Math.sqrt((hypotDist*hypotDist) - (Constants.LimelightConstants.limelightMountHeight*Constants.LimelightConstants.limelightMountHeight)); //distance to intake
+    return intakeDist;
   }
 }
