@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import frc.lib.util.ModuleConstants;
 
 public class Constants {
-    public static final Mode currentMode = RobotBase.isSimulation() ? Mode.SIM : (RobotBase.isReal() ? Mode.REAL : Mode.REPLAY);
+    public static final Mode currentMode = Mode.REAL; //RobotBase.isSimulation() ? Mode.SIM : (RobotBase.isReal() ? Mode.REAL : Mode.REPLAY);
 
     public static enum Mode {
         /** Running on a real robot. */
@@ -164,8 +164,9 @@ public class Constants {
     public static final class LimelightConstants{
         public static final double verticalFOV = 49.7; //degrees obviously
         public static final double horizontalFOV = 63.3;
-        public static final double limelightMountHeight = 0;//TODO: find this
-        public static final int detectorPiplineIndex = 9; //TODO find this
+        public static final double limelightMountHeight = Units.inchesToMeters(20.5);
+        public static final int detectorPiplineIndex = 7; 
+        public static final int horPixles = 1280;
 
     }
 }

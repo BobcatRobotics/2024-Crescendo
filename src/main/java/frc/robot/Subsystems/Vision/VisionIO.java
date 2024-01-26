@@ -17,16 +17,16 @@ public interface VisionIO {
   
   @AutoLog
   public static class VisionIOInputs{  
-      LimelightHelpers.LimelightResults limeResults = LimelightHelpers.getLatestResults("");
-      NetworkTable limeTable = LimelightHelpers.getLimelightNTTable("");
+      
       LEDMode ledMode = LEDMode.FORCEOFF;
       double pipelineID = 0;
       double pipelineLatency = 0;
-      double ta = LimelightHelpers.getTA(null);
-      boolean tv = LimelightHelpers.getTV(null);
-      double tx = LimelightHelpers.getTX(null);
-      double ty = LimelightHelpers.getTY(null);
-      double fiducialID = LimelightHelpers.getFiducialID(null);
+      double ta;
+      boolean tv;
+      double tx;
+      double ty;
+      double fiducialID;
+      double boundingHorizontalPixels;
       
     }
       /** Updates the set of loggable inputs. */

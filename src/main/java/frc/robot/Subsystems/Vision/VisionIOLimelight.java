@@ -17,8 +17,7 @@ public class VisionIOLimelight implements VisionIO{
 
   @Override
   public void updateInputs(VisionIOInputs inputs) {
-    inputs.limeResults = LimelightHelpers.getLatestResults(null);
-    inputs.limeTable = LimelightHelpers.getLimelightNTTable(null);
+  
     inputs.ledMode = currentLedMode;
     inputs.pipelineID = LimelightHelpers.getCurrentPipelineIndex(null);
     inputs.pipelineLatency = LimelightHelpers.getLatency_Pipeline(null);
@@ -27,6 +26,7 @@ public class VisionIOLimelight implements VisionIO{
     inputs.tx = LimelightHelpers.getTX(null);
     inputs.ty = LimelightHelpers.getTY(null);
     inputs.fiducialID = LimelightHelpers.getFiducialID(null);
+    inputs.boundingHorizontalPixels = LimelightHelpers.getLimelightNTDouble(null, "thor");
   
   }
 

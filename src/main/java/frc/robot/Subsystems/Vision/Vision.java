@@ -5,6 +5,7 @@
 package frc.robot.Subsystems.Vision;
 
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,8 +26,15 @@ public class Vision extends SubsystemBase{
   @Override
   public void periodic(){
     io.updateInputs(inputs);
+    
+    Logger.recordOutput("Limelight/estimatedDistance", distanceFromCameraPercentage(pixlesToPercent(inputs.boundingHorizontalPixels)));
   }
 
+  
+  public double pixlesToPercent(double pixels){
+    Logger.recordOutput("limelight/horPercent", pixels/Constants.LimelightConstants.horPixles);
+    return pixels/Constants.LimelightConstants.horPixles;
+  }
 
   /**
    * 
@@ -34,13 +42,15 @@ public class Vision extends SubsystemBase{
    * @return distance in meters
    */
   @AutoLogOutput
-    public double distanceFromCameraPercentage(double widthPercent){
-    double horizontalLength = Constants.FieldConstants.noteDiameter / widthPercent;
-    double cornerFOVAngle = Units.degreesToRadians(90 - (Constants.LimelightConstants.horizontalFOV/2));
-    double hypotDist = (horizontalLength/2)*Math.tan(cornerFOVAngle); //distance from note to camera
+  public double distanceFromCameraPercentage(double widthPercent){
+    // double horizontalLength = Constants.FieldConstants.noteDiameter / widthPercent;
+    // double cornerFOVAngle = Units.degreesToRadians(90 - (Constants.LimelightConstants.horizontalFOV/2));
+    // double hypotDist = (horizontalLength/2)*Math.tan(cornerFOVAngle); //distance from note to camera
+    double hypotDist = ((180*Constants.FieldConstants.noteDiameter)/(63.3*Math.PI)) * (1/widthPercent);
     double intakeDist = Math.sqrt((hypotDist*hypotDist) - (Constants.LimelightConstants.limelightMountHeight*Constants.LimelightConstants.limelightMountHeight)); //distance to intake
     return intakeDist;
   }
+
 
  
 }

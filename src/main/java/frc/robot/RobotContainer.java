@@ -4,16 +4,11 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -30,6 +25,7 @@ import frc.robot.Subsystems.Swerve.SwerveModuleIOFalcon;
 import frc.robot.Subsystems.Swerve.SwerveModuleIOSim;
 import frc.robot.Subsystems.Vision.Vision;
 import frc.robot.Subsystems.Vision.VisionIO;
+import frc.robot.Subsystems.Vision.VisionIOLimelight;
 
 public class RobotContainer {
   /* Joysticks + Gamepad */
@@ -57,7 +53,7 @@ public class RobotContainer {
             new SwerveModuleIOFalcon(SwerveConstants.Module2Constants.constants),
             new SwerveModuleIOFalcon(SwerveConstants.Module3Constants.constants));
 
-          m_Vision = new Vision(new VisionIO(){});
+          m_Vision = new Vision(new VisionIOLimelight());
          break;
 
       // Sim robot, instantiate physics sim IO implementations
@@ -68,7 +64,7 @@ public class RobotContainer {
             new SwerveModuleIOSim(),
             new SwerveModuleIOSim(),
             new SwerveModuleIOSim());
-            m_Vision = new Vision(new VisionIO(){});
+            m_Vision = new Vision(new VisionIOLimelight());
         break;
 
       // Replayed robot, disable IO implementations
@@ -83,7 +79,7 @@ public class RobotContainer {
             },
             new SwerveModuleIO() {
             });
-            m_Vision = new Vision(new VisionIO(){});
+            m_Vision = new Vision(new VisionIOLimelight());
         break;
     }
 
