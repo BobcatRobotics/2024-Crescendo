@@ -89,6 +89,7 @@ public class RobotContainer {
     */
     autoChooser.addDefaultOption("Do Nothing", Commands.none());
     autoChooser.addOption("outta the way", new PathPlannerAuto("Auto 1"));
+    autoChooser.addOption("straight line", new PathPlannerAuto("straight line"));
 
     /* Auto Events
      * 
@@ -129,7 +130,7 @@ public class RobotContainer {
 
       rotate.button(1).onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
 
-      strafe.button(1).onTrue(new DriveToPose(m_swerve));
+      //strafe.button(1).onTrue(new DriveToPose(m_swerve));
       
 
     /* Drive with gamepad */
