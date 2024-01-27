@@ -8,16 +8,14 @@ package frc.robot.Subsystems.Vision;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.LinearFilter;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
-import java.lang.Math;
-
 
 public class VisionIOLimelight implements VisionIO{
   /** Creates a new VisionIOLimelight. */
   LEDMode currentLedMode = LEDMode.FORCEOFF;
+  LinearFilter distanceFilter = LinearFilter.singlePoleIIR(Constants.LimelightConstants.filterTimeConstant, Constants.loopPeriodSecs);
 
   public VisionIOLimelight() {
 
@@ -35,12 +33,14 @@ public class VisionIOLimelight implements VisionIO{
     inputs.ty = LimelightHelpers.getTY(null);
     inputs.fiducialID = LimelightHelpers.getFiducialID(null);
     inputs.boundingHorizontalPixels = LimelightHelpers.getLimelightNTDouble(null, "thor");
-  
     inputs.distanceToNote = distanceFilter.calculate(distanceFromCameraPercentage(pixlesToPercent(inputs.boundingHorizontalPixels)));
     inputs.rawDistanceToNote = distanceFromCameraPercentage(pixlesToPercent(inputs.boundingHorizontalPixels));
-    
+    inputs.rawXdistToNote = ((180*Constants.FieldConstants.noteDiameter)/(63.3*Math.PI)) * (1/pixlesToPercent(inputs.boundingHorizontalPixels));
+    inputs.XdistToNote = distanceFilter.calculate(inputs.XdistToNote);
     Logger.recordOutput("Limelight/rawDistance", inputs.rawDistanceToNote);
     Logger.recordOutput("Limelight/filteredDistance", inputs.distanceToNote);
+    Logger.recordOutput("Limelight/rawXDist", inputs.rawXdistToNote);
+    Logger.recordOutput("Limelight/filteredXDist", inputs.XdistToNote);
 
   }
 
@@ -79,17 +79,6 @@ public class VisionIOLimelight implements VisionIO{
     return pixels/Constants.LimelightConstants.horPixles;
   }
 
-  // public double noteCenter(double pixels){
-  //   Logger.recordOutput("Limelight/horPercent", pixels/2);  
-  //   return pixels/2;
-
-  // }
-
-  // public double noteAngle(double noteCenter, double ydist){
-  //   double xdist=noteCenter-(Constants.LimelightConstants.horPixles/2);
-  //   double noteAngle=Math.sin(xdist/ydist);
-  //   return noteAngle;
-  // }
   /**
    * 
    * @param widthPercent [0,1], percentage of the vertical width of the image that the note is taking up
