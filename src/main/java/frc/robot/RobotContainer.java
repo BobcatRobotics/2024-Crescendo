@@ -36,7 +36,7 @@ public class RobotContainer {
 
   /* Subsystems */
   public final Swerve m_swerve;
-  public final Vision m_Vision;
+  //public final Vision m_Vision;
 
   /* Commands */
 
@@ -52,7 +52,7 @@ public class RobotContainer {
             new SwerveModuleIOFalcon(SwerveConstants.Module1Constants.constants),
             new SwerveModuleIOFalcon(SwerveConstants.Module2Constants.constants),
             new SwerveModuleIOFalcon(SwerveConstants.Module3Constants.constants));
-        m_Vision = new Vision(new VisionIOLimelight());
+        //m_Vision = new Vision(new VisionIOLimelight());
         break;
 
       // Sim robot, instantiate physics sim IO implementations
@@ -63,7 +63,7 @@ public class RobotContainer {
             new SwerveModuleIOSim(),
             new SwerveModuleIOSim(),
             new SwerveModuleIOSim());
-            m_Vision = new Vision(new VisionIOLimelight());
+            //m_Vision = new Vision(new VisionIOLimelight());
         break;
 
       // Replayed robot, disable IO implementations
@@ -78,7 +78,7 @@ public class RobotContainer {
             },
             new SwerveModuleIO() {
             });
-            m_Vision = new Vision(new VisionIOLimelight());
+            //m_Vision = new Vision(new VisionIOLimelight());
         break;
     }
 
