@@ -52,9 +52,8 @@ public class RobotContainer {
             new SwerveModuleIOFalcon(SwerveConstants.Module1Constants.constants),
             new SwerveModuleIOFalcon(SwerveConstants.Module2Constants.constants),
             new SwerveModuleIOFalcon(SwerveConstants.Module3Constants.constants));
-
-          m_Vision = new Vision(new VisionIOLimelight());
-         break;
+        m_Vision = new Vision(new VisionIOLimelight());
+        break;
 
       // Sim robot, instantiate physics sim IO implementations
       case SIM:

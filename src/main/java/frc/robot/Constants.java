@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import frc.lib.util.ModuleConstants;
 
 public class Constants {
-    public static final Mode currentMode = Mode.REAL; //RobotBase.isSimulation() ? Mode.SIM : (RobotBase.isReal() ? Mode.REAL : Mode.REPLAY);
+    public static final Mode currentMode = RobotBase.isSimulation() ? Mode.SIM : (RobotBase.isReal() ? Mode.REAL : Mode.REPLAY);
 
     public static enum Mode {
         /** Running on a real robot. */
@@ -167,6 +167,7 @@ public class Constants {
         public static final double limelightMountHeight = Units.inchesToMeters(20.5);
         public static final int detectorPiplineIndex = 7; 
         public static final int horPixles = 1280;
-
+        public static final double filterTimeConstant=  0.1; // in seconds, inputs occuring over a time period significantly shorter than this will be thrown out
+    
     }
 }
