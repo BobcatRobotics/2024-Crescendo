@@ -28,6 +28,9 @@ public interface VisionIO {
       double fiducialID;
       double boundingHorizontalPixels;
       
+      double distanceToNote;
+      double rawDistanceToNote;
+      double angleToNote;
     }
       /** Updates the set of loggable inputs. */
     public default void updateInputs(VisionIOInputs inputs) {}

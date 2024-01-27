@@ -48,6 +48,8 @@ public class Vision extends SubsystemBase{
     // double hypotDist = (horizontalLength/2)*Math.tan(cornerFOVAngle); //distance from note to camera
     double hypotDist = ((180*Constants.FieldConstants.noteDiameter)/(63.3*Math.PI)) * (1/widthPercent);
     double intakeDist = Math.sqrt((hypotDist*hypotDist) - (Constants.LimelightConstants.limelightMountHeight*Constants.LimelightConstants.limelightMountHeight)); //distance to intake
+    double ydist = ()
+    double noteAngle = Math.sin(ydist/hypotDist);
     return intakeDist;
   }
 
