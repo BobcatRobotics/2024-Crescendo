@@ -74,8 +74,8 @@ public class Swerve extends SubsystemBase {
         PoseEstimator = new SwerveDrivePoseEstimator(SwerveConstants.swerveKinematics, getYaw(), getModulePositions(), new Pose2d(), SwerveConstants.stateStdDevs, Constants.LimelightConstants.visionMeasurementStdDevs);
 
         AutoBuilder.configureHolonomic(
-                this::getPose,
-                this::resetOdometry,
+                this::getPoseEstimation,
+                this::resetPoseEstimator,
                 this::getChassisSpeeds,
                 this::drive,
                 new HolonomicPathFollowerConfig(
@@ -154,8 +154,9 @@ public class Swerve extends SubsystemBase {
 
 
         //Update PoseEstimator based on odometry
-        PoseEstimator.update(getYaw(), getModulePositions());
-        
+        // PoseEstimator.update(getYaw(), getModulePositions());
+        PoseEstimator.updateWithTime(Timer.getFPGATimestamp(), getYaw(), getModulePositions());
+
         //Update PoseEstimator if at least 1 tag is in view
         if (LimelightHelpers.getTV(limelightfront)){
         PoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue(limelightfront), (Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(limelightfront)/1000.0) - (LimelightHelpers.getLatency_Capture(limelightfront)/1000.0)));
@@ -300,12 +301,20 @@ public class Swerve extends SubsystemBase {
         return odometry.getPoseMeters();
     }
 
+    public Pose2d getPoseEstimation() {
+        return PoseEstimator.getEstimatedPosition();
+    }
+
     /**
      * Resets our odometry to desired pose
      * @param pose pose to set odometry to
      */
     public void resetOdometry(Pose2d pose) {
         odometry.resetPosition(getYaw(), getModulePositions(), pose);
+    }
+
+    public void resetPoseEstimator(Pose2d pose) {
+        PoseEstimator.resetPosition(getYaw(), getModulePositions(), pose);
     }
 
     /**
