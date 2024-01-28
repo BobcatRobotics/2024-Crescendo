@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import frc.lib.util.ModuleConstants;
 
 public class Constants {
-    public static final Mode currentMode = Mode.REAL; //RobotBase.isSimulation() ? Mode.SIM : (RobotBase.isReal() ? Mode.REAL : Mode.REPLAY);
+    public static final Mode currentMode = Mode.SIM; //RobotBase.isSimulation() ? Mode.SIM : (RobotBase.isReal() ? Mode.REAL : Mode.REPLAY);
 
     public static enum Mode {
         /** Running on a real robot. */
@@ -154,8 +154,7 @@ public class Constants {
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
 
-        /* Standard Deviations for pose estimator */
-        public static final Vector<N3> stateStdDevs = VecBuilder.fill(0.1, 0.1, 0.1);
+        public static final Vector<N3> stateStdDevs = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(10));
 
     }
     public static final class FieldConstants{
@@ -176,6 +175,6 @@ public class Constants {
         public static final int detectorPiplineIndex = 7; 
         public static final int horPixles = 1280;
         public static final double filterTimeConstant=  0.1; // in seconds, inputs occuring over a time period significantly shorter than this will be thrown out
-        public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.9, 0.9, Units.degreesToRadians(0.9));
+        public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.1,0.1, Units.degreesToRadians(10));
     }
 }

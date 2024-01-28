@@ -90,6 +90,8 @@ public class RobotContainer {
     */
     autoChooser.addDefaultOption("Do Nothing", Commands.none());
     autoChooser.addOption("outta the way", new PathPlannerAuto("Auto 1"));
+    autoChooser.addOption("choreo", new PathPlannerAuto("choreo"));
+
 
     /* Auto Events
      * 
