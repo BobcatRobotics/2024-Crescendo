@@ -6,9 +6,12 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.pathplanner.lib.path.PathConstraints;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.lib.util.ModuleConstants;
@@ -59,6 +62,7 @@ public class Constants {
         public static final double rotationKP = 100;
         public static final double rotationKI = 0.0;
         public static final double rotationKD = 0.0;
+
 
 
 
@@ -149,6 +153,10 @@ public class Constants {
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
+
+        /* Standard Deviations for pose estimator */
+        public static final Vector<N3> stateStdDevs = VecBuilder.fill(0.1, 0.1, 0.1);
+
     }
     public static final class FieldConstants{
         //1 is closest to AMP, 5 is closest to SOURCE
@@ -168,6 +176,6 @@ public class Constants {
         public static final int detectorPiplineIndex = 7; 
         public static final int horPixles = 1280;
         public static final double filterTimeConstant=  0.1; // in seconds, inputs occuring over a time period significantly shorter than this will be thrown out
-
+        public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.9, 0.9, Units.degreesToRadians(0.9));
     }
 }

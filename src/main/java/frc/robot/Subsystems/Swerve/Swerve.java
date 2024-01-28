@@ -1,6 +1,7 @@
 package frc.robot.Subsystems.Swerve;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
@@ -14,6 +15,10 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.estimator.PoseEstimator;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -22,19 +27,25 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.LimelightHelpers;
 
 public class Swerve extends SubsystemBase {
     private final GyroIO gyroIO;
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
     private final SwerveModule[] modules;
     private final SwerveDriveOdometry odometry;
+    private final SwerveDrivePoseEstimator PoseEstimator;
 
+    
     private final double[] swerveModuleStates = new double[8];
     private final double[] desiredSwerveModuleStates = new double[8];
 
@@ -42,6 +53,10 @@ public class Swerve extends SubsystemBase {
     private final LoggedDashboardNumber driveToPoseY = new LoggedDashboardNumber("desired y");    
     Pose2d desiredPose = new Pose2d();
     private Rotation2d lastYaw = new Rotation2d();
+    
+    private String limelightfront = "limelightfront";
+    private String limelightback = "limelightback";
+    
     
 
     public Swerve(GyroIO gyroIO, SwerveModuleIO flIO, SwerveModuleIO frIO, SwerveModuleIO blIO, SwerveModuleIO brIO) {
@@ -54,6 +69,9 @@ public class Swerve extends SubsystemBase {
         };
 
         odometry = new SwerveDriveOdometry(SwerveConstants.swerveKinematics, getYaw(), getModulePositions());
+        
+        //Using last year's standard deviations, need to tune
+        PoseEstimator = new SwerveDrivePoseEstimator(SwerveConstants.swerveKinematics, getYaw(), getModulePositions(), new Pose2d(), SwerveConstants.stateStdDevs, Constants.LimelightConstants.visionMeasurementStdDevs);
 
         AutoBuilder.configureHolonomic(
                 this::getPose,
@@ -133,7 +151,21 @@ public class Swerve extends SubsystemBase {
         }
         desiredPose = new Pose2d(driveToPoseX.get(), driveToPoseY.get(), new Rotation2d());
         Logger.recordOutput("Swerve/DesiredPose", desiredPose);
-    
+
+
+        //Update PoseEstimator based on odometry
+        PoseEstimator.update(getYaw(), getModulePositions());
+        
+        //Update PoseEstimator if at least 1 tag is in view
+        if (LimelightHelpers.getTV(limelightfront)){
+        PoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d(limelightfront), (Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(limelightfront)/1000.0) - (LimelightHelpers.getLatency_Capture(limelightfront)/1000.0)));
+        }
+        if (LimelightHelpers.getTV(limelightback)){
+        PoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d(limelightback), (Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(limelightback)/1000.0) - (LimelightHelpers.getLatency_Capture(limelightback)/1000.0)));
+        }
+
+
+
     }
 
 
