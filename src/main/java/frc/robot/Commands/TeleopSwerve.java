@@ -19,8 +19,9 @@ public class TeleopSwerve extends Command {
     private DoubleSupplier rotation;
     private BooleanSupplier robotCentric;
     private DoubleSupplier fineTrans;
+    private BooleanSupplier snap;
 
-    public TeleopSwerve(Swerve swerve, DoubleSupplier translation, DoubleSupplier strafe, DoubleSupplier rotation, BooleanSupplier robotCentric, DoubleSupplier fineStrafe, DoubleSupplier fineTrans) {
+    public TeleopSwerve(Swerve swerve, DoubleSupplier translation, DoubleSupplier strafe, DoubleSupplier rotation, BooleanSupplier robotCentric, DoubleSupplier fineStrafe, DoubleSupplier fineTrans, BooleanSupplier snapToRotation) {
         this.swerve = swerve;
         addRequirements(swerve);
 
@@ -30,6 +31,7 @@ public class TeleopSwerve extends Command {
         this.robotCentric = robotCentric;
         this.fineStrafe = fineStrafe;
         this.fineTrans = fineTrans;
+        this.snap = snapToRotation;
     }
 
     @Override
@@ -49,9 +51,10 @@ public class TeleopSwerve extends Command {
 
         /* Drive */
         swerve.drive(
-            new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed), 
-            rotationVal * SwerveConstants.maxAngularVelocity,
-            !robotCentric.getAsBoolean()
+            new Translation2d(-translationVal, -strafeVal).times(SwerveConstants.maxSpeed), 
+            -rotationVal * SwerveConstants.maxAngularVelocity,
+            !robotCentric.getAsBoolean(),
+            snap.getAsBoolean()
         );
     }
 }
