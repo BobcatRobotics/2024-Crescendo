@@ -158,10 +158,10 @@ public class Swerve extends SubsystemBase {
         
         //Update PoseEstimator if at least 1 tag is in view
         if (LimelightHelpers.getTV(limelightfront)){
-        PoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d(limelightfront), (Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(limelightfront)/1000.0) - (LimelightHelpers.getLatency_Capture(limelightfront)/1000.0)));
+        PoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue(limelightfront), (Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(limelightfront)/1000.0) - (LimelightHelpers.getLatency_Capture(limelightfront)/1000.0)));
         }
         if (LimelightHelpers.getTV(limelightback)){
-        PoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d(limelightback), (Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(limelightback)/1000.0) - (LimelightHelpers.getLatency_Capture(limelightback)/1000.0)));
+        PoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue(limelightback), (Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(limelightback)/1000.0) - (LimelightHelpers.getLatency_Capture(limelightback)/1000.0)));
         }
 
 
