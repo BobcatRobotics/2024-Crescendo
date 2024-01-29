@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.215193271636963,
-      "y": 7.067882061004639
+      "x": 1.4101017713546815,
+      "y": 7.106863498687744
     },
-    "rotation": -3.194863624379096e-31
+    "rotation": 1.853677358837369e-23
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NewPath"
+            "pathName": "Choreo Testing 2.1"
           }
         }
       ]

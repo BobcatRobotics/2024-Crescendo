@@ -16,6 +16,12 @@
           "data": {
             "pathName": "Outta the way"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": null
+          }
         }
       ]
     }

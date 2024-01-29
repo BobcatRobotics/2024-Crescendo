@@ -20,8 +20,11 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -57,9 +60,37 @@ public class Swerve extends SubsystemBase {
     private String limelightfront = "limelightfront";
     private String limelightback = "limelightback";
     
-    
 
     public Swerve(GyroIO gyroIO, SwerveModuleIO flIO, SwerveModuleIO frIO, SwerveModuleIO blIO, SwerveModuleIO brIO) {
+        
+        //Notifier for odometry updates, didn't work very well in my testing
+
+        // class updatePose implements Runnable{
+        //     @Override
+        //     public void run(){
+        //     //Update PoseEstimator based on odometry
+        //     // PoseEstimator.update(getYaw(), getModulePositions());
+        //     PoseEstimator.updateWithTime(Timer.getFPGATimestamp(), getYaw(), getModulePositions());
+
+        //     //Update PoseEstimator if at least 1 tag is in view
+        //     if (LimelightHelpers.getTV(limelightfront)){
+        //     //standard deviations are (distance to nearest apriltag)/2 for x and y and 10 degrees for theta
+        //     PoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue(limelightfront), (Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(limelightfront)/1000.0) - (LimelightHelpers.getLatency_Capture(limelightfront)/1000.0)),VecBuilder.fill(getDistance(limelightfront)/2, getDistance(limelightfront)/2, Units.degreesToRadians(10)));
+        //     }
+        //     if (LimelightHelpers.getTV(limelightback)){
+        //     PoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue(limelightback), (Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(limelightback)/1000.0) - (LimelightHelpers.getLatency_Capture(limelightback)/1000.0)), VecBuilder.fill(getDistance(limelightback)/2, getDistance(limelightback)/2, Units.degreesToRadians(10)));
+        //     }
+            
+        
+        // }
+            
+        // }
+
+        // Runnable runnable = new updatePose();
+        // Notifier notifier = new Notifier(runnable);
+        // double runnablePeriod = 0.02;
+        // notifier.startPeriodic(runnablePeriod);
+
         this.gyroIO = gyroIO;
         modules = new SwerveModule[] {
                 new SwerveModule(flIO, 0),
@@ -70,8 +101,9 @@ public class Swerve extends SubsystemBase {
 
         odometry = new SwerveDriveOdometry(SwerveConstants.swerveKinematics, getYaw(), getModulePositions());
         
-        //Using last year's standard deviations, need to tune
+        //Using last year's default deviations, need to tune
         PoseEstimator = new SwerveDrivePoseEstimator(SwerveConstants.swerveKinematics, getYaw(), getModulePositions(), new Pose2d(), SwerveConstants.stateStdDevs, Constants.LimelightConstants.visionMeasurementStdDevs);
+
 
         AutoBuilder.configureHolonomic(
                 this::getPoseEstimation,
@@ -143,7 +175,9 @@ public class Swerve extends SubsystemBase {
         Logger.recordOutput("Swerve/Rotation", odometry.getPoseMeters().getRotation().getDegrees());
         Logger.recordOutput("Swerve/DesiredModuleStates", desiredSwerveModuleStates);
         Logger.recordOutput("Swerve/ModuleStates", swerveModuleStates);
-        Logger.recordOutput("Swerve/Pose", getPose());
+        Logger.recordOutput("Swerve/OdometryPose", getPose());
+        Logger.recordOutput("Swerve/PoseEstimation", getPoseEstimation());
+        Logger.recordOutput("Swerve/Pose3d", getPose3d());
         if (DriverStation.isDisabled()) {
             for (SwerveModule mod : modules) {
                 mod.stop();
@@ -153,17 +187,19 @@ public class Swerve extends SubsystemBase {
         Logger.recordOutput("Swerve/DesiredPose", desiredPose);
 
 
+        
         //Update PoseEstimator based on odometry
         // PoseEstimator.update(getYaw(), getModulePositions());
-        PoseEstimator.updateWithTime(Timer.getFPGATimestamp(), getYaw(), getModulePositions());
+            PoseEstimator.updateWithTime(Timer.getFPGATimestamp(), getYaw(), getModulePositions());
 
-        //Update PoseEstimator if at least 1 tag is in view
-        if (LimelightHelpers.getTV(limelightfront)){
-        PoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue(limelightfront), (Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(limelightfront)/1000.0) - (LimelightHelpers.getLatency_Capture(limelightfront)/1000.0)));
-        }
-        if (LimelightHelpers.getTV(limelightback)){
-        PoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue(limelightback), (Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(limelightback)/1000.0) - (LimelightHelpers.getLatency_Capture(limelightback)/1000.0)));
-        }
+            //Update PoseEstimator if at least 1 tag is in view
+            if (LimelightHelpers.getTV(limelightfront)){
+            //standard deviations are (distance to nearest apriltag)/2 for x and y and 10 degrees for theta
+            PoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue(limelightfront), (Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(limelightfront)/1000.0) - (LimelightHelpers.getLatency_Capture(limelightfront)/1000.0)),VecBuilder.fill(getDistance(limelightfront)/2, getDistance(limelightfront)/2, Units.degreesToRadians(10)));
+            }
+            if (LimelightHelpers.getTV(limelightback)){
+            PoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue(limelightback), (Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(limelightback)/1000.0) - (LimelightHelpers.getLatency_Capture(limelightback)/1000.0)), VecBuilder.fill(getDistance(limelightback)/2, getDistance(limelightback)/2, Units.degreesToRadians(10)));
+            }
 
 
 
@@ -262,6 +298,17 @@ public class Swerve extends SubsystemBase {
     }
 
     /**
+     * Gets distance to nearest apriltag
+     * @return distance to nearest apriltag in meters
+     */
+
+     public double getDistance(String limelight) {
+        return PoseEstimator.getEstimatedPosition().getTranslation().getDistance(LimelightHelpers.getBotPose2d_wpiBlue(limelight).getTranslation());
+     }
+
+
+
+    /**
      * Gets all of the current module states
      * @return array of the current module states
      */
@@ -304,6 +351,12 @@ public class Swerve extends SubsystemBase {
     public Pose2d getPoseEstimation() {
         return PoseEstimator.getEstimatedPosition();
     }
+
+    public Pose3d getPose3d(){
+        return (new Pose3d(new Translation3d(PoseEstimator.getEstimatedPosition().getX(),PoseEstimator.getEstimatedPosition().getY(),0), new Rotation3d(-Units.degreesToRadians(getRoll()),-Units.degreesToRadians(getPitch()),-getYaw().getRadians())));
+    }
+
+
 
     /**
      * Resets our odometry to desired pose
