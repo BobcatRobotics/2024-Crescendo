@@ -51,8 +51,8 @@ public class TeleopSwerve extends Command {
 
         /* Drive */
         swerve.drive(
-            new Translation2d(-translationVal, -strafeVal).times(SwerveConstants.maxSpeed), 
-            -rotationVal * SwerveConstants.maxAngularVelocity,
+            new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed), 
+            rotationVal * SwerveConstants.maxAngularVelocity,
             !robotCentric.getAsBoolean(),
             snap.getAsBoolean()
         );

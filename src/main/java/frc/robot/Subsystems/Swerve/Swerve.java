@@ -212,7 +212,7 @@ public class Swerve extends SubsystemBase {
                     rotating = false;
                     lastMovingYaw = getYaw().getRadians();
                 }
-                desiredSpeeds.omegaRadiansPerSecond = -rotationPID.calculate(getYaw().getRadians(), lastMovingYaw);
+                desiredSpeeds.omegaRadiansPerSecond = rotationPID.calculate(getYaw().getRadians(), lastMovingYaw);
             } else {
                 rotating = true;
             }
