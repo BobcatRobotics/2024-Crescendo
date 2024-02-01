@@ -4,7 +4,6 @@ import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
@@ -17,7 +16,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import frc.lib.util.ModuleConstants;
 
 public class Constants {
-    public static final Mode currentMode = Mode.SIM; //RobotBase.isSimulation() ? Mode.SIM : (RobotBase.isReal() ? Mode.REAL : Mode.REPLAY);
+    public static final Mode currentMode = RobotBase.isSimulation() ? Mode.SIM : (RobotBase.isReal() ? Mode.REAL : Mode.REPLAY);
 
     public static enum Mode {
         /** Running on a real robot. */
@@ -55,16 +54,18 @@ public class Constants {
         public static final double driveGearRatio =  (6.12 / 1.0);
 
         /* Auto Constants */
-        public static final double translationKP = 20;
+        public static final double translationKP = 2.0087;
         public static final double translationKI = 0.0;
         public static final double translationKD = 0.0;
 
-        public static final double rotationKP = 100;
+        public static final double rotationKP = 2;
         public static final double rotationKI = 0.0;
         public static final double rotationKD = 0.0;
 
-
-
+        /* Teleop Constants */
+        public static final double teleopRotationKP = 2;
+        public static final double teleopRotationKI = 0.0;
+        public static final double teleopRotationKD = 0.0;
 
         /* Swerve Kinematics */
         public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
@@ -73,7 +74,7 @@ public class Constants {
             new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
             new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0));
 
-        /* Angle Configs */
+        /* Angle Motor Configs */
         public static final InvertedValue angleMotorInvert = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
 
@@ -90,7 +91,7 @@ public class Constants {
         public static final double angleSupplyCurrentThreshold = 40.0;
         public static final double angleSupplyTimeThreshold = 0.1;
 
-        /* Drive Configs */
+        /* Drive  Configs */
         public static final InvertedValue driveMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
 
@@ -119,7 +120,7 @@ public class Constants {
             public static final int cancoderID = 1;
             public static final int angleMotorID = 2;
             public static final int driveMotorID = 1;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(173.3203);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(109.1); // 109.1 353.32
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
@@ -129,7 +130,7 @@ public class Constants {
             public static final int cancoderID = 2;
             public static final int angleMotorID = 4;
             public static final int driveMotorID = 3;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(188.7012);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(214.1); // 214.1 9.14
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
@@ -139,7 +140,7 @@ public class Constants {
             public static final int cancoderID = 3;
             public static final int angleMotorID = 6;
             public static final int driveMotorID = 5;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(54.7559);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(203.1); // 203.1 234.66
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
@@ -149,7 +150,7 @@ public class Constants {
             public static final int cancoderID = 4;
             public static final int angleMotorID = 8;
             public static final int driveMotorID = 7;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(105.1172);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(51.9); // 51.9 285.29
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
@@ -176,5 +177,6 @@ public class Constants {
         public static final int horPixles = 1280;
         public static final double filterTimeConstant=  0.1; // in seconds, inputs occuring over a time period significantly shorter than this will be thrown out
         public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.1,0.1, Units.degreesToRadians(10));
+    
     }
 }

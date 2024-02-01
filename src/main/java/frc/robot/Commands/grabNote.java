@@ -49,7 +49,8 @@ public class grabNote extends Command {
       swerve.drive(
               new Translation2d(1, pid.calculate(yVal, 0)).times(SwerveConstants.maxSpeed), 
               0,
-              true);
+              true,
+              false);
 
 
       

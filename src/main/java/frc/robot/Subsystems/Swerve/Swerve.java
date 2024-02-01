@@ -15,6 +15,9 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.PoseEstimator;
@@ -24,6 +27,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -37,6 +41,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.util.GeometryUtils;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.LimelightHelpers;
@@ -51,6 +56,10 @@ public class Swerve extends SubsystemBase {
     
     private final double[] swerveModuleStates = new double[8];
     private final double[] desiredSwerveModuleStates = new double[8];
+
+    private final PIDController rotationPID;
+    private double lastMovingYaw = 0.0;
+    private boolean rotating = false;
 
     private final LoggedDashboardNumber driveToPoseX = new LoggedDashboardNumber("desired x");
     private final LoggedDashboardNumber driveToPoseY = new LoggedDashboardNumber("desired y");    
@@ -100,6 +109,8 @@ public class Swerve extends SubsystemBase {
         };
 
         odometry = new SwerveDriveOdometry(SwerveConstants.swerveKinematics, getYaw(), getModulePositions());
+
+        rotationPID = new PIDController(SwerveConstants.teleopRotationKP, SwerveConstants.teleopRotationKI, SwerveConstants.teleopRotationKD);
         
         //Using last year's default deviations, need to tune
         PoseEstimator = new SwerveDrivePoseEstimator(SwerveConstants.swerveKinematics, getYaw(), getModulePositions(), new Pose2d(), SwerveConstants.stateStdDevs, Constants.LimelightConstants.visionMeasurementStdDevs);
@@ -147,6 +158,8 @@ public class Swerve extends SubsystemBase {
 
     public void periodic(){
         gyroIO.updateInputs(gyroInputs);
+        Logger.recordOutput("Swerve/YawSetpoint", lastMovingYaw);
+        Logger.recordOutput("Swerve/CurrentYaw", getYaw().getRadians());
 
         Logger.processInputs("Swerve/Gyro", gyroInputs);
         for (SwerveModule module : modules) {
@@ -170,7 +183,6 @@ public class Swerve extends SubsystemBase {
             swerveModuleStates[mod.index * 2 + 1] = mod.getState().speedMetersPerSecond;
             swerveModuleStates[mod.index * 2] = mod.getState().angle.getDegrees();
         }
-        
         
         Logger.recordOutput("Swerve/Rotation", odometry.getPoseMeters().getRotation().getDegrees());
         Logger.recordOutput("Swerve/DesiredModuleStates", desiredSwerveModuleStates);
@@ -248,7 +260,8 @@ public class Swerve extends SubsystemBase {
      * @param rotation desired rotation speed of the swerve drive in radians per second
      * @param fieldRelative whether the values should be field relative or not
      */
-    public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
+    public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean snapToRotation) {
+        
         ChassisSpeeds desiredSpeeds = fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
                 translation.getX(),
                 translation.getY(),
@@ -259,7 +272,21 @@ public class Swerve extends SubsystemBase {
                         translation.getY(),
                         rotation);
 
-        desiredSpeeds = ChassisSpeeds.discretize(desiredSpeeds, Constants.loopPeriodSecs);
+        // desiredSpeeds = correctForDynamics(desiredSpeeds);
+
+        if (snapToRotation) {
+            desiredSpeeds.omegaRadiansPerSecond = -rotationPID.calculate(getYaw().getRadians(), Math.PI/2);
+        } else {
+            if (rotation == 0) {
+                if (rotating) {
+                    rotating = false;
+                    lastMovingYaw = getYaw().getRadians();
+                }
+                desiredSpeeds.omegaRadiansPerSecond = rotationPID.calculate(getYaw().getRadians(), lastMovingYaw);
+            } else {
+                rotating = true;
+            }
+        }
 
         SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates(desiredSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxSpeed);
@@ -375,6 +402,7 @@ public class Swerve extends SubsystemBase {
      */
     public void zeroGyro() {
         gyroIO.setYaw(0);
+        lastMovingYaw = 0;
         lastYaw = Rotation2d.fromDegrees(0);
     }
 
@@ -383,6 +411,7 @@ public class Swerve extends SubsystemBase {
      */
     public void reverseZeroGyro() {
         gyroIO.setYaw(180);
+        lastMovingYaw = 180;
         lastYaw = Rotation2d.fromDegrees(180);
     }
 
@@ -395,6 +424,23 @@ public class Swerve extends SubsystemBase {
         modules[2].setDesiredState(new SwerveModuleState(1, new Rotation2d(Math.toRadians(315))));
         modules[3].setDesiredState(new SwerveModuleState(1, new Rotation2d(Math.toRadians(45))));
     }
+
+    private static ChassisSpeeds correctForDynamics(ChassisSpeeds originalSpeeds) {
+        final double LOOP_TIME_S = 0.04;
+        // TODO test arbitrarily making this larger to see if it helps
+        Pose2d futureRobotPose =
+            new Pose2d(
+                originalSpeeds.vxMetersPerSecond * LOOP_TIME_S,
+                originalSpeeds.vyMetersPerSecond * LOOP_TIME_S,
+                Rotation2d.fromRadians(originalSpeeds.omegaRadiansPerSecond * LOOP_TIME_S));
+        Twist2d twistForPose = GeometryUtils.log(futureRobotPose);
+        ChassisSpeeds updatedSpeeds =
+            new ChassisSpeeds(
+                twistForPose.dx / LOOP_TIME_S,
+                twistForPose.dy / LOOP_TIME_S,
+                twistForPose.dtheta / LOOP_TIME_S);
+        return updatedSpeeds;
+      }
 
     /**
      * Stops the swerve drive

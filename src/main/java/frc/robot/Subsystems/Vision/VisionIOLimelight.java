@@ -10,6 +10,11 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.filter.LinearFilter;
 import frc.robot.Constants;
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.math.filter.LinearFilter;
+import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 
 public class VisionIOLimelight implements VisionIO{
@@ -93,6 +98,4 @@ public class VisionIOLimelight implements VisionIO{
     
     return intakeDist;
   }
-
-  
 }

@@ -22,6 +22,7 @@ public class GyroIOPigeon2 implements GyroIO {
         inputs.yawPositionDeg = pigeon.getYaw().getValueAsDouble();
         inputs.pitchPositionDeg = pigeon.getPitch().getValueAsDouble();
         inputs.rollPositionDeg = pigeon.getRoll().getValueAsDouble();
+        inputs.zAngularVelocityDegPerSec = pigeon.getAngularVelocityZDevice().getValueAsDouble();
     }
 
     /**
