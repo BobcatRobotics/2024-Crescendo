@@ -38,14 +38,12 @@ public class VisionIOLimelight implements VisionIO{
     inputs.ty = LimelightHelpers.getTY(null);
     inputs.fiducialID = LimelightHelpers.getFiducialID(null);
     inputs.boundingHorizontalPixels = LimelightHelpers.getLimelightNTDouble(null, "thor");
-    inputs.distanceToNote = distanceFilter.calculate(distanceFromCameraPercentage(pixlesToPercent(inputs.boundingHorizontalPixels)));
-    inputs.rawDistanceToNote = distanceFromCameraPercentage(pixlesToPercent(inputs.boundingHorizontalPixels));
-    inputs.rawXdistToNote = ((180*Constants.FieldConstants.noteDiameter)/(63.3*Math.PI)) * (1/pixlesToPercent(inputs.boundingHorizontalPixels));
-    inputs.XdistToNote = distanceFilter.calculate(inputs.XdistToNote);
+    inputs.distanceToNote = distanceFilter.calculate(distanceFromCameraPercentage(inputs.boundingHorizontalPixels));
+    inputs.rawDistanceToNote = getNoteDistance(pixlesToPercent(inputs.boundingHorizontalPixels));
+    inputs.tClass = getTClass();
     Logger.recordOutput("Limelight/rawDistance", inputs.rawDistanceToNote);
     Logger.recordOutput("Limelight/filteredDistance", inputs.distanceToNote);
-    Logger.recordOutput("Limelight/rawXDist", inputs.rawXdistToNote);
-    Logger.recordOutput("Limelight/filteredXDist", inputs.XdistToNote);
+    
 
   }
 
@@ -75,6 +73,11 @@ public class VisionIOLimelight implements VisionIO{
   }
 
   @Override
+  public double getTClass(){
+    return LimelightHelpers.getLimelightNTDouble(null, "tclass");
+  }
+
+  @Override
   public void setPipeline(int index){    
     LimelightHelpers.setPipelineIndex(null, index);
   }
@@ -89,13 +92,15 @@ public class VisionIOLimelight implements VisionIO{
    * @param widthPercent [0,1], percentage of the vertical width of the image that the note is taking up
    * @return distance in meters
    */
-  public double distanceFromCameraPercentage(double widthPercent){
+  public double getNoteDistance(double widthPixles){
     // double horizontalLength = Constants.FieldConstants.noteDiameter / widthPercent;
     // double cornerFOVAngle = Units.degreesToRadians(90 - (Constants.LimelightConstants.horizontalFOV/2));
     // double hypotDist = (horizontalLength/2)*Math.tan(cornerFOVAngle); //distance from note to camera
-    double hypotDist = ((180*Constants.FieldConstants.noteDiameter)/(63.3*Math.PI)) * (1/widthPercent);
+    double hypotDist = ((180*Constants.FieldConstants.noteDiameter)/(63.3*Math.PI)) * (1/pixlesToPercent(widthPixles));
     double intakeDist = Math.sqrt((hypotDist*hypotDist) - (Constants.LimelightConstants.limelightMountHeight*Constants.LimelightConstants.limelightMountHeight)); //distance to intake
     
     return intakeDist;
   }
+
+ 
 }

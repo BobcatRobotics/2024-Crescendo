@@ -5,6 +5,9 @@
 package frc.robot.Subsystems.Vision;
 
 
+import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -23,10 +26,26 @@ public class Vision extends SubsystemBase{
   
   }
 
+  public double getTClass(){
+    return inputs.tClass;
+  }
+
   @Override
   public void periodic(){
     io.updateInputs(inputs); 
   }
+
+  public double getNoteY(){
+    
+    Logger.recordOutput("Limemight/noteY", inputs.distanceToNote*Math.cos(Math.toRadians(90-inputs.tx)));
+    return inputs.distanceToNote*Math.cos(Math.toRadians(90-inputs.tx));
+    
+  }
+
+  public Translation2d getNoteTranslation(){
+    return new Translation2d(inputs.distanceToNote, getNoteY());
+  }
+
 
 
 
