@@ -152,6 +152,7 @@ public class Constants {
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
     }
+
     public static final class FieldConstants{
         //1 is closest to AMP, 5 is closest to SOURCE
         public static final Translation2d centerlineNote1 = new Translation2d(0,0);
@@ -171,5 +172,19 @@ public class Constants {
         public static final int horPixles = 1280;
         public static final double filterTimeConstant=  0.1; // in seconds, inputs occuring over a time period significantly shorter than this will be thrown out
     
+    }
+
+    public static final class IntakeConstants {
+        public static final int outerMotorID = 0;
+        public static final InvertedValue outerMotorInvert = InvertedValue.CounterClockwise_Positive;
+        public static final NeutralModeValue outerMotorBrakeMode = NeutralModeValue.Brake;
+
+        public static final int middleMotorID = 0;
+        public static final InvertedValue middleMotorInvert = InvertedValue.CounterClockwise_Positive;
+        public static final NeutralModeValue middleMotorBrakeMode = NeutralModeValue.Brake;
+
+        public static final int innerMotorID = 0;
+        public static final InvertedValue innerMotorInvert = InvertedValue.CounterClockwise_Positive;
+        public static final NeutralModeValue innerMotorBrakeMode = NeutralModeValue.Brake;
     }
 }
