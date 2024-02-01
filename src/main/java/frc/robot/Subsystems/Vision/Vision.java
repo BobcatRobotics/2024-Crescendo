@@ -7,7 +7,6 @@ package frc.robot.Subsystems.Vision;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -37,18 +36,14 @@ public class Vision extends SubsystemBase{
   }
 
   public double getNoteY(){
-    Logger.recordOutput("Limelight/noteY", inputs.distanceToNote*Math.sin(Math.toRadians(inputs.tx)));
-    return inputs.distanceToNote*Math.sin(Math.toRadians(inputs.tx));
+    
+    Logger.recordOutput("Limemight/noteY", inputs.distanceToNote*Math.cos(Math.toRadians(90-inputs.tx)));
+    return inputs.distanceToNote*Math.cos(Math.toRadians(90-inputs.tx));
     
   }
 
-  public double getRotation(){
-    Logger.recordOutput("Limelight/noteRot", Math.toRadians(inputs.tx));
-    return Math.toRadians(inputs.tx);
-  }
-
-  public Translation2d getNoteTranslation(PIDController xpid, PIDController ypid){
-    return new Translation2d(xpid.calculate(inputs.distanceToNote, 0), ypid.calculate(getNoteY(), 0));
+  public Translation2d getNoteTranslation(){
+    return new Translation2d(inputs.distanceToNote, getNoteY());
   }
 
 

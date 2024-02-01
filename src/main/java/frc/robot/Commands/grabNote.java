@@ -19,58 +19,32 @@ public class grabNote extends Command {
 
   private Vision vision;
   private Swerve swerve;
+  private double xVal;
   private double yVal;
-  private double kPx=0.1;
-  private double kIx=0;
-  private double kDx;
-  private double kPr=0.1;
-  private double kIr=0;
-  private double kDr=0;
-  private double kPy=0.1;
-  private double kIy=0;
-  private double kDy=0;
-  private PIDController xpid;
-  private PIDController rpid;
-  private PIDController ypid;
+  private double kP=0.1;
+  private double kI=0;
+  private double kD;
+  private PIDController pid;
 
-  public grabNote(Swerve swerve, double yVal, Vision vision) {
+  public grabNote(Swerve swerve, double xVal, Vision vision) {
     this.swerve = swerve;
     addRequirements(swerve);
     // Use addRequirements() here to declare subsystem dependencies.
-    this.yVal = yVal;
+    this.xVal = xVal;
     this.vision = vision;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-      try (PIDController xpid = new PIDController(kPx, kIx, kDx)) {
-        xpid.setTolerance(0.4);
-      }
-      try (PIDController rpid = new PIDController(kPr, kIr, kDr)) {
-        rpid.setTolerance(0.4);
-      }
-      try (PIDController ypid = new PIDController(kPy, kIy, kDy)) {
-        ypid.setTolerance(0.4);
+      try (PIDController pid = new PIDController(kP, kI, kD)) {
+        pid.setTolerance(0.4);
       }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
-    if (vision.getTClass()==0){
-    swerve.drive(
-            vision.getNoteTranslation(xpid,ypid), 
-            rpid.calculate(vision.getRotation(),0),
-            false,
-            true);
-    }
-
-
-    if(yVal<=swerve.getPoseEstimation().getY()){
-      end(true);
-    }
     
   }
     
