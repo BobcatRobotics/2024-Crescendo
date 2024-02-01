@@ -1,9 +1,11 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import java.lang.Object;
+import com.ctre.phoenix6.jni.CtreJniWrapper;
+import com.ctre.phoenix6.hardware.ParentDevice;
+import com.ctre.phoenix6.hardware.core.CoreTalonFX;
 
 
 public class ClimberSubsystem extends SubsystemBase {
@@ -13,17 +15,19 @@ public class ClimberSubsystem extends SubsystemBase {
    * Creates a new subsystem.
    */
 
-  private final Spark climber;
-  private final Servo lockServo;
+  // https://api.ctr-electronics.com/phoenix6/release/java/com/ctre/phoenix6/hardware/core/CoreTalonFX.html
+  // API Reference for the motors that we are using
 
-  public ClimberSubsystem() {
-      climber = new Spark(Constants.PWMPorts.kClimberMotor);
-      lockServo = new Servo(Constants.PWMPorts.kClimberServo);
-      lock();
+  private final rightClimberMotor;
+  private final leftClimberMotor;
+
+  public ClimberSubsystem(int motorConst1, int motorConst2, kTalonFXCANbus) {
+    leftClimberMotor = new TalonFX(motorConst1, kTalonFXCANbus);
+    rightClimberMotor = new TalonFX(motorConst2, kTalonFXCANbus);
   }
 
   public void climb(double speed ) {
-    climber.set(speed);
+    
   }
 
   @Override
@@ -31,10 +35,8 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void lock() {
-    lockServo.setAngle(140*0.666666);
   }
 
   public void unlock() {
-    lockServo.setAngle(0);
   }
 }
