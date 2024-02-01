@@ -30,9 +30,8 @@ public interface VisionIO {
       
       double distanceToNote;
       double rawDistanceToNote;
-      double rawXdistToNote;
-      double XdistToNote;
 
+      double tClass;
 
     }
       /** Updates the set of loggable inputs. */
@@ -44,6 +43,9 @@ public interface VisionIO {
     public default void setPipeline(int index){}
 
     public default double pixlesToPercent(double pixels){
+      return 0.0;
+    }
+    public default double getTClass(){
       return 0.0;
     }
 
