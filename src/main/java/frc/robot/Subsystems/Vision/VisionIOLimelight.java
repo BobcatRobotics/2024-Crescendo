@@ -38,12 +38,12 @@ public class VisionIOLimelight implements VisionIO{
     inputs.ty = LimelightHelpers.getTY(null);
     inputs.fiducialID = LimelightHelpers.getFiducialID(null);
     inputs.boundingHorizontalPixels = LimelightHelpers.getLimelightNTDouble(null, "thor");
-    inputs.distanceToNote = distanceFilter.calculate(distanceFromCameraPercentage(inputs.boundingHorizontalPixels));
-    inputs.rawDistanceToNote = getNoteDistance(pixlesToPercent(inputs.boundingHorizontalPixels));
+    // inputs.distanceToNote = distanceFilter.calculate(distanceFromCameraPercentage(inputs.boundingHorizontalPixels));
+    inputs.rawDistanceToNote = getNoteDistance(inputs.boundingHorizontalPixels);
+    inputs.distanceToNote = distanceFilter.calculate(inputs.rawDistanceToNote);
     inputs.tClass = getTClass();
     Logger.recordOutput("Limelight/rawDistance", inputs.rawDistanceToNote);
     Logger.recordOutput("Limelight/filteredDistance", inputs.distanceToNote);
-    
 
   }
 
