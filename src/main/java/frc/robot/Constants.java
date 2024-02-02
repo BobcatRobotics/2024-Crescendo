@@ -27,6 +27,7 @@ public class Constants {
     }
 
     public static final double loopPeriodSecs = 0.02; // 50 hz
+    public static final Integer AmpConstants = 0;
 
     public static final class SwerveConstants {
         public static final String canivore = "CANt_open_file";
