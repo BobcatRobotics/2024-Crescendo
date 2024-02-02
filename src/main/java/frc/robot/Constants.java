@@ -172,10 +172,29 @@ public class Constants {
         public static final int horPixles = 1280;
         public static final double filterTimeConstant=  0.1; // in seconds, inputs occuring over a time period significantly shorter than this will be thrown out
     
+    }
 
     public static final class climberConstants{
         public static final int leftMotorID = 10;
         public static final int rightMotorID = 11;
     }
+
+    public static final class shooterConstants {
+        public static final int topMotorID = 0;
+        public static final InvertedValue topMotorInvert = InvertedValue.Clockwise_Positive;
+        public static final NeutralModeValue topMotorBrakeMode = NeutralModeValue.Coast;
+
+        public static final int bottomMotorID = 0;
+        public static final InvertedValue bottomMotorInvert = InvertedValue.Clockwise_Positive;
+        public static final NeutralModeValue bottomMotorBrakeMode = NeutralModeValue.Coast;
+
+        public static final int angleMotorID = 0;
+        public static final InvertedValue angleMotorInvert = InvertedValue.Clockwise_Positive;
+        public static final NeutralModeValue angleMotorBrakeMode = NeutralModeValue.Brake;
+
+        public static final int feederMotorID = 0;
+        public static final InvertedValue feederMotorInvert = InvertedValue.Clockwise_Positive;
+        public static final NeutralModeValue feederMotorBrakeMode = NeutralModeValue.Coast;
+
     }
 }
