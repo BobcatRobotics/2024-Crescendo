@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.Commands.DriveToPose;
 import frc.robot.Commands.TeleopSwerve;
+import frc.robot.Commands.grabNote;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Subsystems.Swerve.GyroIO;
 import frc.robot.Subsystems.Swerve.GyroIOPigeon2;
@@ -36,7 +37,7 @@ public class RobotContainer {
 
   /* Subsystems */
   public final Swerve m_swerve;
-  //public final Vision m_Vision;
+  public final Vision m_Vision;
 
   /* Commands */
 
@@ -52,7 +53,7 @@ public class RobotContainer {
             new SwerveModuleIOFalcon(SwerveConstants.Module1Constants.constants),
             new SwerveModuleIOFalcon(SwerveConstants.Module2Constants.constants),
             new SwerveModuleIOFalcon(SwerveConstants.Module3Constants.constants));
-        //m_Vision = new Vision(new VisionIOLimelight());
+        m_Vision = new Vision(new VisionIOLimelight());
         break;
 
       // Sim robot, instantiate physics sim IO implementations
@@ -63,7 +64,7 @@ public class RobotContainer {
             new SwerveModuleIOSim(),
             new SwerveModuleIOSim(),
             new SwerveModuleIOSim());
-            //m_Vision = new Vision(new VisionIOLimelight());
+            m_Vision = new Vision(new VisionIOLimelight());
         break;
 
       // Replayed robot, disable IO implementations
@@ -78,7 +79,7 @@ public class RobotContainer {
             },
             new SwerveModuleIO() {
             });
-            //m_Vision = new Vision(new VisionIOLimelight());
+            m_Vision = new Vision(new VisionIOLimelight());
         break;
     }
 
@@ -132,7 +133,7 @@ public class RobotContainer {
 
       // rotate.button(1).onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
 
-      //strafe.button(1).onTrue(new DriveToPose(m_swerve));
+      strafe.button(1).whileTrue(new grabNote(m_swerve, m_Vision));
       
 
     /* Drive with gamepad */

@@ -5,6 +5,8 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -19,32 +21,48 @@ public class grabNote extends Command {
 
   private Vision vision;
   private Swerve swerve;
-  private double xVal;
-  private double yVal;
-  private double kP=0.1;
-  private double kI=0;
-  private double kD;
-  private PIDController pid;
 
-  public grabNote(Swerve swerve, double xVal, Vision vision) {
+  private double kP=1;
+  private double kPRotation = 0.025;
+  private PIDController xController;
+  private PIDController yController;
+  private PIDController thetaController;
+  private Pose2d notePos;
+
+  public grabNote(Swerve swerve, Vision vision) {
     this.swerve = swerve;
     addRequirements(swerve);
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.xVal = xVal;
     this.vision = vision;
+
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-      try (PIDController pid = new PIDController(kP, kI, kD)) {
-        pid.setTolerance(0.4);
-      }
+    xController = new PIDController(kP, 0,0);
+    xController.setTolerance(0.4);
+    yController = new PIDController(kP, 0,0);
+    yController.setTolerance(0.4);
+    thetaController = new PIDController(kPRotation, 0,0);
+    thetaController.setTolerance(4);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    notePos = vision.getNotePose();
+    if(!(Math.abs(thetaController.getPositionError()) < 5)){
+    swerve.drive(new Translation2d(), -thetaController.calculate(notePos.getRotation().getDegrees()),false,false);
+    }else{
+      swerve.drive(
+        new Translation2d(
+          0,
+          xController.calculate(notePos.getX())
+          
+        ),
+         -thetaController.calculate(notePos.getRotation().getDegrees()),false,false);
+    }
+
     
   }
     
