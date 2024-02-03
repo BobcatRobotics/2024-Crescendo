@@ -189,6 +189,9 @@ public class Constants {
         public static final double motionmagicJerk = 0;
         public static final double rotationAmount = 0.5;
 
+        // the next constant should be the exact number of rotations that the elevator must do to get to the top position
+        public static final double rotationToTopAmount = 50.0;
+
     }
 
     public static final class shooterConstants {

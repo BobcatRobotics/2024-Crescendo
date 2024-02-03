@@ -45,8 +45,14 @@ public class ClimberIOFalcon implements ClimberIO
         i.climberMotorPosition = climberMotor.getPosition().getValueAsDouble();
     }
 
-    public void setClimberSpeed(){
-        //climberMotor.
+    //This function : you give it a rotation amount and it will run to that rotation amount
+    public void run(double rotationAmount){
+        climberMotor.setControl(m_voltage.withPosition(rotationAmount));
+    }
+
+
+    public void stop(){
+        climberMotor.stopMotor();
     }
 
 }
