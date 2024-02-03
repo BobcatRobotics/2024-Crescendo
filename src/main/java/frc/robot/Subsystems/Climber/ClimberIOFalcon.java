@@ -50,6 +50,9 @@ public class ClimberIOFalcon implements ClimberIO
         climberMotor.setControl(m_voltage.withPosition(rotationAmount));
     }
 
+    public void changeVelocity(double newVelocity){
+        motionMagicConfigs.MotionMagicCruiseVelocity = newVelocity;
+    }
 
     public void stop(){
         climberMotor.stopMotor();
