@@ -6,30 +6,26 @@ package frc.robot.Commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
-import frc.robot.Constants.SwerveConstants;
-import frc.robot.LimelightHelpers;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Subsystems.Vision.Vision;
 
 
-public class grabNote extends Command {
+public class GrabNote extends Command {
   /** Creates a new grabNote. */
 
   private Vision vision;
   private Swerve swerve;
 
-  private double kP=1;
+  private double kP=0.25;
   private double kPRotation = 0.025;
   private PIDController xController;
   private PIDController yController;
   private PIDController thetaController;
   private Pose2d notePos;
 
-  public grabNote(Swerve swerve, Vision vision) {
+  public GrabNote(Swerve swerve, Vision vision) {
     this.swerve = swerve;
     addRequirements(swerve);
     this.vision = vision;
@@ -62,8 +58,6 @@ public class grabNote extends Command {
         ),
          -thetaController.calculate(notePos.getRotation().getDegrees()),false,false);
     }
-
-    
   }
     
 

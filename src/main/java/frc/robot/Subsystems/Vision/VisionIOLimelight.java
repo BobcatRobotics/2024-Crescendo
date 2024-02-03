@@ -20,7 +20,7 @@ import frc.robot.LimelightHelpers;
 public class VisionIOLimelight implements VisionIO{
   /** Creates a new VisionIOLimelight. */
   LEDMode currentLedMode = LEDMode.FORCEOFF;
-  LinearFilter distanceFilter = LinearFilter.singlePoleIIR(Constants.LimelightConstants.filterTimeConstant, Constants.loopPeriodSecs);
+  LinearFilter distanceFilter = LinearFilter.movingAverage(Constants.LimelightConstants.movingAverageNumTaps);
 
   public VisionIOLimelight() {
 

@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.Commands.DriveToPose;
 import frc.robot.Commands.TeleopSwerve;
-import frc.robot.Commands.grabNote;
+import frc.robot.Commands.GrabNote;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Subsystems.Swerve.GyroIO;
 import frc.robot.Subsystems.Swerve.GyroIOPigeon2;
@@ -133,7 +133,7 @@ public class RobotContainer {
 
       // rotate.button(1).onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
 
-      strafe.button(1).whileTrue(new grabNote(m_swerve, m_Vision));
+      strafe.button(1).whileTrue(new GrabNote(m_swerve, m_Vision));
       
 
     /* Drive with gamepad */

@@ -177,6 +177,6 @@ public class Constants {
         public static final int horPixles = 1280;
         public static final double filterTimeConstant=  0.1; // in seconds, inputs occuring over a time period significantly shorter than this will be thrown out
         public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.1,0.1, Units.degreesToRadians(10));
-    
+        public static final int movingAverageNumTaps = 20;
     }
 }
