@@ -4,12 +4,11 @@ import org.littletonrobotics.junction.AutoLog;
 
 import java.lang.Object;
 import edu.wpi.first.wpilibj.MotorSafety;
-import com.ctre.phoenix6.wpiutils.MotorSafetyImplem;
-import com.ctre.phoenix6.jni.CtreJniWrapper;
-import com.ctre.phoenix6.hardware.ParentDevice;
-import com.ctre.phoenix6.hardware.core.CoreTalonFX;
-import com.ctre.phoenix6.hardware.TalonFX;
+import frc.robot.Constants;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.wpiutils.MotorSafetyImplem;
 
 
 public interface ClimberIO {
@@ -17,6 +16,11 @@ public interface ClimberIO {
     public static class ClimberIOInputs{
         public double climberPosition = 0.0;
         public double climberEncoderValue = 0.0;
+        ClimberIOFalcon climberMotor = new ClimberIOFalcon(Constants.climberConstants.MotorID);
+        public double climberMotorPercentOut = 0.0;
+        public double climberMotorStatorCurrent = 0.0;
+        public double climberMotorVelocityRPS = 0.0;
+
     }
 
     public default double getClimberPosition(int climberEncoderValue){
@@ -34,6 +38,11 @@ public interface ClimberIO {
     public default void retractClimber(){
 
     }
+
+    public default void updateConfigs(){
+
+    }
+
 
 
 }
