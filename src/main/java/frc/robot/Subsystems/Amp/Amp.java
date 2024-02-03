@@ -1,6 +1,7 @@
 package frc.robot.Subsystems.Amp;
 
-import edu.wpi.first.wpilibj.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Amp extends SubsystemBase {
     private final AmpIO io;

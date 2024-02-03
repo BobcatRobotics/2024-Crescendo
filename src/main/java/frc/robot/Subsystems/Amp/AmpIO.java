@@ -7,8 +7,8 @@ public interface AmpIO {
 
 
     }
-    public void run(){}
-    public void stop(){}
+    public default void run(double rotationAmount) {}
+    public default void stop() {}
 
 
 }

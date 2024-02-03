@@ -5,6 +5,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -20,6 +21,7 @@ public class AmpIOFalcon implements AmpIO{
     private final DutyCycleOut request;
     private final Slot0Configs slot0;
     private final MotionMagicConfigs motionMagicConfigs;
+    // private final MotionMagicVoltage m_request;
     private final MotionMagicVoltage m_request;
     // private double kP = constants.AMPConstants.kP; 
     // private double kI = constants.AMPConstants.kI;
@@ -50,15 +52,15 @@ public class AmpIOFalcon implements AmpIO{
 
         motor.getConfigurator().apply(configs);
         
-
-        public void run(){
-            motor.setControl(m_request.withPosition(rotationAmount));
-        }
-        public void stop(){
-            motor.stopMotor();
-        }
-
-        
-
     }
+    public void run(double rotationAmount){
+        motor.setControl(m_request.withPosition(rotationAmount));
+    }
+    public void stop(){
+        motor.stopMotor();
+    }
+
+    
+
 }
+
