@@ -20,6 +20,7 @@ public class AmpIO implements Amp{
     private final DutyCycleOut request;
     private final Slot0Configs slot0;
     private final MotionMagicConfigs motionMagicConfigs;
+    private final MotionMagicVoltage m_request;
     // private double kP = constants.AMPConstants.kP; 
     // private double kI = constants.AMPConstants.kI;
     // private double kD = constants.AMPConstants.kD;
@@ -29,6 +30,7 @@ public class AmpIO implements Amp{
         
         motor = new TalonFX(Constants.AMPConstants.canID);
         configs = new TalonFXConfiguration();
+        m_request = new MotionMagicVoltage(0);
         slot0 = configs.Slot0;
         slot0.kS = Constants.AMPConstants.kS;
         slot0.kV = Constants.AMPConstants.kV;
@@ -47,8 +49,14 @@ public class AmpIO implements Amp{
         motionMagicConfigs.MotionMagicJerk = Constants.AMPConstants.motionmagicJerk;
 
         motor.getConfigurator().apply(configs);
+        
 
-
+        public void run(){
+            motor.setControl(m_request.withPosition(rotationAmount));
+        }
+        public void stop(){
+            motor.stopMotor();
+        }
 
         
 

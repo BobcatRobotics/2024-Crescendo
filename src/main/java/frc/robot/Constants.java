@@ -38,6 +38,7 @@ public class Constants {
         public static final double motionmagicCruiseVelocity = 0;
         public static final double motionmagicAcceleration = 0;
         public static final double motionmagicJerk = 0;
+        public static final double rotationAmount = 0.5;
 
     }
 
