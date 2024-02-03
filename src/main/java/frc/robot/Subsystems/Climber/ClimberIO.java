@@ -1,15 +1,13 @@
 package frc.robot.Subsystems.Climber;
-
-
-import frc.robot.Constants;
+import org.littletonrobotics.junction.AutoLog;
 
 
 
 public interface ClimberIO {
+    @AutoLog 
     public static class ClimberIOInputs {
 
         public double climberPosition = 0.0;
-        ClimberIOFalcon climberMotor = new ClimberIOFalcon(Constants.climberConstants.MotorID);
         public double climberMotorPercentOut = 0.0;
         public double climberMotorStatorCurrent = 0.0;
         public double climberMotorVelocityRPS = 0.0;
@@ -18,7 +16,7 @@ public interface ClimberIO {
         public double motionmagicAcceleration = 0.0;
         public double motionmagicCruiseVelocity = 0.0;
         public double motionmagicJerk = 0.0;
-        
+
         }
 
 
