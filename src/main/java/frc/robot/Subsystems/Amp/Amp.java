@@ -5,12 +5,13 @@ import frc.robot.Constants;
 
 public class Amp extends SubsystemBase {
     private final AmpIO io;
+    private final AmpIOInputs inputs = io.AmpIOInputs;
 
     public Amp(AmpIO io){
         this.io = io;
     }
     public void period(){
-        io.updateInputs(io.AmpIOinputs.motorposition){};
+        io.updateInputs(inputs){};
     }
     
 
