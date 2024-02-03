@@ -9,7 +9,9 @@ public class Amp extends SubsystemBase {
     public Amp(AmpIO io){
         this.io = io;
     }
-    public void period(){}
+    public void period(){
+        io.updateInputs(io.AmpIOinputs.motorposition){};
+    }
     
 
     public void run(){

@@ -53,6 +53,9 @@ public class AmpIOFalcon implements AmpIO{
         motor.getConfigurator().apply(configs);
         
     }
+    public void updateInputs(AmpIOinputs inputs){
+        inputs.motorposition = motor.getPosition().getValueAsDouble();
+    }
     public void run(double rotationAmount){
         motor.setControl(m_request.withPosition(rotationAmount));
     }
