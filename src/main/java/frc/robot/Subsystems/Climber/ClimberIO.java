@@ -20,8 +20,8 @@ public interface ClimberIO {
         public double climberMotorStatorCurrent = 0.0;
         public double climberMotorVelocityRPS = 0.0;
         public double climberMotorPosition = 0.0;
-
     }
+
 
     public default double getClimberPosition(int climberEncoderValue){
         return 0.0;

@@ -178,6 +178,17 @@ public class Constants {
         public static final int MotorID = 0;
         public static final NeutralModeValue climberMotor = NeutralModeValue.Brake;    
         public static final InvertedValue climberMotorInvert =  InvertedValue.Clockwise_Positive;  
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double kS = 0;
+        public static final double kV = 0;
+        public static final double kA = 0;
+        public static final double motionmagicCruiseVelocity = 0;
+        public static final double motionmagicAcceleration = 0;
+        public static final double motionmagicJerk = 0;
+        public static final double rotationAmount = 0.5;
+
     }
 
     public static final class shooterConstants {

@@ -9,16 +9,21 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import frc.robot.Constants;
 import frc.robot.Constants.shooterConstants;
 import frc.robot.Subsystems.Shooter.ShooterIO.ShooterIOInputs;
-
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.core.CoreTalonFX;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+
 
 
 public class ClimberIOFalcon implements ClimberIO
 {
     private TalonFX climberMotor;
+    private MotionMagicVoltage m_voltage;
+    private final MotionMagicConfigs motionMagicConfigs;
+
 
     public ClimberIOFalcon(int deviceID){
         climberMotor = new TalonFX(deviceID);
@@ -26,6 +31,11 @@ public class ClimberIOFalcon implements ClimberIO
         climberMotor.getConfigurator().apply(climberConfigs);
         climberConfigs.MotorOutput.Inverted = Constants.climberConstants.climberMotorInvert;
         climberMotor.setPosition(0);
+        m_voltage = new MotionMagicVoltage(0);
+        motionMagicConfigs = climberConfigs.MotionMagic;
+        motionMagicConfigs.MotionMagicCruiseVelocity = Constants.climberConstants.motionmagicCruiseVelocity;
+        motionMagicConfigs.MotionMagicAcceleration = Constants.climberConstants.motionmagicAcceleration;
+        motionMagicConfigs.MotionMagicJerk = Constants.climberConstants.motionmagicJerk;
     }
 
     public void updateInputs(ClimberIOInputs i){
@@ -36,7 +46,7 @@ public class ClimberIOFalcon implements ClimberIO
     }
 
     public void setClimberSpeed(){
-
+        //climberMotor.
     }
 
 }
