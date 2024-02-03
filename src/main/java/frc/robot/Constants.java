@@ -175,8 +175,7 @@ public class Constants {
     }
 
     public static final class climberConstants{
-        public static final int leftMotorID = 10;
-        public static final int rightMotorID = 11;
+        public static final int MotorID = 11;
     }
 
     public static final class shooterConstants {
