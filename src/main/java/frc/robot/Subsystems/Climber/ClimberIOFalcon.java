@@ -9,6 +9,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 public class ClimberIOFalcon implements ClimberIO
 {
     private TalonFX climberMotor;
+    private TalonFXConfiguration climberConfigs;
     private MotionMagicVoltage m_voltage;
     private final MotionMagicConfigs motionMagicConfigs;
 
@@ -24,6 +25,7 @@ public class ClimberIOFalcon implements ClimberIO
         motionMagicConfigs.MotionMagicCruiseVelocity = Constants.climberConstants.motionmagicCruiseVelocity;
         motionMagicConfigs.MotionMagicAcceleration = Constants.climberConstants.motionmagicAcceleration;
         motionMagicConfigs.MotionMagicJerk = Constants.climberConstants.motionmagicJerk;
+        this.climberConfigs = climberConfigs;
     }
 
     public void updateInputs(ClimberIOInputs i){
@@ -31,6 +33,10 @@ public class ClimberIOFalcon implements ClimberIO
         i.climberMotorStatorCurrent = climberMotor.getStatorCurrent().getValueAsDouble();
         i.climberMotorVelocityRPS = climberMotor.getVelocity().getValueAsDouble();
         i.climberMotorPosition = climberMotor.getPosition().getValueAsDouble();
+
+        i.motionmagicAcceleration = motionMagicConfigs.MotionMagicAcceleration;
+        i.motionmagicCruiseVelocity = motionMagicConfigs.MotionMagicCruiseVelocity;
+        i.motionmagicJerk = motionMagicConfigs.MotionMagicJerk;
     }
 
     //This function : you give it a rotation amount and it will run to that rotation amount
@@ -39,11 +45,15 @@ public class ClimberIOFalcon implements ClimberIO
     }
 
     public void changeVelocity(double newVelocity){
-        motionMagicConfigs.MotionMagicCruiseVelocity = newVelocity;
+        motionMagicConfigs.withMotionMagicCruiseVelocity(newVelocity);
     }
 
     public void stop(){
         climberMotor.stopMotor();
+    }
+
+    public void inverseDirection(){
+        climberConfigs.MotorOutput.Inverted = Constants.climberConstants.climberMotorInvert;
     }
 
 }
