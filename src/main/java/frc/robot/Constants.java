@@ -37,7 +37,7 @@ public class Constants {
         public static final double kA = 0;
         public static final double motionmagicCruiseVelocity = 0;
         public static final double motionmagicAcceleration = 0;
-        public static final double motionmagicCruiseJerk = 0;
+        public static final double motionmagicJerk = 0;
 
     }
 

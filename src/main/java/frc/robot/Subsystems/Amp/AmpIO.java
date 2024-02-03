@@ -11,6 +11,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import frc.robot.Constants;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 
 
 public class AmpIO implements Amp{
@@ -26,24 +27,24 @@ public class AmpIO implements Amp{
     
     public AmpIO(){
         
-        motor = new TalonFX(Constants.AMPConstants);
+        motor = new TalonFX(Constants.AMPConstants.canID);
         configs = new TalonFXConfiguration();
-        Slot0 = configs.slot0();
-        Slot0.kS = Constants.AMPConstants.kS;
-        Slot0.kV = Constants.AMPConstants.kV;
-        Slot0.kA = Constants.AMPConstants.kA;
-        Slot0.kP = Constants.AMPConstants.kP;
-        Slot0.kI = Constants.AMPConstants.kI;
-        Slot0.kD = Constants.AMPConstants.kD;
+        slot0 = configs.Slot0;
+        slot0.kS = Constants.AMPConstants.kS;
+        slot0.kV = Constants.AMPConstants.kV;
+        slot0.kA = Constants.AMPConstants.kA;
+        slot0.kP = Constants.AMPConstants.kP;
+        slot0.kI = Constants.AMPConstants.kI;
+        slot0.kD = Constants.AMPConstants.kD;
 
         configs.MotorOutput.Inverted= InvertedValue.Clockwise_Positive;
         configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         
         request = new DutyCycleOut(0).withEnableFOC(false);
         motionMagicConfigs = configs.MotionMagic;
-        motionMagicConfigs.MotionmagicCruiseVelocity = Constants.AMPConstants.motionmagicCruiseVelocity;
-        motionMagicConfigs.MotionmagicCruiseAcceleration = Constants.AMPConstants.MotionmagicCruiseAcceleration;
-        motionMagicConfigs.MotionmagicCruiseJerk = Constants.AMPConstants.motionmagicCruiseJerk;
+        motionMagicConfigs.MotionMagicCruiseVelocity = Constants.AMPConstants.motionmagicCruiseVelocity;
+        motionMagicConfigs.MotionMagicAcceleration = Constants.AMPConstants.motionmagicAcceleration;
+        motionMagicConfigs.MotionMagicJerk = Constants.AMPConstants.motionmagicJerk;
 
         motor.getConfigurator().apply(configs);
 
