@@ -18,7 +18,6 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 public class AmpIOFalcon implements AmpIO{
     private TalonFX motor;
     private final TalonFXConfiguration configs;
-    private final DutyCycleOut request;
     private final Slot0Configs slot0;
     private final MotionMagicConfigs motionMagicConfigs;
     // private final MotionMagicVoltage m_request;
@@ -34,17 +33,17 @@ public class AmpIOFalcon implements AmpIO{
         configs = new TalonFXConfiguration();
         m_request = new MotionMagicVoltage(0);
         slot0 = configs.Slot0;
-        slot0.kS = Constants.AMPConstants.kS;
+        slot0.kS = Constants.AMPConstants.kS;//initializes motion magic pid values
         slot0.kV = Constants.AMPConstants.kV;
         slot0.kA = Constants.AMPConstants.kA;
         slot0.kP = Constants.AMPConstants.kP;
         slot0.kI = Constants.AMPConstants.kI;
         slot0.kD = Constants.AMPConstants.kD;
 
-        configs.MotorOutput.Inverted= InvertedValue.Clockwise_Positive;
+        configs.MotorOutput.Inverted= InvertedValue.Clockwise_Positive; 
         configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         
-        request = new DutyCycleOut(0).withEnableFOC(false);
+        m_request.withEnableFOC(true);
         motionMagicConfigs = configs.MotionMagic;
         motionMagicConfigs.MotionMagicCruiseVelocity = Constants.AMPConstants.motionmagicCruiseVelocity;
         motionMagicConfigs.MotionMagicAcceleration = Constants.AMPConstants.motionmagicAcceleration;
@@ -53,12 +52,21 @@ public class AmpIOFalcon implements AmpIO{
         motor.getConfigurator().apply(configs);
         
     }
-    public void updateInputs(AmpIOInputs inputs){
+    /*
+    Updates the inputs for the amp subsytem based on the position of the motor, ran periodically
+    */
+    public void updateInputs(AmpIOInputs inputs){ 
         inputs.motorposition = motor.getPosition().getValueAsDouble();
     }
+    /*
+    runs the motor to rotiation amount for pid
+    */
     public void run(double rotationAmount){
         motor.setControl(m_request.withPosition(rotationAmount));
     }
+    /*
+    Stops the motor
+    */
     public void stop(){
         motor.stopMotor();
     }
