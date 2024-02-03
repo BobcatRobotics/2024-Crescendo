@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import frc.robot.Commands.AlignToTag;
 import frc.robot.Commands.DriveToPose;
 import frc.robot.Commands.TeleopSwerve;
 import frc.robot.Commands.GrabNote;
@@ -79,7 +80,7 @@ public class RobotContainer {
             },
             new SwerveModuleIO() {
             });
-            m_Vision = new Vision(new VisionIOLimelight());
+            m_Vision = new Vision(new VisionIO(){});
         break;
     }
 
@@ -133,7 +134,7 @@ public class RobotContainer {
 
       // rotate.button(1).onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
 
-      strafe.button(1).whileTrue(new GrabNote(m_swerve, m_Vision));
+      strafe.button(1).whileTrue(new AlignToTag(m_swerve, m_Vision, null));
       
 
     /* Drive with gamepad */
