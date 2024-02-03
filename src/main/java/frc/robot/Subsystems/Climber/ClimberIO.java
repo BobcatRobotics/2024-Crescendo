@@ -20,24 +20,16 @@ public interface ClimberIO {
         }
 
 
-    public default double getClimberPosition(int climberEncoderValue){
-        return 0.0;
-    }
-
-    public default void updateInputs(){
-        updateInputs();
+    public default void updateInputs(ClimberIOInputs inputs){
     }
 
     public default void stop(){
-        stop();
     }
 
     public default void run(double rotationAmount){
-        run(rotationAmount);
     }
 
     public default void inverseDirection(){ 
-        inverseDirection();
     }
 
 }
