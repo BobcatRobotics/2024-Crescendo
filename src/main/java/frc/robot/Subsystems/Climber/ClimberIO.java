@@ -2,13 +2,8 @@ package frc.robot.Subsystems.Climber;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import java.lang.Object;
-import edu.wpi.first.wpilibj.MotorSafety;
 import frc.robot.Constants;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.wpiutils.MotorSafetyImplem;
 
 
 public interface ClimberIO {
