@@ -32,6 +32,7 @@ public class ClimberIOFalcon implements ClimberIO
         i.climberMotorPercentOut = climberMotor.getDutyCycle().getValueAsDouble();
         i.climberMotorStatorCurrent = climberMotor.getStatorCurrent().getValueAsDouble();
         i.climberMotorVelocityRPS = climberMotor.getVelocity().getValueAsDouble();
+        i.climberMotorPosition = climberMotor.getPosition().getValueAsDouble();
     }
 
     public void setClimberSpeed(){
