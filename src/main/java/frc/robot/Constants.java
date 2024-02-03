@@ -27,6 +27,7 @@ public class Constants {
     }
 
     public static final double loopPeriodSecs = 0.02; // 50 hz
+    public static final Integer AmpConstants = 0;
 
     public static final class SwerveConstants {
         public static final String canivore = "CANt_open_file";
@@ -174,8 +175,23 @@ public class Constants {
     }
 
     public static final class climberConstants{
-        public static final int leftMotorID = 10;
-        public static final int rightMotorID = 11;
+        public static final int MotorID = 0;
+        public static final NeutralModeValue climberMotor = NeutralModeValue.Brake;    
+        public static final InvertedValue climberMotorInvert =  InvertedValue.Clockwise_Positive;  
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double kS = 0;
+        public static final double kV = 0;
+        public static final double kA = 0;
+        public static final double motionmagicCruiseVelocity = 0;
+        public static final double motionmagicAcceleration = 0;
+        public static final double motionmagicJerk = 0;
+        public static final double rotationAmount = 0.5;
+
+        // the next constant should be the exact number of rotations that the elevator must do to get to the top position
+        public static final double rotationToTopAmount = 50.0;
+
     }
 
     public static final class shooterConstants {
