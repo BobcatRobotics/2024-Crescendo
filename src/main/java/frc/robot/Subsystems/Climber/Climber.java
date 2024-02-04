@@ -20,9 +20,11 @@ public class Climber extends SubsystemBase {
         //Rotation amount should be how many encoder counts it takes for climber to get to the top
     }
 
+        // For retracting the climber, the rotation amount doesn't matter. The function will 
+        // get the climber's current position bring the climber back to position zero
     public void retractClimber(double rotationAmount){
         climber.inverseDirection();
-        rotationAmount-=climberInterface.climberMotorPosition;
+        rotationAmount=climberInterface.climberMotorPosition;
         climber.run(rotationAmount);
         climber.stop();
     }
