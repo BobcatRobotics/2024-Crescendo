@@ -39,6 +39,7 @@ public class Constants {
         public static final double motionmagicAcceleration = 0;
         public static final double motionmagicJerk = 0;
         public static final double rotationAmount = 0.5;
+        public static final double softLimitThresh = 0;
 
     }
 

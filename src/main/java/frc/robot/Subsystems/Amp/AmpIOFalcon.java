@@ -13,6 +13,7 @@ import com.ctre.phoenix6.configs.FeedbackConfigs;
 import frc.robot.Constants;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 
 
 public class AmpIOFalcon implements AmpIO{
@@ -42,6 +43,8 @@ public class AmpIOFalcon implements AmpIO{
 
         configs.MotorOutput.Inverted= InvertedValue.Clockwise_Positive; 
         configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        motor.ForwardSoftLimitEnable = true;
+        motor.ForwardSoftLimitThreshold = Constants.AMPConstants.softLimitThresh;
         
         m_request.withEnableFOC(true);
         motionMagicConfigs = configs.MotionMagic;
