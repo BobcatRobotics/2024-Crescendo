@@ -17,8 +17,8 @@ public class Shooter extends SubsystemBase {
     }
 
     public void shoot() {
-        io.bottomMotorSetPercentOut(1.0);
-        io.topMotorSetPercentOut(1.0);
+        io.bottomMotorSetVelocityOut(1.0);
+        io.topMotorSetVelocityOut(1.0);
     }
 
     public void feedIn() {
@@ -30,11 +30,11 @@ public class Shooter extends SubsystemBase {
     }
 
     public void increaseAngle() {
-        io.angleMotorSetPercentOut(1.0);
+        io.angleMotorSetPosition(1.0);
     }
 
     public void decreaseAngle() {
-        io.angleMotorSetPercentOut(-1.0);
+        io.angleMotorSetPosition(-1.0);
     }
 
     public void stop() {

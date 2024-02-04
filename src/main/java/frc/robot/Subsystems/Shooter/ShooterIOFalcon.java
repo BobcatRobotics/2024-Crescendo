@@ -3,8 +3,10 @@ package frc.robot.Subsystems.Shooter;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -19,27 +21,31 @@ public class ShooterIOFalcon implements ShooterIO {
     private TalonFX bottomMotor;
     private TalonFX angleMotor;
     private TalonFX feederMotor;
+
     private final Slot0Configs angleMotor_slot0;
     private final Slot0Configs topMotor_slot0;
     private final Slot0Configs bottomMotor_slot0;
     private final Slot0Configs feederMotor_slot0;
+
     private final MotionMagicConfigs angleMotorMotionMagicConfigs;
     private final MotionMagicConfigs feederMotorMotionMagicConfigs;
     private final MotionMagicConfigs topMotorMotionMagicConfigs;
     private final MotionMagicConfigs bottomMotorMotionMagicConfigs;
-    private final MotionMagicVoltage m_request;    
-
-    private final DutyCycleOut request; //same as percent out
     
-    public ShooterIOFalcon() {
-        m_request = new MotionMagicVoltage(0);
+    private final MotionMagicVelocityVoltage m_velocityRequest; //create motion magic request for top + bottom shooter motors   
+    private final PositionDutyCycle positionRequest; //creates request for angle motor
+    private final DutyCycleOut request; //creates request for feeder motor
+    
 
+    public ShooterIOFalcon() {
 
         topMotor = new TalonFX(Constants.shooterConstants.topMotorID); //initializes TalonFX motor 1
         bottomMotor = new TalonFX(Constants.shooterConstants.bottomMotorID); //initializes TalonFX motor 2
         angleMotor = new TalonFX(Constants.shooterConstants.angleMotorID); //initializes TalonFX motor 3
-        feederMotor = new TalonFX(Constants.shooterConstants.feederMotorID); //initializes TalonFX motor 3
+        feederMotor = new TalonFX(Constants.shooterConstants.feederMotorID); //initializes TalonFX motor 4
 
+        //Top Shooter Motor
+        
         TalonFXConfiguration topConfigs = new TalonFXConfiguration();
         topMotor.getConfigurator().apply(topConfigs);
         topConfigs.MotorOutput.Inverted = shooterConstants.topMotorInvert;
@@ -49,6 +55,9 @@ public class ShooterIOFalcon implements ShooterIO {
         topMotorMotionMagicConfigs = topConfigs.MotionMagic;
 
 
+        //Bottom Shooter Motor
+
+
         TalonFXConfiguration bottomConfigs = new TalonFXConfiguration();
         bottomMotor.getConfigurator().apply(bottomConfigs);
         bottomConfigs.MotorOutput.Inverted = shooterConstants.bottomMotorInvert;
@@ -56,6 +65,10 @@ public class ShooterIOFalcon implements ShooterIO {
         //Motion Magic configs
         bottomMotor_slot0 = bottomConfigs.Slot0;
         bottomMotorMotionMagicConfigs = bottomConfigs.MotionMagic;
+
+
+        //Angle Motor
+
 
         TalonFXConfiguration angleConfigs = new TalonFXConfiguration();
         angleMotor.getConfigurator().apply(angleConfigs);
@@ -74,6 +87,10 @@ public class ShooterIOFalcon implements ShooterIO {
         angleMotorMotionMagicConfigs.MotionMagicAcceleration = Constants.shooterConstants.angleMotorMotionMagicAcceleration;
         angleMotorMotionMagicConfigs.MotionMagicJerk = Constants.shooterConstants.angleMotorMotionMagicJerk;
 
+
+        //Feeder Motor
+
+
         TalonFXConfiguration feederConfigs = new TalonFXConfiguration();
         feederMotor.getConfigurator().apply(feederConfigs);
         feederConfigs.MotorOutput.Inverted = shooterConstants.feederMotorInvert;
@@ -83,19 +100,30 @@ public class ShooterIOFalcon implements ShooterIO {
         feederMotorMotionMagicConfigs = feederConfigs.MotionMagic;
 
 
+        //Updates each request
         request = new DutyCycleOut(0).withEnableFOC(true);
+        m_velocityRequest = new MotionMagicVelocityVoltage(0).withEnableFOC(true);
+        positionRequest = new PositionDutyCycle(0).withEnableFOC(true);
+
     }
 
+
+    /**
+     * Update inputs for each motor 
+     * 
+     * @param i From ShooterIOInputs and is either setting a value to the motor, stator current, or rev. per sec
+     * 
+     */
     public void updateInputs(ShooterIOInputs i) {
-        i.topMotorPercentOut = topMotor.getDutyCycle().getValueAsDouble();
+        i.topMotorVelocityOut = topMotor.getDutyCycle().getValueAsDouble();
         i.topMotorStatorCurrent = topMotor.getStatorCurrent().getValueAsDouble();
         i.topMotorVelocityRPS = topMotor.getVelocity().getValueAsDouble();
         
-        i.bottomMotorPercentOut = bottomMotor.getDutyCycle().getValueAsDouble();
+        i.bottomMotorVelocityOut = bottomMotor.getDutyCycle().getValueAsDouble();
         i.bottomMotorStatorCurrent = bottomMotor.getStatorCurrent().getValueAsDouble();
         i.bottomMotorVelocityRPS = bottomMotor.getVelocity().getValueAsDouble();
         
-        i.angleMotorPercentOut = angleMotor.getDutyCycle().getValueAsDouble();
+        i.angleMotorPosition = angleMotor.getDutyCycle().getValueAsDouble();
         i.angleMotorStatorCurrent = angleMotor.getStatorCurrent().getValueAsDouble();
         i.angleMotorVelocityRPS = angleMotor.getVelocity().getValueAsDouble();
         
@@ -105,23 +133,24 @@ public class ShooterIOFalcon implements ShooterIO {
     }
 
     public void updateConfigs() {
-
+        //add
     }
 
-    public void setTopPercentOut(double pct) {
-        topMotor.setControl(request.withOutput(pct).withEnableFOC(true));
+    
+    public void setTopVelocity(double v) {
+        topMotor.setControl(m_velocityRequest);
     }
 
-    public void setBottomPercentOut(double pct) {
-        bottomMotor.setControl(request.withOutput(pct).withEnableFOC(true));
+    public void setBottomVelocity(double v) {
+        bottomMotor.setControl(m_velocityRequest);
     }
 
     public void setFeederMotorPercentOut(double pct) {
         feederMotor.setControl(request.withOutput(pct).withEnableFOC(true));
     }
 
-    public void setAngleMotorPercentOut(double pct) {
-        angleMotor.setControl(request.withOutput(pct).withEnableFOC(true));
+    public void setAngleMotorPosition(double p) {
+        angleMotor.setControl(positionRequest);
     }
 
 
