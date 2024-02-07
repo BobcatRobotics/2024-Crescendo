@@ -3,77 +3,82 @@ package frc.robot.Subsystems.Intake;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.playingwithfusion.TimeOfFlight;
 
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeIOFalcon implements IntakeIO {
-    private final TalonFX outerMotor;
-    private final TalonFX middleMotor;
-    private final TalonFX innerMotor;
+    private final TalonFX switchMotor;
+    private final TalonFX floorMotor;
+    private final TalonFX outsideMotor;
+
+    // private final TimeOfFlight tof;
 
     private final DutyCycleOut request;
 
     public IntakeIOFalcon() {
-        outerMotor = new TalonFX(IntakeConstants.outerMotorID);
-        middleMotor = new TalonFX(IntakeConstants.middleMotorID);
-        innerMotor = new TalonFX(IntakeConstants.innerMotorID);
+        switchMotor = new TalonFX(IntakeConstants.switchMotorID);
+        floorMotor = new TalonFX(IntakeConstants.floorMotorID);
+        outsideMotor = new TalonFX(IntakeConstants.outsideMotorID);
 
-        TalonFXConfiguration outerConfig = new TalonFXConfiguration();
-        outerMotor.getConfigurator().apply(outerConfig);
-        outerConfig.MotorOutput.Inverted = IntakeConstants.outerMotorInvert;
-        outerConfig.MotorOutput.NeutralMode = IntakeConstants.outerMotorBrakeMode;
-        outerMotor.getConfigurator().apply(outerConfig);
+        // tof = new TimeOfFlight(IntakeConstants.tofID);
 
-        TalonFXConfiguration middleConfig = new TalonFXConfiguration();
-        middleMotor.getConfigurator().apply(middleConfig);
-        middleConfig.MotorOutput.Inverted = IntakeConstants.middleMotorInvert;
-        middleConfig.MotorOutput.NeutralMode = IntakeConstants.middleMotorBrakeMode;
-        middleMotor.getConfigurator().apply(middleConfig);
+        TalonFXConfiguration switchConfig = new TalonFXConfiguration();
+        switchMotor.getConfigurator().apply(switchConfig);
+        switchConfig.MotorOutput.Inverted = IntakeConstants.switchMotorInvert;
+        switchConfig.MotorOutput.NeutralMode = IntakeConstants.switchMotorBrakeMode;
+        switchMotor.getConfigurator().apply(switchConfig);
 
-        TalonFXConfiguration innerConfig = new TalonFXConfiguration();
-        middleMotor.getConfigurator().apply(innerConfig);
-        innerConfig.MotorOutput.Inverted = IntakeConstants.innerMotorInvert;
-        innerConfig.MotorOutput.NeutralMode = IntakeConstants.innerMotorBrakeMode;
-        innerMotor.getConfigurator().apply(innerConfig);
+        TalonFXConfiguration floorConfig = new TalonFXConfiguration();
+        floorMotor.getConfigurator().apply(floorConfig);
+        floorConfig.MotorOutput.Inverted = IntakeConstants.floorMotorInvert;
+        floorConfig.MotorOutput.NeutralMode = IntakeConstants.floorMotorBrakeMode;
+        floorMotor.getConfigurator().apply(floorConfig);
+
+        TalonFXConfiguration outsideConfig = new TalonFXConfiguration();
+        floorMotor.getConfigurator().apply(outsideConfig);
+        outsideConfig.MotorOutput.Inverted = IntakeConstants.outsideMotorInvert;
+        outsideConfig.MotorOutput.NeutralMode = IntakeConstants.outsideMotorBrakeMode;
+        outsideMotor.getConfigurator().apply(outsideConfig);
 
         request = new DutyCycleOut(0).withEnableFOC(true);
     }
 
     public void updateInputs(IntakeIOInputs inputs) {
-        inputs.outerMotorPercentOut = outerMotor.getDutyCycle().getValueAsDouble();
-        inputs.outerMotorCurrent = outerMotor.getStatorCurrent().getValueAsDouble();
-        inputs.outerMotorVelocityRotPerSec = outerMotor.getVelocity().getValueAsDouble();
+        inputs.switchMotorPercentOut = switchMotor.getDutyCycle().getValueAsDouble();
+        inputs.switchMotorCurrent = switchMotor.getStatorCurrent().getValueAsDouble();
+        inputs.switchMotorVelocityRotPerSec = switchMotor.getVelocity().getValueAsDouble();
 
-        inputs.middleMotorPercentOut = middleMotor.getDutyCycle().getValueAsDouble();
-        inputs.middleMotorCurrent = middleMotor.getStatorCurrent().getValueAsDouble();
-        inputs.middleMotorVelocityRotPerSec = middleMotor.getVelocity().getValueAsDouble();
+        inputs.floorMotorPercentOut = floorMotor.getDutyCycle().getValueAsDouble();
+        inputs.floorMotorCurrent = floorMotor.getStatorCurrent().getValueAsDouble();
+        inputs.floorMotorVelocityRotPerSec = floorMotor.getVelocity().getValueAsDouble();
 
-        inputs.innerMotorPercentOut = innerMotor.getDutyCycle().getValueAsDouble();
-        inputs.innerMotorCurrent = innerMotor.getStatorCurrent().getValueAsDouble();
-        inputs.innerMotorVelocityRotPerSec = innerMotor.getVelocity().getValueAsDouble();
+        inputs.outsideMotorPercentOut = outsideMotor.getDutyCycle().getValueAsDouble();
+        inputs.outsideMotorCurrent = outsideMotor.getStatorCurrent().getValueAsDouble();
+        inputs.outsideMotorVelocityRotPerSec = outsideMotor.getVelocity().getValueAsDouble();
     }
 
-    public void outerMotorSetPercentOut(double percent) {
-        outerMotor.setControl(request.withOutput(percent));
+    public void switchMotorSetPercentOut(double percent) {
+        switchMotor.setControl(request.withOutput(percent));
     }
 
-    public void outerMotorStop() {
-        outerMotor.stopMotor();
+    public void switchMotorStop() {
+        switchMotor.stopMotor();
     }
 
-    public void middleMotorSetPercentOut(double percent) {
-        middleMotor.setControl(request.withOutput(percent));
+    public void floorMotorSetPercentOut(double percent) {
+        floorMotor.setControl(request.withOutput(percent));
     }
 
-    public void middleMotorStop() {
-        middleMotor.stopMotor();
+    public void floorMotorStop() {
+        floorMotor.stopMotor();
     }
 
-    public void innerMotorSetPercentOut(double percent) {
-        innerMotor.setControl(request.withOutput(percent));
+    public void outsideMotorSetPercentOut(double percent) {
+        outsideMotor.setControl(request.withOutput(percent));
     }
 
-    public void innerMotorStop() {
-        innerMotor.stopMotor();
+    public void outsideMotorStop() {
+        outsideMotor.stopMotor();
     }
 }

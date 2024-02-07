@@ -175,16 +175,19 @@ public class Constants {
     }
 
     public static final class IntakeConstants {
-        public static final int outerMotorID = 0;
-        public static final InvertedValue outerMotorInvert = InvertedValue.CounterClockwise_Positive;
-        public static final NeutralModeValue outerMotorBrakeMode = NeutralModeValue.Brake;
+        public static final int switchMotorID = 9; // This one switched to feed shooter vs trap
+        public static final InvertedValue switchMotorInvert = InvertedValue.CounterClockwise_Positive;
+        public static final NeutralModeValue switchMotorBrakeMode = NeutralModeValue.Brake;
 
-        public static final int middleMotorID = 0;
-        public static final InvertedValue middleMotorInvert = InvertedValue.CounterClockwise_Positive;
-        public static final NeutralModeValue middleMotorBrakeMode = NeutralModeValue.Brake;
+        public static final int floorMotorID = 10; // Floor motor
+        public static final InvertedValue floorMotorInvert = InvertedValue.CounterClockwise_Positive;
+        public static final NeutralModeValue floorMotorBrakeMode = NeutralModeValue.Brake;
 
-        public static final int innerMotorID = 0;
-        public static final InvertedValue innerMotorInvert = InvertedValue.CounterClockwise_Positive;
-        public static final NeutralModeValue innerMotorBrakeMode = NeutralModeValue.Brake;
+        public static final int outsideMotorID = 11; // Controls the outer rollers
+        public static final InvertedValue outsideMotorInvert = InvertedValue.CounterClockwise_Positive;
+        public static final NeutralModeValue outsideMotorBrakeMode = NeutralModeValue.Brake;
+
+        public static final int tofID = 1;
+        public static final double tofTresh = 30;
     }
 }

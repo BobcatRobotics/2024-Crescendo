@@ -139,8 +139,9 @@ public class RobotContainer {
 
     //strafe.button(1).onTrue(new DriveToPose(m_swerve));
 
-    gp.button(0).onTrue(new InstantCommand(m_intake::runIn)).onFalse(new InstantCommand(m_intake::stop));
-    gp.button(0).onTrue(new InstantCommand(m_intake::runOut)).onFalse(new InstantCommand(m_intake::stop));
+    gp.povDown().whileTrue(new InstantCommand(m_intake::intakeToShooter)).onFalse(new InstantCommand(m_intake::stop));
+    gp.povUp().whileTrue(new InstantCommand(m_intake::intakeToTrap)).onFalse(new InstantCommand(m_intake::stop));
+    gp.button(9).whileTrue(new InstantCommand(m_intake::runOut)).onFalse(new InstantCommand(m_intake::stop)); // start
 
     /* Drive with gamepad */
     // m_swerve.setDefaultCommand(

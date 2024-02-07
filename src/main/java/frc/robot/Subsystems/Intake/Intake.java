@@ -8,21 +8,27 @@ public class Intake {
         this.io = io;
     }
 
-    public void runIn() {
-        io.outerMotorSetPercentOut(1);
-        io.middleMotorSetPercentOut(1);
-        io.innerMotorSetPercentOut(1);
+    public void intakeToShooter() {
+        io.switchMotorSetPercentOut(1);
+        io.floorMotorSetPercentOut(1);
+        io.outsideMotorSetPercentOut(1);
+    }
+
+    public void intakeToTrap() {
+        io.switchMotorSetPercentOut(-1);
+        io.floorMotorSetPercentOut(1);
+        io.outsideMotorSetPercentOut(1);
     }
 
     public void runOut() {
-        io.outerMotorSetPercentOut(-1);
-        io.middleMotorSetPercentOut(-1);
-        io.innerMotorSetPercentOut(-1);
+        io.switchMotorSetPercentOut(-1);
+        io.floorMotorSetPercentOut(-1);
+        io.outsideMotorSetPercentOut(-1);
     }
 
     public void stop() {
-        io.outerMotorStop();
-        io.middleMotorStop();
-        io.innerMotorStop();
+        io.switchMotorStop();
+        io.floorMotorStop();
+        io.outsideMotorStop();
     }
 }
