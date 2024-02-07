@@ -119,14 +119,14 @@ public class RobotContainer {
     m_swerve.setDefaultCommand(
         new TeleopSwerve(
             m_swerve,
-            () -> -strafe.getRawAxis(Joystick.AxisType.kY.value)
+            () -> strafe.getRawAxis(Joystick.AxisType.kY.value)
                 * Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value)),
-            () -> -strafe.getRawAxis(Joystick.AxisType.kX.value)
+            () -> strafe.getRawAxis(Joystick.AxisType.kX.value)
                 * Math.abs(strafe.getRawAxis(Joystick.AxisType.kX.value)),
-            () -> -rotate.getRawAxis(Joystick.AxisType.kX.value),
+            () -> rotate.getRawAxis(Joystick.AxisType.kX.value),
             () -> false,
-            () -> -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
-            () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
+            () -> rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
+            () -> strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
             // strafe.button(1) 
             () -> false
         ));

@@ -66,7 +66,7 @@ public class Swerve extends SubsystemBase {
     Pose2d desiredPose = new Pose2d();
     private Rotation2d lastYaw = new Rotation2d();
     
-    private String limelightfront = "limelightfront";
+    private String limelightfront = "limelight";
     private String limelightback = "limelightback";
     
 
@@ -113,7 +113,7 @@ public class Swerve extends SubsystemBase {
         rotationPID = new PIDController(SwerveConstants.teleopRotationKP, SwerveConstants.teleopRotationKI, SwerveConstants.teleopRotationKD);
         
         //Using last year's default deviations, need to tune
-        PoseEstimator = new SwerveDrivePoseEstimator(SwerveConstants.swerveKinematics, getYaw(), getModulePositions(), new Pose2d(), SwerveConstants.stateStdDevs, Constants.LimelightConstants.visionMeasurementStdDevs);
+        PoseEstimator = new SwerveDrivePoseEstimator(SwerveConstants.swerveKinematics, getYaw().times(-1), getModulePositions(), new Pose2d(), SwerveConstants.stateStdDevs, Constants.LimelightConstants.visionMeasurementStdDevs);
 
 
         AutoBuilder.configureHolonomic(
@@ -202,16 +202,17 @@ public class Swerve extends SubsystemBase {
         
         //Update PoseEstimator based on odometry
         // PoseEstimator.update(getYaw(), getModulePositions());
-            PoseEstimator.updateWithTime(Timer.getFPGATimestamp(), getYaw(), getModulePositions());
+            PoseEstimator.updateWithTime(Timer.getFPGATimestamp(), getYaw().times(-1), getModulePositions());
 
             //Update PoseEstimator if at least 1 tag is in view
             if (LimelightHelpers.getTV(limelightfront)){
-            //standard deviations are (distance to nearest apriltag)/2 for x and y and 10 degrees for theta
-            PoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue(limelightfront), (Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(limelightfront)/1000.0) - (LimelightHelpers.getLatency_Capture(limelightfront)/1000.0)),VecBuilder.fill(getDistance(limelightfront)/2, getDistance(limelightfront)/2, Units.degreesToRadians(10)));
+                //standard deviations are (distance to nearest apriltag)/2 for x and y and 10 degrees for theta
+                PoseEstimator.addVisionMeasurement((LimelightHelpers.getBotPose2d_wpiBlue(limelightfront)), (Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(limelightfront)/1000.0) - (LimelightHelpers.getLatency_Capture(limelightfront)/1000.0)),VecBuilder.fill(getDistance(limelightfront)/2, getDistance(limelightfront)/2, Units.degreesToRadians(10)));
+            
             }
-            if (LimelightHelpers.getTV(limelightback)){
-            PoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue(limelightback), (Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(limelightback)/1000.0) - (LimelightHelpers.getLatency_Capture(limelightback)/1000.0)), VecBuilder.fill(getDistance(limelightback)/2, getDistance(limelightback)/2, Units.degreesToRadians(10)));
-            }
+            // if (LimelightHelpers.getTV(limelightback)){
+            // PoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue(limelightback), (Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(limelightback)/1000.0) - (LimelightHelpers.getLatency_Capture(limelightback)/1000.0)), VecBuilder.fill(getDistance(limelightback)/2, getDistance(limelightback)/2, Units.degreesToRadians(10)));
+            // }
 
 
 
@@ -330,8 +331,10 @@ public class Swerve extends SubsystemBase {
      */
 
      public double getDistance(String limelight) {
-        return PoseEstimator.getEstimatedPosition().getTranslation().getDistance(LimelightHelpers.getBotPose2d_wpiBlue(limelight).getTranslation());
-     }
+        // return PoseEstimator.getEstimatedPosition().getTranslation().getDistance(new Pose2d(LimelightHelpers.getTargetPose3d_RobotSpace(limelight).getX(), LimelightHelpers.getTargetPose3d_RobotSpace(limelight).getY()).getTranslation());
+        //getting x distance to target
+        return LimelightHelpers.getTargetPose_RobotSpace(limelight)[0];
+    }
 
 
 
@@ -380,7 +383,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public Pose3d getPose3d(){
-        return (new Pose3d(new Translation3d(PoseEstimator.getEstimatedPosition().getX(),PoseEstimator.getEstimatedPosition().getY(),0), new Rotation3d(-Units.degreesToRadians(getRoll()),-Units.degreesToRadians(getPitch()),-getYaw().getRadians())));
+        return (new Pose3d(new Translation3d(PoseEstimator.getEstimatedPosition().getX(),PoseEstimator.getEstimatedPosition().getY(),0), new Rotation3d(-Units.degreesToRadians(getRoll()),-Units.degreesToRadians(getPitch()),getYaw().getRadians())));
     }
 
 
