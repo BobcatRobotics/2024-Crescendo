@@ -29,6 +29,8 @@ public class SwerveModule {
 
     private Rotation2d lastAngle;
 
+    private SwerveModulePosition[] odometryPositions = new SwerveModulePosition[] {};
+
     public SwerveModule(SwerveModuleIO io, int index) {
         this.io = io;
         this.index = index;
@@ -41,6 +43,17 @@ public class SwerveModule {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Swerve/Module" + Integer.toString(index), inputs);
+
+        // Calculate positions for odometry
+        int sampleCount = inputs.odometryTimestamps.length; // All signals are sampled together
+        odometryPositions = new SwerveModulePosition[sampleCount];
+        for (int i = 0; i < sampleCount; i++) {
+            double positionMeters = inputs.odometryDrivePositionsRad[i] * (SwerveConstants.wheelCircumference / (2 * Math.PI));
+            Rotation2d angle =
+                inputs.odometryAnglePositions[i].plus(
+                    inputs.offset != null ? inputs.offset : new Rotation2d());
+            odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
+        }
     }
 
     /**
@@ -157,5 +170,15 @@ public class SwerveModule {
      */
     public double getRawCanCoder() {
         return inputs.rawCanCoderPositionDeg;
+    }
+
+    /** Returns the module positions received this cycle. */
+    public SwerveModulePosition[] getOdometryPositions() {
+        return odometryPositions;
+    }
+
+    /** Returns the timestamps of the samples received this cycle. */
+    public double[] getOdometryTimestamps() {
+        return inputs.odometryTimestamps;
     }
 }
