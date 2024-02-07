@@ -1,5 +1,7 @@
 package frc.robot.Subsystems.Intake;
 
+import frc.robot.Constants.IntakeConstants;
+
 public class Intake {
     private final IntakeIO io;
     private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
@@ -24,6 +26,10 @@ public class Intake {
         io.switchMotorSetPercentOut(-1);
         io.floorMotorSetPercentOut(-1);
         io.outsideMotorSetPercentOut(-1);
+    }
+
+    public boolean hasPiece() {
+        return inputs.tofValue < IntakeConstants.tofTresh;
     }
 
     public void stop() {

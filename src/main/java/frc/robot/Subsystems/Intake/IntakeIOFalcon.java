@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.playingwithfusion.TimeOfFlight;
+import com.playingwithfusion.TimeOfFlight.RangingMode;
 
 import frc.robot.Constants.IntakeConstants;
 
@@ -12,7 +13,7 @@ public class IntakeIOFalcon implements IntakeIO {
     private final TalonFX floorMotor;
     private final TalonFX outsideMotor;
 
-    // private final TimeOfFlight tof;
+    private final TimeOfFlight tof;
 
     private final DutyCycleOut request;
 
@@ -21,7 +22,8 @@ public class IntakeIOFalcon implements IntakeIO {
         floorMotor = new TalonFX(IntakeConstants.floorMotorID);
         outsideMotor = new TalonFX(IntakeConstants.outsideMotorID);
 
-        // tof = new TimeOfFlight(IntakeConstants.tofID);
+        tof = new TimeOfFlight(IntakeConstants.tofID);
+        tof.setRangingMode(RangingMode.Medium, 24);
 
         TalonFXConfiguration switchConfig = new TalonFXConfiguration();
         switchMotor.getConfigurator().apply(switchConfig);
@@ -56,6 +58,8 @@ public class IntakeIOFalcon implements IntakeIO {
         inputs.outsideMotorPercentOut = outsideMotor.getDutyCycle().getValueAsDouble();
         inputs.outsideMotorCurrent = outsideMotor.getStatorCurrent().getValueAsDouble();
         inputs.outsideMotorVelocityRotPerSec = outsideMotor.getVelocity().getValueAsDouble();
+
+        inputs.tofValue = tof.getRange();
     }
 
     public void switchMotorSetPercentOut(double percent) {

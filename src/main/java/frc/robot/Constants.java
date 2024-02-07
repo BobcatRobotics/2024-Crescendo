@@ -188,6 +188,6 @@ public class Constants {
         public static final NeutralModeValue outsideMotorBrakeMode = NeutralModeValue.Brake;
 
         public static final int tofID = 1;
-        public static final double tofTresh = 30;
+        public static final double tofTresh = 30; // millimeters
     }
 }

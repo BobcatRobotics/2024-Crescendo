@@ -17,7 +17,7 @@ public interface IntakeIO {
         public double outsideMotorCurrent = 0.0;
         public double outsideMotorVelocityRotPerSec = 0.0;
 
-        public boolean tofValue = false;
+        public double tofValue = 0.0;
     }
 
     public default void updateInputs(IntakeIOInputs inputs) {}
