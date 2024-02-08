@@ -17,9 +17,9 @@ public interface ShooterIO {
         public double angleMotorStatorCurrent = 0.0;
         public double angleMotorVelocityRPS = 0.0;
 
-        public double feederMotorPercentOut = 0.0;
-        public double feederMotorStatorCurrent = 0.0;
-        public double feederMotorVelocityRPS = 0.0;
+        public double topMotorPercentOut;
+        public double bottomMotorPercentOut;
+        public double angleMotorPercentOut;
     }
 
     public default void updateInputs(ShooterIOInputs inputs) {}
@@ -28,11 +28,9 @@ public interface ShooterIO {
 
     public default void bottomMotorSetVelocityOut(double velocity) {}
     public default void topMotorSetVelocityOut(double velocity) {}
-    public default void feederMotorSetPercentOut(double percent) {}
     public default void angleMotorSetPosition(double position) {}
 
     public default void bottomMotorStop() {}
     public default void topMotorStop() {}
     public default void angleMotorStop() {}
-    public default void feederMotorStop() {}
 }
