@@ -162,6 +162,8 @@ public class Constants {
         public static final Translation2d centerlineNote5 = new Translation2d(0,0);
 
         public static final double noteDiameter = Units.inchesToMeters(14);
+
+        public static final double speakerHeight = Units.inchesToMeters(82.875);
     }
 
     public static final class LimelightConstants{
@@ -174,9 +176,9 @@ public class Constants {
     
     }
 
-    public static final class climberConstants{
+    public static final class ClimberConstants{
         public static final int MotorID = 0;
-        public static final NeutralModeValue climberMotor = NeutralModeValue.Brake;    
+        public static final NeutralModeValue climberMotorBrakeMode = NeutralModeValue.Brake;    
         public static final InvertedValue climberMotorInvert =  InvertedValue.Clockwise_Positive;  
         public static final double kP = 0;
         public static final double kI = 0;
@@ -194,57 +196,39 @@ public class Constants {
 
     }
 
-    public static final class shooterConstants {
-        public static final int topMotorID = 0;
+    public static final class ShooterConstants {
+        public static final int topMotorID = 12;
         public static final InvertedValue topMotorInvert = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue topMotorBrakeMode = NeutralModeValue.Coast;
-        // public static final int kTopS = 0;
-        // public static final int kTopV = 0;
-        // public static final int kTopA = 0;
-        // public static final int kTopP = 0;
-        // public static final int kTopI = 0;
-        // public static final int kTopD = 0;
-        // public static final double topMotorMotionMagicCruiseVelocity = 0;
-        // public static final double topMotorMotionMagicAcceleration = 0;
-        // public static final double topMotorMotionMagicJerk = 0;
+        public static final double kTopP = 0.1;
+        public static final double kTopI = 0;
+        public static final double kTopD = 0;
 
-        public static final int bottomMotorID = 0;
+        public static final int bottomMotorID = 13;
         public static final InvertedValue bottomMotorInvert = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue bottomMotorBrakeMode = NeutralModeValue.Coast;
-        // public static final int kBottomS = 0;
-        // public static final int kBottomV = 0;
-        // public static final int kBottomA = 0;
-        // public static final int kBottomP = 0;
-        // public static final int kBottomI = 0;
-        // public static final int kBottomD = 0;
-        // public static final double bottomMotorMotionMagicCruiseVelocity = 0;
-        // public static final double bottomMotorMotionMagicAcceleration = 0;
-        // public static final double bottomMotorMotionMagicJerk = 0;
+        public static final double kBottomP = 0.1;
+        public static final double kBottomI = 0;
+        public static final double kBottomD = 0;
 
-        public static final int angleMotorID = 0;
+        public static final int angleMotorID = 14;
         public static final InvertedValue angleMotorInvert = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue angleMotorBrakeMode = NeutralModeValue.Brake;
-        public static final int kAngleS = 0;
-        public static final int kAngleV = 0;
-        public static final int kAngleA = 0;
-        public static final int kAngleP = 0;
-        public static final int kAngleI = 0;
-        public static final int kAngleD = 0;
-        public static final double angleMotorMotionMagicCruiseVelocity = 0;
-        public static final double angleMotorMotionMagicAcceleration = 0;
-        public static final double angleMotorMotionMagicJerk = 0;
+        public static final double kAngleS = 0;
+        public static final double kAngleV = 0;
+        public static final double kAngleA = 0;
+        public static final double kAngleP = 0.1;
+        public static final double kAngleI = 0;
+        public static final double kAngleD = 0;
 
-        public static final int feederMotorID = 0;
-        public static final InvertedValue feederMotorInvert = InvertedValue.Clockwise_Positive;
-        public static final NeutralModeValue feederMotorBrakeMode = NeutralModeValue.Coast;
-        // public static final int kFeederS = 0;
-        // public static final int kFeederV = 0;
-        // public static final int kFeederA = 0;
-        // public static final int kFeederP = 0;
-        // public static final int kFeederI = 0;
-        // public static final int kFeederD = 0;
-        // public static final double feederMotorMotionMagicCruiseVelocity = 0;
-        // public static final double feederMotorMotionMagicAcceleration = 0;
-        // public static final double feederMotorMotionMagicJerk = 0;
+        public static final int cancoderID = 5;
+        public static final AbsoluteSensorRangeValue sensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+        public static final SensorDirectionValue sensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+        public static final Rotation2d offset = new Rotation2d();
+        public static final double rotorToSensorRatio = (64/14)*(58/18)*(58/12);
+
+        public static final double bottomLimit = 0; // degrees
+        public static final double topLimit = 0;
+        public static final double safePosition = 0;
     }
 }

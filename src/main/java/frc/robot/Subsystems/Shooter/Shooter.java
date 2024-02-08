@@ -1,50 +1,40 @@
 package frc.robot.Subsystems.Shooter;
 
-import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.FieldConstants;
 
 public class Shooter extends SubsystemBase {
     private final ShooterIO io;
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
-
-
 
     public Shooter(ShooterIO io) {
         this.io = io;
     }
 
     public void periodic() {
-        io.updateConfigs();
+        io.updateInputs(inputs);
     }
 
-    public void shoot() {
-        io.bottomMotorSetVelocityOut(0);
-        io.topMotorSetVelocityOut(0);
+    public void setSpeed(double rps) {
+        io.setTopVelocity(rps);
+        io.setBottomVelocity(rps);
     }
 
-
-    public void increaseAngle() {
-        io.angleMotorSetPosition(1.0);
+    public void setAngle(double degrees) {
+        io.setAngle(degrees);
     }
 
-    public void decreaseAngle() {
-        io.angleMotorSetPosition(-1.0);
-    }
-
-    
-
-    public void alignAngle(Pose2d botpose, Pose2d speakerpose){
-        double xdist = Math.abs(botpose.getTranslation().getDistance(speakerpose.getTranslation()));
-        io.angleMotorSetPosition(0);
+    public double getAngleToSpeaker(Pose2d botpose, Pose2d speakerpose){
+        double xDist = Math.abs(botpose.getTranslation().getDistance(speakerpose.getTranslation()));
+        double yDist = FieldConstants.speakerHeight;
+        return Math.atan(yDist/xDist);
     }
 
     public void stop() {
-        io.topMotorStop();
-        io.angleMotorStop();
-        io.bottomMotorStop();
+        io.stopTopMotor();
+        io.stopBottomMotor();
     }
 
 

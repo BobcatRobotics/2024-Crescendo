@@ -1,8 +1,10 @@
 package frc.robot.Subsystems.Climber;
 
-import frc.robot.Constants;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import frc.robot.Constants.ClimberConstants;
+
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 
@@ -18,13 +20,13 @@ public class ClimberIOFalcon implements ClimberIO
         climberMotor = new TalonFX(deviceID);
         TalonFXConfiguration climberConfigs = new TalonFXConfiguration();
         climberMotor.getConfigurator().apply(climberConfigs);
-        climberConfigs.MotorOutput.Inverted = Constants.climberConstants.climberMotorInvert;
+        climberConfigs.MotorOutput.Inverted = ClimberConstants.climberMotorInvert;
         climberMotor.setPosition(0);
         m_voltage = new MotionMagicVoltage(0);
         motionMagicConfigs = climberConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = Constants.climberConstants.motionmagicCruiseVelocity;
-        motionMagicConfigs.MotionMagicAcceleration = Constants.climberConstants.motionmagicAcceleration;
-        motionMagicConfigs.MotionMagicJerk = Constants.climberConstants.motionmagicJerk;
+        motionMagicConfigs.MotionMagicCruiseVelocity = ClimberConstants.motionmagicCruiseVelocity;
+        motionMagicConfigs.MotionMagicAcceleration = ClimberConstants.motionmagicAcceleration;
+        motionMagicConfigs.MotionMagicJerk = ClimberConstants.motionmagicJerk;
         this.climberConfigs = climberConfigs;
     }
 
@@ -54,7 +56,7 @@ public class ClimberIOFalcon implements ClimberIO
     }
 
     public void inverseDirection(){
-        climberConfigs.MotorOutput.Inverted = Constants.climberConstants.climberMotorInvert;
+        climberConfigs.MotorOutput.Inverted = ClimberConstants.climberMotorInvert;
     }
 
 }
