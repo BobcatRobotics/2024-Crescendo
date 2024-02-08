@@ -100,10 +100,10 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
                 .toArray(Rotation2d[]::new);
 
         double totalTime = 0;
-        for (int i = 0; i < inputs.odometryTimestamps.length; i++) {
-            totalTime += inputs.odometryTimestamps[i];
+        for (int i = 1; i < inputs.odometryTimestamps.length; i++) {
+            totalTime += (inputs.odometryTimestamps[i]-inputs.odometryTimestamps[i-1]);
         }
-        double avgTime = totalTime / inputs.odometryTimestamps.length;
+        double avgTime = totalTime / (inputs.odometryTimestamps.length-1);
         inputs.freq = 1/avgTime;
 
         timestampQueue.clear();
