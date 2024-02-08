@@ -215,7 +215,7 @@ public class Swerve extends SubsystemBase {
                 rotation);
                 
                 if (snapToRotation) {
-                    desiredSpeeds.omegaRadiansPerSecond = -rotationPID.calculate(getYaw().getRadians(), Math.PI/2);
+                    desiredSpeeds.omegaRadiansPerSecond = rotationPID.calculate(getYaw().getRadians(), Math.PI/2);
                 } else {
                     if (rotation == 0) {
                         if (rotating) {
@@ -248,6 +248,8 @@ public class Swerve extends SubsystemBase {
      */
     public void drive(ChassisSpeeds targetSpeeds) {
         targetSpeeds = ChassisSpeeds.discretize(targetSpeeds, Constants.loopPeriodSecs);
+
+        lastMovingYaw = getYaw().getRadians();
         
         SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates(targetSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxSpeed);

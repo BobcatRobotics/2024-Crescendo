@@ -114,21 +114,21 @@ public class RobotContainer {
    */
   private void configureBindings() {
     /* Drive with joysticks */
-    // m_swerve.setDefaultCommand(
-    //     new TeleopSwerve(
-    //         m_swerve,
-    //         () -> -strafe.getRawAxis(Joystick.AxisType.kY.value)
-    //             * Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value)),
-    //         () -> -strafe.getRawAxis(Joystick.AxisType.kX.value)
-    //             * Math.abs(strafe.getRawAxis(Joystick.AxisType.kX.value)),
-    //         () -> -rotate.getRawAxis(Joystick.AxisType.kX.value),
-    //         () -> false,
-    //         () -> -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
-    //         () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
-    //         // strafe.button(1) 
-    //         () -> false
-    //     ));
-    //   rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
+    m_swerve.setDefaultCommand(
+        new TeleopSwerve(
+            m_swerve,
+            () -> -strafe.getRawAxis(Joystick.AxisType.kY.value)
+                * Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value)),
+            () -> -strafe.getRawAxis(Joystick.AxisType.kX.value)
+                * Math.abs(strafe.getRawAxis(Joystick.AxisType.kX.value)),
+            () -> -rotate.getRawAxis(Joystick.AxisType.kX.value),
+            () -> false,
+            () -> -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
+            () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
+            // strafe.button(1) 
+            () -> false
+        ));
+      rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
 
       // rotate.button(1).onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
 
@@ -136,21 +136,21 @@ public class RobotContainer {
       
 
     /* Drive with gamepad */
-    m_swerve.setDefaultCommand(
-        new TeleopSwerve(
-            m_swerve,
-            () -> -gp.getRawAxis(Joystick.AxisType.kY.value)
-                * Math.abs(gp.getRawAxis(Joystick.AxisType.kY.value)),
-            () -> -gp.getRawAxis(Joystick.AxisType.kX.value)
-                * Math.abs(gp.getRawAxis(Joystick.AxisType.kX.value)),
-            () -> -gp.getRawAxis(Joystick.AxisType.kZ.value),
-            () -> false,
-            () -> 0.0,
-            () -> 0.0,
-            () -> false
-        ));
+    // m_swerve.setDefaultCommand(
+    //     new TeleopSwerve(
+    //         m_swerve,
+    //         () -> -gp.getRawAxis(Joystick.AxisType.kY.value)
+    //             * Math.abs(gp.getRawAxis(Joystick.AxisType.kY.value)),
+    //         () -> -gp.getRawAxis(Joystick.AxisType.kX.value)
+    //             * Math.abs(gp.getRawAxis(Joystick.AxisType.kX.value)),
+    //         () -> -gp.getRawAxis(Joystick.AxisType.kZ.value),
+    //         () -> false,
+    //         () -> 0.0,
+    //         () -> 0.0,
+    //         () -> false
+    //     ));
 
-    gp.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
+    // gp.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
   }
 
   public Command getAutonomousCommand() {
