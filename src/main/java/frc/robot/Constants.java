@@ -50,11 +50,11 @@ public class Constants {
         public static final double wheelCircumference = Units.inchesToMeters(4.0)*Math.PI;
         public static final double angleGearRatio = ((150.0 / 7.0) / 1.0);
         public static final double driveGearRatio =  (6.12 / 1.0);
-        public static final ModuleLimits moduleLimits = // Tune to our robot
-            new ModuleLimits(
-                maxSpeed,
-                maxSpeed * 5,
-                Units.degreesToRadians(1080.0));
+        // public static final ModuleLimits moduleLimits = // Tune to our robot
+        //     new ModuleLimits(
+        //         maxSpeed,
+        //         maxSpeed * 5,
+        //         Units.degreesToRadians(1080.0));
 
         /* Auto Constants */
         public static final double translationKP = 2.0087;

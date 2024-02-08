@@ -61,7 +61,7 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
 
         angleAbsolutePosition = angleEncoder.getAbsolutePosition();
         anglePositionQueue =
-            PhoenixOdometryThread.getInstance().registerSignal(angleMotor, angleMotor.getPosition());
+            PhoenixOdometryThread.getInstance().registerSignal(angleEncoder, angleEncoder.getPosition());
         anglePercentOut = angleMotor.getDutyCycle();
 
         BaseStatusSignal.setUpdateFrequencyForAll(
@@ -96,8 +96,15 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
                 .toArray();
         inputs.odometryAnglePositions =
             anglePositionQueue.stream()
-                .map((Double value) -> Rotation2d.fromRotations(value / SwerveConstants.angleGearRatio))
+                .map((Double value) -> Rotation2d.fromRotations(value))
                 .toArray(Rotation2d[]::new);
+
+        double totalTime = 0;
+        for (int i = 0; i < inputs.odometryTimestamps.length; i++) {
+            totalTime += inputs.odometryTimestamps[i];
+        }
+        double avgTime = totalTime / inputs.odometryTimestamps.length;
+        inputs.freq = 1/avgTime;
 
         timestampQueue.clear();
         drivePositionQueue.clear();
