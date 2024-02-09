@@ -47,7 +47,6 @@ public class ClimberIOFalcon implements ClimberIO
     public void run(double rotationAmount){
         // Runs the motor for a certain encoder count using MotionMagic PID
         climberMotor.setControl(m_voltage.withPosition(rotationAmount));
-        
     }
 
     public void changeVelocity(double newVelocity){
