@@ -250,4 +250,10 @@ public class Constants {
         public static final double topLimit = 0;
         public static final double safePosition = 0;
     }
+
+    public static final class TrapConstants{
+        
+    }
 }
+
+
