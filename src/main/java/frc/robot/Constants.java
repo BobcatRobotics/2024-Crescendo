@@ -49,8 +49,9 @@ public class Constants {
         public static final double driveBaseRadius = Math.sqrt(2 * Math.pow(wheelBase/2, 2));
         public static final double wheelCircumference = Units.inchesToMeters(4.0)*Math.PI;
         public static final double angleGearRatio = ((150.0 / 7.0) / 1.0);
-        public static final double driveGearRatio =  (6.12 / 1.0);
-
+        // public static final double driveGearRatio =  (6.12 / 1.0);
+        public static final double driveGearRatio =  (5.36 / 1.0);
+        
         /* Auto Constants */
         public static final double translationKP = 2.0087;
         public static final double translationKI = 0.0;
@@ -153,6 +154,7 @@ public class Constants {
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
     }
+
     public static final class FieldConstants{
         //1 is closest to AMP, 5 is closest to SOURCE
         public static final Translation2d centerlineNote1 = new Translation2d(0,0);
@@ -174,6 +176,23 @@ public class Constants {
         public static final int horPixles = 1280;
         public static final double filterTimeConstant=  0.1; // in seconds, inputs occuring over a time period significantly shorter than this will be thrown out
     
+    }
+
+    public static final class IntakeConstants {
+        public static final int switchMotorID = 9; // This one switched to feed shooter vs trap
+        public static final InvertedValue switchMotorInvert = InvertedValue.CounterClockwise_Positive;
+        public static final NeutralModeValue switchMotorBrakeMode = NeutralModeValue.Brake;
+
+        public static final int floorMotorID = 10; // Floor motor
+        public static final InvertedValue floorMotorInvert = InvertedValue.CounterClockwise_Positive;
+        public static final NeutralModeValue floorMotorBrakeMode = NeutralModeValue.Brake;
+
+        public static final int outsideMotorID = 11; // Controls the outer rollers
+        public static final InvertedValue outsideMotorInvert = InvertedValue.CounterClockwise_Positive;
+        public static final NeutralModeValue outsideMotorBrakeMode = NeutralModeValue.Brake;
+
+        public static final int tofID = 1;
+        public static final double tofTresh = 30; // millimeters
     }
 
     public static final class ClimberConstants{

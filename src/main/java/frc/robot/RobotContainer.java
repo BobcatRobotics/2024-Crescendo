@@ -14,9 +14,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import frc.robot.Commands.DriveToPose;
-import frc.robot.Commands.TeleopSwerve;
+import frc.robot.Commands.Swerve.DriveToPose;
+import frc.robot.Commands.Swerve.TeleopSwerve;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Subsystems.Intake.Intake;
+import frc.robot.Subsystems.Intake.IntakeIO;
+import frc.robot.Subsystems.Intake.IntakeIOFalcon;
 import frc.robot.Subsystems.Swerve.GyroIO;
 import frc.robot.Subsystems.Swerve.GyroIOPigeon2;
 import frc.robot.Subsystems.Swerve.Swerve;
@@ -36,6 +39,7 @@ public class RobotContainer {
 
   /* Subsystems */
   public final Swerve m_swerve;
+  public final Intake m_intake;
   //public final Vision m_Vision;
 
   /* Commands */
@@ -52,6 +56,7 @@ public class RobotContainer {
             new SwerveModuleIOFalcon(SwerveConstants.Module1Constants.constants),
             new SwerveModuleIOFalcon(SwerveConstants.Module2Constants.constants),
             new SwerveModuleIOFalcon(SwerveConstants.Module3Constants.constants));
+        m_intake = new Intake(new IntakeIOFalcon());
         //m_Vision = new Vision(new VisionIOLimelight());
         break;
 
@@ -63,7 +68,8 @@ public class RobotContainer {
             new SwerveModuleIOSim(),
             new SwerveModuleIOSim(),
             new SwerveModuleIOSim());
-            //m_Vision = new Vision(new VisionIOLimelight());
+        m_intake = new Intake(new IntakeIO() {});
+        //m_Vision = new Vision(new VisionIOLimelight());
         break;
 
       // Replayed robot, disable IO implementations
@@ -78,7 +84,8 @@ public class RobotContainer {
             },
             new SwerveModuleIO() {
             });
-            //m_Vision = new Vision(new VisionIOLimelight());
+        m_intake = new Intake(new IntakeIO() {});
+        //m_Vision = new Vision(new VisionIOLimelight());
         break;
     }
 
@@ -128,12 +135,13 @@ public class RobotContainer {
             // strafe.button(1) 
             () -> false
         ));
-      rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
+    rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
 
-      // rotate.button(1).onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
+    //strafe.button(1).onTrue(new DriveToPose(m_swerve));
 
-      //strafe.button(1).onTrue(new DriveToPose(m_swerve));
-      
+    gp.povDown().whileTrue(new InstantCommand(m_intake::intakeToShooter)).onFalse(new InstantCommand(m_intake::stop));
+    gp.povUp().whileTrue(new InstantCommand(m_intake::intakeToTrap)).onFalse(new InstantCommand(m_intake::stop));
+    gp.button(9).whileTrue(new InstantCommand(m_intake::runOut)).onFalse(new InstantCommand(m_intake::stop)); // start
 
     /* Drive with gamepad */
     // m_swerve.setDefaultCommand(
@@ -148,8 +156,6 @@ public class RobotContainer {
     //         () -> 0.0,
     //         () -> 0.0
     //     ));
-
-        
   }
 
   public Command getAutonomousCommand() {
