@@ -4,6 +4,10 @@
 
 package frc.robot.Commands;
 
+import org.littletonrobotics.junction.Logger;
+
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -46,18 +50,15 @@ public class GrabNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+
+    //if were more than 5 degrees off, only rotate, once were within 5 degrees, translate.
     notePos = vision.getNotePose();
-    if(!(Math.abs(thetaController.getPositionError()) < 5)){
-    swerve.drive(new Translation2d(), -thetaController.calculate(notePos.getRotation().getDegrees()),false,false);
-    }else{
-      swerve.drive(
-        new Translation2d(
-          0,
-          xController.calculate(notePos.getX())
-          
-        ),
-         -thetaController.calculate(notePos.getRotation().getDegrees()),false,false);
-    }
+     if(!(Math.abs(thetaController.getPositionError()) < 5)){
+     swerve.drive(new Translation2d(), -thetaController.calculate(notePos.getRotation().getDegrees()),false,false);
+     }else{
+      swerve.drive(new Translation2d(0,xController.calculate(notePos.getX())), -thetaController.calculate(notePos.getRotation().getDegrees()),false,false);
+     }
   }
     
 

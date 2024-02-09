@@ -190,7 +190,7 @@ public class Constants {
         public static final double horizontalFOV = 63.3;
         public static final double limelightMountHeight = Units.inchesToMeters(20.5);
         public static final int detectorPiplineIndex = 7; 
-        public static final int apriltagPipelineIndex = 8;
+        public static final int apriltagPipelineIndex = 0;
         public static final int horPixles = 1280;
         public static final double filterTimeConstant=  0.1; // in seconds, inputs occuring over a time period significantly shorter than this will be thrown out
         public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.1,0.1, Units.degreesToRadians(10));

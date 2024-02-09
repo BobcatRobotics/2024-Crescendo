@@ -14,10 +14,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import frc.robot.Commands.AlignToTag;
-import frc.robot.Commands.DriveToPose;
+
 import frc.robot.Commands.TeleopSwerve;
-import frc.robot.Commands.GrabNote;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Subsystems.Swerve.GyroIO;
 import frc.robot.Subsystems.Swerve.GyroIOPigeon2;
@@ -130,11 +128,13 @@ public class RobotContainer {
             // strafe.button(1) 
             () -> false
         ));
-      rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
+      
+      //TODO IF YOU ARE READING THIS ADD THIS BACK IN!!!!!!!! >:( 
+      //  rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));      
+      
+    
+      rotate.button(1).onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
 
-      // rotate.button(1).onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
-
-      strafe.button(1).whileTrue(new AlignToTag(m_swerve, m_Vision, null));
       
 
     /* Drive with gamepad */
