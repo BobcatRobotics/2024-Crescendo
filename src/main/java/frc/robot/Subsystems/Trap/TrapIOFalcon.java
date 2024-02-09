@@ -21,6 +21,12 @@ public class TrapIOFalcon {
     public TrapIOFalcon(int deviceIDWinch, int deviceIDShooter){
         winchMotor = new TalonFX(deviceIDWinch);
         shooterMotor = new TalonFX(deviceIDShooter);
+
+        winchConfigs = new TalonFXConfiguration();
+        winchMotor.getConfigurator().apply(winchConfigs);
+
+        shooterConfigs = new TalonFXConfiguration();
+        shooterMotor.getConfigurator().apply(shooterConfigs);
     }
 
 }
