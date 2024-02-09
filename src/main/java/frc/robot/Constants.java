@@ -15,7 +15,7 @@ import frc.lib.util.swerve.ModuleLimits;
 
 public class Constants {
     public static final Mode currentMode = RobotBase.isSimulation() ? Mode.SIM : (RobotBase.isReal() ? Mode.REAL : Mode.REPLAY);
-
+    
     public static enum Mode {
         /** Running on a real robot. */
         REAL,

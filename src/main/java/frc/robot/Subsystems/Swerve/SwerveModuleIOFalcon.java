@@ -96,7 +96,7 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
                 .toArray();
         inputs.odometryAnglePositions =
             anglePositionQueue.stream()
-                .map((Double value) -> Rotation2d.fromRotations(value))
+                .map((Double value) -> Rotation2d.fromRadians(MathUtil.angleModulus(Rotation2d.fromRotations(value).minus(encoderOffset).getRadians())))
                 .toArray(Rotation2d[]::new);
 
         double totalTime = 0;

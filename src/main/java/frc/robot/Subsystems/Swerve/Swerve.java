@@ -40,6 +40,9 @@ public class Swerve extends SubsystemBase {
     private final double[] swerveModuleStates = new double[8];
     private final double[] desiredSwerveModuleStates = new double[8];
 
+    private SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
+    private final double[] swervytestythingy = new double[8];
+
     // private SwerveSetpointGenerator setpointGenerator;
     // private SwerveSetpoint currentSetpoint = new SwerveSetpoint(
     //     new ChassisSpeeds(),
@@ -155,6 +158,7 @@ public class Swerve extends SubsystemBase {
             }
 
             poseEstimator.updateWithTime(sampleTimestamps[i], lastYaw, modulePositions);
+            swerveModulePositions = modulePositions;
         }
 
         for (SwerveModule mod : modules) {
@@ -163,12 +167,14 @@ public class Swerve extends SubsystemBase {
             desiredSwerveModuleStates[mod.index * 2] = mod.getDesiredState().angle.getDegrees();
             swerveModuleStates[mod.index * 2 + 1] = mod.getState().speedMetersPerSecond;
             swerveModuleStates[mod.index * 2] = mod.getState().angle.getDegrees();
+            swervytestythingy[mod.index * 2] = swerveModulePositions[mod.index].angle.getDegrees();
         }
         
         Logger.recordOutput("Swerve/Rotation", gyroInputs.yawPosition.getDegrees());
         Logger.recordOutput("Swerve/DesiredModuleStates", desiredSwerveModuleStates);
         Logger.recordOutput("Swerve/ModuleStates", swerveModuleStates);
         Logger.recordOutput("Swerve/Pose", getPose());
+        Logger.recordOutput("Swerve/OdometryDebugStates", swervytestythingy);
         if (DriverStation.isDisabled()) {
             for (SwerveModule mod : modules) {
                 mod.stop();
