@@ -10,7 +10,7 @@ public class Trap extends SubsystemBase {
      TrapIO trap;
 
      public Trap(){
-        
-     };
+
+     }
 
 }
