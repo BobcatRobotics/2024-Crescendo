@@ -252,7 +252,8 @@ public class Constants {
     }
 
     public static final class TrapConstants{
-        
+        public static final double deviceIDWinch = 0;
+        public static final double deviceIDShooter = 0;
     }
 }
 
