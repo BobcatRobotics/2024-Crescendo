@@ -23,17 +23,23 @@ public class AmpIOFalcon implements AmpIO{
     private final MotionMagicConfigs motionMagicConfigs;
     // private final MotionMagicVoltage m_request;
     private final MotionMagicVoltage m_request;
+    private final SoftwareLimitSwitchConfigs softLimitThresh;
     // private double kP = constants.AMPConstants.kP; 
     // private double kI = constants.AMPConstants.kI;
     // private double kD = constants.AMPConstants.kD;
 
     
     public AmpIOFalcon(){
-        
+        softLimitThresh = new SoftwareLimitSwitchConfigs();
         motor = new TalonFX(Constants.AMPConstants.canID);
         configs = new TalonFXConfiguration();
         m_request = new MotionMagicVoltage(0);
         slot0 = configs.Slot0;
+        softLimitThresh.withForwardSoftLimitEnable(true);
+        softLimitThresh.withReverseSoftLimitEnable(true);
+        softLimitThresh.withForwardSoftLimitThreshold(Constants.AMPConstants.forwardsoftlimit);
+        softLimitThresh.withReverseSoftLimitThreshold(Constants.AMPConstants.reversesoftlimit5);
+
         slot0.kS = Constants.AMPConstants.kS;//initializes motion magic pid values
         slot0.kV = Constants.AMPConstants.kV;
         slot0.kA = Constants.AMPConstants.kA;
@@ -43,15 +49,17 @@ public class AmpIOFalcon implements AmpIO{
 
         configs.MotorOutput.Inverted= InvertedValue.Clockwise_Positive; 
         configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        motor.ForwardSoftLimitEnable = true;
-        motor.ForwardSoftLimitThreshold = Constants.AMPConstants.softLimitThresh;
         
+
+        
+
         m_request.withEnableFOC(true);
         motionMagicConfigs = configs.MotionMagic;
         motionMagicConfigs.MotionMagicCruiseVelocity = Constants.AMPConstants.motionmagicCruiseVelocity;
         motionMagicConfigs.MotionMagicAcceleration = Constants.AMPConstants.motionmagicAcceleration;
         motionMagicConfigs.MotionMagicJerk = Constants.AMPConstants.motionmagicJerk;
 
+        configs.SoftwareLimitSwitch = softLimitThresh;
         motor.getConfigurator().apply(configs);
         
     }
@@ -65,7 +73,7 @@ public class AmpIOFalcon implements AmpIO{
     runs the motor to rotiation amount for pid
     */
     public void run(double rotationAmount){
-        motor.setControl(m_request.withPosition(rotationAmount));
+        motor.setControl(m_request.withPosition(rotationAmount).withLimitForwardMotion(true).withLimitReverseMotion(true));
     }
     /*
     Stops the motor
