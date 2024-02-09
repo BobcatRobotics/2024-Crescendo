@@ -40,9 +40,8 @@ public class ShooterIOFalcon implements ShooterIO {
         topConfigs.Slot0.kP = ShooterConstants.kTopP;
         topConfigs.Slot0.kI = ShooterConstants.kTopI;
         topConfigs.Slot0.kD = ShooterConstants.kTopD;
+        topConfigs.Slot0.kV = ShooterConstants.kTopV;
         topMotor.getConfigurator().apply(topConfigs);
-
-
 
         //Bottom motor configurations
         TalonFXConfiguration bottomConfigs = new TalonFXConfiguration();
@@ -52,9 +51,8 @@ public class ShooterIOFalcon implements ShooterIO {
         bottomConfigs.Slot0.kP = ShooterConstants.kBottomP;
         bottomConfigs.Slot0.kI = ShooterConstants.kBottomI;
         bottomConfigs.Slot0.kD = ShooterConstants.kBottomD;
+        bottomConfigs.Slot0.kV = ShooterConstants.kBottomV;
         bottomMotor.getConfigurator().apply(bottomConfigs);
-
-
 
         //Angle motor configurations
         TalonFXConfiguration angleConfigs = new TalonFXConfiguration();

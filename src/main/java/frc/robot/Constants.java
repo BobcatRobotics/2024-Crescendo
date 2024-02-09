@@ -222,6 +222,7 @@ public class Constants {
         public static final double kTopP = 0.1;
         public static final double kTopI = 0;
         public static final double kTopD = 0;
+        public static final double kTopV = 0;
 
         public static final int bottomMotorID = 13;
         public static final InvertedValue bottomMotorInvert = InvertedValue.Clockwise_Positive;
@@ -229,6 +230,7 @@ public class Constants {
         public static final double kBottomP = 0.1;
         public static final double kBottomI = 0;
         public static final double kBottomD = 0;
+        public static final double kBottomV = 0;
 
         public static final int angleMotorID = 14;
         public static final InvertedValue angleMotorInvert = InvertedValue.Clockwise_Positive;
