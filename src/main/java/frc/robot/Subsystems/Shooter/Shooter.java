@@ -26,6 +26,12 @@ public class Shooter extends SubsystemBase {
         io.setAngle(degrees);
     }
 
+    /**
+     * 
+     * @param botpose
+     * @param speakerpose
+     * @return returns in RADIANS?!?!??! what the flip?
+     */
     public double getAngleToSpeaker(Pose2d botpose, Pose2d speakerpose){
         double xDist = Math.abs(botpose.getTranslation().getDistance(speakerpose.getTranslation()));
         double yDist = FieldConstants.speakerHeight;

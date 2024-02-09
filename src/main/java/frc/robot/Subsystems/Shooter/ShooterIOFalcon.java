@@ -13,9 +13,11 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterIOFalcon implements ShooterIO {
-    private TalonFX topMotor;
-    private TalonFX bottomMotor;
-    private TalonFX angleMotor;
+    private TalonFX topMotor; //this will control the top rollers in the shooter "arm"
+    private TalonFX bottomMotor; //this controls the bottom rollers of the shooter arm
+    private TalonFX angleMotor; //this is responsbile for the angle of the shooter
+    
+    //Here lies "feederMotor" :(      R.I.P. 2024-2024; a wonderful son, brother, and father.
 
     private CANcoder cancoder;
 
@@ -29,6 +31,8 @@ public class ShooterIOFalcon implements ShooterIO {
         angleMotor = new TalonFX(ShooterConstants.angleMotorID); //initializes TalonFX motor 3
         cancoder = new CANcoder(ShooterConstants.cancoderID);
 
+
+        //Top motor configurations
         TalonFXConfiguration topConfigs = new TalonFXConfiguration();
         topMotor.getConfigurator().apply(topConfigs);
         topConfigs.MotorOutput.Inverted = ShooterConstants.topMotorInvert;
@@ -38,6 +42,9 @@ public class ShooterIOFalcon implements ShooterIO {
         topConfigs.Slot0.kD = ShooterConstants.kTopD;
         topMotor.getConfigurator().apply(topConfigs);
 
+
+
+        //Bottom motor configurations
         TalonFXConfiguration bottomConfigs = new TalonFXConfiguration();
         bottomMotor.getConfigurator().apply(bottomConfigs);
         bottomConfigs.MotorOutput.Inverted = ShooterConstants.bottomMotorInvert;
@@ -47,6 +54,9 @@ public class ShooterIOFalcon implements ShooterIO {
         bottomConfigs.Slot0.kD = ShooterConstants.kBottomD;
         bottomMotor.getConfigurator().apply(bottomConfigs);
 
+
+
+        //Angle motor configurations
         TalonFXConfiguration angleConfigs = new TalonFXConfiguration();
         angleMotor.getConfigurator().apply(angleConfigs);
         angleConfigs.MotorOutput.Inverted = ShooterConstants.angleMotorInvert;
@@ -66,6 +76,8 @@ public class ShooterIOFalcon implements ShooterIO {
         angleConfigs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ShooterConstants.bottomLimit;
         angleMotor.getConfigurator().apply(angleConfigs);
 
+
+        //CANcoder configurations
         CANcoderConfiguration cancoderConfigs = new CANcoderConfiguration();
         cancoder.getConfigurator().apply(cancoderConfigs);
         cancoderConfigs.MagnetSensor.SensorDirection = ShooterConstants.sensorDirection;
@@ -73,11 +85,16 @@ public class ShooterIOFalcon implements ShooterIO {
         cancoderConfigs.MagnetSensor.MagnetOffset = ShooterConstants.offset.getRotations();
         cancoder.getConfigurator().apply(cancoderConfigs);
 
+
+        //Updates the requests for each motor
         requestTop = new VelocityDutyCycle(0).withEnableFOC(true);
         requestBottom = new VelocityDutyCycle(0).withEnableFOC(true);
         requestAngle = new PositionDutyCycle(0).withEnableFOC(true);
     }
 
+    /**
+     * 
+     */
     public void updateInputs(ShooterIOInputs inputs) {
         inputs.topMotorStatorCurrent = topMotor.getStatorCurrent().getValueAsDouble();
         inputs.topMotorVelocityRPS = topMotor.getVelocity().getValueAsDouble();
@@ -89,14 +106,23 @@ public class ShooterIOFalcon implements ShooterIO {
         inputs.angleMotorStatorCurrent = angleMotor.getStatorCurrent().getValueAsDouble();
     }
 
+    /**
+     * @param rps in revs per second.......
+     */
     public void setTopVelocity(double rps) {
         topMotor.setControl(requestTop.withVelocity(rps));
     }
 
+    /**
+     * @param rps also in revs per second.....
+     */
     public void setBottomVelocity(double rps) {
         bottomMotor.setControl(requestBottom.withVelocity(rps));
     }
 
+    /**
+     * @param deg also in revs per second...haha just kidding its in degrees
+     */
     public void setAngle(double deg) {
         angleMotor.setControl(requestAngle.withPosition(Rotation2d.fromDegrees(deg).getRotations()));
     }
