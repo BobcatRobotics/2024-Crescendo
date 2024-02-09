@@ -29,6 +29,7 @@ public class Climber extends SubsystemBase {
         climber.stop();
     }
 
+    // Update the inputs periodically 
     public void periodic(){
         climber.updateInputs(climberInterface);
     }

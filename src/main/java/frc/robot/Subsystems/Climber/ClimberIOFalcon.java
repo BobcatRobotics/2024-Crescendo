@@ -17,6 +17,7 @@ public class ClimberIOFalcon implements ClimberIO
 
 
     public ClimberIOFalcon(int deviceID){
+        // The constructor initialized all of the MotionMagic stuff, Inputs, and the motor
         climberMotor = new TalonFX(deviceID);
         TalonFXConfiguration climberConfigs = new TalonFXConfiguration();
         climberMotor.getConfigurator().apply(climberConfigs);
@@ -31,6 +32,7 @@ public class ClimberIOFalcon implements ClimberIO
     }
 
     public void updateInputs(ClimberIOInputs i){
+        // Updates all of the inputs/data points being monitored about the motor
         i.climberMotorPercentOut = climberMotor.getDutyCycle().getValueAsDouble();
         i.climberMotorStatorCurrent = climberMotor.getStatorCurrent().getValueAsDouble();
         i.climberMotorVelocityRPS = climberMotor.getVelocity().getValueAsDouble();
@@ -43,19 +45,23 @@ public class ClimberIOFalcon implements ClimberIO
 
     //This function : you give it a rotation amount and it will run to that rotation amount
     public void run(double rotationAmount){
+        // Runs the motor for a certain encoder count using MotionMagic PID
         climberMotor.setControl(m_voltage.withPosition(rotationAmount));
         
     }
 
     public void changeVelocity(double newVelocity){
+        // Changes the velocity of the motor
         motionMagicConfigs.withMotionMagicCruiseVelocity(newVelocity);
     }
 
     public void stop(){
+        // Stops the motor
         climberMotor.stopMotor();
     }
 
     public void inverseDirection(){
+        // Inverses the direction of the motor in the inputs
         climberConfigs.MotorOutput.Inverted = ClimberConstants.climberMotorInvert;
     }
 
