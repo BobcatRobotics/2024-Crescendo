@@ -254,6 +254,10 @@ public class Constants {
     public static final class TrapConstants{
         public static final double deviceIDWinch = 0;
         public static final double deviceIDShooter = 0;
+        public static final double motionmagicCruiseVelocity = 0;
+        public static final double motionmagicAcceleration = 0;
+        public static final double motionmagicJerk = 0;
+
     }
 }
 

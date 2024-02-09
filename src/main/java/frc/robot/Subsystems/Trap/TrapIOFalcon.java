@@ -5,6 +5,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import frc.robot.Constants.TrapConstants;
+import frc.robot.Constants.TrapConstants;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -16,17 +17,28 @@ public class TrapIOFalcon {
     private TalonFXConfiguration winchConfigs;
     private TalonFXConfiguration shooterConfigs;
 
-   // private final MotionMagicConfigs motionMagicConfigs;
+   private MotionMagicConfigs motionMagicConfigs;
+   private MotionMagicVoltage m_voltage;
 
     public TrapIOFalcon(int deviceIDWinch, int deviceIDShooter){
+
+        // General initialization of the motors
         winchMotor = new TalonFX(deviceIDWinch);
         shooterMotor = new TalonFX(deviceIDShooter);
-
         winchConfigs = new TalonFXConfiguration();
         winchMotor.getConfigurator().apply(winchConfigs);
-
         shooterConfigs = new TalonFXConfiguration();
         shooterMotor.getConfigurator().apply(shooterConfigs);
+
+        // Motion Magic initialization just for the shoulder motor
+        m_voltage = new MotionMagicVoltage(0);
+        motionMagicConfigs = winchConfigs.MotionMagic;
+        motionMagicConfigs.MotionMagicCruiseVelocity = TrapConstants.motionmagicCruiseVelocity;
+        motionMagicConfigs.MotionMagicAcceleration = TrapConstants.motionmagicAcceleration;
+        motionMagicConfigs.MotionMagicJerk = TrapConstants.motionmagicJerk;
+
+
+
     }
 
 }
