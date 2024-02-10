@@ -72,7 +72,7 @@ public class AmpIOFalcon implements AmpIO{
     /*
     runs the motor to rotiation amount for pid
     */
-    public void run(double rotationAmount){
+    public void setPos(double rotationAmount){
         motor.setControl(m_request.withPosition(rotationAmount).withLimitForwardMotion(true).withLimitReverseMotion(true));
     }
     /*

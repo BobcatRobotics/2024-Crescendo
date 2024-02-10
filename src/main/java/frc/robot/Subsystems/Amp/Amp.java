@@ -16,8 +16,8 @@ public class Amp extends SubsystemBase {
     }
     
 
-    public void run(){
-        io.run(Constants.AMPConstants.rotationAmount);
+    public void setPos(){
+        io.setPos(Constants.AMPConstants.rotationAmount);
     }
     public void stop(){
         io.stop();
