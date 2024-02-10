@@ -50,7 +50,7 @@ public class SwerveModule {
         for (int i = 0; i < sampleCount; i++) {
             double positionMeters = inputs.odometryDrivePositionsRad[i] * (SwerveConstants.wheelCircumference / (2 * Math.PI));
             Rotation2d angle =
-                inputs.odometryAnglePositions[i].plus(
+                inputs.odometryAnglePositions[i].minus(
                     inputs.offset != null ? inputs.offset : new Rotation2d());
             odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
         }
