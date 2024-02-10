@@ -8,7 +8,10 @@ package frc.robot.Subsystems.Vision;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.numbers.N3;
+import frc.lib.util.limelightConstants;
 import frc.robot.Constants;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -16,33 +19,97 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.filter.LinearFilter;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
+import frc.robot.Constants.LimelightConstants;
 
 public class VisionIOLimelight implements VisionIO{
   /** Creates a new VisionIOLimelight. */
-  LEDMode currentLedMode = LEDMode.FORCEOFF;
-  LinearFilter distanceFilter = LinearFilter.movingAverage(Constants.LimelightConstants.movingAverageNumTaps);
+    LEDMode currentLedMode = LEDMode.FORCEOFF;
+    public final String name;
+    public final double verticalFOV;
+    public final double horizontalFOV;
+    public final double limelightMountHeight;
+    public final int detectorPiplineIndex; 
+    public final int apriltagPipelineIndex;
+    public final int horPixels;
+    public final double filterTimeConstant; // in seconds, inputs occuring over a time period significantly shorter than this will be thrown out
+    public final Vector<N3> visionMeasurementStdDevs;
+    public final int movingAverageNumTaps;
+    public final LinearFilter distanceFilter;
 
-  public VisionIOLimelight() {
+
+  public VisionIOLimelight(limelightConstants limelightConstants) {
+    name = limelightConstants.name;
+    verticalFOV = limelightConstants.verticalFOV;
+    horizontalFOV = limelightConstants.horizontalFOV;
+    limelightMountHeight=limelightConstants.limelightMountHeight;
+    detectorPiplineIndex=limelightConstants.detectorPiplineIndex;
+    apriltagPipelineIndex=limelightConstants.apriltagPipelineIndex;
+    horPixels=limelightConstants.horPixels;
+    filterTimeConstant=limelightConstants.filterTimeConstant;
+    visionMeasurementStdDevs=limelightConstants.visionMeasurementStdDevs;
+    movingAverageNumTaps=limelightConstants.movingAverageNumTaps;
+    distanceFilter = LinearFilter.movingAverage(movingAverageNumTaps);
+
 
   }
 
   @Override
   public void updateInputs(VisionIOInputs inputs) {
+    //intake
+    // inputs.ledModeIntake = currentLedMode;
+    // inputs.pipelineIDIntake = LimelightHelpers.getCurrentPipelineIndex(intake);
+    // inputs.pipelineLatencyIntake = LimelightHelpers.getLatency_Pipeline(intake);
+    // inputs.taIntake = LimelightHelpers.getTA(intake);
+    // inputs.tvIntake = LimelightHelpers.getTV(intake);
+    // inputs.txIntake = LimelightHelpers.getTX(intake);
+    // inputs.tyIntake = LimelightHelpers.getTY(intake);
+    // inputs.fiducialIDIntake = LimelightHelpers.getFiducialID(intake);
+    // inputs.boundingHorizontalPixelsIntake = LimelightHelpers.getLimelightNTDouble(intake, "thor");
+    // inputs.distanceToNoteIntake = distanceFilter.calculate(distanceFromCameraPercentage(inputs.boundingHorizontalPixelsIntake));
+    // inputs.rawDistanceToNoteIntake = distanceFromCameraPercentage(inputs.boundingHorizontalPixelsIntake);
+    // inputs.tClassIntake=LimelightHelpers.getNeuralClassID(intake);
+
+    //shooter left
+    // inputs.ledModeShooterleft = currentLedMode;
+    // inputs.pipelineIDShooterleft = LimelightHelpers.getCurrentPipelineIndex(shooterleft);
+    // inputs.pipelineLatencyShooterleft = LimelightHelpers.getLatency_Pipeline(shooterleft);
+    // inputs.taShooterleft = LimelightHelpers.getTA(shooterleft);
+    // inputs.tvShooterleft = LimelightHelpers.getTV(shooterleft);
+    // inputs.txShooterleft = LimelightHelpers.getTX(shooterleft);
+    // inputs.tyShooterleft = LimelightHelpers.getTY(shooterleft);
+    // inputs.fiducialIDShooterleft = LimelightHelpers.getFiducialID(shooterleft);
+
+    //shooter right
+    // inputs.ledModeShooterright = currentLedMode;
+    // inputs.pipelineIDShooterright = LimelightHelpers.getCurrentPipelineIndex(shooterright);
+    // inputs.pipelineLatencyShooterright = LimelightHelpers.getLatency_Pipeline(shooterright);
+    // inputs.taShooterright = LimelightHelpers.getTA(shooterright);
+    // inputs.tvShooterright = LimelightHelpers.getTV(shooterright);
+    // inputs.txShooterright = LimelightHelpers.getTX(shooterright);
+    // inputs.tyShooterright = LimelightHelpers.getTY(shooterright);
+    // inputs.fiducialIDShooterright = LimelightHelpers.getFiducialID(shooterright);
+
+    //generic inputs
     inputs.ledMode = currentLedMode;
     inputs.pipelineID = LimelightHelpers.getCurrentPipelineIndex(null);
     inputs.pipelineLatency = LimelightHelpers.getLatency_Pipeline(null);
-    inputs.ta = LimelightHelpers.getTA(null);
-    inputs.tv = LimelightHelpers.getTV(null);
-    inputs.tx = LimelightHelpers.getTX(null);
-    inputs.ty = LimelightHelpers.getTY(null);
-    inputs.fiducialID = LimelightHelpers.getFiducialID(null);
-    inputs.boundingHorizontalPixels = LimelightHelpers.getLimelightNTDouble(null, "thor");
+    inputs.ta = LimelightHelpers.getTA(name);
+    inputs.tv = LimelightHelpers.getTV(name);
+    inputs.tx = LimelightHelpers.getTX(name);
+    inputs.ty = LimelightHelpers.getTY(name);
+    inputs.fiducialID = LimelightHelpers.getFiducialID(name);
+    inputs.boundingHorizontalPixels = LimelightHelpers.getLimelightNTDouble(name, "thor");
     inputs.distanceToNote = distanceFilter.calculate(distanceFromCameraPercentage(inputs.boundingHorizontalPixels));
     inputs.rawDistanceToNote = distanceFromCameraPercentage(inputs.boundingHorizontalPixels);
-    Logger.recordOutput("Limelight/percent", pixlesToPercent(inputs.boundingHorizontalPixels));
-    Logger.recordOutput("Limelight/rawDistance", inputs.rawDistanceToNote);
-    Logger.recordOutput("Limelight/filteredDistance", inputs.distanceToNote);
+    inputs.tClass=LimelightHelpers.getNeuralClassID(name);
+    inputs.name=name;
 
+
+
+
+    Logger.recordOutput("LimelightIntake/percent", pixlesToPercent(inputs.boundingHorizontalPixels));
+    Logger.recordOutput("LimelightIntake/rawDistance", inputs.rawDistanceToNote);
+    Logger.recordOutput("LimelightIntake/filteredDistance", inputs.distanceToNote);
 
   }
 
@@ -72,13 +139,13 @@ public class VisionIOLimelight implements VisionIO{
   }
 
   @Override
-  public void setPipeline(int index){    
-    LimelightHelpers.setPipelineIndex(null, index);
+  public void setPipeline(String limelight, int index){    
+    LimelightHelpers.setPipelineIndex(limelight, index);
   }
 
   public double pixlesToPercent(double pixels){
-    Logger.recordOutput("Limelight/horPercent", pixels/Constants.LimelightConstants.horPixles);  
-    return pixels/Constants.LimelightConstants.horPixles;
+    Logger.recordOutput("Limelight/horPercent", pixels/horPixels);
+    return pixels/horPixels;
   }
 
   /**
@@ -88,13 +155,13 @@ public class VisionIOLimelight implements VisionIO{
    */
   public double distanceFromCameraPercentage(double widthPercent){
     
-    if (LimelightHelpers.getTV(null)){
+    if (LimelightHelpers.getTV("intake")){
     widthPercent = pixlesToPercent(widthPercent);
     // double horizontalLength = Constants.FieldConstants.noteDiameter / widthPercent;
     // double cornerFOVAngle = Units.degreesToRadians(90 - (Constants.LimelightConstants.horizontalFOV/2));
     // double hypotDist = (horizontalLength/2)*Math.tan(cornerFOVAngle); //distance from note to camera
     double hypotDist = ((180*Constants.FieldConstants.noteDiameter)/(63.3*Math.PI)) * (1/widthPercent);
-    double intakeDist = Math.sqrt((hypotDist*hypotDist) - (Constants.LimelightConstants.limelightMountHeight*Constants.LimelightConstants.limelightMountHeight)); //distance to intake
+    double intakeDist = Math.sqrt((hypotDist*hypotDist) - (limelightMountHeight*limelightMountHeight)); //distance to intake
     
     return intakeDist;
     }else{

@@ -16,7 +16,7 @@ import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Subsystems.Vision.Vision;
 
 
-public class GrabNote extends Command {
+public class grabNote extends Command {
   /** Creates a new grabNote. */
 
   private Vision vision;
@@ -29,7 +29,7 @@ public class GrabNote extends Command {
   private PIDController thetaController;
   private Pose2d notePos;
 
-  public GrabNote(Swerve swerve, Vision vision) {
+  public grabNote(Swerve swerve, Vision vision) {
     this.swerve = swerve;
     addRequirements(swerve);
     this.vision = vision;

@@ -14,8 +14,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-
+import frc.lib.util.limelightConstants;
+import frc.robot.Commands.AlignToTag;
+import frc.robot.Commands.DriveToPose;
 import frc.robot.Commands.TeleopSwerve;
+import frc.robot.Commands.grabNote;
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Subsystems.Swerve.GyroIO;
 import frc.robot.Subsystems.Swerve.GyroIOPigeon2;
@@ -36,7 +40,9 @@ public class RobotContainer {
 
   /* Subsystems */
   public final Swerve m_swerve;
-  public final Vision m_Vision;
+  public final Vision m_shooterLeftVision;
+  public final Vision m_intakeVision;
+  public final Vision m_shooterRightVision;
 
   /* Commands */
 
@@ -47,27 +53,36 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       // Real robot, instantiate hardware IO implementations
       case REAL:
+        m_intakeVision = new Vision(new VisionIOLimelight(LimelightConstants.intake.constants));//need index and limelight constants for the IO
+        m_shooterRightVision = new Vision(new VisionIOLimelight(LimelightConstants.shooterRight.constants));
+        m_shooterLeftVision = new Vision(new VisionIOLimelight(LimelightConstants.shooterLeft.constants));
         m_swerve = new Swerve(new GyroIOPigeon2(),
             new SwerveModuleIOFalcon(SwerveConstants.Module0Constants.constants),
             new SwerveModuleIOFalcon(SwerveConstants.Module1Constants.constants),
             new SwerveModuleIOFalcon(SwerveConstants.Module2Constants.constants),
-            new SwerveModuleIOFalcon(SwerveConstants.Module3Constants.constants));
-        m_Vision = new Vision(new VisionIOLimelight());
+            new SwerveModuleIOFalcon(SwerveConstants.Module3Constants.constants), 
+            m_intakeVision, m_shooterLeftVision, m_shooterRightVision);
         break;
 
       // Sim robot, instantiate physics sim IO implementations
       case SIM:
+        m_intakeVision = new Vision(new VisionIO(){});
+        m_shooterLeftVision = new Vision(new VisionIO(){});
+        m_shooterRightVision = new Vision(new VisionIO(){});
         m_swerve = new Swerve(new GyroIO() {
         },
             new SwerveModuleIOSim(),
             new SwerveModuleIOSim(),
             new SwerveModuleIOSim(),
-            new SwerveModuleIOSim());
-            m_Vision = new Vision(new VisionIOLimelight());
+            new SwerveModuleIOSim(),
+            m_intakeVision, m_shooterLeftVision, m_shooterRightVision);
         break;
 
       // Replayed robot, disable IO implementations
       default:
+        m_intakeVision = new Vision(new VisionIO(){});
+        m_shooterLeftVision = new Vision(new VisionIO(){});
+        m_shooterRightVision = new Vision(new VisionIO(){});
         m_swerve = new Swerve(new GyroIO() {
         },
             new SwerveModuleIO() {
@@ -77,8 +92,8 @@ public class RobotContainer {
             new SwerveModuleIO() {
             },
             new SwerveModuleIO() {
-            });
-            m_Vision = new Vision(new VisionIO(){});
+            },
+            m_intakeVision, m_shooterLeftVision, m_shooterRightVision);
         break;
     }
 
@@ -117,24 +132,22 @@ public class RobotContainer {
     m_swerve.setDefaultCommand(
         new TeleopSwerve(
             m_swerve,
-            () -> strafe.getRawAxis(Joystick.AxisType.kY.value)
+            () -> -strafe.getRawAxis(Joystick.AxisType.kY.value)
                 * Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value)),
-            () -> strafe.getRawAxis(Joystick.AxisType.kX.value)
+            () -> -strafe.getRawAxis(Joystick.AxisType.kX.value)
                 * Math.abs(strafe.getRawAxis(Joystick.AxisType.kX.value)),
-            () -> rotate.getRawAxis(Joystick.AxisType.kX.value),
+            () -> -rotate.getRawAxis(Joystick.AxisType.kX.value),
             () -> false,
-            () -> rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
-            () -> strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
+            () -> -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
+            () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
             // strafe.button(1) 
             () -> false
         ));
-      
-      //TODO IF YOU ARE READING THIS ADD THIS BACK IN!!!!!!!! >:( 
-      //  rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));      
-      
-    
-      rotate.button(1).onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
+      rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
 
+      // rotate.button(1).onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
+
+      // strafe.button(1).whileTrue(new AlignToTag(m_swerve, m_intakeVision, null));
       
 
     /* Drive with gamepad */
