@@ -32,7 +32,7 @@ public class Constants {
     public static final class SwerveConstants {
         public static final String canivore = "CANt_open_file";
 
-        public static final int pigeonID = 1;
+        public static final int pigeonID = 0;
 
         public static final double maxSpeed = 4.5; // max MODULE speed, NOT max chassis speed
         public static final double maxAccel = 3; 
@@ -182,19 +182,19 @@ public class Constants {
     }
 
     public static final class IntakeConstants {
-        public static final int switchMotorID = 9; // This one switched to feed shooter vs trap
-        public static final InvertedValue switchMotorInvert = InvertedValue.CounterClockwise_Positive;
+        public static final int switchMotorID = 9; // This one switches to feed shooter vs trap
+        public static final InvertedValue switchMotorInvert = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue switchMotorBrakeMode = NeutralModeValue.Brake;
 
-        public static final int floorMotorID = 10; // Floor motor
-        public static final InvertedValue floorMotorInvert = InvertedValue.CounterClockwise_Positive;
+        public static final int floorMotorID = 10;
+        public static final InvertedValue floorMotorInvert = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue floorMotorBrakeMode = NeutralModeValue.Brake;
 
-        public static final int outsideMotorID = 11; // Controls the outer rollers
-        public static final InvertedValue outsideMotorInvert = InvertedValue.CounterClockwise_Positive;
+        public static final int outsideMotorID = 11;
+        public static final InvertedValue outsideMotorInvert = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue outsideMotorBrakeMode = NeutralModeValue.Brake;
 
-        public static final int tofID = 1;
+        public static final int tofID = 0;
         public static final double tofTresh = 30; // millimeters
     }
 
