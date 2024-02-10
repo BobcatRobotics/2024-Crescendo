@@ -27,24 +27,7 @@ public class Constants {
     }
 
     public static final double loopPeriodSecs = 0.02; // 50 hz
-   
-    public static final class AMPConstants {
-        public static final int canID =0;
-        public static final double kP = 0;
-        public static final double kI = 0;
-        public static final double kD = 0;
-        public static final double kS = 0;
-        public static final double kV = 0;
-        public static final double kA = 0;
-        public static final double motionmagicCruiseVelocity = 0;
-        public static final double motionmagicAcceleration = 0;
-        public static final double motionmagicJerk = 0;
-        public static final double rotationAmount = 0.5;
-        public static final double softLimitThresh = 0;
-		public static double forwardsoftlimit  = 0;
-        public static double reversesoftlimit5  = 0;
-
-    }
+    public static final Integer AmpConstants = 0;
 
     public static final class SwerveConstants {
         public static final String canivore = "CANt_open_file";
