@@ -235,7 +235,7 @@ public class Constants {
 
     }
 
-    public static final class ShooterConstants {
+    public static final class shooterConstants {
         public static final int topMotorID = 12;
         public static final InvertedValue topMotorInvert = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue topMotorBrakeMode = NeutralModeValue.Coast;
