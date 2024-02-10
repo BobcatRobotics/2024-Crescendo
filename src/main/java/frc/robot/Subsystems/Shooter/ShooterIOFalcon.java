@@ -4,8 +4,11 @@ package frc.robot.Subsystems.Shooter;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 
@@ -23,7 +26,8 @@ public class ShooterIOFalcon implements ShooterIO {
 
     private final VelocityDutyCycle requestTop; 
     private final VelocityDutyCycle requestBottom; 
-    private final PositionDutyCycle requestAngle; 
+    private final MotionMagicDutyCycle angleRequest;
+    private final VoltageOut voltageRequest;
     
     public ShooterIOFalcon() {
         topMotor = new TalonFX(ShooterConstants.topMotorID); //initializes TalonFX motor 1
@@ -87,7 +91,9 @@ public class ShooterIOFalcon implements ShooterIO {
         //Updates the requests for each motor
         requestTop = new VelocityDutyCycle(0).withEnableFOC(true);
         requestBottom = new VelocityDutyCycle(0).withEnableFOC(true);
-        requestAngle = new PositionDutyCycle(0).withEnableFOC(true);
+        angleRequest = new MotionMagicDutyCycle(0).withEnableFOC(true);
+        voltageRequest = new VoltageOut(0).withEnableFOC(true);
+
     }
 
     /**
@@ -122,7 +128,7 @@ public class ShooterIOFalcon implements ShooterIO {
      * @param deg also in revs per second...haha just kidding its in degrees
      */
     public void setAngle(double deg) {
-        angleMotor.setControl(requestAngle.withPosition(Rotation2d.fromDegrees(deg).getRotations()));
+        angleMotor.setControl(angleRequest.withPosition(Rotation2d.fromDegrees(deg).getRotations()));
     }
 
     public void stopTopMotor() {
@@ -136,5 +142,7 @@ public class ShooterIOFalcon implements ShooterIO {
     public void stopAngleMotor() {
         angleMotor.stopMotor();
     }
+
+
 
 }
