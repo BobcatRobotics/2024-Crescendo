@@ -1,6 +1,7 @@
 package frc.robot.Subsystems.Swerve;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
@@ -17,29 +18,42 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.estimator.PoseEstimator;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.GeometryUtils;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.LimelightHelpers;
 
 public class Swerve extends SubsystemBase {
     private final GyroIO gyroIO;
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
     private final SwerveModule[] modules;
     private final SwerveDriveOdometry odometry;
+    private final SwerveDrivePoseEstimator PoseEstimator;
 
+    
     private final double[] swerveModuleStates = new double[8];
     private final double[] desiredSwerveModuleStates = new double[8];
 
@@ -51,8 +65,41 @@ public class Swerve extends SubsystemBase {
     private final LoggedDashboardNumber driveToPoseY = new LoggedDashboardNumber("desired y");    
     Pose2d desiredPose = new Pose2d();
     private Rotation2d lastYaw = new Rotation2d();
+    
+    private String limelightfront = "limelight";
+    private String limelightback = "limelightback";
+    
 
     public Swerve(GyroIO gyroIO, SwerveModuleIO flIO, SwerveModuleIO frIO, SwerveModuleIO blIO, SwerveModuleIO brIO) {
+        
+        //Notifier for odometry updates, didn't work very well in my testing
+
+        // class updatePose implements Runnable{
+        //     @Override
+        //     public void run(){
+        //     //Update PoseEstimator based on odometry
+        //     // PoseEstimator.update(getYaw(), getModulePositions());
+        //     PoseEstimator.updateWithTime(Timer.getFPGATimestamp(), getYaw(), getModulePositions());
+
+        //     //Update PoseEstimator if at least 1 tag is in view
+        //     if (LimelightHelpers.getTV(limelightfront)){
+        //     //standard deviations are (distance to nearest apriltag)/2 for x and y and 10 degrees for theta
+        //     PoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue(limelightfront), (Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(limelightfront)/1000.0) - (LimelightHelpers.getLatency_Capture(limelightfront)/1000.0)),VecBuilder.fill(getDistance(limelightfront)/2, getDistance(limelightfront)/2, Units.degreesToRadians(10)));
+        //     }
+        //     if (LimelightHelpers.getTV(limelightback)){
+        //     PoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue(limelightback), (Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(limelightback)/1000.0) - (LimelightHelpers.getLatency_Capture(limelightback)/1000.0)), VecBuilder.fill(getDistance(limelightback)/2, getDistance(limelightback)/2, Units.degreesToRadians(10)));
+        //     }
+            
+        
+        // }
+            
+        // }
+
+        // Runnable runnable = new updatePose();
+        // Notifier notifier = new Notifier(runnable);
+        // double runnablePeriod = 0.02;
+        // notifier.startPeriodic(runnablePeriod);
+
         this.gyroIO = gyroIO;
         modules = new SwerveModule[] {
                 new SwerveModule(flIO, 0),
@@ -64,10 +111,14 @@ public class Swerve extends SubsystemBase {
         odometry = new SwerveDriveOdometry(SwerveConstants.swerveKinematics, getYaw(), getModulePositions());
 
         rotationPID = new PIDController(SwerveConstants.teleopRotationKP, SwerveConstants.teleopRotationKI, SwerveConstants.teleopRotationKD);
+        
+        //Using last year's default deviations, need to tune
+        PoseEstimator = new SwerveDrivePoseEstimator(SwerveConstants.swerveKinematics, getYaw().times(-1), getModulePositions(), new Pose2d(), SwerveConstants.stateStdDevs, Constants.LimelightConstants.visionMeasurementStdDevs);
+
 
         AutoBuilder.configureHolonomic(
-                this::getPose,
-                this::resetOdometry,
+                this::getPoseEstimation,
+                this::resetPoseEstimator,
                 this::getChassisSpeeds,
                 this::drive,
                 new HolonomicPathFollowerConfig(
@@ -136,7 +187,9 @@ public class Swerve extends SubsystemBase {
         Logger.recordOutput("Swerve/Rotation", odometry.getPoseMeters().getRotation().getDegrees());
         Logger.recordOutput("Swerve/DesiredModuleStates", desiredSwerveModuleStates);
         Logger.recordOutput("Swerve/ModuleStates", swerveModuleStates);
-        Logger.recordOutput("Swerve/Pose", getPose());
+        Logger.recordOutput("Swerve/OdometryPose", getPose());
+        Logger.recordOutput("Swerve/PoseEstimation", getPoseEstimation());
+        Logger.recordOutput("Swerve/Pose3d", getPose3d());
         if (DriverStation.isDisabled()) {
             for (SwerveModule mod : modules) {
                 mod.stop();
@@ -144,7 +197,25 @@ public class Swerve extends SubsystemBase {
         }
         desiredPose = new Pose2d(driveToPoseX.get(), driveToPoseY.get(), new Rotation2d());
         Logger.recordOutput("Swerve/DesiredPose", desiredPose);
-    
+
+
+        
+        //Update PoseEstimator based on odometry
+        // PoseEstimator.update(getYaw(), getModulePositions());
+            PoseEstimator.updateWithTime(Timer.getFPGATimestamp(), getYaw().times(-1), getModulePositions());
+
+            //Update PoseEstimator if at least 1 tag is in view
+            if (LimelightHelpers.getTV(limelightfront)){
+                //standard deviations are (distance to nearest apriltag)/2 for x and y and 10 degrees for theta
+                PoseEstimator.addVisionMeasurement((LimelightHelpers.getBotPose2d_wpiBlue(limelightfront)), (Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(limelightfront)/1000.0) - (LimelightHelpers.getLatency_Capture(limelightfront)/1000.0)),VecBuilder.fill(getDistance(limelightfront)/2, getDistance(limelightfront)/2, Units.degreesToRadians(10)));
+            
+            }
+            // if (LimelightHelpers.getTV(limelightback)){
+            // PoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue(limelightback), (Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(limelightback)/1000.0) - (LimelightHelpers.getLatency_Capture(limelightback)/1000.0)), VecBuilder.fill(getDistance(limelightback)/2, getDistance(limelightback)/2, Units.degreesToRadians(10)));
+            // }
+
+
+
     }
 
 
@@ -205,14 +276,14 @@ public class Swerve extends SubsystemBase {
         // desiredSpeeds = correctForDynamics(desiredSpeeds);
 
         if (snapToRotation) {
-            desiredSpeeds.omegaRadiansPerSecond = -rotationPID.calculate(getYaw().getRadians(), Math.PI/2);
+            desiredSpeeds.omegaRadiansPerSecond = rotationPID.calculate(getYaw().getRadians(), Math.PI/2);
         } else {
             if (rotation == 0) {
                 if (rotating) {
                     rotating = false;
                     lastMovingYaw = getYaw().getRadians();
                 }
-                desiredSpeeds.omegaRadiansPerSecond = rotationPID.calculate(getYaw().getRadians(), lastMovingYaw);
+                desiredSpeeds.omegaRadiansPerSecond = -rotationPID.calculate(getYaw().getRadians(), lastMovingYaw);
             } else {
                 rotating = true;
             }
@@ -255,6 +326,19 @@ public class Swerve extends SubsystemBase {
     }
 
     /**
+     * Gets distance to nearest apriltag
+     * @return distance to nearest apriltag in meters
+     */
+
+     public double getDistance(String limelight) {
+        // return PoseEstimator.getEstimatedPosition().getTranslation().getDistance(new Pose2d(LimelightHelpers.getTargetPose3d_RobotSpace(limelight).getX(), LimelightHelpers.getTargetPose3d_RobotSpace(limelight).getY()).getTranslation());
+        //getting x distance to target
+        return LimelightHelpers.getTargetPose_RobotSpace(limelight)[0];
+    }
+
+
+
+    /**
      * Gets all of the current module states
      * @return array of the current module states
      */
@@ -294,12 +378,26 @@ public class Swerve extends SubsystemBase {
         return odometry.getPoseMeters();
     }
 
+    public Pose2d getPoseEstimation() {
+        return PoseEstimator.getEstimatedPosition();
+    }
+
+    public Pose3d getPose3d(){
+        return (new Pose3d(new Translation3d(PoseEstimator.getEstimatedPosition().getX(),PoseEstimator.getEstimatedPosition().getY(),0), new Rotation3d(-Units.degreesToRadians(getRoll()),-Units.degreesToRadians(getPitch()),getYaw().getRadians())));
+    }
+
+
+
     /**
      * Resets our odometry to desired pose
      * @param pose pose to set odometry to
      */
     public void resetOdometry(Pose2d pose) {
         odometry.resetPosition(getYaw(), getModulePositions(), pose);
+    }
+
+    public void resetPoseEstimator(Pose2d pose) {
+        PoseEstimator.resetPosition(getYaw(), getModulePositions(), pose);
     }
 
     /**

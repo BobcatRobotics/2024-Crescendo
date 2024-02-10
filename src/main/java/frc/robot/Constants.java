@@ -5,12 +5,18 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.lib.util.ModuleConstants;
+import static edu.wpi.first.apriltag.AprilTagFields.k2024Crescendo;
 
 public class Constants {
     public static final Mode currentMode = RobotBase.isSimulation() ? Mode.SIM : (RobotBase.isReal() ? Mode.REAL : Mode.REPLAY);
@@ -117,7 +123,7 @@ public class Constants {
             public static final int cancoderID = 1;
             public static final int angleMotorID = 2;
             public static final int driveMotorID = 1;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(109.1); // 109.1 353.32
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(353.32); // 109.1 353.32
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
@@ -127,7 +133,7 @@ public class Constants {
             public static final int cancoderID = 2;
             public static final int angleMotorID = 4;
             public static final int driveMotorID = 3;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(214.1); // 214.1 9.14
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(9.14); // 214.1 9.14
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
@@ -137,7 +143,7 @@ public class Constants {
             public static final int cancoderID = 3;
             public static final int angleMotorID = 6;
             public static final int driveMotorID = 5;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(203.1); // 203.1 234.66
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(234.66); // 203.1 234.66
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
@@ -147,10 +153,13 @@ public class Constants {
             public static final int cancoderID = 4;
             public static final int angleMotorID = 8;
             public static final int driveMotorID = 7;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(51.9); // 51.9 285.29
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(285.29); // 51.9 285.29
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
+
+        public static final Vector<N3> stateStdDevs = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(3));
+
     }
     public static final class FieldConstants{
         //1 is closest to AMP, 5 is closest to SOURCE
@@ -163,13 +172,30 @@ public class Constants {
         public static final double noteDiameter = Units.inchesToMeters(14);
     }
 
+
+    
+    public static final class AprilTagConstants{
+    public static AprilTagFieldLayout layout;
+    static{ 
+        try{
+            layout = AprilTagFieldLayout.loadFromResource(k2024Crescendo.m_resourceFile);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    }
+
     public static final class LimelightConstants{
         public static final double verticalFOV = 49.7; //degrees obviously
         public static final double horizontalFOV = 63.3;
         public static final double limelightMountHeight = Units.inchesToMeters(20.5);
         public static final int detectorPiplineIndex = 7; 
+        public static final int apriltagPipelineIndex = 0;
         public static final int horPixles = 1280;
         public static final double filterTimeConstant=  0.1; // in seconds, inputs occuring over a time period significantly shorter than this will be thrown out
-    
+        public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.1,0.1, Units.degreesToRadians(10));
+        public static final int movingAverageNumTaps = 20;
     }
+
+  
 }

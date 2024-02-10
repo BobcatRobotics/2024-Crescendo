@@ -18,17 +18,21 @@ public interface VisionIO {
   
   @AutoLog
   public static class VisionIOInputs{  
-      LEDMode ledMode = LEDMode.FORCEOFF;
-      double pipelineID = 0;
-      double pipelineLatency = 0;
-      double ta;
-      boolean tv;
-      double tx;
-      double ty;
-      double fiducialID;
-      double boundingHorizontalPixels;
-      double distanceToNote;
-      double rawDistanceToNote;
+      public LEDMode ledMode = LEDMode.FORCEOFF;
+      public double pipelineID = 0;
+      public double pipelineLatency = 0;
+      public double ta;
+      public boolean tv;
+      public double tx;
+      public double ty;
+      public double fiducialID;
+      public double boundingHorizontalPixels;
+       
+      public double distanceToNote;
+      public double rawDistanceToNote;
+ 
+      public double tClass;
+
     }
       /** Updates the set of loggable inputs. */
     public default void updateInputs(VisionIOInputs inputs) {}
@@ -39,6 +43,9 @@ public interface VisionIO {
     public default void setPipeline(int index){}
 
     public default double pixlesToPercent(double pixels){
+      return 0.0;
+    }
+    public default double getTClass(){
       return 0.0;
     }
 

@@ -10,12 +10,17 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.filter.LinearFilter;
 import frc.robot.Constants;
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.math.filter.LinearFilter;
+import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 
 public class VisionIOLimelight implements VisionIO{
   /** Creates a new VisionIOLimelight. */
   LEDMode currentLedMode = LEDMode.FORCEOFF;
-  LinearFilter distanceFilter = LinearFilter.singlePoleIIR(Constants.LimelightConstants.filterTimeConstant, Constants.loopPeriodSecs);
+  LinearFilter distanceFilter = LinearFilter.movingAverage(Constants.LimelightConstants.movingAverageNumTaps);
 
   public VisionIOLimelight() {
 
@@ -23,7 +28,6 @@ public class VisionIOLimelight implements VisionIO{
 
   @Override
   public void updateInputs(VisionIOInputs inputs) {
-  
     inputs.ledMode = currentLedMode;
     inputs.pipelineID = LimelightHelpers.getCurrentPipelineIndex(null);
     inputs.pipelineLatency = LimelightHelpers.getLatency_Pipeline(null);
@@ -33,10 +37,13 @@ public class VisionIOLimelight implements VisionIO{
     inputs.ty = LimelightHelpers.getTY(null);
     inputs.fiducialID = LimelightHelpers.getFiducialID(null);
     inputs.boundingHorizontalPixels = LimelightHelpers.getLimelightNTDouble(null, "thor");
-    inputs.distanceToNote = distanceFilter.calculate(distanceFromCameraPercentage(pixlesToPercent(inputs.boundingHorizontalPixels)));
-    inputs.rawDistanceToNote = distanceFromCameraPercentage(pixlesToPercent(inputs.boundingHorizontalPixels));
+    inputs.distanceToNote = distanceFilter.calculate(distanceFromCameraPercentage(inputs.boundingHorizontalPixels));
+    inputs.rawDistanceToNote = distanceFromCameraPercentage(inputs.boundingHorizontalPixels);
+    Logger.recordOutput("Limelight/percent", pixlesToPercent(inputs.boundingHorizontalPixels));
     Logger.recordOutput("Limelight/rawDistance", inputs.rawDistanceToNote);
     Logger.recordOutput("Limelight/filteredDistance", inputs.distanceToNote);
+
+
   }
 
 
@@ -80,6 +87,9 @@ public class VisionIOLimelight implements VisionIO{
    * @return distance in meters
    */
   public double distanceFromCameraPercentage(double widthPercent){
+    
+    if (LimelightHelpers.getTV(null)){
+    widthPercent = pixlesToPercent(widthPercent);
     // double horizontalLength = Constants.FieldConstants.noteDiameter / widthPercent;
     // double cornerFOVAngle = Units.degreesToRadians(90 - (Constants.LimelightConstants.horizontalFOV/2));
     // double hypotDist = (horizontalLength/2)*Math.tan(cornerFOVAngle); //distance from note to camera
@@ -87,7 +97,8 @@ public class VisionIOLimelight implements VisionIO{
     double intakeDist = Math.sqrt((hypotDist*hypotDist) - (Constants.LimelightConstants.limelightMountHeight*Constants.LimelightConstants.limelightMountHeight)); //distance to intake
     
     return intakeDist;
+    }else{
+      return 0;
+    }
   }
-
-  
 }
