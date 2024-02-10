@@ -184,15 +184,15 @@ public class Constants {
     public static final class IntakeConstants {
         public static final int switchMotorID = 9; // This one switches to feed shooter vs trap
         public static final InvertedValue switchMotorInvert = InvertedValue.Clockwise_Positive;
-        public static final NeutralModeValue switchMotorBrakeMode = NeutralModeValue.Brake;
+        public static final NeutralModeValue switchMotorBrakeMode = NeutralModeValue.Coast;
 
         public static final int floorMotorID = 10;
         public static final InvertedValue floorMotorInvert = InvertedValue.Clockwise_Positive;
-        public static final NeutralModeValue floorMotorBrakeMode = NeutralModeValue.Brake;
+        public static final NeutralModeValue floorMotorBrakeMode = NeutralModeValue.Coast;
 
         public static final int outsideMotorID = 11;
         public static final InvertedValue outsideMotorInvert = InvertedValue.Clockwise_Positive;
-        public static final NeutralModeValue outsideMotorBrakeMode = NeutralModeValue.Brake;
+        public static final NeutralModeValue outsideMotorBrakeMode = NeutralModeValue.Coast;
 
         public static final int tofID = 0;
         public static final double tofTresh = 30; // millimeters
@@ -220,7 +220,7 @@ public class Constants {
 
     public static final class ShooterConstants {
         public static final int topMotorID = 12;
-        public static final InvertedValue topMotorInvert = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue topMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue topMotorBrakeMode = NeutralModeValue.Coast;
         public static final double kTopP = 0.1;
         public static final double kTopI = 0;
@@ -228,7 +228,7 @@ public class Constants {
         public static final double kTopV = 0;
 
         public static final int bottomMotorID = 13;
-        public static final InvertedValue bottomMotorInvert = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue bottomMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue bottomMotorBrakeMode = NeutralModeValue.Coast;
         public static final double kBottomP = 0.1;
         public static final double kBottomI = 0;
