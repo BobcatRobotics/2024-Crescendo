@@ -11,22 +11,22 @@ public class Intake {
     }
 
     public void intakeToShooter() {
-        io.switchMotorSetPercentOut(.5);
-        io.floorMotorSetPercentOut(-.5);
-        io.outsideMotorSetPercentOut(-.5);
+        io.switchMotorSetPercentOut(.75); //ID 9
+        io.floorMotorSetPercentOut(-.75); //ID 10
+        io.outsideMotorSetPercentOut(.75); //ID 11
     }
 
     // .4 good speed for trap
     public void intakeToTrap() {
         io.switchMotorSetPercentOut(-.4);
         io.floorMotorSetPercentOut(-.4);
-        io.outsideMotorSetPercentOut(-.4);
+        io.outsideMotorSetPercentOut(.4);
     }
 
     public void runOut() {
         io.switchMotorSetPercentOut(-.4);
         io.floorMotorSetPercentOut(.4);
-        io.outsideMotorSetPercentOut(.4);
+        io.outsideMotorSetPercentOut(-.4);
     }
 
     public boolean hasPiece() {
