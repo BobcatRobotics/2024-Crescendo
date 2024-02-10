@@ -189,51 +189,55 @@ public class Constants {
     public static final class LimelightConstants{
         public static final class intake{
  
-            public static final String name = "intake";
+            public static final String name = "limelight-intake";
             public static final double verticalFOV = 49.7; //degrees obviously
             public static final double horizontalFOV = 63.3;
             public static final double limelightMountHeight = Units.inchesToMeters(20.5);
-            public static final int detectorPiplineIndex = 7; 
-            public static final int apriltagPipelineIndex = 0;
+            public static final int detectorPiplineIndex = 2; 
+            public static final int apriltagPipelineIndex = 1;
             public static final int horPixles = 1280;
             public static final double filterTimeConstant=  0.1; // in seconds, inputs occuring over a time period significantly shorter than this will be thrown out
             public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.1,0.1, Units.degreesToRadians(10));
             public static final int movingAverageNumTaps = 20;
 
             public static final limelightConstants constants = new limelightConstants(name, verticalFOV, horizontalFOV, limelightMountHeight, detectorPiplineIndex, apriltagPipelineIndex,horPixles, filterTimeConstant,visionMeasurementStdDevs,movingAverageNumTaps);
+
+            public static final String ip = "10.1.77.11";
 
 
         }
 
         public static final class shooterLeft{
-            public static final String name="shooterleft";
+            public static final String name="limelight-left";
             public static final double verticalFOV = 49.7; //degrees obviously
             public static final double horizontalFOV = 63.3;
             public static final double limelightMountHeight = Units.inchesToMeters(20.5);
-            public static final int detectorPiplineIndex = 7; 
-            public static final int apriltagPipelineIndex = 0;
+            public static final int detectorPiplineIndex = 2; 
+            public static final int apriltagPipelineIndex = 1;
             public static final int horPixles = 1280;
             public static final double filterTimeConstant=  0.1; // in seconds, inputs occuring over a time period significantly shorter than this will be thrown out
             public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.1,0.1, Units.degreesToRadians(10));
             public static final int movingAverageNumTaps = 20;
 
             public static final limelightConstants constants = new limelightConstants(name, verticalFOV, horizontalFOV, limelightMountHeight, detectorPiplineIndex, apriltagPipelineIndex,horPixles, filterTimeConstant,visionMeasurementStdDevs,movingAverageNumTaps);
+            public static final String ip = "10.1.77.12";
 
         }
         
         public static final class shooterRight{
-            public static final String name="shooterright";
+            public static final String name="limelight-right";
             public static final double verticalFOV = 49.7; //degrees obviously
             public static final double horizontalFOV = 63.3;
             public static final double limelightMountHeight = Units.inchesToMeters(20.5);
-            public static final int detectorPiplineIndex = 7; 
-            public static final int apriltagPipelineIndex = 0;
+            public static final int detectorPiplineIndex = 2; 
+            public static final int apriltagPipelineIndex = 1;
             public static final int horPixles = 1280;
             public static final double filterTimeConstant=  0.1; // in seconds, inputs occuring over a time period significantly shorter than this will be thrown out
             public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.1,0.1, Units.degreesToRadians(10));
             public static final int movingAverageNumTaps = 20;
 
             public static final limelightConstants constants = new limelightConstants(name, verticalFOV, horizontalFOV, limelightMountHeight, detectorPiplineIndex, apriltagPipelineIndex,horPixles, filterTimeConstant,visionMeasurementStdDevs,movingAverageNumTaps);
+            public static final String ip = "10.1.77.13";
 
     
         }
