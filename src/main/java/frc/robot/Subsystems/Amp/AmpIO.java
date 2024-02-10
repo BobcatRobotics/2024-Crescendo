@@ -32,4 +32,13 @@ public class AmpIO implements Amp{
         
 
     }
+<<<<<<< HEAD
+=======
+
+    public default void run(double rotationAmount) {}
+    public default void stop() {}
+    public default void updateInputs(AmpIOInputs inputs) {}
+
+
+>>>>>>> parent of 11a8ec2 (changed the run method to SetPos in amp, ampIO, and ampIoFalcon)
 }
