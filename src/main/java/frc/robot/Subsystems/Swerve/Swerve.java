@@ -1,6 +1,7 @@
 package frc.robot.Subsystems.Swerve;
 
 import java.util.Optional;
+
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -15,6 +16,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -23,6 +25,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -31,14 +34,19 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Subsystems.Vision.Vision;
 
 public class Swerve extends SubsystemBase {
     private final GyroIO gyroIO;
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
     private final SwerveModule[] modules;
+    private final Vision shooterLeftVision;
+    private final Vision shooterRightVision;
+    private final Vision IntakeVision;
     private final SwerveDrivePoseEstimator poseEstimator;
     // private final SwerveDriveOdometry odometry;
 
+    
     private final double[] swerveModuleStates = new double[8];
     private final double[] desiredSwerveModuleStates = new double[8];
 
@@ -65,8 +73,12 @@ public class Swerve extends SubsystemBase {
     private final LoggedDashboardNumber driveToPoseY = new LoggedDashboardNumber("desired y");    
     Pose2d desiredPose = new Pose2d();
     private Rotation2d lastYaw = new Rotation2d();
+    
 
-    public Swerve(GyroIO gyroIO, SwerveModuleIO flIO, SwerveModuleIO frIO, SwerveModuleIO blIO, SwerveModuleIO brIO) {
+    public Swerve(GyroIO gyroIO, SwerveModuleIO flIO, SwerveModuleIO frIO, SwerveModuleIO blIO, SwerveModuleIO brIO, Vision intakeVision, Vision shooterLeftVision, Vision shooterRightVision) {
+        this.IntakeVision = intakeVision;
+        this.shooterLeftVision = shooterLeftVision;
+        this.shooterRightVision = shooterRightVision;
         this.gyroIO = gyroIO;
         modules = new SwerveModule[] {
                 new SwerveModule(flIO, 0),
@@ -77,10 +89,12 @@ public class Swerve extends SubsystemBase {
 
         PhoenixOdometryThread.getInstance().start();
 
-        poseEstimator = new SwerveDrivePoseEstimator(SwerveConstants.swerveKinematics, getYaw(), getModulePositions(), new Pose2d());
-        // odometry = new SwerveDriveOdometry(SwerveConstants.swerveKinematics, getYaw(), getModulePositions());
 
         rotationPID = new PIDController(SwerveConstants.teleopRotationKP, SwerveConstants.teleopRotationKI, SwerveConstants.teleopRotationKD);
+        
+        //Using last year's default deviations, need to tune
+        poseEstimator = new SwerveDrivePoseEstimator(SwerveConstants.swerveKinematics, getYaw(), getModulePositions(), new Pose2d(), SwerveConstants.stateStdDevs, VecBuilder.fill(0,0,0));
+
 
         // setpointGenerator =
         // SwerveSetpointGenerator.builder()
@@ -90,7 +104,7 @@ public class Swerve extends SubsystemBase {
 
         AutoBuilder.configureHolonomic(
                 this::getPose,
-                this::resetOdometry,
+                this::resetPose,
                 this::getChassisSpeeds,
                 this::drive,
                 new HolonomicPathFollowerConfig(
@@ -184,7 +198,17 @@ public class Swerve extends SubsystemBase {
         }
         desiredPose = new Pose2d(driveToPoseX.get(), driveToPoseY.get(), new Rotation2d());
         Logger.recordOutput("Swerve/DesiredPose", desiredPose);
-    
+
+        //Update PoseEstimator if at least 1 tag is in view
+        if (shooterRightVision.getTV()){
+            //standard deviations are (distance to nearest apriltag)/2 for x and y and 10 degrees for theta
+            poseEstimator.addVisionMeasurement((shooterRightVision.getBotPose()), (shooterRightVision.getPoseTimestamp()),VecBuilder.fill(shooterRightVision.getDistToTag()/2, shooterRightVision.getDistToTag()/2, Units.degreesToRadians(25)));
+        
+        }
+        if (shooterLeftVision.getTV()){
+            poseEstimator.addVisionMeasurement((shooterLeftVision.getBotPose()), (shooterLeftVision.getPoseTimestamp()),VecBuilder.fill(shooterLeftVision.getDistToTag()/2, shooterLeftVision.getDistToTag()/2, Units.degreesToRadians(25)));
+        }
+
     }
 
     public Pose2d getPathfindingPose(){
@@ -281,6 +305,19 @@ public class Swerve extends SubsystemBase {
     }
 
     /**
+     * Gets distance to nearest apriltag
+     * @return distance to nearest apriltag in meters
+     */
+
+    //  public double getDistance(String limelight) {
+    //     // return PoseEstimator.getEstimatedPosition().getTranslation().getDistance(new Pose2d(LimelightHelpers.getTargetPose3d_RobotSpace(limelight).getX(), LimelightHelpers.getTargetPose3d_RobotSpace(limelight).getY()).getTranslation());
+    //     //getting x distance to target
+    //     return LimelightHelpers.getTargetPose_RobotSpace(limelight)[0];
+    // }
+
+
+
+    /**
      * Gets all of the current module states
      * @return array of the current module states
      */
@@ -340,10 +377,11 @@ public class Swerve extends SubsystemBase {
      * Resets our odometry to desired pose
      * @param pose pose to set odometry to
      */
-    public void resetOdometry(Pose2d pose) {
+    public void resetPose(Pose2d pose) {
         // odometry.resetPosition(getYaw(), getModulePositions(), pose);
         poseEstimator.resetPosition(getYaw(), getModulePositions(), pose);
     }
+
 
     /**
      * Sets the current gyro yaw to 0 degrees
@@ -394,5 +432,4 @@ public class Swerve extends SubsystemBase {
         }
         return num;
     }
-
 }
