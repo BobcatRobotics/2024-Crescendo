@@ -16,8 +16,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.lib.util.limelightConstants;
 import frc.robot.Commands.AlignToTag;
-import frc.robot.Commands.DriveToPose;
-import frc.robot.Commands.TeleopSwerve;
+import frc.robot.Commands.Swerve.DriveToPose;
+import frc.robot.Commands.Swerve.TeleopSwerve;
 import frc.robot.Commands.grabNote;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.SwerveConstants;
@@ -110,7 +110,6 @@ public class RobotContainer {
             new SwerveModuleIO() {
             },
             m_intakeVision, m_shooterLeftVision, m_shooterRightVision);
-            });
         m_intake = new Intake(new IntakeIO() {});
         m_shooter = new Shooter(new ShooterIO() {});
         //m_Vision = new Vision(new VisionIOLimelight());
