@@ -165,8 +165,11 @@ public class RobotContainer {
     //         () -> -gp.getRawAxis(Joystick.AxisType.kZ.value),
     //         () -> false,
     //         () -> 0.0,
-    //         () -> 0.0
+    //         () -> 0.0,
+    //         () -> false
     //     ));
+
+    // gp.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
   }
 
   public Command getAutonomousCommand() {

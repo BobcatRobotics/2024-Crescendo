@@ -11,10 +11,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.lib.util.ModuleConstants;
+import frc.lib.util.swerve.ModuleLimits;
 
 public class Constants {
     public static final Mode currentMode = RobotBase.isSimulation() ? Mode.SIM : (RobotBase.isReal() ? Mode.REAL : Mode.REPLAY);
-
+    
     public static enum Mode {
         /** Running on a real robot. */
         REAL,
@@ -66,12 +67,16 @@ public class Constants {
         public static final double teleopRotationKI = 0.0;
         public static final double teleopRotationKD = 0.0;
 
-        /* Swerve Kinematics */
-        public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
+        /* Module Translations */
+        public static final Translation2d[] moduleTranslations = new Translation2d[] {
             new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
             new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
             new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
-            new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0));
+            new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0)
+        };
+
+        /* Swerve Kinematics */
+        public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(moduleTranslations);
 
         /* Angle Motor Configs */
         public static final InvertedValue angleMotorInvert = InvertedValue.Clockwise_Positive;
