@@ -5,13 +5,20 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.lib.util.ModuleConstants;
-import frc.lib.util.swerve.ModuleLimits;
+import frc.lib.util.limelightConstants;
+import static edu.wpi.first.apriltag.AprilTagFields.k2024Crescendo;
+
 
 public class Constants {
     public static final Mode currentMode = RobotBase.isSimulation() ? Mode.SIM : (RobotBase.isReal() ? Mode.REAL : Mode.REPLAY);
@@ -127,6 +134,7 @@ public class Constants {
             public static final int cancoderID = 1;
             public static final int angleMotorID = 2;
             public static final int driveMotorID = 1;
+
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(104.8535); // 109.1 353.32
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
@@ -137,6 +145,7 @@ public class Constants {
             public static final int cancoderID = 2;
             public static final int angleMotorID = 4;
             public static final int driveMotorID = 3;
+
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(210.4102); // 214.1 9.14
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
@@ -161,6 +170,9 @@ public class Constants {
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
+
+        public static final Vector<N3> stateStdDevs = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(3));
+
     }
 
     public static final class FieldConstants{
@@ -176,15 +188,77 @@ public class Constants {
         public static final double speakerHeight = Units.inchesToMeters(82.875);
     }
 
-    public static final class LimelightConstants{
-        public static final double verticalFOV = 49.7; //degrees obviously
-        public static final double horizontalFOV = 63.3;
-        public static final double limelightMountHeight = Units.inchesToMeters(20.5);
-        public static final int detectorPiplineIndex = 7; 
-        public static final int horPixles = 1280;
-        public static final double filterTimeConstant=  0.1; // in seconds, inputs occuring over a time period significantly shorter than this will be thrown out
+
     
+    public static final class AprilTagConstants{
+    public static AprilTagFieldLayout layout;
+    static{ 
+        try{
+            layout = AprilTagFieldLayout.loadFromResource(k2024Crescendo.m_resourceFile);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
+    }
+
+    public static final class LimelightConstants{
+        public static final class intake{
+ 
+            public static final String name = "limelight-intake";
+            public static final double verticalFOV = 49.7; //degrees obviously
+            public static final double horizontalFOV = 63.3;
+            public static final double limelightMountHeight = Units.inchesToMeters(20.5);
+            public static final int detectorPiplineIndex = 2; 
+            public static final int apriltagPipelineIndex = 1;
+            public static final int horPixles = 1280;
+            public static final double filterTimeConstant=  0.1; // in seconds, inputs occuring over a time period significantly shorter than this will be thrown out
+            public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.1,0.1, Units.degreesToRadians(10));
+            public static final int movingAverageNumTaps = 20;
+
+            public static final limelightConstants constants = new limelightConstants(name, verticalFOV, horizontalFOV, limelightMountHeight, detectorPiplineIndex, apriltagPipelineIndex,horPixles, filterTimeConstant,visionMeasurementStdDevs,movingAverageNumTaps);
+
+            public static final String ip = "10.1.77.11";
+
+
+        }
+
+        public static final class shooterLeft{
+            public static final String name="limelight-left";
+            public static final double verticalFOV = 49.7; //degrees obviously
+            public static final double horizontalFOV = 63.3;
+            public static final double limelightMountHeight = Units.inchesToMeters(20.5);
+            public static final int detectorPiplineIndex = 2; 
+            public static final int apriltagPipelineIndex = 1;
+            public static final int horPixles = 1280;
+            public static final double filterTimeConstant=  0.1; // in seconds, inputs occuring over a time period significantly shorter than this will be thrown out
+            public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.1,0.1, Units.degreesToRadians(10));
+            public static final int movingAverageNumTaps = 20;
+
+            public static final limelightConstants constants = new limelightConstants(name, verticalFOV, horizontalFOV, limelightMountHeight, detectorPiplineIndex, apriltagPipelineIndex,horPixles, filterTimeConstant,visionMeasurementStdDevs,movingAverageNumTaps);
+            public static final String ip = "10.1.77.12";
+
+        }
+        
+        public static final class shooterRight{
+            public static final String name="limelight-right";
+            public static final double verticalFOV = 49.7; //degrees obviously
+            public static final double horizontalFOV = 63.3;
+            public static final double limelightMountHeight = Units.inchesToMeters(20.5);
+            public static final int detectorPiplineIndex = 2; 
+            public static final int apriltagPipelineIndex = 1;
+            public static final int horPixles = 1280;
+            public static final double filterTimeConstant=  0.1; // in seconds, inputs occuring over a time period significantly shorter than this will be thrown out
+            public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.1,0.1, Units.degreesToRadians(10));
+            public static final int movingAverageNumTaps = 20;
+
+            public static final limelightConstants constants = new limelightConstants(name, verticalFOV, horizontalFOV, limelightMountHeight, detectorPiplineIndex, apriltagPipelineIndex,horPixles, filterTimeConstant,visionMeasurementStdDevs,movingAverageNumTaps);
+            public static final String ip = "10.1.77.13";
+
+    
+        }
+
+    }
+
 
     public static final class IntakeConstants {
         public static final int switchMotorID = 9; // This one switches to feed shooter vs trap
