@@ -43,7 +43,6 @@ public class Swerve extends SubsystemBase {
     private final GyroIO gyroIO;
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
     private final SwerveModule[] modules;
-    private final SwerveDriveOdometry odometry;
     private final Vision shooterLeftVision;
     private final Vision shooterRightVision;
     private final Vision IntakeVision;
@@ -121,13 +120,11 @@ public class Swerve extends SubsystemBase {
 
         PhoenixOdometryThread.getInstance().start();
 
-        poseEstimator = new SwerveDrivePoseEstimator(SwerveConstants.swerveKinematics, getYaw(), getModulePositions(), new Pose2d());
-        // odometry = new SwerveDriveOdometry(SwerveConstants.swerveKinematics, getYaw(), getModulePositions());
 
         rotationPID = new PIDController(SwerveConstants.teleopRotationKP, SwerveConstants.teleopRotationKI, SwerveConstants.teleopRotationKD);
         
         //Using last year's default deviations, need to tune
-        PoseEstimator = new SwerveDrivePoseEstimator(SwerveConstants.swerveKinematics, getYaw().times(-1), getModulePositions(), new Pose2d(), SwerveConstants.stateStdDevs, VecBuilder.fill(0,0,0));
+        poseEstimator = new SwerveDrivePoseEstimator(SwerveConstants.swerveKinematics, getYaw(), getModulePositions(), new Pose2d(), SwerveConstants.stateStdDevs, VecBuilder.fill(0,0,0));
 
 
         // setpointGenerator =
@@ -137,8 +134,8 @@ public class Swerve extends SubsystemBase {
         //     .build();
 
         AutoBuilder.configureHolonomic(
-                this::getPoseEstimation,
-                this::resetPoseEstimator,
+                this::getPose,
+                this::resetPose,
                 this::getChassisSpeeds,
                 this::drive,
                 new HolonomicPathFollowerConfig(
@@ -223,9 +220,6 @@ public class Swerve extends SubsystemBase {
         Logger.recordOutput("Swerve/Rotation", gyroInputs.yawPosition.getDegrees());
         Logger.recordOutput("Swerve/DesiredModuleStates", desiredSwerveModuleStates);
         Logger.recordOutput("Swerve/ModuleStates", swerveModuleStates);
-        Logger.recordOutput("Swerve/OdometryPose", getPose());
-        Logger.recordOutput("Swerve/PoseEstimation", getPoseEstimation());
-        Logger.recordOutput("Swerve/Pose3d", getPose3d());
         Logger.recordOutput("Swerve/Pose", getPose());
         Logger.recordOutput("Swerve/OdometryDebugStates", swervytestythingy);
         if (DriverStation.isDisabled()) {
@@ -238,18 +232,14 @@ public class Swerve extends SubsystemBase {
 
 
         
-        //Update PoseEstimator based on odometry
-        // PoseEstimator.update(getYaw(), getModulePositions());
-            PoseEstimator.updateWithTime(Timer.getFPGATimestamp(), getYaw().times(-1), getModulePositions());
-
             //Update PoseEstimator if at least 1 tag is in view
             if (shooterRightVision.getTV()){
                 //standard deviations are (distance to nearest apriltag)/2 for x and y and 10 degrees for theta
-                PoseEstimator.addVisionMeasurement((shooterRightVision.getBotPose()), (shooterRightVision.getPoseTimestamp()),VecBuilder.fill(shooterRightVision.getDistToTag()/2, shooterRightVision.getDistToTag()/2, Units.degreesToRadians(25)));
+                poseEstimator.addVisionMeasurement((shooterRightVision.getBotPose()), (shooterRightVision.getPoseTimestamp()),VecBuilder.fill(shooterRightVision.getDistToTag()/2, shooterRightVision.getDistToTag()/2, Units.degreesToRadians(25)));
             
             }
             if (shooterLeftVision.getTV()){
-                PoseEstimator.addVisionMeasurement((shooterLeftVision.getBotPose()), (shooterLeftVision.getPoseTimestamp()),VecBuilder.fill(shooterLeftVision.getDistToTag()/2, shooterLeftVision.getDistToTag()/2, Units.degreesToRadians(25)));
+                poseEstimator.addVisionMeasurement((shooterLeftVision.getBotPose()), (shooterLeftVision.getPoseTimestamp()),VecBuilder.fill(shooterLeftVision.getDistToTag()/2, shooterLeftVision.getDistToTag()/2, Units.degreesToRadians(25)));
             }
 
 
@@ -402,13 +392,8 @@ public class Swerve extends SubsystemBase {
         return poseEstimator.getEstimatedPosition();
     }
 
-    public Pose2d getPoseEstimation() {
-        return PoseEstimator.getEstimatedPosition();
-    }
+    
 
-    public Pose3d getPose3d(){
-        return (new Pose3d(new Translation3d(PoseEstimator.getEstimatedPosition().getX(),PoseEstimator.getEstimatedPosition().getY(),0), new Rotation3d(-Units.degreesToRadians(getRoll()),-Units.degreesToRadians(getPitch()),getYaw().getRadians())));
-    }
 
 
 
@@ -416,14 +401,11 @@ public class Swerve extends SubsystemBase {
      * Resets our odometry to desired pose
      * @param pose pose to set odometry to
      */
-    public void resetOdometry(Pose2d pose) {
+    public void resetPose(Pose2d pose) {
         // odometry.resetPosition(getYaw(), getModulePositions(), pose);
         poseEstimator.resetPosition(getYaw(), getModulePositions(), pose);
     }
 
-    public void resetPoseEstimator(Pose2d pose) {
-        PoseEstimator.resetPosition(getYaw(), getModulePositions(), pose);
-    }
 
     /**
      * Sets the current gyro yaw to 0 degrees
