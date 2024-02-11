@@ -60,7 +60,7 @@ public class Vision extends SubsystemBase{
   }
 
   public double getNoteY(){
-    Logger.recordOutput("Limelight/noteY", inputs.distanceToNote*Math.cos(Math.toRadians(90-inputs.tx)));
+    Logger.recordOutput("Limelight"+inputs.name+"/noteY", inputs.distanceToNote*Math.cos(Math.toRadians(90-inputs.tx)));
     return inputs.distanceToNote*Math.cos(Math.toRadians(90-inputs.tx));
   }
 
@@ -69,7 +69,9 @@ public class Vision extends SubsystemBase{
   }
 
   public Pose2d getBotPose(){
-    return LimelightHelpers.getBotPose2d_wpiBlue(inputs.name);
+    Pose2d pose = LimelightHelpers.getBotPose2d_wpiBlue(inputs.name);
+    Logger.recordOutput("Limelight"+inputs.name,pose);
+    return pose;
   }
 
   public double getDistToTag(){
@@ -82,8 +84,9 @@ public class Vision extends SubsystemBase{
 
   public Translation2d getTranslationToTag(int tagID){
     if(apriltagPipeline){
-
       //get botpose from limelight networktables
+    if (LimelightHelpers.getTV(inputs.name)){
+
     double[] botPose = LimelightHelpers.getBotPose_wpiBlue(inputs.name);
     Pose3d botPose3D = new Pose3d(new Translation3d(botPose[0], botPose[1], botPose[2]), new Rotation3d(Math.toRadians(botPose[3]), Math.toRadians(botPose[4]), Math.toRadians(botPose[5])));
     Pose2d botPose2d = botPose3D.toPose2d();
@@ -98,6 +101,9 @@ public class Vision extends SubsystemBase{
       Logger.recordOutput("Limelight/adjustedPose", new Pose2d(aprilTagPose.get().getX() - botPose[0], aprilTagPose.get().getY() - botPose[1], new Rotation2d()));
       return new Translation2d(aprilTagPose.get().getX() - botPose[0], aprilTagPose.get().getY() - botPose[1]);
     }else{
+      return new Translation2d();
+    }
+    }else {
       return new Translation2d();
     }
     }else{

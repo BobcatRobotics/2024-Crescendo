@@ -8,6 +8,7 @@ import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
 
 import frc.robot.LimelightHelpers;
@@ -66,8 +67,6 @@ public interface VisionIO {
       public double rawDistanceToNote;
       public double tClass;
       public String name;
-
-
     }
       /** Updates the set of loggable inputs. */
     public default void updateInputs(VisionIOInputs inputs) {}

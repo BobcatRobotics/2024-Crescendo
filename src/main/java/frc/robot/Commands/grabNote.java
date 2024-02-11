@@ -51,7 +51,7 @@ public class grabNote extends Command {
   @Override
   public void execute() {
 
-
+  if (vision.getTClass()==0){
     //if were more than 5 degrees off, only rotate, once were within 5 degrees, translate.
     notePos = vision.getNotePose();
      if(!(Math.abs(thetaController.getPositionError()) < 5)){
@@ -60,7 +60,7 @@ public class grabNote extends Command {
       swerve.drive(new Translation2d(0,xController.calculate(notePos.getX())), -thetaController.calculate(notePos.getRotation().getDegrees()),false,false);
      }
   }
-    
+}
 
   // Called once the command ends or is interrupted.
   @Override
