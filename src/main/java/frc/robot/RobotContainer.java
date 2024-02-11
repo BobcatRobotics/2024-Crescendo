@@ -10,12 +10,14 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.Commands.Swerve.DriveToPose;
 import frc.robot.Commands.Swerve.TeleopSwerve;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Intake.IntakeIO;
@@ -94,6 +96,7 @@ public class RobotContainer {
         m_shooter = new Shooter(new ShooterIO() {});
         //m_Vision = new Vision(new VisionIOLimelight());
         break;
+
     }
 
     /* Auto Chooser
@@ -113,7 +116,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Auto Event", new InstantCommand());
 
     configureBindings();
-
+    SmartDashboard.putNumber("ShooterRPM", 0);
   }
 
   /*
@@ -153,7 +156,8 @@ public class RobotContainer {
 
     /* Shooter Controls */
     gp.button(5).whileTrue(new InstantCommand(() -> m_shooter.setSpeed(300*60))).onFalse(new InstantCommand(m_shooter::stop)); // left bumper
-
+    //gp.button(2).whileTrue(new InstantCommand(() -> m_shooter.setVelocityTune(SmartDashboard.getNumber("ShooterRPM", 0)))).onFalse(new InstantCommand(() -> m_shooter.stop()));
+    gp.button(2).onTrue(new InstantCommand(() -> m_shooter.setAngle(ShooterConstants.safePosition+8))).onFalse(new InstantCommand(() -> m_shooter.stopAngle()));
     /* Drive with gamepad */
     // m_swerve.setDefaultCommand(
     //     new TeleopSwerve(

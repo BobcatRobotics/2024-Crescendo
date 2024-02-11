@@ -1,6 +1,8 @@
 package frc.robot.Subsystems.Shooter;
 
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FieldConstants;
@@ -15,11 +17,17 @@ public class Shooter extends SubsystemBase {
 
     public void periodic() {
         io.updateInputs(inputs);
+        Logger.processInputs("Shooter", inputs);
+        Logger.recordOutput("Shooter/toprpm", inputs.topMotorVelocityRPS*60);
+        Logger.recordOutput("Shooter/bottomrpm", inputs.bottomMotorVelocityRPS*60);
     }
 
     public void setSpeed(double rps) {
         io.setTopVelocity(rps);
         io.setBottomVelocity(rps);
+    }
+    public void setVelocityTune(double rpm){
+        io.setVelocityTune(rpm);
     }
 
     public void setAngle(double degrees) {
@@ -42,6 +50,12 @@ public class Shooter extends SubsystemBase {
         io.stopTopMotor();
         io.stopBottomMotor();
     }
+
+    public void stopAngle(){
+        io.stopAngleMotor();
+    }
+
+
 
 
 }

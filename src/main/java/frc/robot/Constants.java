@@ -224,21 +224,29 @@ public class Constants {
     }
 
     public static final class ShooterConstants {
+
+        //some notes on velocity pid
+        // kI, kD - not used
+        // kP - controls how your output changes with increased error
+        // kv - similar to kP, this is essentially a feedforward to calculate the voltage needed to get to the general velocity you want to be at, then the kP takes over for fine tuning
+        // kS - static friction gain, there is a small amount of energy lost to friction, this gain accounts for it. You can think of it as just the absolute minimum voltage required to get the motor spinning, this amount is added to every output
         public static final int topMotorID = 12;
         public static final InvertedValue topMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue topMotorBrakeMode = NeutralModeValue.Coast;
-        public static final double kTopP = 0.1;
+        public static final double kTopP = 0;//volts/rps
         public static final double kTopI = 0;
         public static final double kTopD = 0;
-        public static final double kTopV = 0;
+        public static final double kTopV = 0.1; //volts/rps, feedforward, output per unit of requested velocity 
+        public static final double kTopS = 0.3;// volts, this is added to each output to overcome static friction
 
         public static final int bottomMotorID = 13;
         public static final InvertedValue bottomMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue bottomMotorBrakeMode = NeutralModeValue.Coast;
-        public static final double kBottomP = 0.1;
+        public static final double kBottomP = 0;
         public static final double kBottomI = 0;
         public static final double kBottomD = 0;
-        public static final double kBottomV = 0;
+        public static final double kBottomV = 0.5;
+        public static final double kBottomS = 0.3;
 
         public static final int angleMotorID = 14;
         public static final InvertedValue angleMotorInvert = InvertedValue.Clockwise_Positive;
@@ -254,11 +262,11 @@ public class Constants {
         public static final AbsoluteSensorRangeValue sensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
         public static final SensorDirectionValue sensorDirection = SensorDirectionValue.CounterClockwise_Positive;
         public static final Rotation2d offset = new Rotation2d();
-        public static final double rotorToSensorRatio = (64/14)*(58/18)*(58/12);
+        public static final double rotorToSensorRatio = (64/14)*(58/18)*(58/11);
 
-        public static final double bottomLimit = 0; // degrees
-        public static final double topLimit = 0;
-        public static final double safePosition = 0;
+        public static final double bottomLimit = 254.53125; // degrees, converted to rotations later on
+        public static final double topLimit = 285.46875;
+        public static final double safePosition = 262.265625;
     }
 
     public static final class TrapConstants{

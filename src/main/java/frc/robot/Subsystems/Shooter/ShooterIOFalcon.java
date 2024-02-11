@@ -27,7 +27,7 @@ public class ShooterIOFalcon implements ShooterIO {
     private final VelocityDutyCycle requestTop; 
     private final VelocityDutyCycle requestBottom; 
     private final MotionMagicDutyCycle angleRequest;
-    private final VoltageOut voltageRequest;
+    private final VelocityVoltage voltageRequest;
     
     public ShooterIOFalcon() {
         topMotor = new TalonFX(ShooterConstants.topMotorID); //initializes TalonFX motor 1
@@ -38,14 +38,15 @@ public class ShooterIOFalcon implements ShooterIO {
 
         //Top motor configurations
         TalonFXConfiguration topConfigs = new TalonFXConfiguration();
-        topMotor.getConfigurator().apply(topConfigs);
+        topMotor.getConfigurator().apply(topConfigs); //reset to default
         topConfigs.MotorOutput.Inverted = ShooterConstants.topMotorInvert;
         topConfigs.MotorOutput.NeutralMode = ShooterConstants.topMotorBrakeMode;
         topConfigs.Slot0.kP = ShooterConstants.kTopP;
-        topConfigs.Slot0.kI = ShooterConstants.kTopI;
-        topConfigs.Slot0.kD = ShooterConstants.kTopD;
         topConfigs.Slot0.kV = ShooterConstants.kTopV;
-        topMotor.getConfigurator().apply(topConfigs);
+        topConfigs.Slot0.kS = ShooterConstants.kTopS;
+        // topConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+        // topConfigs.CurrentLimits.StatorCurrentLimit = 40;
+        topMotor.getConfigurator().apply(topConfigs); //Apply custom configs
 
         //Bottom motor configurations
         TalonFXConfiguration bottomConfigs = new TalonFXConfiguration();
@@ -53,9 +54,10 @@ public class ShooterIOFalcon implements ShooterIO {
         bottomConfigs.MotorOutput.Inverted = ShooterConstants.bottomMotorInvert;
         bottomConfigs.MotorOutput.NeutralMode = ShooterConstants.bottomMotorBrakeMode;
         bottomConfigs.Slot0.kP = ShooterConstants.kBottomP;
-        bottomConfigs.Slot0.kI = ShooterConstants.kBottomI;
-        bottomConfigs.Slot0.kD = ShooterConstants.kBottomD;
         bottomConfigs.Slot0.kV = ShooterConstants.kBottomV;
+        bottomConfigs.Slot0.kS = ShooterConstants.kBottomS;
+        // bottomConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+        // bottomConfigs.CurrentLimits.StatorCurrentLimit = 40;
         bottomMotor.getConfigurator().apply(bottomConfigs);
 
         //Angle motor configurations
@@ -73,9 +75,11 @@ public class ShooterIOFalcon implements ShooterIO {
         angleConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
         angleConfigs.Feedback.RotorToSensorRatio = ShooterConstants.rotorToSensorRatio;
         angleConfigs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        angleConfigs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ShooterConstants.topLimit;
+        angleConfigs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ShooterConstants.topLimit/360;
         angleConfigs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-        angleConfigs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ShooterConstants.bottomLimit;
+        angleConfigs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ShooterConstants.bottomLimit/360;
+        angleConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+        angleConfigs.CurrentLimits.StatorCurrentLimit = 40;
         angleMotor.getConfigurator().apply(angleConfigs);
 
 
@@ -92,7 +96,7 @@ public class ShooterIOFalcon implements ShooterIO {
         requestTop = new VelocityDutyCycle(0).withEnableFOC(true);
         requestBottom = new VelocityDutyCycle(0).withEnableFOC(true);
         angleRequest = new MotionMagicDutyCycle(0).withEnableFOC(true);
-        voltageRequest = new VoltageOut(0).withEnableFOC(true);
+        voltageRequest = new VelocityVoltage(0).withEnableFOC(true).withSlot(0);
 
     }
 
@@ -143,6 +147,11 @@ public class ShooterIOFalcon implements ShooterIO {
         angleMotor.stopMotor();
     }
 
+    public void setVelocityTune(double rpm){
+        double rps = rpm/60;
+        topMotor.setControl(voltageRequest.withVelocity(rps));
+        bottomMotor.setControl(voltageRequest.withVelocity(rps));
+    }
 
 
 }
