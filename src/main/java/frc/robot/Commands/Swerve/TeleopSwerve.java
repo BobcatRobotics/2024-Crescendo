@@ -49,12 +49,20 @@ public class TeleopSwerve extends Command {
             translationVal = fineTrans.getAsDouble();
         }
 
-        /* Drive */
-        swerve.drive(
-            new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed), 
-            rotationVal * SwerveConstants.maxAngularVelocity,
-            !robotCentric.getAsBoolean(),
-            snap.getAsBoolean()
-        );
+        if (snap.getAsBoolean()) {
+            swerve.drive(
+                new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed), 
+                swerve.getAngleToSpeaker().getRadians(),
+                !robotCentric.getAsBoolean(),
+                true
+            );
+        } else {
+            swerve.drive(
+                new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed), 
+                -rotationVal * SwerveConstants.maxAngularVelocity,
+                !robotCentric.getAsBoolean(),
+                false
+            );
+        }
     }
 }

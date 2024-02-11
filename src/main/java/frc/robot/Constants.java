@@ -11,7 +11,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.lib.util.ModuleConstants;
-import frc.lib.util.swerve.ModuleLimits;
 
 public class Constants {
     public static final Mode currentMode = RobotBase.isSimulation() ? Mode.SIM : (RobotBase.isReal() ? Mode.REAL : Mode.REPLAY);
@@ -163,17 +162,20 @@ public class Constants {
         }
     }
 
+    /* Blue alliance origin */
     public static final class FieldConstants{
         //1 is closest to AMP, 5 is closest to SOURCE
-        public static final Translation2d centerlineNote1 = new Translation2d(0,0);
-        public static final Translation2d centerlineNote2 = new Translation2d(0,0);
-        public static final Translation2d centerlineNote3 = new Translation2d(0,0);
-        public static final Translation2d centerlineNote4 = new Translation2d(0,0);
-        public static final Translation2d centerlineNote5 = new Translation2d(0,0);
+        public static final Translation2d centerlineNote1 = new Translation2d(250.5,29.64);
+        public static final Translation2d centerlineNote2 = new Translation2d(250.5,95.64);
+        public static final Translation2d centerlineNote3 = new Translation2d(250.5,161.64);
+        public static final Translation2d centerlineNote4 = new Translation2d(250.5,227.64);
+        public static final Translation2d centerlineNote5 = new Translation2d(250.5,293.64);
 
         public static final double noteDiameter = Units.inchesToMeters(14);
 
-        public static final double speakerHeight = Units.inchesToMeters(82.875);
+        public static final double speakerHeight = Units.inchesToMeters(80.4375); // Center of opening
+        public static final Translation2d blueSpeakerPose = new Translation2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42)); // Center of back of the opening
+        public static final Translation2d redSpeakerPose = new Translation2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42)); // Center of back of the opening
     }
 
     public static final class LimelightConstants{

@@ -140,9 +140,9 @@ public class RobotContainer {
             () -> -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
             () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
             // strafe.button(1) 
-            () -> false
+            rotate.button(1)
         ));
-    rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
+    strafe.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
 
     //strafe.button(1).onTrue(new DriveToPose(m_swerve));
 

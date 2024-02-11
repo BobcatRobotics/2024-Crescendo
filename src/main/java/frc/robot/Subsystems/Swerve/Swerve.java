@@ -24,10 +24,12 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.SwerveConstants;
 
 public class Swerve extends SubsystemBase {
@@ -205,8 +207,9 @@ public class Swerve extends SubsystemBase {
     /**
      * Makes the swerve drive move
      * @param translation desired x and y speeds of the swerve drive in meters per second
-     * @param rotation desired rotation speed of the swerve drive in radians per second
+     * @param rotation desired rotation speed of the swerve drive in radians per second OR angle to snap to in radians if snapToRotation is true
      * @param fieldRelative whether the values should be field relative or not
+     * @param snapToRotation whether to use the rotation value as an angle to snap to or a speed to rotate
      */
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean snapToRotation) {
         
@@ -221,14 +224,14 @@ public class Swerve extends SubsystemBase {
                 rotation);
                 
                 if (snapToRotation) {
-                    desiredSpeeds.omegaRadiansPerSecond = rotationPID.calculate(getYaw().getRadians(), Math.PI/2);
+                    desiredSpeeds.omegaRadiansPerSecond = -rotationPID.calculate(Rotation2d.fromDegrees(get0to360(getYaw().getDegrees())).getRadians(), rotation);
                 } else {
                     if (rotation == 0) {
                         if (rotating) {
                             rotating = false;
-                            lastMovingYaw = getYaw().getRadians();
+                            lastMovingYaw = Rotation2d.fromDegrees(get0to360(getYaw().getDegrees())).getRadians();
                         }
-                        desiredSpeeds.omegaRadiansPerSecond = rotationPID.calculate(getYaw().getRadians(), lastMovingYaw);
+                        desiredSpeeds.omegaRadiansPerSecond = -rotationPID.calculate(Rotation2d.fromDegrees(get0to360(getYaw().getDegrees())).getRadians(), lastMovingYaw);
                     } else {
                         rotating = true;
                     }
@@ -318,6 +321,21 @@ public class Swerve extends SubsystemBase {
         return poseEstimator.getEstimatedPosition();
     }
 
+    public Rotation2d getAngleToSpeaker() {
+        double angle;
+        if (DriverStation.getAlliance().get() == Alliance.Red) {
+            double xDist = FieldConstants.redSpeakerPose.getX() - getPose().getX();
+            double yDist = FieldConstants.redSpeakerPose.getY() - getPose().getY();
+            angle = Math.atan(yDist/xDist);
+        } else {
+            double xDist = FieldConstants.blueSpeakerPose.getX() - getPose().getX();
+            double yDist = FieldConstants.blueSpeakerPose.getY() - getPose().getY();
+            angle = Math.atan(yDist/xDist);
+        }
+        angle = get0to360(Rotation2d.fromRadians(angle).getDegrees());
+        return Rotation2d.fromDegrees(angle);
+    }
+
     /**
      * Resets our odometry to desired pose
      * @param pose pose to set odometry to
@@ -365,6 +383,16 @@ public class Swerve extends SubsystemBase {
     public Command driveToPose(Pose2d pose){
         
         return AutoBuilder.pathfindToPose(pose, new PathConstraints(Constants.SwerveConstants.maxSpeed, Constants.SwerveConstants.maxAccel, Constants.SwerveConstants.maxAngularVelocity, Constants.SwerveConstants.maxAngularAcceleration));
+    }
+
+    private double get0to360(double num) {
+        while (num < 0) {
+            num += 360;
+        }
+        while (num > 360) {
+            num -= 360;
+        }
+        return num;
     }
 
 }
