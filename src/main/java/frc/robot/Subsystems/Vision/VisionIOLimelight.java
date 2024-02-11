@@ -18,12 +18,13 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.filter.LinearFilter;
 import frc.robot.Constants;
-import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpersFast;
 import frc.robot.Constants.LimelightConstants;
 
 public class VisionIOLimelight implements VisionIO{
   /** Creates a new VisionIOLimelight. */
     LEDMode currentLedMode = LEDMode.FORCEOFF;
+    CamMode currentCamMode = CamMode.VISION;
     public final String name;
     public final double verticalFOV;
     public final double horizontalFOV;
@@ -56,17 +57,18 @@ public class VisionIOLimelight implements VisionIO{
   @Override
   public void updateInputs(VisionIOInputs inputs) {
     inputs.ledMode = currentLedMode;
-    inputs.pipelineID = LimelightHelpers.getCurrentPipelineIndex(name);
-    inputs.pipelineLatency = LimelightHelpers.getLatency_Pipeline(name);
-    inputs.ta = LimelightHelpers.getTA(name);
-    inputs.tv = LimelightHelpers.getTV(name);
-    inputs.tx = LimelightHelpers.getTX(name);
-    inputs.ty = LimelightHelpers.getTY(name);
-    inputs.fiducialID = LimelightHelpers.getFiducialID(name);
-    inputs.boundingHorizontalPixels = LimelightHelpers.getLimelightNTDouble(name, "thor");
+    inputs.camMode = currentCamMode;
+    inputs.pipelineID = LimelightHelpersFast.getCurrentPipelineIndex(name);
+    inputs.pipelineLatency = LimelightHelpersFast.getLatency_Pipeline(name);
+    inputs.ta = LimelightHelpersFast.getTA(name);
+    inputs.tv = LimelightHelpersFast.getTV(name);
+    inputs.tx = LimelightHelpersFast.getTX(name);
+    inputs.ty = LimelightHelpersFast.getTY(name);
+    inputs.fiducialID = LimelightHelpersFast.getFiducialID(name);
+    inputs.boundingHorizontalPixels = LimelightHelpersFast.getLimelightNTDouble(name, "thor");
     inputs.distanceToNote = distanceFilter.calculate(distanceFromCameraPercentage(inputs.boundingHorizontalPixels));
     inputs.rawDistanceToNote = distanceFromCameraPercentage(inputs.boundingHorizontalPixels);
-    inputs.tClass=LimelightHelpers.getNeuralClassID(name);
+    inputs.tClass=LimelightHelpersFast.getNeuralClassID(name);
     inputs.name=name;
   }
 
@@ -76,28 +78,40 @@ public class VisionIOLimelight implements VisionIO{
   public void setLEDS(LEDMode mode) {
     switch (mode) {
       case FORCEBLINK:
-        LimelightHelpers.setLEDMode_ForceBlink(null);
+        LimelightHelpersFast.setLEDMode_ForceBlink(name);
         currentLedMode = LEDMode.FORCEBLINK;
         break;
       case FORCEOFF:
-        LimelightHelpers.setLEDMode_ForceOff(null);
+        LimelightHelpersFast.setLEDMode_ForceOff(name);
         currentLedMode = LEDMode.FORCEOFF;
       case FORCEON:
-        LimelightHelpers.setLEDMode_ForceOn(null);
+        LimelightHelpersFast.setLEDMode_ForceOn(name);
         currentLedMode = LEDMode.FORCEON;
       case PIPELINECONTROL:
-        LimelightHelpers.setLEDMode_PipelineControl(null);
+        LimelightHelpersFast.setLEDMode_PipelineControl(name);
         currentLedMode = LEDMode.PIPELINECONTROL;
       default:
-        LimelightHelpers.setLEDMode_ForceOff(null);
+        LimelightHelpersFast.setLEDMode_ForceOff(name);
         currentLedMode = LEDMode.FORCEOFF;
         break;
     }
   }
 
   @Override
+  public void setCamMode(CamMode mode){
+    switch (mode){
+      case DRIVERCAM:
+      LimelightHelpersFast.setCameraMode_Driver(name);
+      currentCamMode = CamMode.DRIVERCAM;
+      case VISION:
+      LimelightHelpersFast.setCameraMode_Processor(name);
+      currentCamMode = CamMode.VISION;
+    }
+  }
+
+  @Override
   public void setPipeline(String limelight, int index){    
-    LimelightHelpers.setPipelineIndex(limelight, index);
+    LimelightHelpersFast.setPipelineIndex(limelight, index);
   }
 
   public double pixlesToPercent(double pixels){
@@ -112,7 +126,7 @@ public class VisionIOLimelight implements VisionIO{
    */
   public double distanceFromCameraPercentage(double widthPercent){
     
-    if (LimelightHelpers.getTV(name)){
+    if (LimelightHelpersFast.getTV(name)){
     widthPercent = pixlesToPercent(widthPercent);
     // double horizontalLength = Constants.FieldConstants.noteDiameter / widthPercent;
     // double cornerFOVAngle = Units.degreesToRadians(90 - (Constants.LimelightConstants.horizontalFOV/2));

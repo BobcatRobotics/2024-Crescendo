@@ -16,6 +16,8 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.LimelightConstants;
+import frc.robot.Constants.LimelightConstants.intake;
+import frc.robot.Subsystems.Vision.CamMode;
 import frc.robot.Subsystems.Vision.Vision;
 import frc.robot.Subsystems.Vision.VisionIOLimelight;
 
@@ -24,6 +26,9 @@ public class Robot extends LoggedRobot {
 
   private RobotContainer m_robotContainer;
   private Vision intakeVision = new Vision(new VisionIOLimelight(LimelightConstants.intake.constants));
+  private Vision rightShooterVision = new Vision(new VisionIOLimelight(LimelightConstants.shooterRight.constants));
+  private Vision leftShooterVision = new Vision(new VisionIOLimelight(LimelightConstants.shooterLeft.constants));
+
 
   @Override
   public void robotInit() {
@@ -99,6 +104,13 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    intakeVision.setPipeline(2);
+    intakeVision.setCamMode(CamMode.VISION);
+    leftShooterVision.setPipeline(1);
+    rightShooterVision.setPipeline(1);
+
+
   }
 
   @Override
@@ -113,6 +125,7 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
     intakeVision.setPipeline(0);
+    intakeVision.setCamMode(CamMode.DRIVERCAM);
 
   }
 

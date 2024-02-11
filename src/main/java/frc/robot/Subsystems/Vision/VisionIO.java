@@ -19,41 +19,6 @@ public interface VisionIO {
   
   @AutoLog
   public static class VisionIOInputs{  
-    //intake
-      // public LEDMode ledModeIntake = LEDMode.FORCEOFF;
-      // public double pipelineIDIntake = 0;
-      // public double pipelineLatencyIntake = 0;
-      // public double taIntake;
-      // public boolean tvIntake;
-      // public double txIntake;
-      // public double tyIntake;
-      // public double fiducialIDIntake;
-      // public double boundingHorizontalPixelsIntake;
-      // public double distanceToNoteIntake;
-      // public double rawDistanceToNoteIntake;
-      // public double tClassIntake;
-
-      // //shooterleft
-      // public LEDMode ledModeShooterleft = LEDMode.FORCEOFF;
-      // public double pipelineIDShooterleft = 0;
-      // public double pipelineLatencyShooterleft = 0;
-      // public double taShooterleft;
-      // public boolean tvShooterleft;
-      // public double txShooterleft;
-      // public double tyShooterleft;
-      // public double fiducialIDShooterleft;
-
-      // //shooterright
-      // public LEDMode ledModeShooterright = LEDMode.FORCEOFF;
-      // public double pipelineIDShooterright = 0;
-      // public double pipelineLatencyShooterright = 0;
-      // public double taShooterright;
-      // public boolean tvShooterright;
-      // public double txShooterright;
-      // public double tyShooterright;
-      // public double fiducialIDShooterright;
-
-      //generic
       public LEDMode ledMode = LEDMode.FORCEOFF;
       public double pipelineID = 0;
       public double pipelineLatency = 0;
@@ -67,6 +32,7 @@ public interface VisionIO {
       public double rawDistanceToNote;
       public double tClass;
       public String name;
+      public CamMode camMode = CamMode.VISION;
     }
       /** Updates the set of loggable inputs. */
     public default void updateInputs(VisionIOInputs inputs) {}
@@ -82,6 +48,8 @@ public interface VisionIO {
     public default double getTClass(){
       return 0.0;
     }
+
+    public default void setCamMode(CamMode mode){}
 
   /**
    * 
