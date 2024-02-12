@@ -20,7 +20,7 @@ public interface ShooterIO {
     public default void setTopVelocity(double rps) {} //revs per sec
     public default void setBottomVelocity(double rps) {} //revs per sec
     public default void setAngle(double deg) {} //degrees!!!!!
-
+    public default void setVelocityTune(double rpm){}//tuning purposes only
     public default void stopTopMotor() {} //STOP IT. STOP THE TOP MOTOR :(( 
     public default void stopBottomMotor() {} //STOP THE BOTTOM MOTOR!!!
     public default void stopAngleMotor() {} //STOP THE ANGLE MOTOR STOP IT RIGHT NOW!!!
