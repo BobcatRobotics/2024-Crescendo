@@ -13,6 +13,7 @@ public interface ShooterIO {
 
         public double angleMotorPosition = 0.0; //position in degrees for the shooter from the angle motor 
         public double angleMotorStatorCurrent = 0.0; //Current to the angle shooter motor
+        public double angleMotorRequestedPos = 0.0;
     }
 
     public default void updateInputs(ShooterIOInputs inputs) {}
@@ -24,4 +25,5 @@ public interface ShooterIO {
     public default void stopTopMotor() {} //STOP IT. STOP THE TOP MOTOR :(( 
     public default void stopBottomMotor() {} //STOP THE BOTTOM MOTOR!!!
     public default void stopAngleMotor() {} //STOP THE ANGLE MOTOR STOP IT RIGHT NOW!!!
+    public default void setPercentOut(double percent) {}
 }

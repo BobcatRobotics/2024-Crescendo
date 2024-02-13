@@ -55,6 +55,9 @@ public class Shooter extends SubsystemBase {
         io.stopAngleMotor();
     }
 
+    public void setPercentOut(double percent){
+        io.setPercentOut(percent);
+    }
 
 
 
