@@ -155,7 +155,7 @@ public class RobotContainer {
     gp.button(9).whileTrue(new InstantCommand(m_intake::runOut)).onFalse(new InstantCommand(m_intake::stop)); // start
 
     /* Shooter Controls */
-    gp.button(5).whileTrue(new InstantCommand(() -> m_shooter.setSpeed(300*60))).onFalse(new InstantCommand(m_shooter::stop)); // left bumper
+    gp.button(5).whileTrue(new InstantCommand(() -> m_shooter.setSpeed(1000/60))).onFalse(new InstantCommand(m_shooter::stop)); // left bumper
     //gp.button(2).whileTrue(new InstantCommand(() -> m_shooter.setVelocityTune(SmartDashboard.getNumber("ShooterRPM", 0)))).onFalse(new InstantCommand(() -> m_shooter.stop()));
     gp.button(2).onTrue(new InstantCommand(() -> m_shooter.setPercentOut(0.2)).withTimeout(1)).onFalse(new InstantCommand(() -> m_shooter.stopAngle()));
     /* Drive with gamepad */
