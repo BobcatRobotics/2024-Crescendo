@@ -3,8 +3,6 @@ package frc.robot.Subsystems.Trap;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
-import frc.robot.Constants.TrapConstants;
 import frc.robot.Constants.TrapConstants;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;

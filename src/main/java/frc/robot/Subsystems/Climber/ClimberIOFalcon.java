@@ -28,19 +28,18 @@ public class ClimberIOFalcon implements ClimberIO
         motionMagicConfigs.MotionMagicCruiseVelocity = ClimberConstants.motionmagicCruiseVelocity;
         motionMagicConfigs.MotionMagicAcceleration = ClimberConstants.motionmagicAcceleration;
         motionMagicConfigs.MotionMagicJerk = ClimberConstants.motionmagicJerk;
-        this.climberConfigs = climberConfigs;
+        climberConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+        climberConfigs.CurrentLimits.StatorCurrentLimit = 40; //amps
+
+        climberMotor.getConfigurator().apply(climberConfigs);
+
+        
     }
 
     public void updateInputs(ClimberIOInputs i){
         // Updates all of the inputs/data points being monitored about the motor
-        i.climberMotorPercentOut = climberMotor.getDutyCycle().getValueAsDouble();
         i.climberMotorStatorCurrent = climberMotor.getStatorCurrent().getValueAsDouble();
-        i.climberMotorVelocityRPS = climberMotor.getVelocity().getValueAsDouble();
         i.climberMotorPosition = climberMotor.getPosition().getValueAsDouble();
-
-        i.motionmagicAcceleration = motionMagicConfigs.MotionMagicAcceleration;
-        i.motionmagicCruiseVelocity = motionMagicConfigs.MotionMagicCruiseVelocity;
-        i.motionmagicJerk = motionMagicConfigs.MotionMagicJerk;
     }
 
     //This function : you give it a rotation amount and it will run to that rotation amount

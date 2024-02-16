@@ -32,11 +32,9 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
     private final Queue<Double> drivePositionQueue;
     private final StatusSignal<Double> drivePosition;
     private final StatusSignal<Double> driveVelocity;
-    private final StatusSignal<Double> drivePercentOut;
 
     private final Queue<Double> anglePositionQueue;
     private final StatusSignal<Double> angleAbsolutePosition;
-    private final StatusSignal<Double> anglePercentOut;
 
     public SwerveModuleIOFalcon(ModuleConstants moduleConstants) {
         encoderOffset = moduleConstants.angleOffset;
@@ -57,15 +55,13 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         drivePositionQueue =
             PhoenixOdometryThread.getInstance().registerSignal(driveMotor, driveMotor.getPosition());
         driveVelocity = driveMotor.getVelocity();
-        drivePercentOut = driveMotor.getDutyCycle();
 
         angleAbsolutePosition = angleEncoder.getAbsolutePosition();
         anglePositionQueue =
             PhoenixOdometryThread.getInstance().registerSignal(angleEncoder, angleEncoder.getPosition());
-        anglePercentOut = angleMotor.getDutyCycle();
 
         BaseStatusSignal.setUpdateFrequencyForAll(
-            250.0, drivePosition, driveVelocity, drivePercentOut, angleAbsolutePosition, anglePercentOut);
+            250.0, drivePosition, driveVelocity, angleAbsolutePosition);
         driveMotor.optimizeBusUtilization();
         angleMotor.optimizeBusUtilization();
     }
@@ -75,15 +71,10 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         BaseStatusSignal.refreshAll(
         drivePosition,
         driveVelocity,
-        drivePercentOut,
-        angleAbsolutePosition,
-        anglePercentOut);
+        angleAbsolutePosition);
 
         inputs.drivePositionRot = drivePosition.getValueAsDouble() / SwerveConstants.driveGearRatio;
         inputs.driveVelocityRotPerSec = driveVelocity.getValueAsDouble() / SwerveConstants.driveGearRatio;
-        inputs.drivePercentOut = drivePercentOut.getValueAsDouble();
-
-        inputs.anglePercentOut = anglePercentOut.getValueAsDouble();
 
         inputs.canCoderPositionRot = Rotation2d.fromRadians(MathUtil.angleModulus(Rotation2d.fromRotations(angleAbsolutePosition.getValueAsDouble()).minus(encoderOffset).getRadians())).getRotations();
         inputs.rawCanCoderPositionDeg = Rotation2d.fromRotations(angleAbsolutePosition.getValueAsDouble()).getDegrees(); // Used only for shuffleboard to display values to get offsets
@@ -99,13 +90,6 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
                 // .map((Double value) -> Rotation2d.fromRadians(MathUtil.angleModulus(Rotation2d.fromRotations(value).minus(encoderOffset).getRadians())))
                 .map((Double value) -> Rotation2d.fromRotations(value))
                 .toArray(Rotation2d[]::new);
-
-        double totalTime = 0;
-        for (int i = 1; i < inputs.odometryTimestamps.length; i++) {
-            totalTime += (inputs.odometryTimestamps[i]-inputs.odometryTimestamps[i-1]);
-        }
-        double avgTime = totalTime / (inputs.odometryTimestamps.length-1);
-        inputs.freq = 1/avgTime;
 
         timestampQueue.clear();
         drivePositionQueue.clear();

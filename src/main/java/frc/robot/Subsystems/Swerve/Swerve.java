@@ -19,19 +19,14 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Twist2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -79,34 +74,6 @@ public class Swerve extends SubsystemBase {
     
 
     public Swerve(GyroIO gyroIO, SwerveModuleIO flIO, SwerveModuleIO frIO, SwerveModuleIO blIO, SwerveModuleIO brIO, Vision intakeVision, Vision shooterLeftVision, Vision shooterRightVision) {
-        
-        //Notifier for odometry updates, didn't work very well in my testing
-
-        // class updatePose implements Runnable{
-        //     @Override
-        //     public void run(){
-        //     //Update PoseEstimator based on odometry
-        //     // PoseEstimator.update(getYaw(), getModulePositions());
-        //     PoseEstimator.updateWithTime(Timer.getFPGATimestamp(), getYaw(), getModulePositions());
-
-        //     //Update PoseEstimator if at least 1 tag is in view
-        //     if (LimelightHelpers.getTV(limelightfront)){
-        //     //standard deviations are (distance to nearest apriltag)/2 for x and y and 10 degrees for theta
-        //     PoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue(limelightfront), (Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(limelightfront)/1000.0) - (LimelightHelpers.getLatency_Capture(limelightfront)/1000.0)),VecBuilder.fill(getDistance(limelightfront)/2, getDistance(limelightfront)/2, Units.degreesToRadians(10)));
-        //     }
-        //     if (LimelightHelpers.getTV(limelightback)){
-        //     PoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue(limelightback), (Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(limelightback)/1000.0) - (LimelightHelpers.getLatency_Capture(limelightback)/1000.0)), VecBuilder.fill(getDistance(limelightback)/2, getDistance(limelightback)/2, Units.degreesToRadians(10)));
-        //     }
-            
-        
-        // }
-            
-        // }
-
-        // Runnable runnable = new updatePose();
-        // Notifier notifier = new Notifier(runnable);
-        // double runnablePeriod = 0.02;
-        // notifier.startPeriodic(runnablePeriod);
         this.IntakeVision = intakeVision;
         this.shooterLeftVision = shooterLeftVision;
         this.shooterRightVision = shooterRightVision;

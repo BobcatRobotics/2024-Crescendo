@@ -18,7 +18,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.LimelightHelpersFast;
+import frc.robot.LimelightHelpers;
 
 public class Vision extends SubsystemBase{
   /** Creates a new Vision. */
@@ -73,25 +73,25 @@ public class Vision extends SubsystemBase{
   }
 
   public Pose2d getBotPose(){
-    Pose2d pose = LimelightHelpersFast.getBotPose2d_wpiBlue(inputs.name);
+    Pose2d pose = LimelightHelpers.getBotPose2d_wpiBlue(inputs.name);
     Logger.recordOutput("Limelight"+inputs.name,pose);
     return pose;
   }
 
   public double getDistToTag(){
-    return LimelightHelpersFast.getTargetPose_RobotSpace(inputs.name)[0];
+    return LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[0];
   }
 
   public double getPoseTimestamp(){
-    return Timer.getFPGATimestamp() - (LimelightHelpersFast.getLatency_Pipeline(inputs.name)/1000.0);
+    return Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(inputs.name)/1000.0);
   }
 
   public Translation2d getTranslationToTag(int tagID){
     if(apriltagPipeline){
       //get botpose from limelight networktables
-    if (LimelightHelpersFast.getTV(inputs.name)){
+    if (LimelightHelpers.getTV(inputs.name)){
 
-    double[] botPose = LimelightHelpersFast.getBotPose_wpiBlue(inputs.name);
+    double[] botPose = LimelightHelpers.getBotPose_wpiBlue(inputs.name);
     Pose3d botPose3D = new Pose3d(new Translation3d(botPose[0], botPose[1], botPose[2]), new Rotation3d(Math.toRadians(botPose[3]), Math.toRadians(botPose[4]), Math.toRadians(botPose[5])));
     Pose2d botPose2d = botPose3D.toPose2d();
     

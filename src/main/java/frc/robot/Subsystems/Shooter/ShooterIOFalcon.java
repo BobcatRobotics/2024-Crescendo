@@ -5,15 +5,11 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DutyCycle;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import frc.robot.Constants.ShooterConstants;
@@ -99,6 +95,7 @@ public class ShooterIOFalcon implements ShooterIO {
         cancoderConfigs.MagnetSensor.SensorDirection = ShooterConstants.sensorDirection;
         cancoderConfigs.MagnetSensor.AbsoluteSensorRange = ShooterConstants.sensorRange;
         cancoderConfigs.MagnetSensor.MagnetOffset = ShooterConstants.offset.getRotations();
+        
         cancoder.getConfigurator().apply(cancoderConfigs);
 
 
@@ -123,7 +120,6 @@ public class ShooterIOFalcon implements ShooterIO {
         
         inputs.angleMotorPosition = angleMotor.getPosition().getValueAsDouble();
         inputs.angleMotorStatorCurrent = angleMotor.getStatorCurrent().getValueAsDouble();
-        inputs.angleMotorRequestedPos = angleRequest.Position;
     }
 
     /**

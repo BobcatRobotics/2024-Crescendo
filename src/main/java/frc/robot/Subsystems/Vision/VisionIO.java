@@ -5,13 +5,8 @@
 package frc.robot.Subsystems.Vision;
 
 import org.littletonrobotics.junction.AutoLog;
-import org.littletonrobotics.junction.AutoLogOutput;
 
-import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.networktables.NetworkTable;
 
-import frc.robot.LimelightHelpers;
 
 /** Vision subsystem hardware interface. */
 public interface VisionIO {

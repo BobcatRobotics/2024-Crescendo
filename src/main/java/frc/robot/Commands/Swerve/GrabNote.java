@@ -4,10 +4,6 @@
 
 package frc.robot.Commands.Swerve;
 
-import org.littletonrobotics.junction.Logger;
-
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;

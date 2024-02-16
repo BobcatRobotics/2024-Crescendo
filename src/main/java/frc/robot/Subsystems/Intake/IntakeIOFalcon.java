@@ -29,18 +29,24 @@ public class IntakeIOFalcon implements IntakeIO {
         switchMotor.getConfigurator().apply(switchConfig);
         switchConfig.MotorOutput.Inverted = IntakeConstants.switchMotorInvert;
         switchConfig.MotorOutput.NeutralMode = IntakeConstants.switchMotorBrakeMode;
+        switchConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        switchConfig.CurrentLimits.StatorCurrentLimit = 40; //amps
         switchMotor.getConfigurator().apply(switchConfig);
 
         TalonFXConfiguration floorConfig = new TalonFXConfiguration();
         floorMotor.getConfigurator().apply(floorConfig);
         floorConfig.MotorOutput.Inverted = IntakeConstants.floorMotorInvert;
         floorConfig.MotorOutput.NeutralMode = IntakeConstants.floorMotorBrakeMode;
+        floorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        floorConfig.CurrentLimits.StatorCurrentLimit = 40; //amps
         floorMotor.getConfigurator().apply(floorConfig);
 
         TalonFXConfiguration outsideConfig = new TalonFXConfiguration();
-        floorMotor.getConfigurator().apply(outsideConfig);
+        outsideMotor.getConfigurator().apply(outsideConfig);
         outsideConfig.MotorOutput.Inverted = IntakeConstants.outsideMotorInvert;
         outsideConfig.MotorOutput.NeutralMode = IntakeConstants.outsideMotorBrakeMode;
+        outsideConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        outsideConfig.CurrentLimits.StatorCurrentLimit = 40; //amps
         outsideMotor.getConfigurator().apply(outsideConfig);
 
         request = new DutyCycleOut(0).withEnableFOC(true);
@@ -49,17 +55,14 @@ public class IntakeIOFalcon implements IntakeIO {
     public void updateInputs(IntakeIOInputs inputs) {
         inputs.switchMotorPercentOut = switchMotor.getDutyCycle().getValueAsDouble();
         inputs.switchMotorCurrent = switchMotor.getStatorCurrent().getValueAsDouble();
-        inputs.switchMotorVelocityRotPerSec = switchMotor.getVelocity().getValueAsDouble();
 
         inputs.floorMotorPercentOut = floorMotor.getDutyCycle().getValueAsDouble();
         inputs.floorMotorCurrent = floorMotor.getStatorCurrent().getValueAsDouble();
-        inputs.floorMotorVelocityRotPerSec = floorMotor.getVelocity().getValueAsDouble();
 
         inputs.outsideMotorPercentOut = outsideMotor.getDutyCycle().getValueAsDouble();
         inputs.outsideMotorCurrent = outsideMotor.getStatorCurrent().getValueAsDouble();
-        inputs.outsideMotorVelocityRotPerSec = outsideMotor.getVelocity().getValueAsDouble();
 
-        inputs.tofValue = tof.getRange();
+        // inputs.tofValue = tof.getRange();
     }
 
     public void switchMotorSetPercentOut(double percent) {

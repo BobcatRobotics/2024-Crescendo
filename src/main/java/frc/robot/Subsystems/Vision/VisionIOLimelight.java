@@ -5,7 +5,6 @@
 package frc.robot.Subsystems.Vision;
 
 
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.Vector;
@@ -13,13 +12,8 @@ import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.numbers.N3;
 import frc.lib.util.limelightConstants;
 import frc.robot.Constants;
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.math.filter.LinearFilter;
-import frc.robot.Constants;
 import frc.robot.LimelightHelpersFast;
-import frc.robot.Constants.LimelightConstants;
 
 public class VisionIOLimelight implements VisionIO{
   /** Creates a new VisionIOLimelight. */

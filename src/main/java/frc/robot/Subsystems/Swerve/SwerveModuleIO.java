@@ -10,14 +10,10 @@ public interface SwerveModuleIO {
     @AutoLog
     public static class SwerveModuleIOInputs {
         public Rotation2d offset = new Rotation2d();
-        public double freq = 0.0;
 
         public double drivePositionRot = 0.0;
         public double driveVelocityRotPerSec = 0.0;
-        public double drivePercentOut = 0.0;
-        
-        public double anglePercentOut = 0.0;
-        
+                
         public double canCoderPositionRot = 0.0;
         public double rawCanCoderPositionDeg = 0.0;
 

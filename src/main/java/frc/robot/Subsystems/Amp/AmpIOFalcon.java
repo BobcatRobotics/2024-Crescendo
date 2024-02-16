@@ -1,16 +1,10 @@
 package frc.robot.Subsystems.Amp;
 
-import org.littletonrobotics.junction.networktables.LoggedDashboardBoolean;
-import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.configs.FeedbackConfigs;
-import frc.robot.Constants;
 import frc.robot.Constants.AmpConstants;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -51,6 +45,9 @@ public class AmpIOFalcon implements AmpIO{
 
         configs.MotorOutput.Inverted= InvertedValue.Clockwise_Positive; 
         configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+        configs.CurrentLimits.StatorCurrentLimitEnable = true;
+        configs.CurrentLimits.StatorCurrentLimit = 40; //amps
         
 
         
