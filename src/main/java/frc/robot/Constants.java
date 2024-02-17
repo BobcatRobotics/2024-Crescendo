@@ -343,13 +343,15 @@ public class Constants {
     }
 
     public static final class TrapConstants{
+        public static final double rotationAmount = 0.5;
+        public static final double shooterSpeedRPS = 30;
         public static final double deviceIDWinch = 0;
         public static final double deviceIDShooter = 0;
         public static final double motionmagicCruiseVelocity = 0;
         public static final double motionmagicAcceleration = 0;
         public static final double motionmagicJerk = 0;
         public static final NeutralModeValue winchMotorBrakeMode = NeutralModeValue.Brake;    
-        public static final InvertedValue winchMotorInvert =  InvertedValue.Clockwise_Positive;  
+        public static InvertedValue winchMotorInvert =  InvertedValue.Clockwise_Positive;  
         public static final NeutralModeValue shooterMotorBrakeMode = NeutralModeValue.Coast;    
         public static final InvertedValue shooterMotorInvert =  InvertedValue.Clockwise_Positive;  
         public static final double K = 0;

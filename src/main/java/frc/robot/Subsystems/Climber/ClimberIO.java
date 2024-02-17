@@ -18,6 +18,8 @@ public interface ClimberIO {
         public double motionmagicCruiseVelocity = 0.0;
         public double motionmagicJerk = 0.0;
 
+        public String climberDirection = "Clockwise";
+
         }
 
 

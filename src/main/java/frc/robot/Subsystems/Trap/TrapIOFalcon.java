@@ -2,6 +2,7 @@ package frc.robot.Subsystems.Trap;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import frc.robot.Constants.ClimberConstants;
@@ -83,7 +84,15 @@ public class TrapIOFalcon implements TrapIO{
         i.ShooterMotorStatorCurrent = shooterMotor.getStatorCurrent().getValueAsDouble();
         i.ShooterMotorVelocityRPS = shooterMotor.getVelocity().getValueAsDouble();
 
-        if(winchConfigs.motorOutput)
+        // Track inverted value changes
+        if(winchConfigs.MotorOutput.Inverted==InvertedValue.Clockwise_Positive){
+            i.trapMotorDirection = "Clockwise";
+            TrapConstants.winchMotorInvert = InvertedValue.Clockwise_Positive;
+        }
+        if(winchConfigs.MotorOutput.Inverted==InvertedValue.CounterClockwise_Positive){
+            i.trapMotorDirection = "Counter-Clockwise";
+            TrapConstants.winchMotorInvert = InvertedValue.CounterClockwise_Positive;
+        }
     }
 
     // Shooter functions

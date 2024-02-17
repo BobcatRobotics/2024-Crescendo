@@ -18,6 +18,9 @@ public class Trap extends SubsystemBase {
 
      TrapIO trap;
 
+     double shooterSpeedRPS = TrapConstants.shooterSpeedRPS;
+     double rotationamount = TrapConstants.rotationAmount;
+
      public Trap(TrapIO trapModule){
         this.trap = trapModule;
      }
