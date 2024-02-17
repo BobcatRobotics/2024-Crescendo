@@ -96,6 +96,7 @@ public class TrapIOFalcon implements TrapIO{
     }
 
     // Shooter functions
+
     public void runShooterMotor(double rps){
         shooterMotor.setControl(requestShooter.withVelocity(rps));
     }

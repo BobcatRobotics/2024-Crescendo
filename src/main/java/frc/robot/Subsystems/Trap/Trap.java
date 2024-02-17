@@ -2,7 +2,7 @@ package frc.robot.Subsystems.Trap;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TrapConstants;
-import frc.robot.Subsystems.Climber.ClimberIOInputsAutoLogged;
+import frc.robot.Subsystems.Trap.TrapIOInputsAutoLogged;
 
 /*
  * So far, with these functions, you can:
