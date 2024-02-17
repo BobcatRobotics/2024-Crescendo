@@ -6,6 +6,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import frc.robot.Constants.AmpConstants;
+import frc.robot.Constants.ShooterConstants;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -31,8 +32,8 @@ public class AmpIOFalcon implements AmpIO {
         slot0 = configs.Slot0;
         softLimitThresh.withForwardSoftLimitEnable(true);
         softLimitThresh.withReverseSoftLimitEnable(true);
-        softLimitThresh.withForwardSoftLimitThreshold(AmpConstants.forwardsoftlimit);
-        softLimitThresh.withReverseSoftLimitThreshold(AmpConstants.reversesoftlimit5);
+        softLimitThresh.withForwardSoftLimitThreshold(AmpConstants.forwardSoftLimit);
+        softLimitThresh.withReverseSoftLimitThreshold(AmpConstants.reverseSoftLimit);
 
         slot0.kS = AmpConstants.kS;// initializes motion magic pid values
         slot0.kV = AmpConstants.kV;
@@ -41,20 +42,25 @@ public class AmpIOFalcon implements AmpIO {
         slot0.kI = AmpConstants.kI;
         slot0.kD = AmpConstants.kD;
 
-        configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-        configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        configs.MotorOutput.Inverted = AmpConstants.ampInvertedValue;
+        configs.MotorOutput.NeutralMode = AmpConstants.ampNeutralModeValue;
 
         configs.CurrentLimits.StatorCurrentLimitEnable = true;
-        configs.CurrentLimits.StatorCurrentLimit = 40; // amps
+        configs.CurrentLimits.StatorCurrentLimit = AmpConstants.ampStatorCurrentLimit; // amps
 
-        m_request.withEnableFOC(true);
         motionMagicConfigs = configs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = AmpConstants.motionmagicCruiseVelocity;
-        motionMagicConfigs.MotionMagicAcceleration = AmpConstants.motionmagicAcceleration;
-        motionMagicConfigs.MotionMagicJerk = AmpConstants.motionmagicJerk;
-
+        motionMagicConfigs.MotionMagicCruiseVelocity = AmpConstants.motionMagicCruiseVelocity;
+        motionMagicConfigs.MotionMagicAcceleration = AmpConstants.motionMagicAcceleration;
+        motionMagicConfigs.MotionMagicJerk = AmpConstants.motionMagicJerk;
+                
         configs.SoftwareLimitSwitch = softLimitThresh;
+        configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+        configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = AmpConstants.forwardSoftLimit; //need to (de)vide by 360 to convert degrees to rotations
+        configs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+        configs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = AmpConstants.reverseSoftLimit;
         motor.getConfigurator().apply(configs);
+        
+        m_request.withEnableFOC(true);
 
     }
 
@@ -80,4 +86,4 @@ public class AmpIOFalcon implements AmpIO {
         motor.stopMotor();
     }
 
-}
+} 

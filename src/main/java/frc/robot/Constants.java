@@ -263,14 +263,17 @@ public class Constants {
         public static final int switchMotorID = 9; // This one switches to feed shooter vs trap
         public static final InvertedValue switchMotorInvert = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue switchMotorBrakeMode = NeutralModeValue.Coast;
+        public static final double switchCurrentLimit = 80;
 
         public static final int floorMotorID = 10;
         public static final InvertedValue floorMotorInvert = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue floorMotorBrakeMode = NeutralModeValue.Coast;
+        public static final double floorCurrentLimit = 80;
 
         public static final int outsideMotorID = 11;
         public static final InvertedValue outsideMotorInvert = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue outsideMotorBrakeMode = NeutralModeValue.Coast;
+        public static final double outsideCurrentLimit = 80;
 
         public static final int tofID = 0;
         public static final double tofTresh = 135; // millimeters
@@ -362,14 +365,16 @@ public class Constants {
         public static final double kS = 0;
         public static final double kV = 0;
         public static final double kA = 0;
-        public static final double motionmagicCruiseVelocity = 0;
-        public static final double motionmagicAcceleration = 0;
-        public static final double motionmagicJerk = 0;
+        public static final double motionMagicCruiseVelocity = 0;
+        public static final double motionMagicAcceleration = 0;
+        public static final double motionMagicJerk = 0;
         public static final double rotationAmount = 0.5;
         public static final double softLimitThresh = 0;
-		public static final double forwardsoftlimit  = 0;
-        public static final double reversesoftlimit5  = 0;
-
+		public static final double forwardSoftLimit  = 0;
+        public static final double reverseSoftLimit  = 0;
+        public static final InvertedValue ampInvertedValue = InvertedValue.Clockwise_Positive;
+        public static final NeutralModeValue ampNeutralModeValue = NeutralModeValue.Brake;
+        public static final double ampStatorCurrentLimit = 80;
     }
 }
 

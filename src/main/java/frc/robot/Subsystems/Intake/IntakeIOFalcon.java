@@ -30,7 +30,7 @@ public class IntakeIOFalcon implements IntakeIO {
         switchConfig.MotorOutput.Inverted = IntakeConstants.switchMotorInvert;
         switchConfig.MotorOutput.NeutralMode = IntakeConstants.switchMotorBrakeMode;
         switchConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        switchConfig.CurrentLimits.StatorCurrentLimit = 80; //amps
+        switchConfig.CurrentLimits.StatorCurrentLimit = IntakeConstants.switchCurrentLimit; //amps
         switchMotor.getConfigurator().apply(switchConfig);
 
         TalonFXConfiguration floorConfig = new TalonFXConfiguration();
@@ -38,7 +38,7 @@ public class IntakeIOFalcon implements IntakeIO {
         floorConfig.MotorOutput.Inverted = IntakeConstants.floorMotorInvert;
         floorConfig.MotorOutput.NeutralMode = IntakeConstants.floorMotorBrakeMode;
         floorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        floorConfig.CurrentLimits.StatorCurrentLimit = 80; //amps
+        floorConfig.CurrentLimits.StatorCurrentLimit = IntakeConstants.floorCurrentLimit; //amps
         floorMotor.getConfigurator().apply(floorConfig);
 
         TalonFXConfiguration outsideConfig = new TalonFXConfiguration();
@@ -46,7 +46,7 @@ public class IntakeIOFalcon implements IntakeIO {
         outsideConfig.MotorOutput.Inverted = IntakeConstants.outsideMotorInvert;
         outsideConfig.MotorOutput.NeutralMode = IntakeConstants.outsideMotorBrakeMode;
         outsideConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-        outsideConfig.CurrentLimits.StatorCurrentLimit = 80; //amps
+        outsideConfig.CurrentLimits.StatorCurrentLimit = IntakeConstants.outsideCurrentLimit; //amps
         outsideMotor.getConfigurator().apply(outsideConfig);
 
         request = new DutyCycleOut(0).withEnableFOC(true);

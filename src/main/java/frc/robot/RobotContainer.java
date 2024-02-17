@@ -199,6 +199,8 @@ public class RobotContainer {
 
     /* Shooter Controls */
     gp.button(5).whileTrue(new InstantCommand(() -> m_shooter.setSpeed(500/60, 500/60))).onFalse(new InstantCommand(m_shooter::stop)); // left bumper
+    gp.axisGreaterThan(3, .5).whileTrue(new InstantCommand(() -> m_shooter.setPercentOut(0.05))).onFalse(new InstantCommand(() -> m_shooter.stopAngle()));
+    gp.axisLessThan(3, -.5).whileTrue(new InstantCommand(() -> m_shooter.setPercentOut(-0.05))).onFalse(new InstantCommand(() -> m_shooter.stopAngle()));
     //gp.button(2).whileTrue(new InstantCommand(() -> m_shooter.setVelocityTune(SmartDashboard.getNumber("ShooterRPM", 0)))).onFalse(new InstantCommand(() -> m_shooter.stop()));
     // gp.button(2).onTrue(new InstantCommand(() -> m_shooter.setPercentOut(0.2)).withTimeout(1)).onFalse(new InstantCommand(() -> m_shooter.stopAngle()));
     // gp.button(5).whileTrue(new InstantCommand(() -> m_shooter.setAngle(ShooterConstants.safePosition + 5))).whileFalse(new InstantCommand(() -> m_shooter.setAngle(ShooterConstants.safePosition)));
