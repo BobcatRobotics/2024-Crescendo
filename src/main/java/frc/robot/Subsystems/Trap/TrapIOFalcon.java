@@ -5,7 +5,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import frc.robot.Constants.TrapConstants;
-import frc.robot.Constants.TrapConstants;
 
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -25,6 +24,14 @@ public class TrapIOFalcon {
         // General initialization of the motors
         winchMotor = new TalonFX(deviceIDWinch);
         shooterMotor = new TalonFX(deviceIDShooter);
+
+        // Invert and brake mode
+        winchConfigs.MotorOutput.Inverted = TrapConstants.winchMotorInvert;
+        winchConfigs.MotorOutput.NeutralMode = TrapConstants.winchMotorBrakeMode; 
+        shooterConfigs.MotorOutput.NeutralMode = TrapConstants.shooterMotorBrakeMode;
+        shooterConfigs.MotorOutput.Inverted = TrapConstants.shooterMotorInvert;
+
+        // Apply configs
         winchConfigs = new TalonFXConfiguration();
         winchMotor.getConfigurator().apply(winchConfigs);
         shooterConfigs = new TalonFXConfiguration();

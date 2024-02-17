@@ -350,7 +350,7 @@ public class Constants {
         public static final double motionmagicJerk = 0;
         public static final NeutralModeValue winchMotorBrakeMode = NeutralModeValue.Brake;    
         public static final InvertedValue winchMotorInvert =  InvertedValue.Clockwise_Positive;  
-        public static final NeutralModeValue shooterMotorBrakeMode = NeutralModeValue.Brake;    
+        public static final NeutralModeValue shooterMotorBrakeMode = NeutralModeValue.Coast;    
         public static final InvertedValue shooterMotorInvert =  InvertedValue.Clockwise_Positive;  
 
     }
