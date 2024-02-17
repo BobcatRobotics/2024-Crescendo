@@ -6,8 +6,9 @@ public interface TrapIO {
     // Start Advantage Kit Logging
     @AutoLog 
     public static class TrapIOInputs{
-        public double trapPosition = 0.0;
 
+        // The following applies to the shoulder motor
+        public double trapPosition = 0.0;
         public double WinchMotorPercentOut = 0.0;
         public double WinchMotorStatorCurrent = 0.0;
         public double WinchMotorVelocityRPS = 0.0;
@@ -17,9 +18,14 @@ public interface TrapIO {
         public double motionmagicCruiseVelocity = 0.0;
         public double motionmagicJerk = 0.0;
 
+        // The following applies to the shooter motor on the trap
         public double ShooterMotorPercentOut = 0.0;
         public double ShooterMotorStatorCurrent = 0.0;
         public double ShooterMotorVelocityRPS = 0.0;
     }
+
+    public default void updateInputs(TrapIOInputs i){
+    }
+    
 
 }

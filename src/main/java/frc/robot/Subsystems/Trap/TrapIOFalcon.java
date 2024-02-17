@@ -13,7 +13,8 @@ import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 
-public class TrapIOFalcon {
+
+public class TrapIOFalcon implements TrapIO{
     private TalonFX winchMotor;
     private TalonFX shooterMotor;
 
@@ -63,6 +64,23 @@ public class TrapIOFalcon {
         requestWinch = new MotionMagicDutyCycle(0).withEnableFOC(true);
         requestShooter =  new VelocityDutyCycle(0).withEnableFOC(true);
         voltageRequest = new VelocityVoltage(0).withEnableFOC(true).withSlot(0);
+    }
+
+    public void updateInputs(TrapIOInputs i){
+        // shoulder motor inputs first
+        i.trapPosition=winchMotor.getPosition().getValueAsDouble();
+        i.WinchMotorPercentOut = winchMotor.getDutyCycle().getValueAsDouble();
+        i.WinchMotorStatorCurrent = winchMotor.getStatorCurrent().getValueAsDouble();
+        i.WinchMotorVelocityRPS = winchMotor.getVelocity().getValueAsDouble();
+        i.motionmagicAcceleration = motionMagicConfigs.MotionMagicAcceleration;
+        i.motionmagicCruiseVelocity = motionMagicConfigs.MotionMagicCruiseVelocity;
+        i.motionmagicJerk = motionMagicConfigs.MotionMagicJerk;
+        i.WinchMotorPosition = i.trapPosition;
+
+        // next inputs are for the shooter motor
+        i.ShooterMotorPercentOut = shooterMotor.getDutyCycle().getValueAsDouble();
+        i.ShooterMotorStatorCurrent = shooterMotor.getStatorCurrent().getValueAsDouble();
+        i.ShooterMotorVelocityRPS = shooterMotor.getVelocity().getValueAsDouble();
     }
 
 }
