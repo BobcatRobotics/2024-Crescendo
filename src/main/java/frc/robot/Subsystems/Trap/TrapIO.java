@@ -24,8 +24,30 @@ public interface TrapIO {
         public double ShooterMotorVelocityRPS = 0.0;
     }
 
+    // No logic functions
+
     public default void updateInputs(TrapIOInputs i){
     }
-    
+
+    public default void runShooterMotor(double rps){
+    }
+
+    public default void stopShooterMotor(){
+    }
+
+    public default void setVelocityTune(double rpm){
+    }
+
+    public default void extendTrap(double rotationAmount){
+    }
+
+    public default void inverseTrapDirection(){
+    }
+
+    public default void stopTrapMotion(){
+    }
+
+
+
 
 }
