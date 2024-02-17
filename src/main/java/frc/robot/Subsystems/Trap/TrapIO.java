@@ -20,7 +20,6 @@ public interface TrapIO {
         public double ShooterMotorPercentOut = 0.0;
         public double ShooterMotorStatorCurrent = 0.0;
         public double ShooterMotorVelocityRPS = 0.0;
-        public double ShooterMotorPosition = 0.0;
     }
 
 }
