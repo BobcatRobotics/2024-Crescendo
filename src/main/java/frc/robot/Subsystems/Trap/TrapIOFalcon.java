@@ -112,6 +112,4 @@ public class TrapIOFalcon implements TrapIO{
         winchMotor.stopMotor();
     }
 
-
-
 }

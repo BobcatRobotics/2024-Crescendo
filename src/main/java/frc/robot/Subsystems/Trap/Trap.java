@@ -5,6 +5,7 @@ import frc.robot.Constants.TrapConstants;
 import frc.robot.Subsystems.Climber.ClimberIOInputsAutoLogged;
 
 public class Trap extends SubsystemBase {
+    // Advantage Kit Logging
     private final ClimberIOInputsAutoLogged climberInterface = new ClimberIOInputsAutoLogged();
 
      TrapIO trap;

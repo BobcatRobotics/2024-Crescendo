@@ -47,7 +47,4 @@ public interface TrapIO {
     public default void stopTrapMotion(){
     }
 
-
-
-
 }
