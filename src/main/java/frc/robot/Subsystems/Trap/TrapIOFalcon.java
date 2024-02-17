@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
+import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.TrapConstants;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
@@ -82,5 +83,35 @@ public class TrapIOFalcon implements TrapIO{
         i.ShooterMotorStatorCurrent = shooterMotor.getStatorCurrent().getValueAsDouble();
         i.ShooterMotorVelocityRPS = shooterMotor.getVelocity().getValueAsDouble();
     }
+
+    // Shooter functions
+    public void runShooterMotor(double rps){
+        shooterMotor.setControl(requestShooter.withVelocity(rps));
+    }
+
+    public void stopShooterMotor(){
+        shooterMotor.stopMotor();
+    }
+
+    public void setVelocityTune(double rpm){
+        double rps = rpm/60;
+        shooterMotor.setControl(voltageRequest.withVelocity(rps));
+    }
+
+    // Trap Functions
+    public void extendTrap(double rotationAmount){
+        winchMotor.setControl(m_voltage.withPosition(rotationAmount));
+    }
+
+    public void inverseTrapDirection(){
+        winchConfigs.MotorOutput.Inverted = ClimberConstants.climberMotorInvert;
+        winchMotor.getConfigurator().apply(winchConfigs);
+    }
+
+    public void stopTrapMotion(){
+        winchMotor.stopMotor();
+    }
+
+
 
 }

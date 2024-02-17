@@ -68,6 +68,7 @@ public class ClimberIOFalcon implements ClimberIO
     public void inverseDirection(){
         // Inverses the direction of the motor in the inputs
         climberConfigs.MotorOutput.Inverted = ClimberConstants.climberMotorInvert;
+        climberMotor.getConfigurator().apply(climberConfigs);
     }
 
 }
