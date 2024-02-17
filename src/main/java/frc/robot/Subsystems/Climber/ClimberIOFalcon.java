@@ -20,9 +20,10 @@ public class ClimberIOFalcon implements ClimberIO
         // The constructor initialized all of the MotionMagic stuff, Inputs, and the motor
         climberMotor = new TalonFX(deviceID);
         TalonFXConfiguration climberConfigs = new TalonFXConfiguration();
-        climberMotor.getConfigurator().apply(climberConfigs);
         climberConfigs.MotorOutput.Inverted = ClimberConstants.climberMotorInvert;
+        climberConfigs.MotorOutput.NeutralMode = ClimberConstants.climberMotorBrakeMode;
         climberMotor.setPosition(0);
+        climberMotor.getConfigurator().apply(climberConfigs);
         m_voltage = new MotionMagicVoltage(0);
         motionMagicConfigs = climberConfigs.MotionMagic;
         motionMagicConfigs.MotionMagicCruiseVelocity = ClimberConstants.motionmagicCruiseVelocity;
