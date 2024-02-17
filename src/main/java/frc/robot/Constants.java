@@ -352,6 +352,11 @@ public class Constants {
         public static final InvertedValue winchMotorInvert =  InvertedValue.Clockwise_Positive;  
         public static final NeutralModeValue shooterMotorBrakeMode = NeutralModeValue.Coast;    
         public static final InvertedValue shooterMotorInvert =  InvertedValue.Clockwise_Positive;  
+        public static final double K = 0;
+        public static final double I = 0;
+        public static final double D = 0;
+        public static final double V = 0.5;
+        public static final double S = 0.3;
 
     }
 

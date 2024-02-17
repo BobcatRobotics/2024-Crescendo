@@ -5,6 +5,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
  
 import frc.robot.Constants.ClimberConstants;
 
+import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 
@@ -13,7 +14,8 @@ public class ClimberIOFalcon implements ClimberIO
     private TalonFX climberMotor;
     private TalonFXConfiguration climberConfigs;
     private MotionMagicVoltage m_voltage;
-    private final MotionMagicConfigs motionMagicConfigs;
+    private MotionMagicConfigs motionMagicConfigs;
+    private MotionMagicDutyCycle climberMotorRequests;
 
 
     public ClimberIOFalcon(int deviceID){
@@ -30,6 +32,9 @@ public class ClimberIOFalcon implements ClimberIO
         motionMagicConfigs.MotionMagicAcceleration = ClimberConstants.motionmagicAcceleration;
         motionMagicConfigs.MotionMagicJerk = ClimberConstants.motionmagicJerk;
         this.climberConfigs = climberConfigs;
+
+        //Duty cycle stuff
+        climberMotorRequests = new MotionMagicDutyCycle(0).withEnableFOC(true); 
     }
 
     public void updateInputs(ClimberIOInputs i){
