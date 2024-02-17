@@ -6,7 +6,7 @@ import frc.robot.Subsystems.Climber.ClimberIOInputsAutoLogged;
 
 public class Trap extends SubsystemBase {
     // Advantage Kit Logging
-    private final ClimberIOInputsAutoLogged trapInterface = new ClimberIOInputsAutoLogged();
+    private final TrapIOInputsAutoLogged trapInterface = new TrapIOInputsAutoLogged();
 
      TrapIO trap;
 
@@ -14,8 +14,9 @@ public class Trap extends SubsystemBase {
         this.trap = trapModule;
      }
 
+    // Update the inputs periodically 
      public void periodic(){
         trap.updateInputs(trapInterface);
-     }
+}
 
 }

@@ -26,7 +26,7 @@ public interface TrapIO {
 
     // No logic functions
 
-    public default void updateInputs(TrapIOInputs i){
+    public default void updateInputs(TrapIOInputs inputs){
     }
 
     public default void runShooterMotor(double rps){
