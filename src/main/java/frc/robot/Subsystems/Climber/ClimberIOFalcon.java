@@ -3,11 +3,13 @@ package frc.robot.Subsystems.Climber;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
-
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import frc.robot.Constants.ClimberConstants;
 
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 
 public class ClimberIOFalcon implements ClimberIO
@@ -17,6 +19,8 @@ public class ClimberIOFalcon implements ClimberIO
     private MotionMagicVoltage m_voltage;
     private MotionMagicConfigs motionMagicConfigs;
     private MotionMagicDutyCycle climberMotorRequests;
+    private VelocityVoltage climberVelocity;
+    private VelocityDutyCycle velocityDutyCycle;
 
 
     public ClimberIOFalcon(int deviceID){
@@ -36,6 +40,8 @@ public class ClimberIOFalcon implements ClimberIO
 
         //Duty cycle stuff
         climberMotorRequests = new MotionMagicDutyCycle(0).withEnableFOC(true); 
+        climberVelocity = new VelocityVoltage(deviceID);
+        velocityDutyCycle = new VelocityDutyCycle(deviceID);
     }
 
     public void updateInputs(ClimberIOInputs i){
@@ -65,7 +71,8 @@ public class ClimberIOFalcon implements ClimberIO
     public void run(double rotationAmount){
         // Runs the motor for a certain encoder count using MotionMagic PID
         climberMotor.setControl(m_voltage.withPosition(rotationAmount));
-        
+
+        // Non motion magic way to run the climber motor. I don't think this should be used because it has no soft limits
         //climberMotor.setControl(climberMotorRequests);
     }
 
