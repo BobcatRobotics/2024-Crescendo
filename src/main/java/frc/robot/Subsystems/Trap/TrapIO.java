@@ -22,6 +22,8 @@ public interface TrapIO {
         public double ShooterMotorPercentOut = 0.0;
         public double ShooterMotorStatorCurrent = 0.0;
         public double ShooterMotorVelocityRPS = 0.0;
+
+        public String trapMotorDirection = "Clockwise";
     }
 
     // No logic functions
@@ -48,7 +50,7 @@ public interface TrapIO {
     }
 
     public default void retractTrap(double rotationAmount){
-        
+
     }
 
 }

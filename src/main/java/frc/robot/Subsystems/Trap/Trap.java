@@ -42,6 +42,7 @@ public class Trap extends SubsystemBase {
     }
 
     public void retractTrap(double rotationAmount){
+        trap.inverseTrapDirection();
         trap.retractTrap(rotationAmount);
         trap.stopTrapMotion();
     }

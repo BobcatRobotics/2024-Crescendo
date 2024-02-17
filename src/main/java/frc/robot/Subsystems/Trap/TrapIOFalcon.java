@@ -82,6 +82,8 @@ public class TrapIOFalcon implements TrapIO{
         i.ShooterMotorPercentOut = shooterMotor.getDutyCycle().getValueAsDouble();
         i.ShooterMotorStatorCurrent = shooterMotor.getStatorCurrent().getValueAsDouble();
         i.ShooterMotorVelocityRPS = shooterMotor.getVelocity().getValueAsDouble();
+
+        if(winchConfigs.motorOutput)
     }
 
     // Shooter functions
