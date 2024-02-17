@@ -11,8 +11,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 
-
-public class AmpIOFalcon implements AmpIO{
+public class AmpIOFalcon implements AmpIO {
     private TalonFX motor;
     private final TalonFXConfiguration configs;
     private final Slot0Configs slot0;
@@ -20,12 +19,11 @@ public class AmpIOFalcon implements AmpIO{
     // private final MotionMagicVoltage m_request;
     private final MotionMagicVoltage m_request;
     private final SoftwareLimitSwitchConfigs softLimitThresh;
-    // private double kP = AmpConstants.kP; 
+    // private double kP = AmpConstants.kP;
     // private double kI = AmpConstants.kI;
     // private double kD = AmpConstants.kD;
 
-    
-    public AmpIOFalcon(){
+    public AmpIOFalcon() {
         softLimitThresh = new SoftwareLimitSwitchConfigs();
         motor = new TalonFX(AmpConstants.canID);
         configs = new TalonFXConfiguration();
@@ -36,21 +34,18 @@ public class AmpIOFalcon implements AmpIO{
         softLimitThresh.withForwardSoftLimitThreshold(AmpConstants.forwardsoftlimit);
         softLimitThresh.withReverseSoftLimitThreshold(AmpConstants.reversesoftlimit5);
 
-        slot0.kS = AmpConstants.kS;//initializes motion magic pid values
+        slot0.kS = AmpConstants.kS;// initializes motion magic pid values
         slot0.kV = AmpConstants.kV;
         slot0.kA = AmpConstants.kA;
         slot0.kP = AmpConstants.kP;
         slot0.kI = AmpConstants.kI;
         slot0.kD = AmpConstants.kD;
 
-        configs.MotorOutput.Inverted= InvertedValue.Clockwise_Positive; 
+        configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         configs.CurrentLimits.StatorCurrentLimitEnable = true;
-        configs.CurrentLimits.StatorCurrentLimit = 40; //amps
-        
-
-        
+        configs.CurrentLimits.StatorCurrentLimit = 40; // amps
 
         m_request.withEnableFOC(true);
         motionMagicConfigs = configs.MotionMagic;
@@ -60,27 +55,29 @@ public class AmpIOFalcon implements AmpIO{
 
         configs.SoftwareLimitSwitch = softLimitThresh;
         motor.getConfigurator().apply(configs);
-        
+
     }
+
     /*
-    Updates the inputs for the amp subsytem based on the position of the motor, ran periodically
-    */
-    public void updateInputs(AmpIOInputs inputs){ 
+     * Updates the inputs for the amp subsytem based on the position of the motor,
+     * ran periodically
+     */
+    public void updateInputs(AmpIOInputs inputs) {
         inputs.motorposition = motor.getPosition().getValueAsDouble();
     }
+
     /*
-    runs the motor to rotiation amount for pid
-    */
-    public void setPos(double rotationAmount){
-        motor.setControl(m_request.withPosition(rotationAmount).withLimitForwardMotion(true).withLimitReverseMotion(true));
+     * runs the motor to rotiation amount for pid
+     */
+    public void setPos(double rotationAmount) {
+        motor.setControl(m_request.withPosition(rotationAmount));
     }
+
     /*
-    Stops the motor
-    */
-    public void stop(){
+     * Stops the motor
+     */
+    public void stop() {
         motor.stopMotor();
     }
 
-
 }
-

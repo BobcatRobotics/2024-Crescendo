@@ -123,24 +123,49 @@ public class ShooterIOFalcon implements ShooterIO {
     }
 
     /**
-     * @param rps in revs per second.......
+     * @param rps revs per second
      */
     public void setTopVelocity(double rps) {
         topMotor.setControl(requestTop.withVelocity(rps));
     }
 
+
     /**
-     * @param rps also in revs per second.....
+     * @param rps revs per second
      */
     public void setBottomVelocity(double rps) {
         bottomMotor.setControl(requestBottom.withVelocity(rps));
     }
 
     /**
-     * @param deg also in revs per second...haha just kidding its in degrees
+     * @param deg  degrees
      */
     public void setAngle(double deg) {
         angleMotor.setControl(angleRequest.withPosition(Rotation2d.fromDegrees(deg).getRotations()));
+    }
+
+    /**
+     * 
+     * @return returns a double in RPS
+     */
+    public double getTopVelocity() {
+        return topMotor.getVelocity().getValueAsDouble(); //rps
+    }
+
+    /**
+     * 
+     * @return returns a double in RPS
+     */
+    public double getBottomVelocity() {
+        return bottomMotor.getVelocity().getValueAsDouble(); //rps
+    }
+
+    /**
+     * 
+     * @return returns a double in degrees
+     */
+    public double getAngle() {
+        return angleMotor.getPosition().getValueAsDouble() * 360; //degrees (hopefully)
     }
 
     public void stopTopMotor() {

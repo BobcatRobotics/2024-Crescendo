@@ -14,7 +14,7 @@ public interface IntakeIO {
         public double outsideMotorPercentOut = 0.0;
         public double outsideMotorCurrent = 0.0;
 
-        // public double tofValue = 0.0;
+        public double tofValue = 0.0;
     }
 
     public default void updateInputs(IntakeIOInputs inputs) {}

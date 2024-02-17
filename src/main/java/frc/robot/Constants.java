@@ -273,7 +273,7 @@ public class Constants {
         public static final NeutralModeValue outsideMotorBrakeMode = NeutralModeValue.Coast;
 
         public static final int tofID = 0;
-        public static final double tofTresh = 30; // millimeters
+        public static final double tofTresh = 135; // millimeters
     }
 
     public static final class ClimberConstants{
@@ -298,6 +298,9 @@ public class Constants {
 
     public static final class ShooterConstants {
 
+        public static final double rpsTolerance = 100; //THIS IS IN RPS
+        public static final double angleTolerance = 1; // THIS IS IN DEGREES
+
         //some notes on velocity pid
         // kI, kD - not used
         // kP - controls how your output changes with increased error
@@ -306,7 +309,7 @@ public class Constants {
         public static final int topMotorID = 12;
         public static final InvertedValue topMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue topMotorBrakeMode = NeutralModeValue.Coast;
-        public static final double kTopP = 0;//volts/rps
+        public static final double kTopP = 0.1;//volts/rps
         public static final double kTopI = 0;
         public static final double kTopD = 0;
         public static final double kTopV = 0.1; //volts/rps, feedforward, output per unit of requested velocity 
@@ -315,7 +318,7 @@ public class Constants {
         public static final int bottomMotorID = 13;
         public static final InvertedValue bottomMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue bottomMotorBrakeMode = NeutralModeValue.Coast;
-        public static final double kBottomP = 0;
+        public static final double kBottomP = 0.1;
         public static final double kBottomI = 0;
         public static final double kBottomD = 0;
         public static final double kBottomV = 0.5;
@@ -352,8 +355,8 @@ public class Constants {
     }
 
     public static final class AmpConstants {
-        public static final int canID =0;
-        public static final double kP = 0;
+        public static final int canID = 15;
+        public static final double kP = 0.1;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kS = 0;
@@ -364,8 +367,8 @@ public class Constants {
         public static final double motionmagicJerk = 0;
         public static final double rotationAmount = 0.5;
         public static final double softLimitThresh = 0;
-		public static double forwardsoftlimit  = 0;
-        public static double reversesoftlimit5  = 0;
+		public static final double forwardsoftlimit  = 0;
+        public static final double reversesoftlimit5  = 0;
 
     }
 }

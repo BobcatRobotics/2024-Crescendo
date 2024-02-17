@@ -6,9 +6,13 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
     private final ShooterIO io;
+    private double rpsTopSetpoint;
+    private double rpsBotSetpoint;
+    private double angleSetpoint; // IN DEGREES
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
     public Shooter(ShooterIO io) {
@@ -22,15 +26,18 @@ public class Shooter extends SubsystemBase {
         Logger.recordOutput("Shooter/bottomrpm", inputs.bottomMotorVelocityRPS*60);
     }
 
-    public void setSpeed(double rps) {
-        io.setTopVelocity(rps);
-        io.setBottomVelocity(rps);
+    public void setSpeed(double rpsTop, double rpsBot) {
+        this.rpsTopSetpoint = rpsTop;
+        this.rpsBotSetpoint = rpsBot;
+        io.setTopVelocity(rpsTop);
+        io.setBottomVelocity(rpsBot);
     }
     public void setVelocityTune(double rpm){
         io.setVelocityTune(rpm);
     }
 
     public void setAngle(double degrees) {
+        angleSetpoint = degrees;
         io.setAngle(degrees);
     }
 
@@ -59,6 +66,12 @@ public class Shooter extends SubsystemBase {
         io.setPercentOut(percent);
     }
 
+    public boolean atSpeed() {
+        return (rpsTopSetpoint + ShooterConstants.rpsTolerance >= io.getTopVelocity() && rpsTopSetpoint - ShooterConstants.rpsTolerance <= io.getTopVelocity() && rpsBotSetpoint + ShooterConstants.rpsTolerance >= io.getBottomVelocity() && rpsBotSetpoint - ShooterConstants.rpsTolerance <= io.getBottomVelocity() );
+    }
 
+    public boolean atAngle() {
+        return (angleSetpoint + ShooterConstants.angleTolerance >= io.getAngle() && angleSetpoint - ShooterConstants.angleTolerance <= io.getAngle());
+    }
 
 }
