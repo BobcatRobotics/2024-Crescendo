@@ -2,7 +2,8 @@ package frc.robot.Subsystems.Climber;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
- 
+import com.ctre.phoenix6.signals.InvertedValue;
+
 import frc.robot.Constants.ClimberConstants;
 
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
@@ -47,12 +48,25 @@ public class ClimberIOFalcon implements ClimberIO
         i.motionmagicAcceleration = motionMagicConfigs.MotionMagicAcceleration;
         i.motionmagicCruiseVelocity = motionMagicConfigs.MotionMagicCruiseVelocity;
         i.motionmagicJerk = motionMagicConfigs.MotionMagicJerk;
+
+        if(climberConfigs.MotorOutput.Inverted==InvertedValue.Clockwise_Positive){
+            i.climberDirection = "Clockwise";
+            ClimberConstants.climberMotorInvert = InvertedValue.Clockwise_Positive;
+        }
+
+        if(climberConfigs.MotorOutput.Inverted==InvertedValue.CounterClockwise_Positive){
+            i.climberDirection = "Counter-Clockwise";
+            ClimberConstants.climberMotorInvert = InvertedValue.CounterClockwise_Positive;
+        }
+
     }
 
     //This function : you give it a rotation amount and it will run to that rotation amount
     public void run(double rotationAmount){
         // Runs the motor for a certain encoder count using MotionMagic PID
         climberMotor.setControl(m_voltage.withPosition(rotationAmount));
+        
+        //climberMotor.setControl(climberMotorRequests);
     }
 
     public void changeVelocity(double newVelocity){
@@ -69,6 +83,7 @@ public class ClimberIOFalcon implements ClimberIO
         // Inverses the direction of the motor in the inputs
         climberConfigs.MotorOutput.Inverted = ClimberConstants.climberMotorInvert;
         climberMotor.getConfigurator().apply(climberConfigs);
+
     }
 
 }

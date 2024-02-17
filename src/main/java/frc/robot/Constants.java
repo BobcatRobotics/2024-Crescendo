@@ -257,8 +257,7 @@ public class Constants {
         }
 
     }
-
-
+    
     public static final class IntakeConstants {
         public static final int switchMotorID = 9; // This one switches to feed shooter vs trap
         public static final InvertedValue switchMotorInvert = InvertedValue.Clockwise_Positive;
@@ -279,7 +278,7 @@ public class Constants {
     public static final class ClimberConstants{
         public static final int MotorID = 0;
         public static final NeutralModeValue climberMotorBrakeMode = NeutralModeValue.Brake;    
-        public static final InvertedValue climberMotorInvert =  InvertedValue.Clockwise_Positive;  
+        public static InvertedValue climberMotorInvert =  InvertedValue.Clockwise_Positive;  
         public static final double kP = 0;
         public static final double kI = 0;
         public static final double kD = 0;
