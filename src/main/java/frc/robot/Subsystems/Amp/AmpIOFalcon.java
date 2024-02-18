@@ -2,6 +2,7 @@ package frc.robot.Subsystems.Amp;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -20,6 +21,7 @@ public class AmpIOFalcon implements AmpIO {
     // private final MotionMagicVoltage m_request;
     private final MotionMagicVoltage m_request;
     private final SoftwareLimitSwitchConfigs softLimitThresh;
+    private final DutyCycleOut m_dutyCycleOut;
     // private double kP = AmpConstants.kP;
     // private double kI = AmpConstants.kI;
     // private double kD = AmpConstants.kD;
@@ -29,9 +31,10 @@ public class AmpIOFalcon implements AmpIO {
         motor = new TalonFX(AmpConstants.canID);
         configs = new TalonFXConfiguration();
         m_request = new MotionMagicVoltage(0);
+        m_dutyCycleOut = new DutyCycleOut(0);
         slot0 = configs.Slot0;
-        softLimitThresh.withForwardSoftLimitEnable(true);
-        softLimitThresh.withReverseSoftLimitEnable(true);
+        softLimitThresh.withForwardSoftLimitEnable(false);
+        softLimitThresh.withReverseSoftLimitEnable(false);
         softLimitThresh.withForwardSoftLimitThreshold(AmpConstants.forwardSoftLimit);
         softLimitThresh.withReverseSoftLimitThreshold(AmpConstants.reverseSoftLimit);
 
@@ -53,11 +56,11 @@ public class AmpIOFalcon implements AmpIO {
         motionMagicConfigs.MotionMagicAcceleration = AmpConstants.motionMagicAcceleration;
         motionMagicConfigs.MotionMagicJerk = AmpConstants.motionMagicJerk;
                 
-        configs.SoftwareLimitSwitch = softLimitThresh;
-        configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = AmpConstants.forwardSoftLimit; //need to (de)vide by 360 to convert degrees to rotations
-        configs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-        configs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = AmpConstants.reverseSoftLimit;
+        //configs.SoftwareLimitSwitch = softLimitThresh;
+        //configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+        //configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = AmpConstants.forwardSoftLimit; //need to (de)vide by 360 to convert degrees to rotations
+        //configs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+        //configs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = AmpConstants.reverseSoftLimit;
         motor.getConfigurator().apply(configs);
         
         m_request.withEnableFOC(true);
@@ -77,6 +80,13 @@ public class AmpIOFalcon implements AmpIO {
      */
     public void setPos(double rotationAmount) {
         motor.setControl(m_request.withPosition(rotationAmount));
+    }
+
+    /**
+     * sets amp motor to a specific percent
+     */
+    public void setPercent(double percent){
+        motor.setControl(m_dutyCycleOut.withOutput(percent));
     }
 
     /*

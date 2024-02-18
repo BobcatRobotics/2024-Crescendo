@@ -12,7 +12,6 @@ public class Shooter extends SubsystemBase {
     private final ShooterIO io;
     private double rpsTopSetpoint;
     private double rpsBotSetpoint;
-    private double angleSetpoint; // IN DEGREES
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
     public Shooter(ShooterIO io) {
@@ -36,10 +35,7 @@ public class Shooter extends SubsystemBase {
         io.setVelocityTune(rpm);
     }
 
-    public void setAngle(double degrees) {
-        angleSetpoint = degrees;
-        io.setAngle(degrees);
-    }
+
 
     /**
      * 
@@ -58,20 +54,12 @@ public class Shooter extends SubsystemBase {
         io.stopBottomMotor();
     }
 
-    public void stopAngle(){
-        io.stopAngleMotor();
-    }
 
-    public void setPercentOut(double percent){
-        io.setPercentOut(percent);
-    }
 
     public boolean atSpeed() {
         return (rpsTopSetpoint + ShooterConstants.rpsTolerance >= io.getTopVelocity() && rpsTopSetpoint - ShooterConstants.rpsTolerance <= io.getTopVelocity() && rpsBotSetpoint + ShooterConstants.rpsTolerance >= io.getBottomVelocity() && rpsBotSetpoint - ShooterConstants.rpsTolerance <= io.getBottomVelocity() );
     }
 
-    public boolean atAngle() {
-        return (angleSetpoint + ShooterConstants.angleTolerance >= io.getAngle() && angleSetpoint - ShooterConstants.angleTolerance <= io.getAngle());
-    }
+
 
 }

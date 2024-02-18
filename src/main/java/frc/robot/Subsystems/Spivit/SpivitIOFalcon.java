@@ -1,0 +1,85 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.Subsystems.Spivit;
+
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.VelocityDutyCycle;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+
+import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.Constants.ShooterConstants;
+
+public class SpivitIOFalcon implements SpivitIO{
+
+  private TalonFX angleMotor; //this is responsbile for the angle of the shooter
+  private PositionDutyCycle angleRequest;
+  private DutyCycleOut percentRequest;
+
+  /** Creates a new Spivit. */
+  public SpivitIOFalcon() {
+    angleMotor = new TalonFX(ShooterConstants.angleMotorID); //initializes TalonFX motor 3
+    angleRequest = new PositionDutyCycle(0).withEnableFOC(true).withFeedForward(0.03);
+    percentRequest = new DutyCycleOut(0).withEnableFOC(true);
+    //Angle motor configurations
+    TalonFXConfiguration angleConfigs = new TalonFXConfiguration();
+    angleMotor.getConfigurator().apply(angleConfigs);
+    angleConfigs.MotorOutput.Inverted = ShooterConstants.angleMotorInvert;
+    angleConfigs.MotorOutput.NeutralMode = ShooterConstants.angleMotorBrakeMode;
+    angleConfigs.Slot0.kP = ShooterConstants.kAngleP;
+    angleConfigs.Slot0.kI = ShooterConstants.kAngleI;
+    angleConfigs.Slot0.kD = ShooterConstants.kAngleD;
+    angleConfigs.Slot0.kS = ShooterConstants.kAngleS;
+    angleConfigs.Slot0.kV = ShooterConstants.kAngleV;
+    angleConfigs.Slot0.kA = ShooterConstants.kAngleA;
+    angleConfigs.Feedback.FeedbackRemoteSensorID = ShooterConstants.cancoderID;
+    angleConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+    angleConfigs.Feedback.RotorToSensorRatio = ShooterConstants.rotorToSensorRatio;
+    angleConfigs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    angleConfigs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ShooterConstants.topLimit/360; //need to devide by 360 to convert degrees to rotations
+    angleConfigs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    angleConfigs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ShooterConstants.bottomLimit/360;
+    angleConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+    angleConfigs.CurrentLimits.StatorCurrentLimit = 40;
+    
+    angleMotor.getConfigurator().apply(angleConfigs);
+  }
+
+  public void updateInputs(SpivitIOInputs inputs){
+    inputs.angleMotorPosition = angleMotor.getPosition().getValueAsDouble()*360;
+    inputs.angleMotorStatorCurrent = angleMotor.getStatorCurrent().getValueAsDouble();
+
+  }
+
+    /**
+     * @param deg  degrees
+     */
+   public void setAngle(double deg) {
+      angleMotor.setControl(angleRequest.withPosition(Rotation2d.fromDegrees(deg).getRotations()));
+   }
+
+  /**
+  * 
+  * @return returns a double in degrees
+  */
+  public double getAngle() {
+    return angleMotor.getPosition().getValueAsDouble() * 360; //degrees (hopefully)
+  }
+
+  public void stopMotor() {
+    angleMotor.stopMotor();
+  }
+
+  public void stopMotorFeedforward(){}
+
+  /**
+   * @param percent [-1, 1]
+   */
+  public void setPercent(double percent){
+    angleMotor.setControl(percentRequest.withOutput(percent));
+  }
+}

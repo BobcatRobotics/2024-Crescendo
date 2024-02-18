@@ -3,8 +3,7 @@ package frc.robot.Subsystems.Amp;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.AmpConstants;
-import frc.robot.Subsystems.Amp.AmpIO.AmpIOInputs;
+
 
 public class Amp extends SubsystemBase {
     private final AmpIO io;
@@ -21,6 +20,10 @@ public class Amp extends SubsystemBase {
 
     public void setPos(double rot){
         io.setPos(rot); //rotationsss
+    }
+
+    public void setPercentOut(double percent){
+        io.setPercent(percent);
     }
 
     public void stop(){

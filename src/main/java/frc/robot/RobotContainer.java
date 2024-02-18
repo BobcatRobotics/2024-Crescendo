@@ -14,18 +14,25 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.Commands.Intake.TeleopIntake;
 import frc.robot.Commands.Swerve.TeleopSwerve;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Subsystems.Amp.Amp;
+import frc.robot.Subsystems.Amp.AmpIO;
+import frc.robot.Subsystems.Amp.AmpIOFalcon;
 import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Intake.IntakeIO;
 import frc.robot.Subsystems.Intake.IntakeIOFalcon;
 import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Shooter.ShooterIO;
 import frc.robot.Subsystems.Shooter.ShooterIOFalcon;
+import frc.robot.Subsystems.Spivit.Spivit;
+import frc.robot.Subsystems.Spivit.SpivitIO;
+import frc.robot.Subsystems.Spivit.SpivitIOFalcon;
 import frc.robot.Subsystems.Swerve.GyroIO;
 import frc.robot.Subsystems.Swerve.GyroIOPigeon2;
 import frc.robot.Subsystems.Swerve.Swerve;
@@ -49,6 +56,8 @@ public class RobotContainer {
   public final Vision m_shooterRightVision;
   public final Intake m_intake;
   public final Shooter m_shooter;
+  public final Amp m_amp;
+  public final Spivit m_Spivit;
   // public final Vision m_Vision;
 
   /* Commands */
@@ -73,6 +82,8 @@ public class RobotContainer {
             m_intakeVision, m_shooterLeftVision, m_shooterRightVision);
         m_intake = new Intake(new IntakeIOFalcon());
         m_shooter = new Shooter(new ShooterIOFalcon());
+        m_amp = new Amp(new AmpIOFalcon());
+        m_Spivit = new Spivit(new SpivitIOFalcon());
         // m_Vision = new Vision(new VisionIOLimelight());
         break;
 
@@ -97,6 +108,9 @@ public class RobotContainer {
         m_shooter = new Shooter(new ShooterIO() {
         });
         // m_Vision = new Vision(new VisionIOLimelight());
+        m_amp = new Amp(new AmpIOFalcon());
+        m_Spivit = new Spivit(new SpivitIOFalcon());
+
         break;
 
       // Replayed robot, disable IO implementations
@@ -122,6 +136,9 @@ public class RobotContainer {
         });
         m_shooter = new Shooter(new ShooterIO() {
         });
+         m_amp = new Amp(new AmpIOFalcon());
+        m_Spivit = new Spivit(new SpivitIOFalcon());
+
         // m_Vision = new Vision(new VisionIOLimelight());
         break;
 
@@ -198,11 +215,31 @@ public class RobotContainer {
     // gp.button(9).whileTrue(new InstantCommand(m_intake::runOut)).onFalse(new InstantCommand(m_intake::stop)); // start
 
     /* Shooter Controls */
-    gp.button(5).whileTrue(new InstantCommand(() -> m_shooter.setSpeed(500/60, 500/60))).onFalse(new InstantCommand(m_shooter::stop)); // left bumper
-    gp.axisGreaterThan(3, .5).whileTrue(new InstantCommand(() -> m_shooter.setPercentOut(0.05))).onFalse(new InstantCommand(() -> m_shooter.stopAngle()));
-    gp.axisLessThan(3, -.5).whileTrue(new InstantCommand(() -> m_shooter.setPercentOut(-0.05))).onFalse(new InstantCommand(() -> m_shooter.stopAngle()));
-    //gp.button(2).whileTrue(new InstantCommand(() -> m_shooter.setVelocityTune(SmartDashboard.getNumber("ShooterRPM", 0)))).onFalse(new InstantCommand(() -> m_shooter.stop()));
-    // gp.button(2).onTrue(new InstantCommand(() -> m_shooter.setPercentOut(0.2)).withTimeout(1)).onFalse(new InstantCommand(() -> m_shooter.stopAngle()));
+    gp.button(5).whileTrue(new InstantCommand(() -> m_shooter.setSpeed(1000/60, 1000/60))).onFalse(new InstantCommand(m_shooter::stop)); // left bumper
+    
+    //this moves it down
+    gp.axisGreaterThan(3, .6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(-0.05), m_Spivit::stopMotor, m_Spivit));
+
+    //this moves it up
+    gp.axisLessThan(3, -.6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(0.05), m_Spivit::stopMotor, m_Spivit));
+
+    //this sets it to a specific angle
+    gp.button(2).whileTrue(new StartEndCommand(() -> m_Spivit.setAngle(ShooterConstants.safePosition), m_Spivit::stopMotor, m_Spivit));
+
+
+    // amp controls 
+
+    //this runs it up
+    //gp.axisGreaterThan(1, .6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
+    gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1), m_amp::stop, m_amp));
+
+    //this runs it down
+    //gp.axisLessThan(1, -.6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(-0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
+    gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1), m_amp::stop, m_amp));
+
+
+
+    
     // gp.button(5).whileTrue(new InstantCommand(() -> m_shooter.setAngle(ShooterConstants.safePosition + 5))).whileFalse(new InstantCommand(() -> m_shooter.setAngle(ShooterConstants.safePosition)));
     /* Drive with gamepad */
     // m_swerve.setDefaultCommand(

@@ -5,11 +5,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
-import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-import edu.wpi.first.math.geometry.Rotation2d;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import frc.robot.Constants.ShooterConstants;
@@ -17,7 +13,6 @@ import frc.robot.Constants.ShooterConstants;
 public class ShooterIOFalcon implements ShooterIO {
     private TalonFX topMotor; //this will control the top rollers in the shooter "arm"
     private TalonFX bottomMotor; //this controls the bottom rollers of the shooter arm
-    private TalonFX angleMotor; //this is responsbile for the angle of the shooter
     
     //Here lies "feederMotor" :(      R.I.P. 2024-2024; a wonderful son, brother, and father.
 
@@ -25,14 +20,13 @@ public class ShooterIOFalcon implements ShooterIO {
 
     private final VelocityDutyCycle requestTop; 
     private final VelocityDutyCycle requestBottom; 
-    private final MotionMagicVoltage angleRequest;
-    private final VelocityVoltage voltageRequest;
-    private final DutyCycleOut percentOut;
+        
+    private final VelocityDutyCycle voltageRequestTop;
+    private final VelocityDutyCycle voltageRequestBottom;
     
     public ShooterIOFalcon() {
         topMotor = new TalonFX(ShooterConstants.topMotorID); //initializes TalonFX motor 1
         bottomMotor = new TalonFX(ShooterConstants.bottomMotorID); //initializes TalonFX motor 2
-        angleMotor = new TalonFX(ShooterConstants.angleMotorID); //initializes TalonFX motor 3
         cancoder = new CANcoder(ShooterConstants.cancoderID);
 
 
@@ -46,13 +40,7 @@ public class ShooterIOFalcon implements ShooterIO {
         topConfigs.Slot0.kS = ShooterConstants.kTopS;
         topConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
         topConfigs.CurrentLimits.StatorCurrentLimit = 40;
-        // set Motion Magic settings
-        var motionMagicConfigs = topConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 5; //  cruise velocity
-        motionMagicConfigs.MotionMagicAcceleration = 1; //  distance/s^3 acceleration 
-        motionMagicConfigs.MotionMagicJerk = 1; //  distance/s^3 jerk 
-        topMotor.getConfigurator().apply(topConfigs); //Apply custom configs
-
+        
         //Bottom motor configurations
         TalonFXConfiguration bottomConfigs = new TalonFXConfiguration();
         bottomMotor.getConfigurator().apply(bottomConfigs);
@@ -66,27 +54,7 @@ public class ShooterIOFalcon implements ShooterIO {
 
         bottomMotor.getConfigurator().apply(bottomConfigs);
 
-        //Angle motor configurations
-        TalonFXConfiguration angleConfigs = new TalonFXConfiguration();
-        angleMotor.getConfigurator().apply(angleConfigs);
-        angleConfigs.MotorOutput.Inverted = ShooterConstants.angleMotorInvert;
-        angleConfigs.MotorOutput.NeutralMode = ShooterConstants.angleMotorBrakeMode;
-        angleConfigs.Slot0.kP = ShooterConstants.kAngleP;
-        angleConfigs.Slot0.kI = ShooterConstants.kAngleI;
-        angleConfigs.Slot0.kD = ShooterConstants.kAngleD;
-        angleConfigs.Slot0.kS = ShooterConstants.kAngleS;
-        angleConfigs.Slot0.kV = ShooterConstants.kAngleV;
-        angleConfigs.Slot0.kA = ShooterConstants.kAngleA;
-        angleConfigs.Feedback.FeedbackRemoteSensorID = ShooterConstants.cancoderID;
-        angleConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-        angleConfigs.Feedback.RotorToSensorRatio = ShooterConstants.rotorToSensorRatio;
-        angleConfigs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        angleConfigs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ShooterConstants.topLimit/360; //need to devide by 360 to convert degrees to rotations
-        angleConfigs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-        angleConfigs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ShooterConstants.bottomLimit/360;
-        angleConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
-        angleConfigs.CurrentLimits.StatorCurrentLimit = 40;
-        angleMotor.getConfigurator().apply(angleConfigs);
+
 
 
         //CANcoder configurations
@@ -102,9 +70,8 @@ public class ShooterIOFalcon implements ShooterIO {
         //Updates the requests for each motor
         requestTop = new VelocityDutyCycle(0).withEnableFOC(true);
         requestBottom = new VelocityDutyCycle(0).withEnableFOC(true);
-        angleRequest = new MotionMagicVoltage(0).withEnableFOC(true);
-        voltageRequest = new VelocityVoltage(0).withEnableFOC(true).withSlot(0);
-        percentOut = new DutyCycleOut(0);
+        voltageRequestTop = new VelocityDutyCycle(0).withEnableFOC(true);
+        voltageRequestBottom = new VelocityDutyCycle(0).withEnableFOC(true);
     }
 
 
@@ -118,8 +85,6 @@ public class ShooterIOFalcon implements ShooterIO {
         inputs.bottomMotorStatorCurrent = bottomMotor.getStatorCurrent().getValueAsDouble();
         inputs.bottomMotorVelocityRPS = bottomMotor.getVelocity().getValueAsDouble();
         
-        inputs.angleMotorPosition = angleMotor.getPosition().getValueAsDouble();
-        inputs.angleMotorStatorCurrent = angleMotor.getStatorCurrent().getValueAsDouble();
     }
 
     /**
@@ -137,12 +102,7 @@ public class ShooterIOFalcon implements ShooterIO {
         bottomMotor.setControl(requestBottom.withVelocity(rps));
     }
 
-    /**
-     * @param deg  degrees
-     */
-    public void setAngle(double deg) {
-        angleMotor.setControl(angleRequest.withPosition(Rotation2d.fromDegrees(deg).getRotations()));
-    }
+
 
     /**
      * 
@@ -160,13 +120,7 @@ public class ShooterIOFalcon implements ShooterIO {
         return bottomMotor.getVelocity().getValueAsDouble(); //rps
     }
 
-    /**
-     * 
-     * @return returns a double in degrees
-     */
-    public double getAngle() {
-        return angleMotor.getPosition().getValueAsDouble() * 360; //degrees (hopefully)
-    }
+
 
     public void stopTopMotor() {
         topMotor.stopMotor();
@@ -176,22 +130,18 @@ public class ShooterIOFalcon implements ShooterIO {
         bottomMotor.stopMotor();
     }
 
-    public void stopAngleMotor() {
-        angleMotor.stopMotor();
-    }
+
 
     /**
      * testing only
      */
-    public void setVelocityTune(double rpm){
+    public void setVelocity(double rpm){
         double rps = rpm/60;
-        topMotor.setControl(voltageRequest.withVelocity(rps));
-        bottomMotor.setControl(voltageRequest.withVelocity(rps));
+        topMotor.setControl(voltageRequestTop.withVelocity(rps));
+        bottomMotor.setControl(voltageRequestBottom.withVelocity(rps));
     }
 
-    public void setPercentOut(double percent){
-        angleMotor.setControl(percentOut.withOutput(percent));
-    }
+
 
 
 

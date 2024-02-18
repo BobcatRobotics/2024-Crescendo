@@ -333,7 +333,7 @@ public class Constants {
         public static final double kAngleS = 0;
         public static final double kAngleV = 0;
         public static final double kAngleA = 0;
-        public static final double kAngleP = 0.1;
+        public static final double kAngleP = 1;
         public static final double kAngleI = 0;
         public static final double kAngleD = 0;
 
@@ -343,9 +343,13 @@ public class Constants {
         public static final Rotation2d offset = new Rotation2d();
         public static final double rotorToSensorRatio = (64/14)*(58/18)*(58/11);
 
-        public static final double bottomLimit = 254.53125; // degrees, converted to rotations later on
-        public static final double topLimit = 285.46875;
+        public static final double bottomLimit = 245; // degrees, converted to rotations later on
+        public static final double topLimit = 285;
         public static final double safePosition = 262.265625;
+
+
+        public static final int fastShooterRPMSetpoint = 0;
+        public static final int slowShooterRPMSetpoint = 0;
     }
 
     public static final class TrapConstants{
@@ -372,7 +376,7 @@ public class Constants {
         public static final double softLimitThresh = 0;
 		public static final double forwardSoftLimit  = 0;
         public static final double reverseSoftLimit  = 0;
-        public static final InvertedValue ampInvertedValue = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue ampInvertedValue = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue ampNeutralModeValue = NeutralModeValue.Brake;
         public static final double ampStatorCurrentLimit = 80;
     }

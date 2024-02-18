@@ -9,6 +9,7 @@ public interface AmpIO {
     }
 
     public default void setPos(double rotationAmount) {}
+    public default void setPercent(double percent){}
     public default void stop() {}
     public default void updateInputs(AmpIOInputs inputs) {}
 
