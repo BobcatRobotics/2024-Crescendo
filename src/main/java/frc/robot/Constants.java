@@ -301,6 +301,13 @@ public class Constants {
 
     public static final class ShooterConstants {
 
+        //public static final double bottomFeedForwardBound = 0;
+        //public static final double topFeedForwardBound = 0;
+        public static final double feedforwardPercentValue = 0.03;
+        public static final double feedforwardVoltageValue = feedforwardPercentValue*12; //convert from percent to voltage
+
+
+
         public static final double rpsTolerance = 100; //THIS IS IN RPS
         public static final double angleTolerance = 1; // THIS IS IN DEGREES
 
@@ -333,7 +340,7 @@ public class Constants {
         public static final double kAngleS = 0;
         public static final double kAngleV = 0;
         public static final double kAngleA = 0;
-        public static final double kAngleP = 1;
+        public static final double kAngleP = 4;
         public static final double kAngleI = 0;
         public static final double kAngleD = 0;
 

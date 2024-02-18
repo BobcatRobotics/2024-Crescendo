@@ -10,9 +10,6 @@ public interface ShooterIO {
 
         public double bottomMotorStatorCurrent = 0.0; //Current to the bttom shooter motor
         public double bottomMotorVelocityRPS = 0.0; //Revs per sec for bottom motor
-
-        public double angleMotorPosition = 0.0; //position in degrees for the shooter from the angle motor 
-        public double angleMotorStatorCurrent = 0.0; //Current to the angle shooter motor
     }
 
     public default void updateInputs(ShooterIOInputs inputs) {}

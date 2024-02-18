@@ -16,7 +16,6 @@ public class ShooterIOFalcon implements ShooterIO {
     
     //Here lies "feederMotor" :(      R.I.P. 2024-2024; a wonderful son, brother, and father.
 
-    private CANcoder cancoder;
 
     private final VelocityDutyCycle requestTop; 
     private final VelocityDutyCycle requestBottom; 
@@ -27,7 +26,6 @@ public class ShooterIOFalcon implements ShooterIO {
     public ShooterIOFalcon() {
         topMotor = new TalonFX(ShooterConstants.topMotorID); //initializes TalonFX motor 1
         bottomMotor = new TalonFX(ShooterConstants.bottomMotorID); //initializes TalonFX motor 2
-        cancoder = new CANcoder(ShooterConstants.cancoderID);
 
 
         //Top motor configurations
@@ -57,14 +55,7 @@ public class ShooterIOFalcon implements ShooterIO {
 
 
 
-        //CANcoder configurations
-        CANcoderConfiguration cancoderConfigs = new CANcoderConfiguration();
-        cancoder.getConfigurator().apply(cancoderConfigs);
-        cancoderConfigs.MagnetSensor.SensorDirection = ShooterConstants.sensorDirection;
-        cancoderConfigs.MagnetSensor.AbsoluteSensorRange = ShooterConstants.sensorRange;
-        cancoderConfigs.MagnetSensor.MagnetOffset = ShooterConstants.offset.getRotations();
         
-        cancoder.getConfigurator().apply(cancoderConfigs);
 
 
         //Updates the requests for each motor

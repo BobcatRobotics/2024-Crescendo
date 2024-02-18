@@ -218,13 +218,13 @@ public class RobotContainer {
     gp.button(5).whileTrue(new InstantCommand(() -> m_shooter.setSpeed(1000/60, 1000/60))).onFalse(new InstantCommand(m_shooter::stop)); // left bumper
     
     //this moves it down
-    gp.axisGreaterThan(3, .6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(-0.05), m_Spivit::stopMotor, m_Spivit));
+    gp.axisGreaterThan(3, .6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(-0.05), m_Spivit::stopMotorFeedforward, m_Spivit));
 
     //this moves it up
-    gp.axisLessThan(3, -.6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(0.05), m_Spivit::stopMotor, m_Spivit));
+    gp.axisLessThan(3, -.6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(0.05), m_Spivit::stopMotorFeedforward, m_Spivit));
 
     //this sets it to a specific angle
-    gp.button(2).whileTrue(new StartEndCommand(() -> m_Spivit.setAngle(ShooterConstants.safePosition), m_Spivit::stopMotor, m_Spivit));
+    gp.button(2).whileTrue(new StartEndCommand(() -> m_Spivit.setAngle(ShooterConstants.safePosition), m_Spivit::stopMotorFeedforward, m_Spivit));
 
 
     // amp controls 

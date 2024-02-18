@@ -4,26 +4,41 @@
 
 package frc.robot.Subsystems.Spivit;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Subsystems.Shooter.Shooter;
 
 public class SpivitIOFalcon implements SpivitIO{
 
   private TalonFX angleMotor; //this is responsbile for the angle of the shooter
   private PositionDutyCycle angleRequest;
   private DutyCycleOut percentRequest;
+  private CANcoder cancoder;
+  
+
 
   /** Creates a new Spivit. */
   public SpivitIOFalcon() {
+    cancoder = new CANcoder(ShooterConstants.cancoderID);
+    //CANcoder configurations
+    CANcoderConfiguration cancoderConfigs = new CANcoderConfiguration();
+    cancoder.getConfigurator().apply(cancoderConfigs);
+    cancoderConfigs.MagnetSensor.SensorDirection = ShooterConstants.sensorDirection;
+    cancoderConfigs.MagnetSensor.AbsoluteSensorRange = ShooterConstants.sensorRange;
+    cancoderConfigs.MagnetSensor.MagnetOffset = ShooterConstants.offset.getRotations();
+    cancoder.getConfigurator().apply(cancoderConfigs);
+    
     angleMotor = new TalonFX(ShooterConstants.angleMotorID); //initializes TalonFX motor 3
-    angleRequest = new PositionDutyCycle(0).withEnableFOC(true).withFeedForward(0.03);
+    angleRequest = new PositionDutyCycle(0).withEnableFOC(true).withFeedForward(ShooterConstants.feedforwardPercentValue);
     percentRequest = new DutyCycleOut(0).withEnableFOC(true);
     //Angle motor configurations
     TalonFXConfiguration angleConfigs = new TalonFXConfiguration();
@@ -74,12 +89,14 @@ public class SpivitIOFalcon implements SpivitIO{
     angleMotor.stopMotor();
   }
 
-  public void stopMotorFeedforward(){}
+  public void stopMotorFeedforward(){
+    angleMotor.setControl(percentRequest.withOutput(ShooterConstants.feedforwardPercentValue));
+  }
 
   /**
    * @param percent [-1, 1]
    */
   public void setPercent(double percent){
-    angleMotor.setControl(percentRequest.withOutput(percent));
+    angleMotor.setControl(percentRequest.withOutput(percent + ShooterConstants.feedforwardPercentValue));
   }
 }
