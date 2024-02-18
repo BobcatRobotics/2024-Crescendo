@@ -1,36 +1,29 @@
 package frc.robot.Subsystems.Climber;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
 
 public class Climber extends SubsystemBase {
-    private final ClimberIOInputsAutoLogged climberInterface = new ClimberIOInputsAutoLogged();
+    private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
+    private ClimberIO io;
 
-    ClimberIO climber;
-    public Climber(ClimberIO ClimbModule){
-        this.climber = ClimbModule;
-    }
-
-    double rotationAmount = ClimberConstants.rotationToTopAmount;
-
-    public void deployClimber(double rotationAmount){
-        rotationAmount-=climberInterface.climberMotorPosition;
-        climber.run(rotationAmount);
-        climber.stop();
-        //Rotation amount should be how many encoder counts it takes for climber to get to the top
-    }
-
-        // For retracting the climber, the rotation amount doesn't matter. The function will 
-        // get the climber's current position bring the climber back to position zero
-    public void retractClimber(double rotationAmount){
-        climber.inverseDirection();
-        rotationAmount=climberInterface.climberMotorPosition;
-        climber.run(rotationAmount);
-        climber.stop();
+    public Climber(ClimberIO io){
+        this.io = io;
     }
 
     // Update the inputs periodically 
     public void periodic(){
-        climber.updateInputs(climberInterface);
+        io.updateInputs(inputs);
+        Logger.processInputs("climber", inputs);
+    }
+
+    public void setPercentOut(double percent) {
+        io.setPercentOut(percent);
+    }
+
+    public void stop() {
+        io.stop();
     }
 }

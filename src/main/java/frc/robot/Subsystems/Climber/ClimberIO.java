@@ -10,19 +10,11 @@ public interface ClimberIO {
         // These are the data points I want to collect about the climber
         public double climberMotorStatorCurrent = 0.0;
         public double climberMotorPosition = 0.0;
-        }
-
-
-    public default void updateInputs(ClimberIOInputs inputs){
     }
 
-    public default void stop(){
-    }
+    public default void updateInputs(ClimberIOInputs inputs) {}
 
-    public default void run(double rotationAmount){
-    }
+    public default void setPercentOut(double percent) {}
 
-    public default void inverseDirection(){ 
-    }
-
+    public default void stop() {}
 }

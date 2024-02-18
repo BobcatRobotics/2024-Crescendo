@@ -24,6 +24,9 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.Subsystems.Amp.Amp;
 import frc.robot.Subsystems.Amp.AmpIO;
 import frc.robot.Subsystems.Amp.AmpIOFalcon;
+import frc.robot.Subsystems.Climber.Climber;
+import frc.robot.Subsystems.Climber.ClimberIO;
+import frc.robot.Subsystems.Climber.ClimberIOFalcon;
 import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Intake.IntakeIO;
 import frc.robot.Subsystems.Intake.IntakeIOFalcon;
@@ -62,6 +65,7 @@ public class RobotContainer {
   public final Amp m_amp;
   public final Spivit m_Spivit;
   public final Trap m_trap;
+  public final Climber m_climber;
   // public final Vision m_Vision;
 
   /* Commands */
@@ -89,6 +93,7 @@ public class RobotContainer {
         m_amp = new Amp(new AmpIOFalcon());
         m_Spivit = new Spivit(new SpivitIOFalcon());
         m_trap = new Trap(new TrapIOFalcon());
+        m_climber = new Climber(new ClimberIOFalcon());
         // m_Vision = new Vision(new VisionIOLimelight());
         break;
 
@@ -117,6 +122,8 @@ public class RobotContainer {
         m_Spivit = new Spivit(new SpivitIOFalcon());
         m_trap = new Trap(new TrapIO() {
         });
+        m_climber = new Climber(new ClimberIO() { 
+        });
 
         break;
 
@@ -143,9 +150,11 @@ public class RobotContainer {
         });
         m_shooter = new Shooter(new ShooterIO() {
         });
-         m_amp = new Amp(new AmpIOFalcon());
+        m_amp = new Amp(new AmpIOFalcon());
         m_Spivit = new Spivit(new SpivitIOFalcon());
         m_trap = new Trap(new TrapIO() {
+        });
+        m_climber = new Climber(new ClimberIO() { 
         });
 
         // m_Vision = new Vision(new VisionIOLimelight());
@@ -244,13 +253,18 @@ public class RobotContainer {
 
     //this runs it down
     //gp.axisLessThan(1, -.6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(-0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
-    gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1), m_amp::stop, m_amp));
+    // gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1), m_amp::stop, m_amp));
 
 
 
     // trap controls
     gp.button(7).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap)); // left trigger
     gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(-0.1), m_trap::stopArm, m_trap));
+    gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1), m_trap::stopArm, m_trap));
+
+    // climber controls
+    gp.button(1).whileTrue(new StartEndCommand(() -> m_climber.setPercentOut(0.75), m_climber::stop, m_climber));
+    gp.button(4).whileTrue(new StartEndCommand(() -> m_climber.setPercentOut(-0.75), m_climber::stop, m_climber));
     
     // gp.button(5).whileTrue(new InstantCommand(() -> m_shooter.setAngle(ShooterConstants.safePosition + 5))).whileFalse(new InstantCommand(() -> m_shooter.setAngle(ShooterConstants.safePosition)));
     /* Drive with gamepad */

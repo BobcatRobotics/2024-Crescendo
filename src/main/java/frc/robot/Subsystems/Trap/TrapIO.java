@@ -15,6 +15,6 @@ public interface TrapIO {
     public default void setArmPercent(double percent) {}
     public default void stopArm() {}
 
-    public default void setRollerPercentOut(double percent) {}
+    public default void setRollerPercent(double percent) {}
     public default void stopRollers() {}
 }

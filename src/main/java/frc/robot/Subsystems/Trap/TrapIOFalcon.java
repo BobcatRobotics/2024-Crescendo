@@ -43,8 +43,18 @@ public class TrapIOFalcon implements TrapIO {
         armMotor.setControl(armRequest.withOutput(percent));
     }
 
+    @Override
     public void setRollerPercent(double percent) {
         rollerMotor.setControl(rollerRequest.withOutput(percent));
     }
 
+    @Override
+    public void stopArm() {
+        armMotor.stopMotor();
+    }
+
+    @Override
+    public void stopRollers() {
+        rollerMotor.stopMotor();
+    }
 }

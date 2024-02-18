@@ -19,7 +19,7 @@ public class Trap extends SubsystemBase {
     }
 
     public void setRollerPercent(double percent) {
-        io.setRollerPercentOut(percent);
+        io.setRollerPercent(percent);
     }
 
     public void stopRoller() {
