@@ -32,7 +32,6 @@ public class Shooter extends SubsystemBase {
      * @param rpmBot PER MINUTE YOU FOOL, NOT PER SECOND, PER MINUTEEEEEEEE!!!!!!!!
      */
     public void setSpeed(double rpmTop, double rpmBot) {
-        Logger.recordOutput("shoooterstuff/debugging", "setting speed");
         this.rpsTopSetpoint = rpmTop/60;
         this.rpsBotSetpoint = rpmBot/60;
         io.setTopVelocity(rpmTop/60);

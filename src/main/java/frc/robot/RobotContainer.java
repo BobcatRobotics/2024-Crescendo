@@ -39,6 +39,9 @@ import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Subsystems.Swerve.SwerveModuleIO;
 import frc.robot.Subsystems.Swerve.SwerveModuleIOFalcon;
 import frc.robot.Subsystems.Swerve.SwerveModuleIOSim;
+import frc.robot.Subsystems.Trap.Trap;
+import frc.robot.Subsystems.Trap.TrapIO;
+import frc.robot.Subsystems.Trap.TrapIOFalcon;
 import frc.robot.Subsystems.Vision.Vision;
 import frc.robot.Subsystems.Vision.VisionIO;
 import frc.robot.Subsystems.Vision.VisionIOLimelight;
@@ -58,6 +61,7 @@ public class RobotContainer {
   public final Shooter m_shooter;
   public final Amp m_amp;
   public final Spivit m_Spivit;
+  public final Trap m_trap;
   // public final Vision m_Vision;
 
   /* Commands */
@@ -84,6 +88,7 @@ public class RobotContainer {
         m_shooter = new Shooter(new ShooterIOFalcon());
         m_amp = new Amp(new AmpIOFalcon());
         m_Spivit = new Spivit(new SpivitIOFalcon());
+        m_trap = new Trap(new TrapIOFalcon());
         // m_Vision = new Vision(new VisionIOLimelight());
         break;
 
@@ -110,6 +115,8 @@ public class RobotContainer {
         // m_Vision = new Vision(new VisionIOLimelight());
         m_amp = new Amp(new AmpIOFalcon());
         m_Spivit = new Spivit(new SpivitIOFalcon());
+        m_trap = new Trap(new TrapIO() {
+        });
 
         break;
 
@@ -138,6 +145,8 @@ public class RobotContainer {
         });
          m_amp = new Amp(new AmpIOFalcon());
         m_Spivit = new Spivit(new SpivitIOFalcon());
+        m_trap = new Trap(new TrapIO() {
+        });
 
         // m_Vision = new Vision(new VisionIOLimelight());
         break;
@@ -215,7 +224,7 @@ public class RobotContainer {
     // gp.button(9).whileTrue(new InstantCommand(m_intake::runOut)).onFalse(new InstantCommand(m_intake::stop)); // start
 
     /* Shooter Controls */
-    gp.button(5).whileTrue(new InstantCommand(() -> m_shooter.setSpeed(1000, 1000))).onFalse(new InstantCommand(m_shooter::stop)); // left bumper
+    gp.button(5).whileTrue(new InstantCommand(() -> m_shooter.setSpeed(4000, 4000))).onFalse(new InstantCommand(m_shooter::stop)); // left bumper
     
     //this moves it down
     gp.axisGreaterThan(3, .6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(-0.05), m_Spivit::stopMotorFeedforward, m_Spivit));
@@ -224,14 +233,14 @@ public class RobotContainer {
     gp.axisLessThan(3, -.6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(0.05), m_Spivit::stopMotorFeedforward, m_Spivit));
 
     //this sets it to a specific angle
-    gp.button(2).whileTrue(new StartEndCommand(() -> m_Spivit.setAngle(ShooterConstants.safePosition), m_Spivit::stopMotorFeedforward, m_Spivit));
+    gp.button(2).whileTrue(new StartEndCommand(() -> m_Spivit.setAngle(ShooterConstants.wingShot), m_Spivit::stopMotorFeedforward, m_Spivit));
 
 
     // amp controls 
 
     //this runs it up
     //gp.axisGreaterThan(1, .6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
-    gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1), m_amp::stop, m_amp));
+    // gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1), m_amp::stop, m_amp));
 
     //this runs it down
     //gp.axisLessThan(1, -.6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(-0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
@@ -239,6 +248,9 @@ public class RobotContainer {
 
 
 
+    // trap controls
+    gp.button(7).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap)); // left trigger
+    gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(-0.1), m_trap::stopArm, m_trap));
     
     // gp.button(5).whileTrue(new InstantCommand(() -> m_shooter.setAngle(ShooterConstants.safePosition + 5))).whileFalse(new InstantCommand(() -> m_shooter.setAngle(ShooterConstants.safePosition)));
     /* Drive with gamepad */

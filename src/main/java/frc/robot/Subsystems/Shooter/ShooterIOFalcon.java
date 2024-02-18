@@ -81,11 +81,7 @@ public class ShooterIOFalcon implements ShooterIO {
      * @param rps revs per second
      */
     public void setTopVelocity(double rps) {
-        Logger.recordOutput("shoooterstuff/debugging", "setting top speed");
-
         topMotor.setControl(requestTop.withVelocity(rps));
-        Logger.recordOutput("shoooterstuff/debugging", "set top speed");
-
     }
 
 

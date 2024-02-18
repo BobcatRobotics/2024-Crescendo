@@ -5,38 +5,46 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.Constants.TrapConstants;
 
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 
-public class TrapIOFalcon {
-    private TalonFX winchMotor;
-    private TalonFX shooterMotor;
-    
-    private TalonFXConfiguration winchConfigs;
-    private TalonFXConfiguration shooterConfigs;
+public class TrapIOFalcon implements TrapIO {
+    private TalonFX armMotor;
+    private TalonFX rollerMotor;
 
-   private MotionMagicConfigs motionMagicConfigs;
-   private MotionMagicVoltage m_voltage;
+    private DutyCycleOut armRequest;
+    private DutyCycleOut rollerRequest;
 
-    public TrapIOFalcon(int deviceIDWinch, int deviceIDShooter){
+    public TrapIOFalcon() {
+        armMotor = new TalonFX(TrapConstants.armID);       
+        TalonFXConfiguration armConfig = new TalonFXConfiguration();
+        armMotor.getConfigurator().apply(armConfig);
+        armConfig.MotorOutput.Inverted = TrapConstants.armInvert;
+        armConfig.MotorOutput.NeutralMode = TrapConstants.armBrakeMode;
+        armMotor.getConfigurator().apply(armConfig);
 
-        // General initialization of the motors
-        winchMotor = new TalonFX(deviceIDWinch);
-        shooterMotor = new TalonFX(deviceIDShooter);
-        winchConfigs = new TalonFXConfiguration();
-        winchMotor.getConfigurator().apply(winchConfigs);
-        shooterConfigs = new TalonFXConfiguration();
-        shooterMotor.getConfigurator().apply(shooterConfigs);
+        rollerMotor = new TalonFX(TrapConstants.rollerID);       
+        TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
+        rollerMotor.getConfigurator().apply(rollerConfig);
+        rollerConfig.MotorOutput.Inverted = TrapConstants.rollerInvert;
+        rollerConfig.MotorOutput.NeutralMode = TrapConstants.rollerBrakeMode;
+        rollerMotor.getConfigurator().apply(rollerConfig);
 
-        // Motion Magic initialization just for the shoulder motor
-        m_voltage = new MotionMagicVoltage(0);
-        motionMagicConfigs = winchConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = TrapConstants.motionmagicCruiseVelocity;
-        motionMagicConfigs.MotionMagicAcceleration = TrapConstants.motionmagicAcceleration;
-        motionMagicConfigs.MotionMagicJerk = TrapConstants.motionmagicJerk;
+        armRequest = new DutyCycleOut(0).withEnableFOC(true);
+        rollerRequest = new DutyCycleOut(0).withEnableFOC(true);
+    }
 
+    public void updateInputs(TrapIOInputs inputs) {
+        inputs.trapPosition = armMotor.getPosition().getValueAsDouble()*360;
+    } 
 
+    public void setArmPercent(double percent) {
+        armMotor.setControl(armRequest.withOutput(percent));
+    }
 
+    public void setRollerPercent(double percent) {
+        rollerMotor.setControl(rollerRequest.withOutput(percent));
     }
 
 }

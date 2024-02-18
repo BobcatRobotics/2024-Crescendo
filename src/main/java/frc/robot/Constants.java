@@ -303,7 +303,7 @@ public class Constants {
 
         //public static final double bottomFeedForwardBound = 0;
         //public static final double topFeedForwardBound = 0;
-        public static final double feedforwardPercentValue = 0.03;
+        public static final double feedforwardPercentValue = 0.0302;
         public static final double feedforwardVoltageValue = feedforwardPercentValue*12; //convert from percent to voltage
 
 
@@ -319,20 +319,20 @@ public class Constants {
         public static final int topMotorID = 12;
         public static final InvertedValue topMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue topMotorBrakeMode = NeutralModeValue.Coast;
-        public static final double kTopP = 0.1;//volts/rps
+        public static final double kTopP = 0.05;//volts/rps
         public static final double kTopI = 0;
-        public static final double kTopD = 0;
-        public static final double kTopV = 0.1; //volts/rps, feedforward, output per unit of requested velocity 
-        public static final double kTopS = 0.3;// volts, this is added to each output to overcome static friction
+        public static final double kTopD = 0.1;
+        public static final double kTopV = 0.0115; //volts/rps, feedforward, output per unit of requested velocity 
+        public static final double kTopS = 0;// volts, this is added to each output to overcome static friction
 
         public static final int bottomMotorID = 13;
         public static final InvertedValue bottomMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue bottomMotorBrakeMode = NeutralModeValue.Coast;
-        public static final double kBottomP = 0.1;
+        public static final double kBottomP = 0.14;
         public static final double kBottomI = 0;
-        public static final double kBottomD = 0;
-        public static final double kBottomV = 0.5;
-        public static final double kBottomS = 0.3;
+        public static final double kBottomD = 0.11;
+        public static final double kBottomV = 0.01165;
+        public static final double kBottomS = 0;
 
         public static final int angleMotorID = 14;
         public static final InvertedValue angleMotorInvert = InvertedValue.Clockwise_Positive;
@@ -352,7 +352,8 @@ public class Constants {
 
         public static final double bottomLimit = 245; // degrees, converted to rotations later on
         public static final double topLimit = 285;
-        public static final double safePosition = 262.265625;
+        public static final double podiumShot = 265.265625;
+        public static final double wingShot = 259.5;
 
 
         public static final int fastShooterRPMSetpoint = 0;
@@ -360,12 +361,16 @@ public class Constants {
     }
 
     public static final class TrapConstants{
-        public static final double deviceIDWinch = 0;
-        public static final double deviceIDShooter = 0;
-        public static final double motionmagicCruiseVelocity = 0;
-        public static final double motionmagicAcceleration = 0;
-        public static final double motionmagicJerk = 0;
+        public static final int rollerID = 17;
+        public static final int armID = 16;
 
+        public static final InvertedValue armInvert = InvertedValue.CounterClockwise_Positive;
+        public static final NeutralModeValue armBrakeMode = NeutralModeValue.Brake;
+        public static final InvertedValue rollerInvert = InvertedValue.CounterClockwise_Positive;
+        public static final NeutralModeValue rollerBrakeMode = NeutralModeValue.Coast;
+        // public static final double motionmagicCruiseVelocity = 0;
+        // public static final double motionmagicAcceleration = 0;
+        // public static final double motionmagicJerk = 0;
     }
 
     public static final class AmpConstants {
