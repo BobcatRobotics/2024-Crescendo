@@ -215,7 +215,7 @@ public class RobotContainer {
     // gp.button(9).whileTrue(new InstantCommand(m_intake::runOut)).onFalse(new InstantCommand(m_intake::stop)); // start
 
     /* Shooter Controls */
-    gp.button(5).whileTrue(new InstantCommand(() -> m_shooter.setSpeed(1000/60, 1000/60))).onFalse(new InstantCommand(m_shooter::stop)); // left bumper
+    gp.button(5).whileTrue(new InstantCommand(() -> m_shooter.setSpeed(1000, 1000))).onFalse(new InstantCommand(m_shooter::stop)); // left bumper
     
     //this moves it down
     gp.axisGreaterThan(3, .6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(-0.05), m_Spivit::stopMotorFeedforward, m_Spivit));

@@ -16,7 +16,6 @@ public interface ShooterIO {
 
     public default void setTopVelocity(double rps) {} //revs per sec
     public default void setBottomVelocity(double rps) {} //revs per sec
-    public default void setVelocityTune(double rpm){}//tuning purposes only
     public default double getTopVelocity() {return 0.0;} //rps
     public default double getBottomVelocity() {return 0.0;} //rps
     public default void stopTopMotor() {} //STOP IT. STOP THE TOP MOTOR :(( 

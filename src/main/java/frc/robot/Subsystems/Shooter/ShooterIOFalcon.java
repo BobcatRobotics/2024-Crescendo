@@ -7,6 +7,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import frc.robot.Constants.ShooterConstants;
 
@@ -20,9 +22,6 @@ public class ShooterIOFalcon implements ShooterIO {
     private final VelocityDutyCycle requestTop; 
     private final VelocityDutyCycle requestBottom; 
         
-    private final VelocityDutyCycle voltageRequestTop;
-    private final VelocityDutyCycle voltageRequestBottom;
-    
     public ShooterIOFalcon() {
         topMotor = new TalonFX(ShooterConstants.topMotorID); //initializes TalonFX motor 1
         bottomMotor = new TalonFX(ShooterConstants.bottomMotorID); //initializes TalonFX motor 2
@@ -38,6 +37,8 @@ public class ShooterIOFalcon implements ShooterIO {
         topConfigs.Slot0.kS = ShooterConstants.kTopS;
         topConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
         topConfigs.CurrentLimits.StatorCurrentLimit = 40;
+        topMotor.getConfigurator().apply(topConfigs);
+
         
         //Bottom motor configurations
         TalonFXConfiguration bottomConfigs = new TalonFXConfiguration();
@@ -61,8 +62,6 @@ public class ShooterIOFalcon implements ShooterIO {
         //Updates the requests for each motor
         requestTop = new VelocityDutyCycle(0).withEnableFOC(true);
         requestBottom = new VelocityDutyCycle(0).withEnableFOC(true);
-        voltageRequestTop = new VelocityDutyCycle(0).withEnableFOC(true);
-        voltageRequestBottom = new VelocityDutyCycle(0).withEnableFOC(true);
     }
 
 
@@ -82,7 +81,11 @@ public class ShooterIOFalcon implements ShooterIO {
      * @param rps revs per second
      */
     public void setTopVelocity(double rps) {
+        Logger.recordOutput("shoooterstuff/debugging", "setting top speed");
+
         topMotor.setControl(requestTop.withVelocity(rps));
+        Logger.recordOutput("shoooterstuff/debugging", "set top speed");
+
     }
 
 
@@ -128,8 +131,8 @@ public class ShooterIOFalcon implements ShooterIO {
      */
     public void setVelocity(double rpm){
         double rps = rpm/60;
-        topMotor.setControl(voltageRequestTop.withVelocity(rps));
-        bottomMotor.setControl(voltageRequestBottom.withVelocity(rps));
+        topMotor.setControl(requestTop.withVelocity(rps));
+        bottomMotor.setControl(requestBottom.withVelocity(rps));
     }
 
 

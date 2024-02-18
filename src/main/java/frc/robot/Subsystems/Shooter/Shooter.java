@@ -25,15 +25,22 @@ public class Shooter extends SubsystemBase {
         Logger.recordOutput("Shooter/bottomrpm", inputs.bottomMotorVelocityRPS*60);
     }
 
-    public void setSpeed(double rpsTop, double rpsBot) {
-        this.rpsTopSetpoint = rpsTop;
-        this.rpsBotSetpoint = rpsBot;
-        io.setTopVelocity(rpsTop);
-        io.setBottomVelocity(rpsBot);
+
+    /**
+     * 
+     * @param rpmTop IN ROTATIONS PER MINUTE!!!!!!!!!!!!
+     * @param rpmBot PER MINUTE YOU FOOL, NOT PER SECOND, PER MINUTEEEEEEEE!!!!!!!!
+     */
+    public void setSpeed(double rpmTop, double rpmBot) {
+        Logger.recordOutput("shoooterstuff/debugging", "setting speed");
+        this.rpsTopSetpoint = rpmTop/60;
+        this.rpsBotSetpoint = rpmBot/60;
+        io.setTopVelocity(rpmTop/60);
+        io.setBottomVelocity(rpmBot/60);
+        
+
     }
-    public void setVelocityTune(double rpm){
-        io.setVelocityTune(rpm);
-    }
+
 
 
 
