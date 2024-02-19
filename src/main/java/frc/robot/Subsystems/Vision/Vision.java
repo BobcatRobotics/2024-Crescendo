@@ -15,10 +15,14 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
+import frc.robot.Constants.FieldConstants;
 
 public class Vision extends SubsystemBase{
   /** Creates a new Vision. */
@@ -46,8 +50,8 @@ public class Vision extends SubsystemBase{
   public boolean getTV(){
     return inputs.tv;
   }
-  public void setPipeline(int id){
-    io.setPipeline(inputs.name, id);
+  public void setPipeline(String name, int id){
+    io.setPipeline(name, id);
   }
 
   @Override
@@ -60,7 +64,7 @@ public class Vision extends SubsystemBase{
     Logger.recordOutput("note pose/note pose", getNotePose());
     Logger.recordOutput("translation to note", getTranslationToTag((int) inputs.fiducialID));
 
-
+    
   }
 
   public double getNoteY(){
@@ -119,6 +123,9 @@ public class Vision extends SubsystemBase{
   public Rotation2d getTX(){
     return Rotation2d.fromDegrees(inputs.tx);
   }
+
+
+
 
 
 

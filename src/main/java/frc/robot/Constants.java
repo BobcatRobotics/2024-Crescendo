@@ -8,6 +8,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -176,15 +177,18 @@ public class Constants {
 
     public static final class FieldConstants{
         //1 is closest to AMP, 5 is closest to SOURCE
-        public static final Translation2d centerlineNote1 = new Translation2d(0,0);
-        public static final Translation2d centerlineNote2 = new Translation2d(0,0);
-        public static final Translation2d centerlineNote3 = new Translation2d(0,0);
-        public static final Translation2d centerlineNote4 = new Translation2d(0,0);
-        public static final Translation2d centerlineNote5 = new Translation2d(0,0);
+        public static final Translation2d centerlineNote1 = new Translation2d(250.5,29.64);
+        public static final Translation2d centerlineNote2 = new Translation2d(250.5,95.64);
+        public static final Translation2d centerlineNote3 = new Translation2d(250.5,161.64);
+        public static final Translation2d centerlineNote4 = new Translation2d(250.5,227.64);
+        public static final Translation2d centerlineNote5 = new Translation2d(250.5,293.64);
 
         public static final double noteDiameter = Units.inchesToMeters(14);
 
-        public static final double speakerHeight = Units.inchesToMeters(82.875);
+        public static final double speakerHeight = Units.inchesToMeters(80.4375); // Center of opening
+        public static final Translation2d blueSpeakerPose = new Translation2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42)); // Center of back of the opening
+        public static final Translation2d redSpeakerPose = new Translation2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42)); // Center of back of the opening
+  
     }
 
 
@@ -201,6 +205,10 @@ public class Constants {
     }
 
     public static final class LimelightConstants{
+
+
+
+
         public static final class intake{
  
             public static final String name = "limelight-intake";
@@ -234,7 +242,7 @@ public class Constants {
             public static final int movingAverageNumTaps = 20;
 
             public static final limelightConstants constants = new limelightConstants(name, verticalFOV, horizontalFOV, limelightMountHeight, detectorPiplineIndex, apriltagPipelineIndex,horPixles, filterTimeConstant,visionMeasurementStdDevs,movingAverageNumTaps);
-            public static final String ip = "10.1.77.12";
+            public static final String ip = "10.1.77.13";
 
         }
         
@@ -251,7 +259,7 @@ public class Constants {
             public static final int movingAverageNumTaps = 20;
 
             public static final limelightConstants constants = new limelightConstants(name, verticalFOV, horizontalFOV, limelightMountHeight, detectorPiplineIndex, apriltagPipelineIndex,horPixles, filterTimeConstant,visionMeasurementStdDevs,movingAverageNumTaps);
-            public static final String ip = "10.1.77.13";
+            public static final String ip = "10.1.77.12";
 
     
         }
@@ -322,16 +330,16 @@ public class Constants {
         public static final double kTopP = 0.05;//volts/rps
         public static final double kTopI = 0;
         public static final double kTopD = 0.1;
-        public static final double kTopV = 0.0115; //volts/rps, feedforward, output per unit of requested velocity 
+        public static final double kTopV = 0.0113; //volts/rps, feedforward, output per unit of requested velocity 
         public static final double kTopS = 0;// volts, this is added to each output to overcome static friction
 
         public static final int bottomMotorID = 13;
         public static final InvertedValue bottomMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue bottomMotorBrakeMode = NeutralModeValue.Coast;
-        public static final double kBottomP = 0.14;
+        public static final double kBottomP = 0.25;
         public static final double kBottomI = 0;
         public static final double kBottomD = 0.11;
-        public static final double kBottomV = 0.01165;
+        public static final double kBottomV = 0.014;
         public static final double kBottomS = 0;
 
         public static final int angleMotorID = 14;
@@ -352,8 +360,10 @@ public class Constants {
 
         public static final double bottomLimit = 245; // degrees, converted to rotations later on
         public static final double topLimit = 285;
-        public static final double podiumShot = 265.265625;
-        public static final double wingShot = 259.5;
+        public static final double podiumShot = 267;
+        public static final double wingShot = 256.5;
+        public static final double stageShot = 259; //center of stage side closest to speaker
+        public static final double subwooferShot = 285;
 
 
         public static final int fastShooterRPMSetpoint = 0;

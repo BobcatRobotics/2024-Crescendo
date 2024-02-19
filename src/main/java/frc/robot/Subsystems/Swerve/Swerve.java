@@ -27,11 +27,14 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Vision.Vision;
 
 public class Swerve extends SubsystemBase {
@@ -208,7 +211,8 @@ public class Swerve extends SubsystemBase {
             if (shooterLeftVision.getTV()){
                 poseEstimator.addVisionMeasurement((shooterLeftVision.getBotPose()), (shooterLeftVision.getPoseTimestamp()),VecBuilder.fill(shooterLeftVision.getDistToTag()/2, shooterLeftVision.getDistToTag()/2, Units.degreesToRadians(25)));
             }
-
+        
+        SmartDashboard.putNumber("distance to speaker", getDistanceToSpeaker());
 
 
     }
@@ -413,5 +417,15 @@ public class Swerve extends SubsystemBase {
         
         return AutoBuilder.pathfindToPose(pose, new PathConstraints(Constants.SwerveConstants.maxSpeed, Constants.SwerveConstants.maxAccel, Constants.SwerveConstants.maxAngularVelocity, Constants.SwerveConstants.maxAngularAcceleration));
     }
+
+/**
+   * 
+   * @return DISTANCE TO SPEAKER OF CURRENT ALLIANCE IN METERS :D
+   */
+  public double getDistanceToSpeaker(){
+    return DriverStation.getAlliance().get() == Alliance.Blue ? 
+    getPose().getTranslation().getDistance(FieldConstants.blueSpeakerPose) : 
+    getPose().getTranslation().getDistance(FieldConstants.redSpeakerPose);
+  }
 
 }

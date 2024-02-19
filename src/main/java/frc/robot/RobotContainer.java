@@ -81,7 +81,9 @@ public class RobotContainer {
                                                                                                 // limelight constants
                                                                                                 // for the IO
         m_shooterRightVision = new Vision(new VisionIOLimelight(LimelightConstants.shooterRight.constants));
+        m_shooterRightVision.setPipeline(LimelightConstants.shooterLeft.name, LimelightConstants.shooterRight.apriltagPipelineIndex);
         m_shooterLeftVision = new Vision(new VisionIOLimelight(LimelightConstants.shooterLeft.constants));
+        m_shooterRightVision.setPipeline(LimelightConstants.shooterRight.name, LimelightConstants.shooterRight.apriltagPipelineIndex);
         m_swerve = new Swerve(new GyroIOPigeon2(),
             new SwerveModuleIOFalcon(SwerveConstants.Module0Constants.constants),
             new SwerveModuleIOFalcon(SwerveConstants.Module1Constants.constants),
@@ -233,7 +235,7 @@ public class RobotContainer {
     // gp.button(9).whileTrue(new InstantCommand(m_intake::runOut)).onFalse(new InstantCommand(m_intake::stop)); // start
 
     /* Shooter Controls */
-    gp.button(5).whileTrue(new InstantCommand(() -> m_shooter.setSpeed(4000, 4000))).onFalse(new InstantCommand(m_shooter::stop)); // left bumper
+    gp.button(5).whileTrue(new InstantCommand(() -> m_shooter.setSpeed(5000, 5000))).onFalse(new InstantCommand(m_shooter::stop)); // left bumper
     
     //this moves it down
     gp.axisGreaterThan(3, .6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(-0.05), m_Spivit::stopMotorFeedforward, m_Spivit));
@@ -242,25 +244,25 @@ public class RobotContainer {
     gp.axisLessThan(3, -.6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(0.05), m_Spivit::stopMotorFeedforward, m_Spivit));
 
     //this sets it to a specific angle
-    gp.button(2).whileTrue(new StartEndCommand(() -> m_Spivit.setAngle(ShooterConstants.wingShot), m_Spivit::stopMotorFeedforward, m_Spivit));
+    gp.button(2).whileTrue(new StartEndCommand(() -> m_Spivit.setAngle(ShooterConstants.subwooferShot), m_Spivit::stopMotorFeedforward, m_Spivit));
 
 
     // amp controls 
 
     //this runs it up
     //gp.axisGreaterThan(1, .6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
-    // gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1), m_amp::stop, m_amp));
+    gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1), m_amp::stop, m_amp));
 
     //this runs it down
     //gp.axisLessThan(1, -.6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(-0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
-    // gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1), m_amp::stop, m_amp));
+     gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1), m_amp::stop, m_amp));
 
 
 
     // trap controls
-    gp.button(7).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap)); // left trigger
-    gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(-0.1), m_trap::stopArm, m_trap));
-    gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1), m_trap::stopArm, m_trap));
+    //gp.button(7).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap)); // left trigger
+    //gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(-0.1), m_trap::stopArm, m_trap));
+    //gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1), m_trap::stopArm, m_trap));
 
     // climber controls
     gp.button(1).whileTrue(new StartEndCommand(() -> m_climber.setPercentOut(0.75), m_climber::stop, m_climber));
