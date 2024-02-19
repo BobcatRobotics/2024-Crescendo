@@ -39,7 +39,7 @@ public class TeleopSwerve extends Command {
         /* Get Values, Deadband */
         double translationVal = MathUtil.applyDeadband(translation.getAsDouble(), SwerveConstants.stickDeadband);
         double strafeVal = MathUtil.applyDeadband(strafe.getAsDouble(), SwerveConstants.stickDeadband);
-        double rotationVal = -MathUtil.applyDeadband(rotation.getAsDouble(), SwerveConstants.stickDeadband); //from 0 to one
+        double rotationVal = MathUtil.applyDeadband(rotation.getAsDouble(), SwerveConstants.stickDeadband); //from 0 to one
 
         /* If joysticks not receiving any normal input, use twist values for fine adjust */
         if (strafeVal == 0.0) {

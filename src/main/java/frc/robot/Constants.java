@@ -127,7 +127,7 @@ public class Constants {
         public static final SensorDirectionValue sensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 
         /* 
-         * Offsets must be done with bevels facing away from pivot motor
+         * Offsets must be done with bevels facing towards spivit motor
          */
         /* FRONT LEFT */
         public static final class Module0Constants {
@@ -135,7 +135,7 @@ public class Constants {
             public static final int angleMotorID = 2;
             public static final int driveMotorID = 1;
 
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(104.8535); // 109.1 353.32
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(104.8535 + 180); // 109.1 353.32
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
@@ -146,7 +146,7 @@ public class Constants {
             public static final int angleMotorID = 4;
             public static final int driveMotorID = 3;
 
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(210.4102); // 214.1 9.14
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(210.4102 - 180); // 214.1 9.14
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
@@ -156,7 +156,7 @@ public class Constants {
             public static final int cancoderID = 3;
             public static final int angleMotorID = 6;
             public static final int driveMotorID = 5;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(251.4551); // 203.1 234.66
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(251.4551 - 180); // 203.1 234.66
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
@@ -166,7 +166,7 @@ public class Constants {
             public static final int cancoderID = 4;
             public static final int angleMotorID = 8;
             public static final int driveMotorID = 7;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(141.3281); // 51.9 285.29
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(141.3281 + 180); // 51.9 285.29
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
@@ -186,8 +186,9 @@ public class Constants {
         public static final double noteDiameter = Units.inchesToMeters(14);
 
         public static final double speakerHeight = Units.inchesToMeters(80.4375); // Center of opening
+        
         public static final Translation2d blueSpeakerPose = new Translation2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42)); // Center of back of the opening
-        public static final Translation2d redSpeakerPose = new Translation2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42)); // Center of back of the opening
+        public static final Translation2d redSpeakerPose = new Translation2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42)); // Center of back of the opening //652.73
   
     }
 
@@ -284,7 +285,7 @@ public class Constants {
         public static final double outsideCurrentLimit = 80;
 
         public static final int tofID = 0;
-        public static final double tofTresh = 135; // millimeters
+        public static final double tofTresh = 150; // millimeters
     }
 
     public static final class ClimberConstants{

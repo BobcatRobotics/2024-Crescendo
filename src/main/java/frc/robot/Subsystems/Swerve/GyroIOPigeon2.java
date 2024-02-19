@@ -23,6 +23,8 @@ public class GyroIOPigeon2 implements GyroIO {
         pigeon = new Pigeon2(SwerveConstants.pigeonID, SwerveConstants.canivore);
         Pigeon2Configuration config = new Pigeon2Configuration();
         pigeon.getConfigurator().apply(config);
+        // config.MountPose.MountPoseYaw = 180;
+        // pigeon.getConfigurator().apply(config);
 
         pigeon.reset();
         pigeon.setYaw(0);

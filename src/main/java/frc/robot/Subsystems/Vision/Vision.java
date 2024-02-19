@@ -83,7 +83,7 @@ public class Vision extends SubsystemBase{
   }
 
   public double getDistToTag(){
-    return LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[0];
+    return LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[3];
   }
 
   public double getPoseTimestamp(){

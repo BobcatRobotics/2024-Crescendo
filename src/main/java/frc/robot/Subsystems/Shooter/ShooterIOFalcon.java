@@ -102,6 +102,7 @@ public class ShooterIOFalcon implements ShooterIO {
         return topMotor.getVelocity().getValueAsDouble(); //rps
     }
 
+
     /**
      * 
      * @return returns a double in RPS

@@ -203,13 +203,15 @@ public class Swerve extends SubsystemBase {
 
         
             //Update PoseEstimator if at least 1 tag is in view
-            if (shooterRightVision.getTV()){
+            if (Math.abs(shooterRightVision.getBotPose().getY())<=50 && Math.abs(shooterRightVision.getBotPose().getY())!=0){
                 //standard deviations are (distance to nearest apriltag)/2 for x and y and 10 degrees for theta
-                poseEstimator.addVisionMeasurement((shooterRightVision.getBotPose()), (shooterRightVision.getPoseTimestamp()),VecBuilder.fill(shooterRightVision.getDistToTag()/2, shooterRightVision.getDistToTag()/2, Units.degreesToRadians(25)));
-            
+                poseEstimator.addVisionMeasurement((shooterRightVision.getBotPose()), (shooterRightVision.getPoseTimestamp()),VecBuilder.fill(shooterRightVision.getDistToTag()/2, shooterRightVision.getDistToTag()/2, Units.degreesToRadians(60)));
+                Logger.recordOutput("shooterrightvisiondist",shooterRightVision.getDistToTag() );
             }
-            if (shooterLeftVision.getTV()){
-                poseEstimator.addVisionMeasurement((shooterLeftVision.getBotPose()), (shooterLeftVision.getPoseTimestamp()),VecBuilder.fill(shooterLeftVision.getDistToTag()/2, shooterLeftVision.getDistToTag()/2, Units.degreesToRadians(25)));
+            if (Math.abs(shooterLeftVision.getBotPose().getY())<=50 && Math.abs(shooterLeftVision.getBotPose().getY())!=0){
+                poseEstimator.addVisionMeasurement((shooterLeftVision.getBotPose()), (shooterLeftVision.getPoseTimestamp()),VecBuilder.fill(shooterLeftVision.getDistToTag()/2, shooterLeftVision.getDistToTag()/2, Units.degreesToRadians(60)));
+                Logger.recordOutput("shooterleftvisiondist",shooterLeftVision.getDistToTag() );
+
             }
         
         SmartDashboard.putNumber("distance to speaker", getDistanceToSpeaker());
@@ -260,7 +262,7 @@ public class Swerve extends SubsystemBase {
                             rotating = false;
                             lastMovingYaw = getYaw().getRadians();
                         }
-                        desiredSpeeds.omegaRadiansPerSecond = -rotationPID.calculate(getYaw().getRadians(), lastMovingYaw);
+                        desiredSpeeds.omegaRadiansPerSecond = rotationPID.calculate(getYaw().getRadians(), lastMovingYaw);
                     } else {
                         rotating = true;
                     }
@@ -423,9 +425,33 @@ public class Swerve extends SubsystemBase {
    * @return DISTANCE TO SPEAKER OF CURRENT ALLIANCE IN METERS :D
    */
   public double getDistanceToSpeaker(){
+    Logger.recordOutput("redSpeaker", new Pose2d(FieldConstants.redSpeakerPose, new Rotation2d()));
+    Logger.recordOutput("blueSpeaker", new Pose2d(FieldConstants.blueSpeakerPose, new Rotation2d()));
     return DriverStation.getAlliance().get() == Alliance.Blue ? 
     getPose().getTranslation().getDistance(FieldConstants.blueSpeakerPose) : 
     getPose().getTranslation().getDistance(FieldConstants.redSpeakerPose);
+  }
+
+  /**
+   * 
+   * 
+   * r^2 = 0.983
+   */
+  public double calcAngleBasedOnRealRegression(){
+    double distance = getDistanceToSpeaker();
+    Logger.recordOutput("Spivit/DesiredAngle", 291*Math.pow(distance, -0.074));
+    return 291*Math.pow(distance, -0.074);
+    
+  }
+
+  /**
+   * 
+   * 
+   * r^2 = 0.996
+   */
+  public double calcAngleBasedOnEstimatorRegression(){
+    double distance = getDistanceToSpeaker();
+    return 291*Math.pow(distance, -0.0762);
   }
 
 }
