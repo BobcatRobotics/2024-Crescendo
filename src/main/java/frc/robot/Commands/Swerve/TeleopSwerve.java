@@ -2,6 +2,7 @@ package frc.robot.Commands.Swerve;
 
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Subsystems.Swerve.Swerve;
+import frc.robot.Subsystems.Vision.Vision;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -19,9 +20,12 @@ public class TeleopSwerve extends Command {
     private DoubleSupplier rotation;
     private BooleanSupplier robotCentric;
     private DoubleSupplier fineTrans;
-    private BooleanSupplier snap;
+    private BooleanSupplier snapToAmp;
+    private BooleanSupplier snapToSpeaker;
+    private double angleToSpeaker = 0.0;
+    private boolean overriden = false;
 
-    public TeleopSwerve(Swerve swerve, DoubleSupplier translation, DoubleSupplier strafe, DoubleSupplier rotation, BooleanSupplier robotCentric, DoubleSupplier fineStrafe, DoubleSupplier fineTrans, BooleanSupplier snapToRotation) {
+    public TeleopSwerve(Swerve swerve, DoubleSupplier translation, DoubleSupplier strafe, DoubleSupplier rotation, BooleanSupplier robotCentric, DoubleSupplier fineStrafe, DoubleSupplier fineTrans, BooleanSupplier snapToAmp, BooleanSupplier snapToSpeaker) {
         this.swerve = swerve;
         addRequirements(swerve);
 
@@ -31,15 +35,33 @@ public class TeleopSwerve extends Command {
         this.robotCentric = robotCentric;
         this.fineStrafe = fineStrafe;
         this.fineTrans = fineTrans;
-        this.snap = snapToRotation;
+        this.snapToAmp = snapToAmp;
+        this.snapToSpeaker = snapToSpeaker;        
     }
 
     @Override
     public void execute() {
+
         /* Get Values, Deadband */
         double translationVal = MathUtil.applyDeadband(translation.getAsDouble(), SwerveConstants.stickDeadband);
         double strafeVal = MathUtil.applyDeadband(strafe.getAsDouble(), SwerveConstants.stickDeadband);
         double rotationVal = MathUtil.applyDeadband(rotation.getAsDouble(), SwerveConstants.stickDeadband); //from 0 to one
+
+        if (snapToSpeaker.getAsBoolean() && rotationVal == 0) {
+            Translation2d speaker = swerve.getTranslationToSpeaker();
+            angleToSpeaker = Math.atan(speaker.getY()/speaker.getX());
+            overriden = false;
+            
+        } else {
+            overriden = true;
+        }
+        // overriden = true;
+
+        if (snapToAmp.getAsBoolean() && rotationVal == 0) {
+            snapToAmp = () -> true;
+        } else {
+            snapToAmp = () -> false;
+        }
 
         /* If joysticks not receiving any normal input, use twist values for fine adjust */
         if (strafeVal == 0.0) {
@@ -54,7 +76,9 @@ public class TeleopSwerve extends Command {
             new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed), 
             rotationVal * SwerveConstants.maxAngularVelocity,
             !robotCentric.getAsBoolean(),
-            snap.getAsBoolean()
+            snapToAmp.getAsBoolean(),
+            snapToSpeaker.getAsBoolean() && !overriden,
+            angleToSpeaker
         );
     }
 }

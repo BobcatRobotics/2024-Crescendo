@@ -51,9 +51,9 @@ public class GrabNote extends Command {
     //if were more than 5 degrees off, only rotate, once were within 5 degrees, translate.
     notePos = vision.getNotePose();
      if(!(Math.abs(thetaController.getPositionError()) < 5)){
-     swerve.drive(new Translation2d(), -thetaController.calculate(notePos.getRotation().getDegrees()),false,false);
+     swerve.drive(new Translation2d(), -thetaController.calculate(notePos.getRotation().getDegrees()),false,false,false,0);
      }else{
-      swerve.drive(new Translation2d(0,xController.calculate(notePos.getX())), -thetaController.calculate(notePos.getRotation().getDegrees()),false,false);
+      swerve.drive(new Translation2d(0,xController.calculate(notePos.getX())), -thetaController.calculate(notePos.getRotation().getDegrees()),false,false,false,0);
      }
   }
 }

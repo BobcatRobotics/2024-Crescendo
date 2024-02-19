@@ -70,7 +70,7 @@ public class Constants {
         public static final double rotationKD = 0.0;
 
         /* Teleop Constants */
-        public static final double teleopRotationKP = 2;
+        public static final double teleopRotationKP = 1.5;
         public static final double teleopRotationKI = 0.0;
         public static final double teleopRotationKD = 0.0;
 
@@ -359,7 +359,7 @@ public class Constants {
         public static final Rotation2d offset = new Rotation2d();
         public static final double rotorToSensorRatio = (64/14)*(58/18)*(58/11);
 
-        public static final double bottomLimit = 245; // degrees, converted to rotations later on
+        public static final double bottomLimit = 250.5; // degrees, converted to rotations later on
         public static final double topLimit = 285;
         public static final double podiumShot = 267;
         public static final double wingShot = 256.5;

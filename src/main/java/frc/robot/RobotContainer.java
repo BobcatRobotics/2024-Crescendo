@@ -211,7 +211,8 @@ public class RobotContainer {
             () -> -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
             () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
             // strafe.button(1) 
-            () -> false
+            () -> false,
+            () -> gp.button(6).getAsBoolean()
         ));
     rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
 
@@ -246,7 +247,7 @@ public class RobotContainer {
 
     //this sets it to a specific angle
     //gp.button(2).whileTrue(new StartEndCommand(() -> m_Spivit.setAngle(m_swerve.calcAngleBasedOnRealRegression()), m_Spivit::stopMotorFeedforward, m_Spivit));
-    gp.button(2).whileTrue(new RunCommand(() -> m_Spivit.setAngle(m_swerve.calcAngleBasedOnRealRegression()), m_Spivit)).onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
+    gp.button(6).whileTrue(new RunCommand(() -> m_Spivit.setAngle(m_swerve.calcAngleBasedOnRealRegression()), m_Spivit)).onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
 
     // amp controls 
 
