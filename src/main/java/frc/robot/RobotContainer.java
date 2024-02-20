@@ -198,6 +198,22 @@ public class RobotContainer {
    * () -> buttonOrAxisValue
    */
   private void configureBindings() {
+    /* A for amp mode
+     * B for stow (amp)
+     * X is climber moves up
+     * Y is climber moves down
+     * D PAD UP is intake to trap
+     * D PAD DOWN is intake to shooter
+     * LEFT BUMPER is rev shooter
+     * LEFT TRIGGER is trap rollers
+     * RIGHT BUMPER is align
+     * RIGHT TRIGGER is feed
+     * SELECT is out take
+     * LEFT STICK is trap scoring arm
+     * RIGHT STICK is manual pivot
+     * 
+     */
+
     /* Drive with joysticks */
     m_swerve.setDefaultCommand(
         new TeleopSwerve(
