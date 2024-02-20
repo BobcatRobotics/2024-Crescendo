@@ -225,12 +225,13 @@ public class RobotContainer {
             m_intake, 
             gp.povDown(), 
             gp.povUp(),
-            () -> (gp.button(5).getAsBoolean() && gp.povDown().getAsBoolean()), // if holding spin up shooter button, run intake to fire
+            // () -> (gp.button(5).getAsBoolean() && gp.povDown().getAsBoolean()), // if holding spin up shooter button, run intake to fire
             gp.button(7), // back button
             // () -> m_shooter.atSpeed(),
             // () -> m_shooter.atAngle()
             () -> true,
-            () -> true
+            () -> true,
+            gp.axisGreaterThan(3, 0.25)
         ));
     // gp.povDown().whileTrue(new InstantCommand(m_intake::intakeToShooter)).onFalse(new InstantCommand(m_intake::stop));
     // gp.povUp().whileTrue(new InstantCommand(m_intake::intakeToTrap)).onFalse(new InstantCommand(m_intake::stop));
