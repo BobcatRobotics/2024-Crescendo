@@ -226,7 +226,7 @@ public class RobotContainer {
             gp.povDown(), 
             gp.povUp(),
             () -> (gp.button(5).getAsBoolean() && gp.povDown().getAsBoolean()), // if holding spin up shooter button, run intake to fire
-            gp.button(9), // back button
+            gp.button(7), // back button
             // () -> m_shooter.atSpeed(),
             // () -> m_shooter.atAngle()
             () -> true,
@@ -240,10 +240,10 @@ public class RobotContainer {
     gp.button(5).whileTrue(new InstantCommand(() -> m_shooter.setSpeed(5000, 5000))).onFalse(new InstantCommand(m_shooter::stop)); // left bumper
     
     //this moves it down
-    gp.axisGreaterThan(3, .6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(-0.03), m_Spivit::stopMotorFeedforward, m_Spivit));
+    gp.axisGreaterThan(5, .6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(-0.03), m_Spivit::stopMotorFeedforward, m_Spivit));
 
     //this moves it up
-    gp.axisLessThan(3, -.6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(0.03), m_Spivit::stopMotorFeedforward, m_Spivit));
+    gp.axisLessThan(5, -.6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(0.03), m_Spivit::stopMotorFeedforward, m_Spivit));
 
     //this sets it to a specific angle
     //gp.button(2).whileTrue(new StartEndCommand(() -> m_Spivit.setAngle(m_swerve.calcAngleBasedOnRealRegression()), m_Spivit::stopMotorFeedforward, m_Spivit));
@@ -267,7 +267,7 @@ public class RobotContainer {
     //gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1), m_trap::stopArm, m_trap));
 
     // climber controls
-    gp.button(1).whileTrue(new StartEndCommand(() -> m_climber.setPercentOut(0.75), m_climber::stop, m_climber));
+    gp.button(3).whileTrue(new StartEndCommand(() -> m_climber.setPercentOut(0.75), m_climber::stop, m_climber));
     gp.button(4).whileTrue(new StartEndCommand(() -> m_climber.setPercentOut(-0.75), m_climber::stop, m_climber));
     
     // gp.button(5).whileTrue(new InstantCommand(() -> m_shooter.setAngle(ShooterConstants.safePosition + 5))).whileFalse(new InstantCommand(() -> m_shooter.setAngle(ShooterConstants.safePosition)));
