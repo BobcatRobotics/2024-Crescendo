@@ -410,6 +410,9 @@ public class Constants {
         public static final double deployValue = 0; //TODO find this
         public static final double retractValue = 0;
         public static final double crashThreshold = 0;
+
+        public static final double deployTolerance = 1.5; // degrees of tolerance
+        public static final double retractTolerance = 1;
     }
 }
 

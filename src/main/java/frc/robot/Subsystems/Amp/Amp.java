@@ -31,7 +31,20 @@ public class Amp extends SubsystemBase {
     }
 
     public boolean beyondCrashThreshold(){
-        return inputs.motorposition > AmpConstants.crashThreshold; //TODO not sure if this should be > or <
+        return inputs.motorposition > AmpConstants.crashThreshold; //TODO not sure if this should be > or <, need to check motor invert and gearing stuff
+    }
+
+    /**
+     * 
+     * @return whether or not the amp has reached its deploy setpoint
+     */
+    public boolean deployed(){
+        return inputs.motorposition < AmpConstants.deployValue+AmpConstants.deployTolerance 
+            && inputs.motorposition > AmpConstants.deployValue+AmpConstants.deployTolerance;
+    }
+
+    public boolean retracted(){
+        return inputs.motorposition < AmpConstants.retractValue+AmpConstants.retractTolerance;
     }
 
     public void setPercentOut(double percent){

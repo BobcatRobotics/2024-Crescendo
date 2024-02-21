@@ -59,6 +59,6 @@ public class SetAmp extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return deploy ? amp.deployed() : amp.retracted();
   }
 }
