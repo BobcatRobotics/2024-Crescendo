@@ -187,7 +187,7 @@ public class RobotContainer {
     SmartDashboard.putNumber("ShooterRPM", 0);
   }
 
-  /*
+  /**
    * IMPORTANT NOTE:
    * When a gamepad value is needed by a command, don't
    * pass the gamepad to the command, instead have the
@@ -200,18 +200,19 @@ public class RobotContainer {
   private void configureBindings() {
     /* A for amp mode
      * B for stow (amp)
-     * X is climber moves up
-     * Y is climber moves down
+     * X is 
+     * Y is 
      * D PAD UP is intake to trap
      * D PAD DOWN is intake to shooter
-     * LEFT BUMPER is rev shooter
-     * LEFT TRIGGER is trap rollers
-     * RIGHT BUMPER is align
-     * RIGHT TRIGGER is feed
+     * LEFT BUMPER is align
+     * LEFT TRIGGER is climber down
+     * RIGHT BUMPER is feed
+     * RIGHT TRIGGER is climber up
      * SELECT is out take
      * LEFT STICK is trap scoring arm
-     * RIGHT STICK is manual pivot
+     * RIGHT STICK is manual spivit
      * 
+     * Buttons
      * 1 -b
      * 2 -a
      * 3- y
@@ -223,93 +224,100 @@ public class RobotContainer {
      * 9 - bl
      * 10 - br
      * 
+     * Axes
      * 0 -
+     * 1 -
+     * 2 -
+     * 3 -
+     * 4 -
+     * 5 -
+     * 6 -
      * 
+     * Axis indices start at 0, button indices start at one -_-
      */
 
-    /* Drive with joysticks */
+    
+     /* Drive with joysticks */
     m_swerve.setDefaultCommand(
         new TeleopSwerve(
             m_swerve,
             () -> -strafe.getRawAxis(Joystick.AxisType.kY.value)
-                * Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value)),
+                * Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value)), //translation
             () -> -strafe.getRawAxis(Joystick.AxisType.kX.value)
-                * Math.abs(strafe.getRawAxis(Joystick.AxisType.kX.value)),
-            () -> -rotate.getRawAxis(Joystick.AxisType.kX.value),
-            () -> false,
-            () -> -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
-            () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine tune
-            // strafe.button(1) 
-            () -> false,
-            gp.button(5)
+                * Math.abs(strafe.getRawAxis(Joystick.AxisType.kX.value)), //strafe
+            () -> -rotate.getRawAxis(Joystick.AxisType.kX.value), //rotate
+            () -> false, //robot centric
+            () -> -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine strafe
+            () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine translation 
+            () -> false, //align to amp
+            gp.button(5) //align to speaker
         ));
+    //reset gyro
     rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
-
-    //strafe.button(1).onTrue(new DriveToPose(m_swerve));
 
       
     /* Intake Controls */
     m_intake.setDefaultCommand(
         new TeleopIntake(
             m_intake, 
-            gp.povDown(), 
-            gp.povUp(),
+            gp.povDown(), //shooter
+            gp.povUp(), //poptart
             // () -> (gp.button(5).getAsBoolean() && gp.povDown().getAsBoolean()), // if holding spin up shooter button, run intake to fire
-            gp.button(7), // back button
+            gp.button(7), // outtake - 'back' button
             // () -> m_shooter.atSpeed(),
             // () -> m_shooter.atAngle()
             () -> true,
             () -> true,
-            gp.button(6)
+            gp.button(6) // feed to shooter/manual override
         ));
-    // gp.povDown().whileTrue(new InstantCommand(m_intake::intakeToShooter)).onFalse(new InstantCommand(m_intake::stop));
-    // gp.povUp().whileTrue(new InstantCommand(m_intake::intakeToTrap)).onFalse(new InstantCommand(m_intake::stop));
-    // gp.button(9).whileTrue(new InstantCommand(m_intake::runOut)).onFalse(new InstantCommand(m_intake::stop)); // start
+
 
     /* Shooter Controls */
-    gp.button(10).onTrue(new InstantCommand(() -> m_shooter.setSpeed(5000, 5000))); // br
-    gp.button(9).onTrue(new InstantCommand(m_shooter::stop));
+    //start revving shooter
+    gp.button(10).onTrue(new InstantCommand(() -> m_shooter.setSpeed(5000, 5000))); // back right
+    //stop revving shooter
+    gp.button(9).onTrue(new InstantCommand(m_shooter::stop)); // back left
     
-    //this moves it down
+
+    /* Spivit controls */
+    //manual down
     gp.axisGreaterThan(5, .6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(-0.03), m_Spivit::stopMotorFeedforward, m_Spivit));
-
-    //this moves it up
+    //manual up
     gp.axisLessThan(5, -.6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(0.03), m_Spivit::stopMotorFeedforward, m_Spivit));
-
     //this sets it to a specific angle
-    //gp.button(2).whileTrue(new StartEndCommand(() -> m_Spivit.setAngle(m_swerve.calcAngleBasedOnRealRegression()), m_Spivit::stopMotorFeedforward, m_Spivit));
     gp.button(5).whileTrue(new RunCommand(() -> m_Spivit.setAngle(m_swerve.calcAngleBasedOnRealRegression()), m_Spivit)).onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
 
-    // amp controls 
+
+    /* amp controls */ 
+    //need to change to external command with shooter and amp
     gp.button(1).whileTrue(new InstantCommand(() -> m_amp.setPos(0)));
     gp.button(2).whileTrue(new InstantCommand(() -> m_amp.setPos(0)));
-    //this runs it up
+    //manual
     //gp.axisGreaterThan(1, .6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
     // gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1), m_amp::stop, m_amp));
-
     //this runs it down
     //gp.axisLessThan(1, -.6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(-0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
     //  gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1), m_amp::stop, m_amp));
 
 
 
-    // trap controls
+    /* trap controls */
     //gp.button(7).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap)); // left trigger
-    
     //this drives it towards the robot, i think
     gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1), m_trap::stopArm, m_trap));
     //this drives it towards the trap
     gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(-0.1), m_trap::stopArm, m_trap));
 
+
+
     // climber controls
-    //gp.button(3).whileTrue(new StartEndCommand(() -> m_climber.setPercentOut(0.75), m_climber::stop, m_climber));
-    //gp.button(4).whileTrue(new StartEndCommand(() -> m_climber.setPercentOut(-0.75), m_climber::stop, m_climber));
     //this *should* raise the hooks
     gp.axisGreaterThan(2, 0.07).onTrue(new StartEndCommand(() -> m_climber.setPercentOut(gp.getRawAxis(2)*0.75), m_climber::stop, m_climber));
     //this *should* lower the hooks
     gp.axisGreaterThan(3, 0.07).onTrue(new StartEndCommand(() -> m_climber.setPercentOut(-gp.getRawAxis(3)*0.75), m_climber::stop, m_climber));
 
-    // gp.button(5).whileTrue(new InstantCommand(() -> m_shooter.setAngle(ShooterConstants.safePosition + 5))).whileFalse(new InstantCommand(() -> m_shooter.setAngle(ShooterConstants.safePosition)));
+
+
     /* Drive with gamepad */
     // m_swerve.setDefaultCommand(
     //     new TeleopSwerve(
@@ -324,7 +332,6 @@ public class RobotContainer {
     //         () -> 0.0,
     //         () -> false
     //     ));
-
     // gp.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
   }
 

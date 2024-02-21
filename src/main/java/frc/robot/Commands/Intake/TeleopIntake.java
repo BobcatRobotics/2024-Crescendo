@@ -14,6 +14,16 @@ public class TeleopIntake extends Command {
     private BooleanSupplier atAngle;
     private BooleanSupplier feed;
 
+    /**
+     * 
+     * @param intake intake subsystem
+     * @param intakeShooter should we intake to the shooter
+     * @param intakeTrap should we intake to the trap
+     * @param runOut should we outtake
+     * @param atSpeed are we up to speed
+     * @param atAngle are we properly aligned
+     * @param feed should we feed the note to the shooter
+     */
     public TeleopIntake(Intake intake, BooleanSupplier intakeShooter, BooleanSupplier intakeTrap, BooleanSupplier runOut, BooleanSupplier atSpeed, BooleanSupplier atAngle, BooleanSupplier feed) {
         this.intake = intake;
         this.intakeShooter = intakeShooter;

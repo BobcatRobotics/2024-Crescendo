@@ -25,6 +25,20 @@ public class TeleopSwerve extends Command {
     private double angleToSpeaker = 0.0;
     private boolean overriden = false;
 
+    /**
+     * 
+     * suppliers are objects that can return a value that will change, for example a method that returns a double can be input as a doubleSupplier 
+     * 
+     * @param swerve the swerve subsystem
+     * @param translation the value to drive the robot forward and backward
+     * @param strafe  value to drive the robot left and right
+     * @param rotation  value to rotate the drivetrain
+     * @param robotCentric field-centric if false
+     * @param fineStrafe slow speed control, cancled if translation or strafe is in use
+     * @param fineTrans slow speed control, cancled if translation or strafe is in use
+     * @param snapToAmp should we automatically rotate to the amp
+     * @param snapToSpeaker should we automatically align to the speaker
+     */
     public TeleopSwerve(Swerve swerve, DoubleSupplier translation, DoubleSupplier strafe, DoubleSupplier rotation, BooleanSupplier robotCentric, DoubleSupplier fineStrafe, DoubleSupplier fineTrans, BooleanSupplier snapToAmp, BooleanSupplier snapToSpeaker) {
         this.swerve = swerve;
         addRequirements(swerve);
