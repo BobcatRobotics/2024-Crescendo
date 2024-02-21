@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.Commands.Intake.TeleopIntake;
+import frc.robot.Commands.Multi.SetAmp;
 import frc.robot.Commands.Swerve.TeleopSwerve;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.SwerveConstants;
@@ -286,9 +287,10 @@ public class RobotContainer {
 
 
     /* amp controls */ 
-    //need to change to external command with shooter and amp
-    gp.button(1).whileTrue(new InstantCommand(() -> m_amp.setPos(0)));
-    gp.button(2).whileTrue(new InstantCommand(() -> m_amp.setPos(0)));
+    //retract
+    gp.button(1).whileTrue(new SetAmp(m_amp, m_Spivit, false) );
+    //deploy
+    gp.button(2).whileTrue(new SetAmp(m_amp, m_Spivit, true));
     //manual
     //gp.axisGreaterThan(1, .6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
     // gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1), m_amp::stop, m_amp));

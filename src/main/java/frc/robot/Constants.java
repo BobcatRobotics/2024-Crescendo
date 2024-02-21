@@ -314,7 +314,10 @@ public class Constants {
         //public static final double topFeedForwardBound = 0;
         public static final double feedforwardPercentValue = 0.0302;
 
-        public static final double ampDeploySafeValue = 0;
+        //position needed to deploy the amp hood
+        public static final double ampDeploySafeValue = 0; //TODO: find this
+        //position needed to score in the amp
+        public static final double ampScoreValue = 0; //TODO find this
 
         public static final double rpsTolerance = 100; //THIS IS IN RPS
         public static final double angleTolerance = 1; // THIS IS IN DEGREES
@@ -366,7 +369,7 @@ public class Constants {
         public static final double subwooferShot = 285;
 
 
-        public static final int fastShooterRPMSetpoint = 0;
+        public static final int fastShooterRPMSetpoint = 0; //TODO find this
         public static final int slowShooterRPMSetpoint = 0;
     }
 
@@ -395,7 +398,7 @@ public class Constants {
         public static final double motionMagicAcceleration = 0;
         public static final double motionMagicJerk = 0;
         public static final double rotationAmount = 0.5;
-        public static final double softLimitThresh = 0;
+        public static final double softLimitThresh = 0; //TODO find this
 		public static final double forwardSoftLimit  = 0;
         public static final double reverseSoftLimit  = 0;
         public static final InvertedValue ampInvertedValue = InvertedValue.CounterClockwise_Positive;
@@ -404,8 +407,9 @@ public class Constants {
 
 
         //encoder values
-        public static final double deployValue = 0;
+        public static final double deployValue = 0; //TODO find this
         public static final double retractValue = 0;
+        public static final double crashThreshold = 0;
     }
 }
 

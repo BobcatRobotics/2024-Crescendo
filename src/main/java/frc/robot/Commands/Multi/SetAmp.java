@@ -5,14 +5,13 @@
 package frc.robot.Commands.Multi;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.AmpConstants;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.Subsystems.Amp.Amp;
 import frc.robot.Subsystems.Spivit.Spivit;
 
 public class SetAmp extends Command {
   private Amp amp;
   private Spivit spivit;
+  private boolean deploy;
 
   /** Creates a new SetAmp. */
 
@@ -25,21 +24,30 @@ public class SetAmp extends Command {
   public SetAmp(Amp amp, Spivit spivit, boolean deploy) {
     this.amp = amp;
     this.spivit = spivit;
+    this.deploy = deploy;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    spivit.raiseForAmpDeploy();
+  }
+
+  
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
     
-    if(spivit.getAngle() < ShooterConstants.ampDeploySafeValue){
-      spivit.setAngle(ShooterConstants.ampDeploySafeValue);
-    }else{
-      amp.setPos(AmpConstants.deployValue);
+    if(spivit.safeToDeploy()){
+      if(deploy){
+        amp.deploy();
+        if(amp.beyondCrashThreshold()){
+          spivit.raiseForAmpDeploy();
+        }
+      }else{
+        amp.retract();
+      }
     }
 
   }

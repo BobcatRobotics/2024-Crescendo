@@ -7,6 +7,7 @@ package frc.robot.Subsystems.Spivit;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ShooterConstants;
 
 public class Spivit extends SubsystemBase {
   private final SpivitIO io;
@@ -44,6 +45,23 @@ public class Spivit extends SubsystemBase {
 
   public void setPercent(double percent){
     io.setPercent(percent);
+  }
+
+  /**
+   * Set the spivit to the position needed for deploying the amp
+   */
+  public void raiseForAmpDeploy(){
+    setAngle(ShooterConstants.ampDeploySafeValue);
+  }
+  /**
+   * @return whether or not we are safe to deploy the amp
+   */
+  public boolean safeToDeploy(){
+    return getAngle() >= ShooterConstants.ampDeploySafeValue;
+  }
+
+  public void setToAmpScoreConfig(){
+    setAngle(ShooterConstants.ampDeploySafeValue);
   }
 
 

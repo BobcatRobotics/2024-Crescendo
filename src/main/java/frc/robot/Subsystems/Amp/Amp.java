@@ -30,6 +30,10 @@ public class Amp extends SubsystemBase {
         setPos(AmpConstants.retractValue);
     }
 
+    public boolean beyondCrashThreshold(){
+        return inputs.motorposition > AmpConstants.crashThreshold; //TODO not sure if this should be > or <
+    }
+
     public void setPercentOut(double percent){
         io.setPercent(percent);
     }
