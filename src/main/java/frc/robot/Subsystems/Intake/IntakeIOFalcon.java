@@ -23,7 +23,7 @@ public class IntakeIOFalcon implements IntakeIO {
         outsideMotor = new TalonFX(IntakeConstants.outsideMotorID);
 
         tof = new TimeOfFlight(IntakeConstants.tofID);
-        tof.setRangingMode(RangingMode.Medium, 24);
+        tof.setRangingMode(RangingMode.Short, 24);
 
         TalonFXConfiguration switchConfig = new TalonFXConfiguration();
         switchMotor.getConfigurator().apply(switchConfig);
