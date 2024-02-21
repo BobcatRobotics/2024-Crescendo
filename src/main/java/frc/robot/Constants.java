@@ -35,7 +35,7 @@ public class Constants {
     }
 
     public static final double loopPeriodSecs = 0.02; // 50 hz
-    public static final Integer AmpConstants = 0;
+    //public static final Integer AmpConstants = 0;
 
     public static final class SwerveConstants {
         public static final String canivore = "CANt_open_file";
@@ -313,9 +313,8 @@ public class Constants {
         //public static final double bottomFeedForwardBound = 0;
         //public static final double topFeedForwardBound = 0;
         public static final double feedforwardPercentValue = 0.0302;
-        public static final double feedforwardVoltageValue = feedforwardPercentValue*12; //convert from percent to voltage
 
-
+        public static final double ampDeploySafeValue = 0;
 
         public static final double rpsTolerance = 100; //THIS IS IN RPS
         public static final double angleTolerance = 1; // THIS IS IN DEGREES
@@ -402,6 +401,11 @@ public class Constants {
         public static final InvertedValue ampInvertedValue = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue ampNeutralModeValue = NeutralModeValue.Brake;
         public static final double ampStatorCurrentLimit = 80;
+
+
+        //encoder values
+        public static final double deployValue = 0;
+        public static final double retractValue = 0;
     }
 }
 

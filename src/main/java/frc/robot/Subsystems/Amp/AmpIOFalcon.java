@@ -62,6 +62,7 @@ public class AmpIOFalcon implements AmpIO {
         //configs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
         //configs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = AmpConstants.reverseSoftLimit;
         motor.getConfigurator().apply(configs);
+        motor.getConfigurator().setPosition(0);
         
         m_request.withEnableFOC(true);
 

@@ -26,7 +26,7 @@ public class Intake extends SubsystemBase {
 
     public void intakeToShooter() {
         io.switchMotorSetPercentOut(.75); //ID 9
-        io.floorMotorSetPercentOut(.75); //ID 10
+        io.floorMotorSetPercentOut(1); //ID 10
         io.outsideMotorSetPercentOut(.75); //ID 11
     }
 

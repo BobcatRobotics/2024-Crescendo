@@ -3,6 +3,7 @@ package frc.robot.Subsystems.Amp;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.AmpConstants;
 
 
 public class Amp extends SubsystemBase {
@@ -18,8 +19,15 @@ public class Amp extends SubsystemBase {
     }
     
 
-    public void setPos(double rot){
-        io.setPos(rot); //rotationsss
+    public void setPos(double degrees){
+        io.setPos(degrees/360); // degrees -> rotationsss
+    }
+
+    public void deploy(){
+        setPos(AmpConstants.deployValue);
+    }
+    public void retract(){
+        setPos(AmpConstants.retractValue);
     }
 
     public void setPercentOut(double percent){
