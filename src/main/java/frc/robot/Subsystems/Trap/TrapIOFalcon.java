@@ -6,8 +6,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import frc.robot.Constants.TrapConstants;
 
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
 
 public class TrapIOFalcon implements TrapIO {
     private TalonFX armMotor;

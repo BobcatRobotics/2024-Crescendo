@@ -34,7 +34,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Vision.Vision;
 
 public class Swerve extends SubsystemBase {

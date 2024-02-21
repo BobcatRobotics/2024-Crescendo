@@ -6,8 +6,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import frc.robot.Constants.ClimberConstants;
 
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
 
 public class ClimberIOFalcon implements ClimberIO {
     private TalonFX climberMotor;

@@ -2,14 +2,9 @@ package frc.robot.Subsystems.Shooter;
 
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 
-import org.littletonrobotics.junction.Logger;
-
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterIOFalcon implements ShooterIO {
