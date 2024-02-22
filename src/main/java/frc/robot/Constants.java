@@ -388,8 +388,8 @@ public class Constants {
 
     public static final class AmpConstants {
         public static final int canID = 15;
-        public static final double kP = 0.1;
-        public static final double kI = 0;
+        public static final double kP = 0.0543; 
+        public static final double kI = 0.005;
         public static final double kD = 0;
         public static final double kS = 0;
         public static final double kV = 0;

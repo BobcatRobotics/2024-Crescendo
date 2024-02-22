@@ -10,6 +10,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -53,6 +54,7 @@ public class RobotContainer {
   private final CommandJoystick rotate = new CommandJoystick(1);
   private final CommandJoystick strafe = new CommandJoystick(0);
   private final CommandJoystick gp = new CommandJoystick(2);
+  private final XboxController rumble = new XboxController(2); //RUMBLE ONLY DO NOT USE FOR COMMANDS >:(
 
   /* Subsystems */
   public final Swerve m_swerve;
@@ -288,33 +290,35 @@ public class RobotContainer {
 
     /* amp controls */ 
     //retract
-    gp.button(1).whileTrue(new SetAmp(m_amp, m_Spivit, false) );
+    //gp.button(1).whileTrue(new SetAmp(m_amp, m_Spivit, false) );
     //deploy
-    gp.button(2).whileTrue(new SetAmp(m_amp, m_Spivit, true));
+    //gp.button(2).whileTrue(new SetAmp(m_amp, m_Spivit, true));
+
+    gp.button(1).whileTrue(new StartEndCommand(() -> m_amp.setPos(165), m_amp::stop, m_amp)); // 168
+    gp.button(2).onTrue(new InstantCommand(m_amp::zero));
     //manual
     //gp.axisGreaterThan(1, .6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
-    // gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1), m_amp::stop, m_amp));
+    gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1), m_amp::stop, m_amp));
     //this runs it down
     //gp.axisLessThan(1, -.6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(-0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
-    //  gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1), m_amp::stop, m_amp));
+    gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1), m_amp::stop, m_amp));
 
 
 
     /* trap controls */
     //gp.button(7).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap)); // left trigger
     //this drives it towards the robot, i think
-    gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1), m_trap::stopArm, m_trap));
+    //gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1), m_trap::stopArm, m_trap));
     //this drives it towards the trap
-    gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(-0.1), m_trap::stopArm, m_trap));
+    //gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(-0.1), m_trap::stopArm, m_trap));
 
 
 
     // climber controls
     //this *should* raise the hooks
-    gp.axisGreaterThan(2, 0.07).onTrue(new StartEndCommand(() -> m_climber.setPercentOut(gp.getRawAxis(2)*0.75), m_climber::stop, m_climber));
+    gp.axisGreaterThan(3, 0.07).whileTrue(new RunCommand(() -> m_climber.setPercentOut(-gp.getRawAxis(3)*0.75), m_climber)).onFalse(new InstantCommand(m_climber::stop));
     //this *should* lower the hooks
-    gp.axisGreaterThan(3, 0.07).onTrue(new StartEndCommand(() -> m_climber.setPercentOut(-gp.getRawAxis(3)*0.75), m_climber::stop, m_climber));
-
+    gp.axisGreaterThan(2, 0.07).whileTrue(new RunCommand(() -> m_climber.setPercentOut(gp.getRawAxis(2)*0.75), m_climber)).onFalse(new InstantCommand(m_climber::stop));
 
 
     /* Drive with gamepad */

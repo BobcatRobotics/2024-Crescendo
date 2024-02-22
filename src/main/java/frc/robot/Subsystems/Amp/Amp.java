@@ -13,14 +13,16 @@ public class Amp extends SubsystemBase {
     public Amp(AmpIO io){
         this.io = io;
     }
-    public void period(){
+
+    @Override
+    public void periodic(){
         io.updateInputs(inputs);
         Logger.processInputs("Amp", inputs);
     }
     
 
     public void setPos(double degrees){
-        io.setPos(degrees/360); // degrees -> rotationsss
+        io.setPos(degrees/360.0); // degrees -> rotationsss
     }
 
     public void deploy(){
@@ -53,5 +55,9 @@ public class Amp extends SubsystemBase {
 
     public void stop(){
         io.stop();
+    }
+
+    public void zero() {
+        io.zeroPosition();
     }
 } 
