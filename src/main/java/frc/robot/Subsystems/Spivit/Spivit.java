@@ -50,8 +50,20 @@ public class Spivit extends SubsystemBase {
   /**
    * Set the spivit to the position needed for deploying the amp
    */
-  public void raiseForAmpDeploy(){
+  public void raiseForAmpMovement(){
     setAngle(ShooterConstants.ampDeploySafeValue);
+  }
+
+  public void raiseForAmpScore(){
+    setAngle(ShooterConstants.ampScoreValue);
+  }
+
+
+  /**
+   * with amp retracted
+   */
+  public void stow(){
+    setAngle(ShooterConstants.stow);
   }
   /**
    * @return whether or not we are safe to deploy the amp

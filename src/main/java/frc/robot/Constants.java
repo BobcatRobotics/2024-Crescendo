@@ -285,7 +285,7 @@ public class Constants {
         public static final double outsideCurrentLimit = 80;
 
         public static final int tofID = 0;
-        public static final double tofTresh = 150; // millimeters
+        public static final double tofTresh = 170; // millimeters
     }
 
     public static final class ClimberConstants{
@@ -315,12 +315,13 @@ public class Constants {
         public static final double feedforwardPercentValue = 0.0302;
 
         //position needed to deploy the amp hood
-        public static final double ampDeploySafeValue = 0; //TODO: find this
+        public static final double ampDeploySafeValue = 270; //266.5; 
         //position needed to score in the amp
         public static final double ampScoreValue = 0; //TODO find this
 
         public static final double rpsTolerance = 100; //THIS IS IN RPS
-        public static final double angleTolerance = 1; // THIS IS IN DEGREES
+        public static final double angleTolerance = 2; // THIS IS IN DEGREES
+
 
         //some notes on velocity pid
         // kI, kD - not used
@@ -371,6 +372,9 @@ public class Constants {
 
         public static final int fastShooterRPMSetpoint = 0; //TODO find this
         public static final int slowShooterRPMSetpoint = 0;
+     
+        public static final double stow = bottomLimit + 2;
+
     }
 
     public static final class TrapConstants{
@@ -408,11 +412,11 @@ public class Constants {
 
         //encoder values
         public static final double deployValue = 0; //TODO find this
-        public static final double retractValue = 0;
-        public static final double crashThreshold = 0;
+        public static final double retractValue = 0.0;//yes zero is correct
+        public static final double crashThreshold = 0;//no, zero is not correct
 
         public static final double deployTolerance = 1.5; // degrees of tolerance
-        public static final double retractTolerance = 1;
+        public static final double retractTolerance = 2.5;
     }
 }
 

@@ -31,6 +31,7 @@ import frc.robot.Subsystems.Climber.ClimberIOFalcon;
 import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Intake.IntakeIO;
 import frc.robot.Subsystems.Intake.IntakeIOFalcon;
+import frc.robot.Subsystems.Rumble.Rumble;
 import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Shooter.ShooterIO;
 import frc.robot.Subsystems.Shooter.ShooterIOFalcon;
@@ -54,7 +55,6 @@ public class RobotContainer {
   private final CommandJoystick rotate = new CommandJoystick(1);
   private final CommandJoystick strafe = new CommandJoystick(0);
   private final CommandJoystick gp = new CommandJoystick(2);
-  private final XboxController rumble = new XboxController(2); //RUMBLE ONLY DO NOT USE FOR COMMANDS >:(
 
   /* Subsystems */
   public final Swerve m_swerve;
@@ -67,6 +67,7 @@ public class RobotContainer {
   public final Spivit m_Spivit;
   public final Trap m_trap;
   public final Climber m_climber;
+  public final Rumble m_Rumble; //mmmmmmmm rumble
   // public final Vision m_Vision;
 
   /* Commands */
@@ -97,6 +98,7 @@ public class RobotContainer {
         m_Spivit = new Spivit(new SpivitIOFalcon());
         m_trap = new Trap(new TrapIOFalcon());
         m_climber = new Climber(new ClimberIOFalcon());
+        m_Rumble = new Rumble();
         // m_Vision = new Vision(new VisionIOLimelight());
         break;
 
@@ -127,6 +129,7 @@ public class RobotContainer {
         });
         m_climber = new Climber(new ClimberIO() { 
         });
+        m_Rumble = new Rumble();
 
         break;
 
@@ -159,6 +162,7 @@ public class RobotContainer {
         });
         m_climber = new Climber(new ClimberIO() { 
         });
+        m_Rumble = new Rumble();
 
         // m_Vision = new Vision(new VisionIOLimelight());
         break;
@@ -290,11 +294,11 @@ public class RobotContainer {
 
     /* amp controls */ 
     //retract
-    //gp.button(1).whileTrue(new SetAmp(m_amp, m_Spivit, false) );
+    //gp.button(1).onTrue(new SetAmp(m_amp, m_Spivit, false));
     //deploy
     //gp.button(2).whileTrue(new SetAmp(m_amp, m_Spivit, true));
 
-    gp.button(1).whileTrue(new StartEndCommand(() -> m_amp.setPos(165), m_amp::stop, m_amp)); // 168
+    //gp.button(1).whileTrue(new StartEndCommand(() -> m_amp.setPos(165), m_amp::stop, m_amp)); // 168
     gp.button(2).onTrue(new InstantCommand(m_amp::zero));
     //manual
     //gp.axisGreaterThan(1, .6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));

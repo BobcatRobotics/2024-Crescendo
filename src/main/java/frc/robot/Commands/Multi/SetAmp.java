@@ -4,6 +4,7 @@
 
 package frc.robot.Commands.Multi;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsystems.Amp.Amp;
 import frc.robot.Subsystems.Spivit.Spivit;
@@ -30,7 +31,7 @@ public class SetAmp extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    spivit.raiseForAmpDeploy();
+    spivit.raiseForAmpMovement();
   }
 
   
@@ -43,12 +44,15 @@ public class SetAmp extends Command {
       if(deploy){
         amp.deploy();
         if(amp.beyondCrashThreshold()){
-          spivit.raiseForAmpDeploy();
-        }
-      }else{
-        amp.retract();
+          spivit.raiseForAmpScore();
       }
+    }else{
+        amp.retract();
+        if(amp.retracted()){
+          spivit.stow();
+        }
     }
+  }
 
   }
 
@@ -59,6 +63,6 @@ public class SetAmp extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return deploy ? amp.deployed() : amp.retracted();
+    return (deploy ? amp.deployed() : amp.retracted()) || DriverStation.isDisabled();
   }
 }
