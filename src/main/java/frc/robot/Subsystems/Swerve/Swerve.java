@@ -1,4 +1,9 @@
+
 package frc.robot.Subsystems.Swerve;
+import static edu.wpi.first.units.MutableMeasure.mutable;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
 import java.util.Optional;
 
@@ -26,15 +31,21 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Subsystems.Vision.Vision;
+import edu.wpi.first.units.*;
 
 public class Swerve extends SubsystemBase {
     private final GyroIO gyroIO;
@@ -45,12 +56,14 @@ public class Swerve extends SubsystemBase {
     private final Vision IntakeVision;
     private final SwerveDrivePoseEstimator poseEstimator;
     // private final SwerveDriveOdometry odometry;
+    
 
     private final double[] swerveModuleStates = new double[8];
     private final double[] desiredSwerveModuleStates = new double[8];
 
     private SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
     private final double[] swervytestythingy = new double[8];
+
 
     // private SwerveSetpointGenerator setpointGenerator;
     // private SwerveSetpoint currentSetpoint = new SwerveSetpoint(
@@ -73,8 +86,41 @@ public class Swerve extends SubsystemBase {
     Pose2d desiredPose = new Pose2d();
     private Rotation2d lastYaw = new Rotation2d();
 
+    // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+    private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
+    // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
+    private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
+    // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
+    private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+
+    private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
+        new SysIdRoutine.Config(),
+        new SysIdRoutine.Mechanism(
+            (Measure<Voltage> volts) -> {runSwerveCharachterization(Volts.in(Units.Voltage));},
+            log -> {
+                log.motor("drive-left")
+                    .voltage(
+                        m_appliedVoltage.mut_replace(
+                            modules[3].getDriveVoltage(), Volts))
+                    .linearPosition(m_distance.mut_replace(modules[3].getPosition().distanceMeters, Meters))
+                    .linearVelocity(
+                        m_velocity.mut_replace(modules[3].getDriveSpeed(), MetersPerSecond));
+                log.motor("drive-right")
+                    .voltage(
+                        m_appliedVoltage.mut_replace(
+                            modules[0].getDriveVoltage() * RobotController.getBatteryVoltage(), Volts))
+                    .linearPosition(m_distance.mut_replace(modules[3].getPosition().distanceMeters, Meters))
+                    .linearVelocity(
+                        m_velocity.mut_replace(modules[0].getDriveSpeed(), MetersPerSecond));
+              },
+              this
+        ));
+
+    
     public Swerve(GyroIO gyroIO, SwerveModuleIO flIO, SwerveModuleIO frIO, SwerveModuleIO blIO, SwerveModuleIO brIO,
             Vision intakeVision, Vision shooterLeftVision, Vision shooterRightVision) {
+
+        
         this.IntakeVision = intakeVision;
         this.shooterLeftVision = shooterLeftVision;
         this.shooterRightVision = shooterRightVision;
@@ -137,6 +183,13 @@ public class Swerve extends SubsystemBase {
             return Optional.empty();
         }
     }
+
+    public void runSwerveCharacterization(double volts) {
+        for (SwerveModule module : modules) {
+          module.runCharacterization(volts);
+        }
+      }
+    
 
     public Rotation2d getRotationTarget() {
         return null; // TODO: the rotation2d this returns will override the one in pathplanner, if

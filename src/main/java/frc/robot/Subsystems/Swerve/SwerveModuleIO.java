@@ -13,7 +13,7 @@ public interface SwerveModuleIO {
 
         public double drivePositionRot = 0.0;
         public double driveVelocityRotPerSec = 0.0;
-                
+        public double appliedDriveVoltage = 0.0;
         public double canCoderPositionRot = 0.0;
         public double rawCanCoderPositionDeg = 0.0;
 
@@ -57,4 +57,9 @@ public interface SwerveModuleIO {
      * @param mode mode to set it to
      */
     public default void setAngleNeutralMode(NeutralModeValue mode) {}
+
+
+    public default void setAngle(Rotation2d angle) {}
+
+    public default void runDriveCharacterization(double volts) {}
 }

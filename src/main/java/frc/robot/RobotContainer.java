@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Commands.Intake.TeleopIntake;
 import frc.robot.Commands.Multi.SetAmp;
 import frc.robot.Commands.Swerve.TeleopSwerve;
@@ -259,70 +260,9 @@ public class RobotContainer {
     //reset gyro
     rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
 
-      
-    /* Intake Controls */
-    m_intake.setDefaultCommand(
-        new TeleopIntake(
-            m_intake, 
-            gp.povDown(), //shooter
-            gp.povUp(), //poptart
-            // () -> (gp.button(5).getAsBoolean() && gp.povDown().getAsBoolean()), // if holding spin up shooter button, run intake to fire
-            gp.button(7), // outtake - 'back' button
-            // () -> m_shooter.atSpeed(),
-            // () -> m_shooter.atAngle()
-            () -> true,
-            () -> true,
-            gp.button(6) // feed to shooter/manual override
-        ));
-
-
-    /* Shooter Controls */
-    //start revving shooter
-    gp.button(10).onTrue(new InstantCommand(() -> m_shooter.setSpeed(5000, 5000))); // back right
-    //stop revving shooter
-    gp.button(9).onTrue(new InstantCommand(m_shooter::stop)); // back left
-    
-
-    /* Spivit controls */
-    //manual down
-    gp.axisGreaterThan(5, .6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(-0.03), m_Spivit::stopMotorFeedforward, m_Spivit));
-    //manual up
-    gp.axisLessThan(5, -.6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(0.03), m_Spivit::stopMotorFeedforward, m_Spivit));
-    //this sets it to a specific angle
-    gp.button(5).whileTrue(new RunCommand(() -> m_Spivit.setAngle(m_swerve.calcAngleBasedOnRealRegression()), m_Spivit)).onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
-
-
-    /* amp controls */ 
-    //retract
-    //gp.button(1).onTrue(new SetAmp(m_amp, m_Spivit, false));
-    //deploy
-    //gp.button(2).whileTrue(new SetAmp(m_amp, m_Spivit, true));
-
-    //gp.button(1).whileTrue(new StartEndCommand(() -> m_amp.setPos(165), m_amp::stop, m_amp)); // 168
-    gp.button(2).onTrue(new InstantCommand(m_amp::zero));
-    //manual
-    //gp.axisGreaterThan(1, .6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
-    gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1), m_amp::stop, m_amp));
-    //this runs it down
-    //gp.axisLessThan(1, -.6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(-0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
-    gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1), m_amp::stop, m_amp));
 
 
 
-    /* trap controls */
-    //gp.button(7).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap)); // left trigger
-    //this drives it towards the robot, i think
-    //gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1), m_trap::stopArm, m_trap));
-    //this drives it towards the trap
-    //gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(-0.1), m_trap::stopArm, m_trap));
-
-
-
-    // climber controls
-    //this *should* raise the hooks
-    gp.axisGreaterThan(3, 0.07).whileTrue(new RunCommand(() -> m_climber.setPercentOut(-gp.getRawAxis(3)*0.75), m_climber)).onFalse(new InstantCommand(m_climber::stop));
-    //this *should* lower the hooks
-    gp.axisGreaterThan(2, 0.07).whileTrue(new RunCommand(() -> m_climber.setPercentOut(gp.getRawAxis(2)*0.75), m_climber)).onFalse(new InstantCommand(m_climber::stop));
 
 
     /* Drive with gamepad */

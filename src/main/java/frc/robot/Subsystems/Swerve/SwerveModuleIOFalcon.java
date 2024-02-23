@@ -7,6 +7,8 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -14,6 +16,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.lib.util.ModuleConstants;
 import frc.robot.Constants.SwerveConstants;
 
@@ -26,6 +29,9 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
 
     private final DutyCycleOut driveRequest;
     private final DutyCycleOut angleRequest;
+    private final PositionDutyCycle sysidAngle; //sysid only
+    private final VoltageOut driveCharacterizationControl = new VoltageOut(0); //also sysid only
+
 
     private final Queue<Double> timestampQueue;
 
@@ -35,8 +41,12 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
 
     private final Queue<Double> anglePositionQueue;
     private final StatusSignal<Double> angleAbsolutePosition;
+    private final StatusSignal<Double> driveAppliedVolts;
+
 
     public SwerveModuleIOFalcon(ModuleConstants moduleConstants) {
+        
+        
         encoderOffset = moduleConstants.angleOffset;
 
         angleEncoder = new CANcoder(moduleConstants.cancoderID, SwerveConstants.canivore);
@@ -48,6 +58,7 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
 
         driveRequest = new DutyCycleOut(0.0).withEnableFOC(SwerveConstants.useFOC);
         angleRequest = new DutyCycleOut(0.0).withEnableFOC(SwerveConstants.useFOC);
+        sysidAngle = new PositionDutyCycle(0).withEnableFOC(true);
 
         timestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
 
@@ -56,12 +67,13 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
             PhoenixOdometryThread.getInstance().registerSignal(driveMotor, driveMotor.getPosition());
         driveVelocity = driveMotor.getVelocity();
 
+        driveAppliedVolts = driveMotor.getMotorVoltage();
         angleAbsolutePosition = angleEncoder.getAbsolutePosition();
         anglePositionQueue =
             PhoenixOdometryThread.getInstance().registerSignal(angleEncoder, angleEncoder.getPosition());
 
         BaseStatusSignal.setUpdateFrequencyForAll(
-            250.0, drivePosition, driveVelocity, angleAbsolutePosition);
+            250.0, drivePosition, driveVelocity, angleAbsolutePosition, driveAppliedVolts);
         driveMotor.optimizeBusUtilization();
         angleMotor.optimizeBusUtilization();
     }
@@ -71,11 +83,12 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         BaseStatusSignal.refreshAll(
         drivePosition,
         driveVelocity,
-        angleAbsolutePosition);
+        angleAbsolutePosition,
+        driveAppliedVolts);
 
         inputs.drivePositionRot = drivePosition.getValueAsDouble() / SwerveConstants.driveGearRatio;
         inputs.driveVelocityRotPerSec = driveVelocity.getValueAsDouble() / SwerveConstants.driveGearRatio;
-
+        inputs.appliedDriveVoltage = driveAppliedVolts.getValueAsDouble();
         inputs.canCoderPositionRot = Rotation2d.fromRadians(MathUtil.angleModulus(Rotation2d.fromRotations(angleAbsolutePosition.getValueAsDouble()).minus(encoderOffset).getRadians())).getRotations();
         inputs.rawCanCoderPositionDeg = Rotation2d.fromRotations(angleAbsolutePosition.getValueAsDouble()).getDegrees(); // Used only for shuffleboard to display values to get offsets
 
@@ -142,6 +155,8 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         angleMotor.setNeutralMode(mode);
     }
 
+   
+
     /**
      * Applies all configurations to the drive motor
      */
@@ -200,4 +215,16 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
 
         angleEncoder.getConfigurator().apply(config);
     }
+
+
+    @Override
+    public void setAngle(Rotation2d angle){
+        angleMotor.setControl(sysidAngle.withPosition(angle.getRotations()));
+    }
+
+    @Override
+    public void runDriveCharacterization(double volts) {
+        driveMotor.setControl(driveCharacterizationControl.withOutput(volts));
+    }
+
 }

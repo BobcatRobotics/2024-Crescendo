@@ -100,6 +100,15 @@ public class SwerveModule {
         io.stopDrive();
     }
 
+    public double getDriveVoltage(){
+        return inputs.appliedDriveVoltage;
+    }
+
+    public void runCharacterization(double volts) {
+        io.setAngle(new Rotation2d());
+        io.runDriveCharacterization(volts);
+    }
+
     /**
      * Sets the neutral mode of the angle motor
      * @param mode the mode to set it to
