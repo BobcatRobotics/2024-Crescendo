@@ -58,8 +58,5 @@ public interface SwerveModuleIO {
      */
     public default void setAngleNeutralMode(NeutralModeValue mode) {}
 
-
-    public default void setAngle(Rotation2d angle) {}
-
     public default void runDriveCharacterization(double volts) {}
 }

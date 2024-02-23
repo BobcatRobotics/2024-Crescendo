@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Commands.Intake.TeleopIntake;
 import frc.robot.Commands.Multi.SetAmp;
 import frc.robot.Commands.Swerve.TeleopSwerve;
@@ -62,7 +63,7 @@ public class RobotContainer {
   public final Vision m_shooterLeftVision;
   public final Vision m_intakeVision;
   public final Vision m_shooterRightVision;
-  public final Intake m_intake;
+  //public final Intake m_intake;
   public final Shooter m_shooter;
   public final Amp m_amp;
   public final Spivit m_Spivit;
@@ -93,7 +94,7 @@ public class RobotContainer {
             new SwerveModuleIOFalcon(SwerveConstants.Module2Constants.constants),
             new SwerveModuleIOFalcon(SwerveConstants.Module3Constants.constants),
             m_intakeVision, m_shooterLeftVision, m_shooterRightVision);
-        m_intake = new Intake(new IntakeIOFalcon());
+        //m_intake = new Intake(new IntakeIOFalcon());
         m_shooter = new Shooter(new ShooterIOFalcon());
         m_amp = new Amp(new AmpIOFalcon());
         m_Spivit = new Spivit(new SpivitIOFalcon());
@@ -119,8 +120,8 @@ public class RobotContainer {
             new SwerveModuleIOSim(),
             m_intakeVision, m_shooterLeftVision, m_shooterRightVision);
 
-        m_intake = new Intake(new IntakeIO() {
-        });
+        //m_intake = new Intake(new IntakeIO() {
+        //});
         m_shooter = new Shooter(new ShooterIO() {
         });
         // m_Vision = new Vision(new VisionIOLimelight());
@@ -153,16 +154,15 @@ public class RobotContainer {
             new SwerveModuleIO() {
             },
             m_intakeVision, m_shooterLeftVision, m_shooterRightVision);
-        m_intake = new Intake(new IntakeIO() {
-        });
+        //m_intake = new Intake(new IntakeIO() {
+        //});
         m_shooter = new Shooter(new ShooterIO() {
         });
         m_amp = new Amp(new AmpIOFalcon());
         m_Spivit = new Spivit(new SpivitIOFalcon());
         m_trap = new Trap(new TrapIO() {
         });
-        m_climber = new Climber(new ClimberIO() { 
-        });
+        m_climber = new Climber(new ClimberIO(){});
         m_Rumble = new Rumble();
 
         // m_Vision = new Vision(new VisionIOLimelight());
@@ -243,24 +243,28 @@ public class RobotContainer {
 
     
      /* Drive with joysticks */
-    m_swerve.setDefaultCommand(
-        new TeleopSwerve(
-            m_swerve,
-            () -> -strafe.getRawAxis(Joystick.AxisType.kY.value)
-                * Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value)), //translation
-            () -> -strafe.getRawAxis(Joystick.AxisType.kX.value)
-                * Math.abs(strafe.getRawAxis(Joystick.AxisType.kX.value)), //strafe
-            () -> -rotate.getRawAxis(Joystick.AxisType.kX.value), //rotate
-            () -> false, //robot centric
-            () -> -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine strafe
-            () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine translation 
-            () -> false, //align to amp
-            gp.button(5) //align to speaker
-        ));
+    // m_swerve.setDefaultCommand(
+    //     new TeleopSwerve(
+    //         m_swerve,
+    //         () -> -strafe.getRawAxis(Joystick.AxisType.kY.value)
+    //             * Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value)), //translation
+    //         () -> -strafe.getRawAxis(Joystick.AxisType.kX.value)
+    //             * Math.abs(strafe.getRawAxis(Joystick.AxisType.kX.value)), //strafe
+    //         () -> -rotate.getRawAxis(Joystick.AxisType.kX.value), //rotate
+    //         () -> false, //robot centric
+    //         () -> -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine strafe
+    //         () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine translation 
+    //         () -> false, //align to amp
+    //         gp.button(5) //align to speaker
+    //     ));
     //reset gyro
     rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
 
-
+    gp.button(1).whileTrue(m_swerve.sysIdQuasistatic(Direction.kForward)).onFalse(new InstantCommand(m_swerve::stop));//b
+    gp.button(2).whileTrue(m_swerve.sysIdQuasistatic(Direction.kReverse)).onFalse(new InstantCommand(m_swerve::stop));//a
+    gp.button(3).whileTrue(m_swerve.sysIdDynamic(Direction.kForward)).onFalse(new InstantCommand(m_swerve::stop));//y
+    gp.button(4).whileTrue(m_swerve.sysIdDynamic(Direction.kReverse)).onFalse(new InstantCommand(m_swerve::stop));//x
+    gp.button(5).whileTrue(new RunCommand(m_swerve::setAllModulesStraight)).onFalse(new InstantCommand(m_swerve::stop));//lb
 
 
 

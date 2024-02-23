@@ -105,8 +105,14 @@ public class SwerveModule {
     }
 
     public void runCharacterization(double volts) {
-        io.setAngle(new Rotation2d());
+        double output = MathUtil.clamp(
+                angleController.calculate(getAngle().getRadians(), 0), -1.0, 1.0);
+        io.setAnglePercentOut(output);
         io.runDriveCharacterization(volts);
+    }
+
+    public double getDriveSpeedMetersPerSec(){
+        return inputs.driveVelocityRotPerSec * SwerveConstants.wheelCircumference;
     }
 
     /**

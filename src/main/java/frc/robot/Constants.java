@@ -55,7 +55,7 @@ public class Constants {
         public static final double trackWidth = 0.521; // 20.5 in -> meters
         public static final double wheelBase = 0.521; // meters
         public static final double driveBaseRadius = Math.sqrt(2 * Math.pow(wheelBase/2, 2));
-        public static final double wheelCircumference = Units.inchesToMeters(4.0)*Math.PI; // 3.8990 3.8985 3.8925 3.8995 checked 2/10/2024 9:36:45 AM
+        public static final double wheelCircumference = Units.inchesToMeters(3.897375)*Math.PI; // 3.8990 3.8985 3.8925 3.8995 checked 2/10/2024 9:36:45 AM
         public static final double angleGearRatio = ((150.0 / 7.0) / 1.0);
         // public static final double driveGearRatio =  (6.12 / 1.0);
         public static final double driveGearRatio =  (5.36 / 1.0);

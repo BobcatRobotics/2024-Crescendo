@@ -147,6 +147,7 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         angleMotor.stopMotor();
     }
 
+
     /**
      * Sets the neutral mode of the angle motor
      * @param mode mode to set it to
@@ -214,12 +215,6 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         config.MagnetSensor.SensorDirection = SwerveConstants.sensorDirection;
 
         angleEncoder.getConfigurator().apply(config);
-    }
-
-
-    @Override
-    public void setAngle(Rotation2d angle){
-        angleMotor.setControl(sysidAngle.withPosition(angle.getRotations()));
     }
 
     @Override

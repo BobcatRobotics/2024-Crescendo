@@ -1,5 +1,6 @@
 
 package frc.robot.Subsystems.Swerve;
+
 import static edu.wpi.first.units.MutableMeasure.mutable;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -31,11 +32,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Distance;
-import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Velocity;
-import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -50,20 +48,18 @@ import edu.wpi.first.units.*;
 public class Swerve extends SubsystemBase {
     private final GyroIO gyroIO;
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
-    private final SwerveModule[] modules;
+    private final SwerveModule[] modules = new SwerveModule[4];
     private final Vision shooterLeftVision;
     private final Vision shooterRightVision;
     private final Vision IntakeVision;
     private final SwerveDrivePoseEstimator poseEstimator;
     // private final SwerveDriveOdometry odometry;
-    
 
     private final double[] swerveModuleStates = new double[8];
     private final double[] desiredSwerveModuleStates = new double[8];
 
     private SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
     private final double[] swervytestythingy = new double[8];
-
 
     // private SwerveSetpointGenerator setpointGenerator;
     // private SwerveSetpoint currentSetpoint = new SwerveSetpoint(
@@ -88,49 +84,52 @@ public class Swerve extends SubsystemBase {
 
     // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
     private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
-    // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
+    // Mutable holder for unit-safe linear distance values, persisted to avoid
+    // reallocation.
     private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
-    // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
+    // Mutable holder for unit-safe linear velocity values, persisted to avoid
+    // reallocation.
     private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
 
     private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
-        new SysIdRoutine.Config(),
-        new SysIdRoutine.Mechanism(
-            (Measure<Voltage> volts) -> {runSwerveCharachterization(Volts.in(Units.Voltage));},
-            log -> {
-                log.motor("drive-left")
-                    .voltage(
-                        m_appliedVoltage.mut_replace(
-                            modules[3].getDriveVoltage(), Volts))
-                    .linearPosition(m_distance.mut_replace(modules[3].getPosition().distanceMeters, Meters))
-                    .linearVelocity(
-                        m_velocity.mut_replace(modules[3].getDriveSpeed(), MetersPerSecond));
-                log.motor("drive-right")
-                    .voltage(
-                        m_appliedVoltage.mut_replace(
-                            modules[0].getDriveVoltage() * RobotController.getBatteryVoltage(), Volts))
-                    .linearPosition(m_distance.mut_replace(modules[3].getPosition().distanceMeters, Meters))
-                    .linearVelocity(
-                        m_velocity.mut_replace(modules[0].getDriveSpeed(), MetersPerSecond));
-              },
-              this
-        ));
+            new SysIdRoutine.Config(),
+            new SysIdRoutine.Mechanism(
+                    (Measure<Voltage> volts) -> {
+                         runSwerveCharacterization(volts.in(edu.wpi.first.units.Units.Volts));
+                     }, 
+                    log -> {
+                        log.motor("drive-left")
+                                .voltage(
+                                        m_appliedVoltage.mut_replace(
+                                                modules[3].getDriveVoltage(), Volts))
+                                .linearPosition(m_distance.mut_replace(modules[3].getPosition().distanceMeters, Meters))
+                                .linearVelocity(
+                                        m_velocity.mut_replace(modules[3].getDriveSpeedMetersPerSec(),
+                                                MetersPerSecond));
+                        log.motor("drive-right")
+                                .voltage(
+                                        m_appliedVoltage.mut_replace(
+                                                modules[0].getDriveVoltage() * RobotController.getBatteryVoltage(),
+                                                Volts))
+                                .linearPosition(m_distance.mut_replace(modules[3].getPosition().distanceMeters, Meters))
+                                .linearVelocity(
+                                        m_velocity.mut_replace(modules[0].getDriveSpeedMetersPerSec(),
+                                                MetersPerSecond));}
+                    ,
+                    this));
 
-    
     public Swerve(GyroIO gyroIO, SwerveModuleIO flIO, SwerveModuleIO frIO, SwerveModuleIO blIO, SwerveModuleIO brIO,
             Vision intakeVision, Vision shooterLeftVision, Vision shooterRightVision) {
 
-        
         this.IntakeVision = intakeVision;
         this.shooterLeftVision = shooterLeftVision;
         this.shooterRightVision = shooterRightVision;
         this.gyroIO = gyroIO;
-        modules = new SwerveModule[] {
-                new SwerveModule(flIO, 0),
-                new SwerveModule(frIO, 1),
-                new SwerveModule(blIO, 2),
-                new SwerveModule(brIO, 3)
-        };
+
+        modules[0] = new SwerveModule(flIO, 0);
+        modules[1] = new SwerveModule(frIO, 1);
+        modules[2] = new SwerveModule(blIO, 2);
+        modules[3] = new SwerveModule(brIO, 3);
 
         PhoenixOdometryThread.getInstance().start();
 
@@ -186,10 +185,15 @@ public class Swerve extends SubsystemBase {
 
     public void runSwerveCharacterization(double volts) {
         for (SwerveModule module : modules) {
-          module.runCharacterization(volts);
+            module.runCharacterization(volts);
         }
-      }
-    
+    }
+
+    public void setAllModulesStraight() {
+        for (SwerveModule module : modules) {
+            module.setDesiredState(new SwerveModuleState(0.0, new Rotation2d()));
+        }
+    }
 
     public Rotation2d getRotationTarget() {
         return null; // TODO: the rotation2d this returns will override the one in pathplanner, if
@@ -293,6 +297,14 @@ public class Swerve extends SubsystemBase {
         } else { // If disconnected or sim, use angular velocity
             return lastYaw;
         }
+    }
+
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return sysIdRoutine.quasistatic(direction);
+    }
+
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return sysIdRoutine.dynamic(direction);
     }
 
     /**
@@ -537,8 +549,9 @@ public class Swerve extends SubsystemBase {
     }
 
     public double get0to2Pi(double rad) {
-        rad = rad % (2*Math.PI);
-        if (rad < (2*Math.PI)) rad+=(2*Math.PI);
+        rad = rad % (2 * Math.PI);
+        if (rad < (2 * Math.PI))
+            rad += (2 * Math.PI);
         return rad;
     }
 
