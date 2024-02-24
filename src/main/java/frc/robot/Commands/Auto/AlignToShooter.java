@@ -38,6 +38,8 @@ public class AlignToShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    Timer timer = new Timer();
+    timer.reset();
     spivit.setAngle(swerve.calcAngleBasedOnRealRegression());
     Translation2d speaker = swerve.getTranslationToSpeaker();
     double angleToSpeaker = Math.atan(speaker.getY()/speaker.getX());
@@ -48,15 +50,13 @@ public class AlignToShooter extends Command {
     Logger.recordOutput("Alignment/finished", isFinished());
 
     if(spivit.aligned() && swerve.aligned() && shooter.aboveSpeed(3000)){
-      Timer timer = new Timer();
-      timer.reset();
       timer.start();
       intake.intakeToShooter();
+    }
     if(timer.advanceIfElapsed(1)){
       intake.stop();
       finished = true;
     }
-  }
   
   }
 

@@ -52,7 +52,7 @@ public class Constants {
         public static final boolean useFOC = true;
 
         //AUTO ALIGNMENT ONLY !!!!!!11!!!1!1!!!
-        public static final double rotationToleranceAlignment = 1.5;
+        public static final double rotationToleranceAlignment = 2.5;
 
         /* Drivetrain Constants */
         public static final double trackWidth = 0.521; // 20.5 in -> meters
@@ -323,7 +323,7 @@ public class Constants {
         public static final double ampScoreValue = 0; //TODO find this
 
         public static final double rpsTolerance = 200/60; //THIS IS IN RPS
-        public static final double angleTolerance = 2; // THIS IS IN DEGREES
+        public static final double angleTolerance = 1; // THIS IS IN DEGREES
 
 
         //some notes on velocity pid
