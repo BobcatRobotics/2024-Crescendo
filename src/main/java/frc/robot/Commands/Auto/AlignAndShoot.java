@@ -15,14 +15,14 @@ import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Spivit.Spivit;
 import frc.robot.Subsystems.Swerve.Swerve;
 
-public class AlignToShooter extends Command {
+public class AlignAndShoot extends Command {
   /** Creates a new AlignToShooter. */
   private Swerve swerve;
   private Spivit spivit;
   private Shooter shooter;
   private Intake intake;
   private boolean finished = false;
-  public AlignToShooter(Swerve swerve, Spivit spivit, Shooter shooter, Intake intake) {
+  public AlignAndShoot(Swerve swerve, Spivit spivit, Shooter shooter, Intake intake) {
     this.swerve = swerve;
     this.spivit = spivit;
     this.shooter = shooter;

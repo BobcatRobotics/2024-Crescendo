@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import frc.robot.Commands.Auto.AlignToShooter;
+import frc.robot.Commands.Auto.AlignAndShoot;
 import frc.robot.Commands.Intake.TeleopIntake;
 import frc.robot.Commands.Multi.SetAmp;
 import frc.robot.Commands.Swerve.TeleopSwerve;
@@ -289,7 +289,7 @@ public class RobotContainer {
     //manual up
     gp.axisLessThan(5, -.6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(0.03), m_Spivit::stopMotorFeedforward, m_Spivit));
     //this sets it to a specific angle
-    gp.button(5).whileTrue(new AlignToShooter(m_swerve, m_Spivit, m_shooter, m_intake));
+    gp.button(5).whileTrue(new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake));
 
 
     /* amp controls */ 
