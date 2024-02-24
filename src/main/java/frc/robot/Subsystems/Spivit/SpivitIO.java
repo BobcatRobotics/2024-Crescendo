@@ -17,5 +17,6 @@ public interface SpivitIO{
     public default void stopMotor(){}
     public default void stopMotorFeedforward(){}
     public default void setPercent(double percent){}
+    public default boolean aligned(){return false;}
 
 }

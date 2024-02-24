@@ -51,6 +51,9 @@ public class Constants {
 
         public static final boolean useFOC = true;
 
+        //AUTO ALIGNMENT ONLY !!!!!!11!!!1!1!!!
+        public static final double rotationToleranceAlignment = 1.5;
+
         /* Drivetrain Constants */
         public static final double trackWidth = 0.521; // 20.5 in -> meters
         public static final double wheelBase = 0.521; // meters
@@ -110,9 +113,9 @@ public class Constants {
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
 
-        public static final double driveKS = (0.15565 / 12);
-        public static final double driveKV = (2.0206 / 12);
-        public static final double driveKA = (0.94648 / 12);
+        public static final double driveKS = 0.14267/12;//(0.15565 / 12);
+        public static final double driveKV = 2.0718/12;//(2.0206 / 12);
+        public static final double driveKA = 0.42622/12;//(0.94648 / 12);
 
         public static final boolean driveSupplyCurrentLimitEnable = true;
         public static final double driveSupplyCurrentLimit = 35.0;
@@ -319,7 +322,7 @@ public class Constants {
         //position needed to score in the amp
         public static final double ampScoreValue = 0; //TODO find this
 
-        public static final double rpsTolerance = 100; //THIS IS IN RPS
+        public static final double rpsTolerance = 200/60; //THIS IS IN RPS
         public static final double angleTolerance = 2; // THIS IS IN DEGREES
 
 
@@ -370,7 +373,7 @@ public class Constants {
         public static final double subwooferShot = 285;
 
 
-        public static final int fastShooterRPMSetpoint = 0; //TODO find this
+        public static final int fastShooterRPMSetpoint = 5000; //TODO find this
         public static final int slowShooterRPMSetpoint = 0;
      
         public static final double stow = bottomLimit + 2;

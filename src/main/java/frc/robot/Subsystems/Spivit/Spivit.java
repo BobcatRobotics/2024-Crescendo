@@ -76,6 +76,10 @@ public class Spivit extends SubsystemBase {
     setAngle(ShooterConstants.ampDeploySafeValue);
   }
 
+  public boolean aligned(){
+    return io.aligned();
+  }
+
 
   
 }

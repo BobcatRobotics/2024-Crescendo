@@ -66,6 +66,10 @@ public class Shooter extends SubsystemBase {
         return (rpsTopSetpoint + ShooterConstants.rpsTolerance >= io.getTopVelocity() && rpsTopSetpoint - ShooterConstants.rpsTolerance <= io.getTopVelocity() && rpsBotSetpoint + ShooterConstants.rpsTolerance >= io.getBottomVelocity() && rpsBotSetpoint - ShooterConstants.rpsTolerance <= io.getBottomVelocity() );
     }
 
+    public boolean aboveSpeed(double rpm) {
+        return (io.getTopVelocity() >= rpm/60 && io.getBottomVelocity() >= rpm/60);
+    }
+
 
 
 }

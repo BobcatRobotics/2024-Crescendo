@@ -97,4 +97,9 @@ public class SpivitIOFalcon implements SpivitIO{
   public void setPercent(double percent){
     angleMotor.setControl(percentRequest.withOutput(percent + ShooterConstants.feedforwardPercentValue));
   }
+
+  @Override
+  public boolean aligned(){
+    return Math.abs(angleMotor.getClosedLoopError().getValueAsDouble()*360) <= ShooterConstants.angleTolerance;
+}
 }

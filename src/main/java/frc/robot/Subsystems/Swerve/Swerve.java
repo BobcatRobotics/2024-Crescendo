@@ -489,4 +489,8 @@ public class Swerve extends SubsystemBase {
         return rad;
     }
 
+    public boolean aligned(){
+        return Math.abs(Math.toDegrees(rotationPID.getPositionError())) <= SwerveConstants.rotationToleranceAlignment;
+    }
+
 }

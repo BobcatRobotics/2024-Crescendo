@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import frc.robot.Commands.Auto.AlignToShooter;
 import frc.robot.Commands.Intake.TeleopIntake;
 import frc.robot.Commands.Multi.SetAmp;
 import frc.robot.Commands.Swerve.TeleopSwerve;
@@ -176,8 +177,7 @@ public class RobotContainer {
      * Please give descriptive names
      */
     autoChooser.addDefaultOption("Do Nothing", Commands.none());
-    autoChooser.addOption("outta the way", new PathPlannerAuto("Auto 1"));
-    autoChooser.addOption("straight line", new PathPlannerAuto("straight line"));
+    autoChooser.addOption("CenterShootNScoot", new PathPlannerAuto("centerShootNScoot"));
 
     /*
      * Auto Events
@@ -185,7 +185,7 @@ public class RobotContainer {
      * Names must match what is in PathPlanner
      * Please give descriptive names
      */
-    NamedCommands.registerCommand("Auto Event", new InstantCommand());
+    //NamedCommands.registerCommand("Shoot", new StartEndCommand((), null, null));
 
     configureBindings();
     SmartDashboard.putNumber("ShooterRPM", 0);
@@ -289,7 +289,7 @@ public class RobotContainer {
     //manual up
     gp.axisLessThan(5, -.6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(0.03), m_Spivit::stopMotorFeedforward, m_Spivit));
     //this sets it to a specific angle
-    gp.button(5).whileTrue(new RunCommand(() -> m_Spivit.setAngle(m_swerve.calcAngleBasedOnRealRegression()), m_Spivit)).onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
+    gp.button(5).whileTrue(new AlignToShooter(m_swerve, m_Spivit, m_shooter, m_intake));
 
 
     /* amp controls */ 
