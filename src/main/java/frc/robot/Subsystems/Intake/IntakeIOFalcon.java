@@ -1,5 +1,7 @@
 package frc.robot.Subsystems.Intake;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -16,6 +18,10 @@ public class IntakeIOFalcon implements IntakeIO {
     private final TimeOfFlight tof;
 
     private final DutyCycleOut request;
+
+    private StatusSignal<Double> switchCurrent;
+    private StatusSignal<Double> floorCurrent;
+    private StatusSignal<Double> outsideCurrent;
 
     public IntakeIOFalcon() {
         switchMotor = new TalonFX(IntakeConstants.switchMotorID);
@@ -50,17 +56,23 @@ public class IntakeIOFalcon implements IntakeIO {
         outsideMotor.getConfigurator().apply(outsideConfig);
 
         request = new DutyCycleOut(0).withEnableFOC(true);
+
+        switchCurrent = switchMotor.getStatorCurrent();
+        floorCurrent = floorMotor.getStatorCurrent();
+        outsideCurrent = outsideMotor.getStatorCurrent();
+        switchMotor.optimizeBusUtilization();
+        floorMotor.optimizeBusUtilization();
+        outsideMotor.optimizeBusUtilization();
     }
 
     public void updateInputs(IntakeIOInputs inputs) {
-        inputs.switchMotorPercentOut = switchMotor.getDutyCycle().getValueAsDouble();
-        inputs.switchMotorCurrent = switchMotor.getStatorCurrent().getValueAsDouble();
+        BaseStatusSignal.refreshAll(switchCurrent, floorCurrent, outsideCurrent);
 
-        inputs.floorMotorPercentOut = floorMotor.getDutyCycle().getValueAsDouble();
-        inputs.floorMotorCurrent = floorMotor.getStatorCurrent().getValueAsDouble();
+        inputs.switchMotorCurrent = switchCurrent.getValueAsDouble();
 
-        inputs.outsideMotorPercentOut = outsideMotor.getDutyCycle().getValueAsDouble();
-        inputs.outsideMotorCurrent = outsideMotor.getStatorCurrent().getValueAsDouble();
+        inputs.floorMotorCurrent = floorCurrent.getValueAsDouble();
+
+        inputs.outsideMotorCurrent = outsideCurrent.getValueAsDouble();
 
         inputs.tofValue = tof.getRange();
     }

@@ -5,7 +5,7 @@ import org.littletonrobotics.junction.AutoLog;
 public interface AmpIO {
     @AutoLog
     public static class AmpIOInputs {
-        public double motorposition = 0.0; //in degrees
+        public double motorPosition = 0.0; //in degrees
     }
 
     public default void setPos(double rotationAmount) {}

@@ -7,6 +7,8 @@ import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import frc.robot.Constants.AmpConstants;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -22,6 +24,7 @@ public class AmpIOFalcon implements AmpIO {
     // private double kP = AmpConstants.kP;
     // private double kI = AmpConstants.kI;
     // private double kD = AmpConstants.kD;
+    private final StatusSignal<Double> motorPosition;
 
     public AmpIOFalcon() {
         softLimitThresh = new SoftwareLimitSwitchConfigs();
@@ -59,6 +62,8 @@ public class AmpIOFalcon implements AmpIO {
         
         m_request.withEnableFOC(true);
 
+        motorPosition = motor.getPosition();
+        motor.optimizeBusUtilization();
     }
 
     /*
@@ -66,7 +71,8 @@ public class AmpIOFalcon implements AmpIO {
      * ran periodically
      */
     public void updateInputs(AmpIOInputs inputs) {
-        inputs.motorposition = (motor.getPosition().getValueAsDouble()/30)*(360); //degrees
+        BaseStatusSignal.refreshAll(motorPosition);
+        inputs.motorPosition = (motorPosition.getValueAsDouble()/30)*(360); //degrees
     }
 
     /*

@@ -1,6 +1,7 @@
 package frc.robot.Subsystems.Shooter;
 
-
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
@@ -8,23 +9,27 @@ import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterIOFalcon implements ShooterIO {
-    private TalonFX topMotor; //this will control the top rollers in the shooter "arm"
-    private TalonFX bottomMotor; //this controls the bottom rollers of the shooter arm
-    
-    //Here lies "feederMotor" :(      R.I.P. 2024-2024; a wonderful son, brother, and father.
+    private TalonFX topMotor; // this will control the top rollers in the shooter "arm"
+    private TalonFX bottomMotor; // this controls the bottom rollers of the shooter arm
 
+    // Here lies "feederMotor" :( R.I.P. 2024-2024; a wonderful son, brother, and
+    // father.
 
-    private final VelocityDutyCycle requestTop; 
-    private final VelocityDutyCycle requestBottom; 
-        
+    private final VelocityDutyCycle requestTop;
+    private final VelocityDutyCycle requestBottom;
+
+    private StatusSignal<Double> topMotorStatorCurrent;
+    private StatusSignal<Double> topMotorVelocityRPS;
+    private StatusSignal<Double> bottomMotorStatorCurrent;
+    private StatusSignal<Double> bottomMotorVelocityRPS;
+
     public ShooterIOFalcon() {
-        topMotor = new TalonFX(ShooterConstants.topMotorID); //initializes TalonFX motor 1
-        bottomMotor = new TalonFX(ShooterConstants.bottomMotorID); //initializes TalonFX motor 2
+        topMotor = new TalonFX(ShooterConstants.topMotorID); // initializes TalonFX motor 1
+        bottomMotor = new TalonFX(ShooterConstants.bottomMotorID); // initializes TalonFX motor 2
 
-
-        //Top motor configurations
+        // Top motor configurations
         TalonFXConfiguration topConfigs = new TalonFXConfiguration();
-        topMotor.getConfigurator().apply(topConfigs); //reset to default
+        topMotor.getConfigurator().apply(topConfigs); // reset to default
         topConfigs.MotorOutput.Inverted = ShooterConstants.topMotorInvert;
         topConfigs.MotorOutput.NeutralMode = ShooterConstants.topMotorBrakeMode;
         topConfigs.Slot0.kP = ShooterConstants.kTopP;
@@ -34,8 +39,7 @@ public class ShooterIOFalcon implements ShooterIO {
         topConfigs.CurrentLimits.StatorCurrentLimit = 40;
         topMotor.getConfigurator().apply(topConfigs);
 
-        
-        //Bottom motor configurations
+        // Bottom motor configurations
         TalonFXConfiguration bottomConfigs = new TalonFXConfiguration();
         bottomMotor.getConfigurator().apply(bottomConfigs);
         bottomConfigs.MotorOutput.Inverted = ShooterConstants.bottomMotorInvert;
@@ -48,28 +52,33 @@ public class ShooterIOFalcon implements ShooterIO {
 
         bottomMotor.getConfigurator().apply(bottomConfigs);
 
-
-
-
-        
-
-
-        //Updates the requests for each motor
+        // Updates the requests for each motor
         requestTop = new VelocityDutyCycle(0).withEnableFOC(true);
         requestBottom = new VelocityDutyCycle(0).withEnableFOC(true);
-    }
 
+        topMotorStatorCurrent = topMotor.getStatorCurrent();
+        topMotorVelocityRPS = topMotor.getVelocity();
+        bottomMotorStatorCurrent = bottomMotor.getStatorCurrent();
+        bottomMotorVelocityRPS = bottomMotor.getVelocity();
+        topMotor.optimizeBusUtilization();
+        bottomMotor.optimizeBusUtilization();
+    }
 
     /**
      * 
      */
     public void updateInputs(ShooterIOInputs inputs) {
-        inputs.topMotorStatorCurrent = topMotor.getStatorCurrent().getValueAsDouble();
-        inputs.topMotorVelocityRPS = topMotor.getVelocity().getValueAsDouble();
-        
-        inputs.bottomMotorStatorCurrent = bottomMotor.getStatorCurrent().getValueAsDouble();
-        inputs.bottomMotorVelocityRPS = bottomMotor.getVelocity().getValueAsDouble();
-        
+        BaseStatusSignal.refreshAll(
+                topMotorStatorCurrent,
+                topMotorVelocityRPS,
+                bottomMotorStatorCurrent,
+                bottomMotorVelocityRPS);
+
+        inputs.topMotorStatorCurrent = topMotorStatorCurrent.getValueAsDouble();
+        inputs.topMotorVelocityRPS = topMotorVelocityRPS.getValueAsDouble();
+
+        inputs.bottomMotorStatorCurrent = bottomMotorStatorCurrent.getValueAsDouble();
+        inputs.bottomMotorVelocityRPS = bottomMotorVelocityRPS.getValueAsDouble();
     }
 
     /**
@@ -79,7 +88,6 @@ public class ShooterIOFalcon implements ShooterIO {
         topMotor.setControl(requestTop.withVelocity(rps));
     }
 
-
     /**
      * @param rps revs per second
      */
@@ -87,26 +95,21 @@ public class ShooterIOFalcon implements ShooterIO {
         bottomMotor.setControl(requestBottom.withVelocity(rps));
     }
 
-
-
     /**
      * 
      * @return returns a double in RPS
      */
     public double getTopVelocity() {
-        return topMotor.getVelocity().getValueAsDouble(); //rps
+        return topMotor.getVelocity().getValueAsDouble(); // rps
     }
-
 
     /**
      * 
      * @return returns a double in RPS
      */
     public double getBottomVelocity() {
-        return bottomMotor.getVelocity().getValueAsDouble(); //rps
+        return bottomMotor.getVelocity().getValueAsDouble(); // rps
     }
-
-
 
     public void stopTopMotor() {
         topMotor.stopMotor();
@@ -116,20 +119,13 @@ public class ShooterIOFalcon implements ShooterIO {
         bottomMotor.stopMotor();
     }
 
-
-
     /**
      * testing only
      */
-    public void setVelocity(double rpm){
-        double rps = rpm/60;
+    public void setVelocity(double rpm) {
+        double rps = rpm / 60;
         topMotor.setControl(requestTop.withVelocity(rps));
         bottomMotor.setControl(requestBottom.withVelocity(rps));
     }
-
-
-
-
-
 
 }

@@ -1,5 +1,7 @@
 package frc.robot.Subsystems.Trap;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -13,6 +15,8 @@ public class TrapIOFalcon implements TrapIO {
 
     private DutyCycleOut armRequest;
     private DutyCycleOut rollerRequest;
+
+    private StatusSignal<Double> position;
 
     public TrapIOFalcon() {
         armMotor = new TalonFX(TrapConstants.armID);       
@@ -31,10 +35,15 @@ public class TrapIOFalcon implements TrapIO {
 
         armRequest = new DutyCycleOut(0).withEnableFOC(true);
         rollerRequest = new DutyCycleOut(0).withEnableFOC(true);
+
+        position = armMotor.getPosition();
+        armMotor.optimizeBusUtilization();
+        rollerMotor.optimizeBusUtilization();
     }
 
     public void updateInputs(TrapIOInputs inputs) {
-        inputs.trapPosition = armMotor.getPosition().getValueAsDouble()*360;
+        BaseStatusSignal.refreshAll(position);
+        inputs.trapPosition = position.getValueAsDouble()*360;
     } 
 
     public void setArmPercent(double percent) {

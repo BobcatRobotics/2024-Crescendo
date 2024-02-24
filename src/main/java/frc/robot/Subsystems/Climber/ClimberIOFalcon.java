@@ -1,5 +1,7 @@
 package frc.robot.Subsystems.Climber;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
  
@@ -10,6 +12,9 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 public class ClimberIOFalcon implements ClimberIO {
     private TalonFX climberMotor;
     private DutyCycleOut request;
+
+    private StatusSignal<Double> motorStatorCurrent;
+    private StatusSignal<Double> motorPosition;
 
     public ClimberIOFalcon(){
         // The constructor initialized all of the MotionMagic stuff, Inputs, and the motor
@@ -22,13 +27,18 @@ public class ClimberIOFalcon implements ClimberIO {
         climberConfigs.CurrentLimits.StatorCurrentLimit = 40; //amps
         climberMotor.getConfigurator().apply(climberConfigs);
 
-        request = new DutyCycleOut(0).withEnableFOC(true);        
+        request = new DutyCycleOut(0).withEnableFOC(true);  
+        
+        motorStatorCurrent = climberMotor.getStatorCurrent();
+        motorPosition = climberMotor.getPosition();
+        climberMotor.optimizeBusUtilization();
     }
 
     public void updateInputs(ClimberIOInputs inputs){
+        BaseStatusSignal.refreshAll(motorStatorCurrent, motorPosition);
         // Updates all of the inputs/data points being monitored about the motor
-        inputs.climberMotorStatorCurrent = climberMotor.getStatorCurrent().getValueAsDouble();
-        inputs.climberMotorPosition = climberMotor.getPosition().getValueAsDouble();
+        inputs.climberMotorStatorCurrent = motorStatorCurrent.getValueAsDouble();
+        inputs.climberMotorPosition = motorPosition.getValueAsDouble();
     }
 
     public void setPercentOut(double percent) {
