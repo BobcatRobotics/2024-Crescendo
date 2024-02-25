@@ -288,7 +288,7 @@ public class Constants {
         public static final double outsideCurrentLimit = 80;
 
         public static final int tofID = 0;
-        public static final double tofTresh = 170; // millimeters
+        public static final double tofTresh = 150; // millimeters
     }
 
     public static final class ClimberConstants{

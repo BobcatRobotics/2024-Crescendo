@@ -30,6 +30,7 @@ public class IntakeIOFalcon implements IntakeIO {
 
         tof = new TimeOfFlight(IntakeConstants.tofID);
         tof.setRangingMode(RangingMode.Medium, 24);
+        tof.setRangeOfInterest(5, 5, 9, 9); // Reduces area of detection, reducing noise of sensor
 
         TalonFXConfiguration switchConfig = new TalonFXConfiguration();
         switchMotor.getConfigurator().apply(switchConfig);
