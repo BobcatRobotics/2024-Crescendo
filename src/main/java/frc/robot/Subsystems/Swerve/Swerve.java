@@ -31,8 +31,10 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.util.limelightConstants;
 import frc.robot.Constants;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Subsystems.Vision.Vision;
 
@@ -50,7 +52,7 @@ public class Swerve extends SubsystemBase {
     private final double[] desiredSwerveModuleStates = new double[8];
 
     private SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
-    private final double[] swervytestythingy = new double[8];
+    private Rotation2d ppRotationOverride;
 
     // private SwerveSetpointGenerator setpointGenerator;
     // private SwerveSetpoint currentSetpoint = new SwerveSetpoint(
@@ -139,9 +141,13 @@ public class Swerve extends SubsystemBase {
     }
 
     public Rotation2d getRotationTarget() {
-        return null; // TODO: the rotation2d this returns will override the one in pathplanner, if
-                     // null, the default pathplanner rotation will be used
+        return ppRotationOverride; // the rotation2d this returns will override the one in pathplanner, if
+                                   // null, the default pathplanner rotation will be used
     }
+
+    public void setRotationTarget(Rotation2d target){
+        ppRotationOverride = target;
+    }   
 
     public void periodic() {
         odometryLock.lock();
@@ -184,14 +190,12 @@ public class Swerve extends SubsystemBase {
             desiredSwerveModuleStates[mod.index * 2] = mod.getDesiredState().angle.getDegrees();
             swerveModuleStates[mod.index * 2 + 1] = mod.getState().speedMetersPerSecond;
             swerveModuleStates[mod.index * 2] = mod.getState().angle.getDegrees();
-            swervytestythingy[mod.index * 2] = swerveModulePositions[mod.index].angle.getDegrees();
         }
 
         Logger.recordOutput("Swerve/Rotation", gyroInputs.yawPosition.getDegrees());
         Logger.recordOutput("Swerve/DesiredModuleStates", desiredSwerveModuleStates);
         Logger.recordOutput("Swerve/ModuleStates", swerveModuleStates);
         Logger.recordOutput("Swerve/Pose", getPose());
-        Logger.recordOutput("Swerve/OdometryDebugStates", swervytestythingy);
         if (DriverStation.isDisabled()) {
             for (SwerveModule mod : modules) {
                 mod.stop();
@@ -206,14 +210,14 @@ public class Swerve extends SubsystemBase {
             // standard deviations are (distance to nearest apriltag)/2 for x and y and 10
             // degrees for theta
             poseEstimator.addVisionMeasurement((shooterRightVision.getBotPose()),
-                    (shooterRightVision.getPoseTimestamp()), VecBuilder.fill(shooterRightVision.getDistToTag() / 2,
-                            shooterRightVision.getDistToTag() / 2, Units.degreesToRadians(60)));
+                    (shooterRightVision.getPoseTimestamp()), VecBuilder.fill(shooterRightVision.getDistToTag() / LimelightConstants.stdDev,
+                            shooterRightVision.getDistToTag() / LimelightConstants.stdDev, Units.degreesToRadians(60)));
             Logger.recordOutput("shooterrightvisiondist", shooterRightVision.getDistToTag());
         }
         if (Math.abs(shooterLeftVision.getBotPose().getY()) <= 50
                 && Math.abs(shooterLeftVision.getBotPose().getY()) != 0) {
             poseEstimator.addVisionMeasurement((shooterLeftVision.getBotPose()), (shooterLeftVision.getPoseTimestamp()),
-                    VecBuilder.fill(shooterLeftVision.getDistToTag() / 2, shooterLeftVision.getDistToTag() / 2,
+                    VecBuilder.fill(shooterLeftVision.getDistToTag() / LimelightConstants.stdDev, shooterLeftVision.getDistToTag() / LimelightConstants.stdDev,
                             Units.degreesToRadians(60)));
             Logger.recordOutput("shooterleftvisiondist", shooterLeftVision.getDistToTag());
 
@@ -491,6 +495,15 @@ public class Swerve extends SubsystemBase {
 
     public boolean aligned(){
         return Math.abs(Math.toDegrees(rotationPID.getPositionError())) <= SwerveConstants.rotationToleranceAlignment;
+    }
+
+    /**
+     * 
+     * @return the angle to the speaker in radians
+     */
+    public double getAngleToSpeaker(){
+        Translation2d speaker = getTranslationToSpeaker();
+        return Math.atan(speaker.getY()/speaker.getX());
     }
 
 }

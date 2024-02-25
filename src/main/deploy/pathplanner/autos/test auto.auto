@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.213769989995765,
-      "y": 5.5196408968316515
+      "x": 1.8501657516135543,
+      "y": 7.110045901003483
     },
     "rotation": 0
   },
@@ -14,13 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ShootNScoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
+            "pathName": "test path"
           }
         }
       ]

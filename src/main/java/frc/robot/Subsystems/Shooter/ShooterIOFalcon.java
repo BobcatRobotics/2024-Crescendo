@@ -60,6 +60,7 @@ public class ShooterIOFalcon implements ShooterIO {
         topMotorVelocityRPS = topMotor.getVelocity();
         bottomMotorStatorCurrent = bottomMotor.getStatorCurrent();
         bottomMotorVelocityRPS = bottomMotor.getVelocity();
+        BaseStatusSignal.setUpdateFrequencyForAll(50, topMotorStatorCurrent, topMotorVelocityRPS, bottomMotorStatorCurrent, bottomMotorVelocityRPS);
         topMotor.optimizeBusUtilization();
         bottomMotor.optimizeBusUtilization();
     }

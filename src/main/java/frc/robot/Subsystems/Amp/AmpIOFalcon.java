@@ -45,6 +45,7 @@ public class AmpIOFalcon implements AmpIO {
         slot0.kP = AmpConstants.kP;
         slot0.kI = AmpConstants.kI;
         slot0.kD = AmpConstants.kD;
+        
 
         configs.MotorOutput.Inverted = AmpConstants.ampInvertedValue;
         configs.MotorOutput.NeutralMode = AmpConstants.ampNeutralModeValue;
@@ -63,6 +64,7 @@ public class AmpIOFalcon implements AmpIO {
         m_request.withEnableFOC(true);
 
         motorPosition = motor.getPosition();
+        BaseStatusSignal.setUpdateFrequencyForAll(50, motorPosition);
         motor.optimizeBusUtilization();
     }
 
@@ -79,7 +81,7 @@ public class AmpIOFalcon implements AmpIO {
      * runs the motor to rotiation amount for pid
      */
     public void setPos(double rotationAmount) {
-        motor.setControl(m_request.withPosition(rotationAmount*30));
+        motor.setControl(m_request.withPosition(rotationAmount*30).withFeedForward(0.1));
     }
 
     /**

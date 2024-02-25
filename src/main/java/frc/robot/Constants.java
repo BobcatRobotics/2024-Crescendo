@@ -58,22 +58,22 @@ public class Constants {
         public static final double trackWidth = 0.521; // 20.5 in -> meters
         public static final double wheelBase = 0.521; // meters
         public static final double driveBaseRadius = Math.sqrt(2 * Math.pow(wheelBase/2, 2));
-        public static final double wheelCircumference = Units.inchesToMeters(4.0)*Math.PI; // 3.8990 3.8985 3.8925 3.8995 checked 2/10/2024 9:36:45 AM
+        public static final double wheelCircumference = Units.inchesToMeters(3.897375)*Math.PI; //avg of 3.8990 3.8985 3.8925 3.8995 checked 2/10/2024 9:36:45 AM
         public static final double angleGearRatio = ((150.0 / 7.0) / 1.0);
         // public static final double driveGearRatio =  (6.12 / 1.0);
         public static final double driveGearRatio =  (5.36 / 1.0);
         
         /* Auto Constants */
-        public static final double translationKP = 2.0087;
+        public static final double translationKP = 2.25; //tuned for 1.5 m/s
         public static final double translationKI = 0.0;
         public static final double translationKD = 0.0;
 
-        public static final double rotationKP = 2;
+        public static final double rotationKP = 1.5;
         public static final double rotationKI = 0.0;
         public static final double rotationKD = 0.0;
 
         /* Teleop Constants */
-        public static final double teleopRotationKP = 1.5;
+        public static final double teleopRotationKP = 3.5;
         public static final double teleopRotationKI = 0.0;
         public static final double teleopRotationKD = 0.0;
 
@@ -174,7 +174,7 @@ public class Constants {
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
 
-        public static final Vector<N3> stateStdDevs = VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(3));
+        public static final Vector<N3> stateStdDevs = VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(1));
 
     }
 
@@ -210,7 +210,7 @@ public class Constants {
 
     public static final class LimelightConstants{
 
-
+        public static double stdDev = 1.75; //dividing distance by this
 
 
         public static final class intake{
@@ -318,9 +318,7 @@ public class Constants {
         public static final double feedforwardPercentValue = 0.0302;
 
         //position needed to deploy the amp hood
-        public static final double ampDeploySafeValue = 270; //266.5; 
-        //position needed to score in the amp
-        public static final double ampScoreValue = 0; //TODO find this
+        public static final double ampDeploySafeValue = 280; //266.5; 
 
         public static final double rpsTolerance = 200/60; //THIS IS IN RPS
         public static final double angleTolerance = 1; // THIS IS IN DEGREES
@@ -336,7 +334,7 @@ public class Constants {
         public static final NeutralModeValue topMotorBrakeMode = NeutralModeValue.Coast;
         public static final double kTopP = 0.05;//volts/rps
         public static final double kTopI = 0;
-        public static final double kTopD = 0.1;
+        public static final double kTopD = 0;
         public static final double kTopV = 0.0113; //volts/rps, feedforward, output per unit of requested velocity 
         public static final double kTopS = 0;// volts, this is added to each output to overcome static friction
 
@@ -355,7 +353,7 @@ public class Constants {
         public static final double kAngleS = 0;
         public static final double kAngleV = 0;
         public static final double kAngleA = 0;
-        public static final double kAngleP = 4;
+        public static final double kAngleP = 7.5;
         public static final double kAngleI = 0;
         public static final double kAngleD = 0;
 
@@ -366,11 +364,12 @@ public class Constants {
         public static final double rotorToSensorRatio = (64/14)*(58/18)*(58/11);
 
         public static final double bottomLimit = 250.5; // degrees, converted to rotations later on
-        public static final double topLimit = 285;
+        public static final double topLimit = 285; 
         public static final double podiumShot = 267;
         public static final double wingShot = 256.5;
         public static final double stageShot = 259; //center of stage side closest to speaker
         public static final double subwooferShot = 285;
+        public static final double ampPosition = 272;
 
 
         public static final int fastShooterRPMSetpoint = 5000; //TODO find this
@@ -414,9 +413,9 @@ public class Constants {
 
 
         //encoder values
-        public static final double deployValue = 0; //TODO find this
+        public static final double deployValue = 175; 
         public static final double retractValue = 0.0;//yes zero is correct
-        public static final double crashThreshold = 0;//no, zero is not correct
+        public static final double crashThreshold = 88;
 
         public static final double deployTolerance = 1.5; // degrees of tolerance
         public static final double retractTolerance = 2.5;

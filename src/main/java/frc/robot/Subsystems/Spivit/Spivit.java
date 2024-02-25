@@ -55,7 +55,7 @@ public class Spivit extends SubsystemBase {
   }
 
   public void raiseForAmpScore(){
-    setAngle(ShooterConstants.ampScoreValue);
+    setAngle(ShooterConstants.ampPosition);
   }
 
 
@@ -69,7 +69,7 @@ public class Spivit extends SubsystemBase {
    * @return whether or not we are safe to deploy the amp
    */
   public boolean safeToDeploy(){
-    return getAngle() >= ShooterConstants.ampDeploySafeValue;
+    return getAngle() >= ShooterConstants.ampDeploySafeValue-4;
   }
 
   public void setToAmpScoreConfig(){

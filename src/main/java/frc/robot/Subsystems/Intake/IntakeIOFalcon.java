@@ -60,6 +60,7 @@ public class IntakeIOFalcon implements IntakeIO {
         switchCurrent = switchMotor.getStatorCurrent();
         floorCurrent = floorMotor.getStatorCurrent();
         outsideCurrent = outsideMotor.getStatorCurrent();
+        BaseStatusSignal.setUpdateFrequencyForAll(50, switchCurrent, floorCurrent, outsideCurrent);
         switchMotor.optimizeBusUtilization();
         floorMotor.optimizeBusUtilization();
         outsideMotor.optimizeBusUtilization();

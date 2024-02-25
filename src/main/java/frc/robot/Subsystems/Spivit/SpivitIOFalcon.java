@@ -25,6 +25,7 @@ public class SpivitIOFalcon implements SpivitIO {
   private CANcoder cancoder;
 
   private StatusSignal<Double> position;
+  private StatusSignal<Double> canPosition;
   private StatusSignal<Double> statorCurrent;
 
   /** Creates a new Spivit. */
@@ -69,15 +70,19 @@ public class SpivitIOFalcon implements SpivitIO {
     angleMotor.getConfigurator().apply(angleConfigs);
 
     position = angleMotor.getPosition();
+    canPosition = cancoder.getAbsolutePosition();
     statorCurrent = angleMotor.getStatorCurrent();
+    
+    BaseStatusSignal.setUpdateFrequencyForAll(50, position, statorCurrent, canPosition);
     angleMotor.optimizeBusUtilization();
     cancoder.optimizeBusUtilization();
   }
 
   public void updateInputs(SpivitIOInputs inputs) {
-    BaseStatusSignal.refreshAll(position, statorCurrent);
+    BaseStatusSignal.refreshAll(position, statorCurrent, canPosition);
     inputs.angleMotorPosition = position.getValueAsDouble() * 360;
     inputs.angleMotorStatorCurrent = statorCurrent.getValueAsDouble();
+    inputs.absPos = canPosition.getValueAsDouble()*360;
 
   }
 

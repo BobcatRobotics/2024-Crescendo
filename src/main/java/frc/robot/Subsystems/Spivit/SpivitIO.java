@@ -8,6 +8,7 @@ public interface SpivitIO{
     public static class SpivitIOInputs {
         public double angleMotorPosition = 0.0; //position in degrees for the shooter from the angle motor 
         public double angleMotorStatorCurrent = 0.0; //Current to the angle shooter motor
+        public double absPos = 0.0;
     }
 
     public default void updateInputs(SpivitIOInputs inputs) {}

@@ -37,6 +37,7 @@ public class TrapIOFalcon implements TrapIO {
         rollerRequest = new DutyCycleOut(0).withEnableFOC(true);
 
         position = armMotor.getPosition();
+        BaseStatusSignal.setUpdateFrequencyForAll(50, position);
         armMotor.optimizeBusUtilization();
         rollerMotor.optimizeBusUtilization();
     }

@@ -9,6 +9,10 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,11 +21,16 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import frc.robot.Commands.Auto.AlignAndShoot;
+import frc.robot.Commands.Auto.AutoIntake;
+import frc.robot.Commands.Auto.AutoShoot;
+import frc.robot.Commands.Auto.ContinouslyAlignAndShoot;
+import frc.robot.Commands.Auto.SubwooferShot;
 import frc.robot.Commands.Intake.TeleopIntake;
 import frc.robot.Commands.Multi.SetAmp;
 import frc.robot.Commands.Swerve.TeleopSwerve;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Subsystems.Amp.Amp;
@@ -171,6 +180,17 @@ public class RobotContainer {
     }
 
     /*
+     * Auto Events
+     * 
+     * Names must match what is in PathPlanner
+     * Please give descriptive names
+     */
+    NamedCommands.registerCommand("StartShooting", new ContinouslyAlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, () -> false, 5000));
+    NamedCommands.registerCommand("SubwooferShot", new SubwooferShot(m_swerve, m_Spivit, m_shooter, 5000));
+    NamedCommands.registerCommand("StopShooter", new InstantCommand(m_shooter::stop));
+    NamedCommands.registerCommand("Intake", new AutoIntake(m_intake));
+    NamedCommands.registerCommand("Shoot", new AutoShoot(m_shooter, m_Spivit, m_intake));
+    /*
      * Auto Chooser
      * 
      * Names must match what is in PathPlanner
@@ -178,14 +198,8 @@ public class RobotContainer {
      */
     autoChooser.addDefaultOption("Do Nothing", Commands.none());
     autoChooser.addOption("CenterShootNScoot", new PathPlannerAuto("centerShootNScoot"));
-
-    /*
-     * Auto Events
-     * 
-     * Names must match what is in PathPlanner
-     * Please give descriptive names
-     */
-    //NamedCommands.registerCommand("Shoot", new StartEndCommand((), null, null));
+    autoChooser.addOption("KidsMeal", new PathPlannerAuto("kids meal"));
+    autoChooser.addOption("OutOfTheWay", new PathPlannerAuto("out of the way"));
 
     configureBindings();
     SmartDashboard.putNumber("ShooterRPM", 0);
@@ -201,7 +215,7 @@ public class RobotContainer {
    * 
    * () -> buttonOrAxisValue
    */
-  private void configureBindings() {
+  public void configureBindings() {
     /* A for amp mode
      * B for stow (amp)
      * X is 
@@ -261,7 +275,7 @@ public class RobotContainer {
 
       
     /* Intake Controls */
-    m_intake.setDefaultCommand(
+      m_intake.setDefaultCommand(
         new TeleopIntake(
             m_intake, 
             gp.povDown(), //shooter
@@ -273,14 +287,14 @@ public class RobotContainer {
             () -> true,
             () -> true,
             gp.button(6) // feed to shooter/manual override
-        ));
+        ).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
 
     /* Shooter Controls */
     //start revving shooter
     gp.button(10).onTrue(new InstantCommand(() -> m_shooter.setSpeed(5000, 5000))); // back right
     //stop revving shooter
-    gp.button(9).onTrue(new InstantCommand(m_shooter::stop)); // back left
+    gp.button(9).onTrue(new InstantCommand(m_shooter::stop)); // back left 
     
 
     /* Spivit controls */
@@ -289,24 +303,22 @@ public class RobotContainer {
     //manual up
     gp.axisLessThan(5, -.6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(0.03), m_Spivit::stopMotorFeedforward, m_Spivit));
     //this sets it to a specific angle
-    gp.button(5).whileTrue(new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake));
-
+    gp.button(5).whileTrue(new RunCommand(() -> m_Spivit.setAngle(m_swerve.calcAngleBasedOnRealRegression()), m_Spivit)).onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
 
     /* amp controls */ 
     //retract
-    //gp.button(1).onTrue(new SetAmp(m_amp, m_Spivit, false));
+    gp.button(1).onTrue(new SetAmp(m_amp, m_Spivit, false));
     //deploy
-    //gp.button(2).whileTrue(new SetAmp(m_amp, m_Spivit, true));
+    gp.button(2).onTrue(new SetAmp(m_amp, m_Spivit, true));
 
-    //gp.button(1).whileTrue(new StartEndCommand(() -> m_amp.setPos(165), m_amp::stop, m_amp)); // 168
-    gp.button(2).onTrue(new InstantCommand(m_amp::zero));
+    //gp.button(2).onTrue(new InstantCommand(m_amp::zero));
     //manual
     //gp.axisGreaterThan(1, .6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
     gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1), m_amp::stop, m_amp));
     //this runs it down
     //gp.axisLessThan(1, -.6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(-0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
     gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1), m_amp::stop, m_amp));
-
+    gp.button(8).onTrue(new InstantCommand(() -> m_swerve.resetPose(new Pose2d(FieldConstants.redSpeakerPose.plus(new Translation2d(-2, 0)), new Rotation2d()))));
 
 
     /* trap controls */

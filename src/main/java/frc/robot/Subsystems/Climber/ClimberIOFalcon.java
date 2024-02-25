@@ -31,6 +31,7 @@ public class ClimberIOFalcon implements ClimberIO {
         
         motorStatorCurrent = climberMotor.getStatorCurrent();
         motorPosition = climberMotor.getPosition();
+        BaseStatusSignal.setUpdateFrequencyForAll(50, motorPosition, motorStatorCurrent);
         climberMotor.optimizeBusUtilization();
     }
 
