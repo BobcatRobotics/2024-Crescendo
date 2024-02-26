@@ -51,7 +51,7 @@ public class SubwooferShot extends Command {
   @Override
   public void execute() {
     spivit.setAngle(swerve.calcAngleBasedOnRealRegression());
-    if(shooter.aboveSpeed(4000)){
+    if(shooter.aboveSpeed(3700)){
       upToSpeed = true;
     }
 

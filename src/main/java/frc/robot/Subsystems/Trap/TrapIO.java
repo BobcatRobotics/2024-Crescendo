@@ -7,6 +7,7 @@ public interface TrapIO {
     @AutoLog 
     public static class TrapIOInputs{
         public double trapPosition = 0.0;
+        public double trollerPosition = 0.0;
     }
 
     public default void updateInputs(TrapIOInputs inputs) {}

@@ -23,8 +23,9 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import frc.robot.Commands.Auto.AlignAndShoot;
+import frc.robot.Commands.Auto.AutoBreak;
 import frc.robot.Commands.Auto.AutoIntake;
-import frc.robot.Commands.Auto.AutoShoot;
 import frc.robot.Commands.Auto.ContinouslyAlignAndShoot;
 import frc.robot.Commands.Auto.SubwooferShot;
 import frc.robot.Commands.Intake.TeleopIntake;
@@ -32,6 +33,7 @@ import frc.robot.Commands.Multi.SetAmp;
 import frc.robot.Commands.Swerve.TeleopSwerve;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LimelightConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Subsystems.Amp.Amp;
 import frc.robot.Subsystems.Amp.AmpIOFalcon;
@@ -189,7 +191,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("SubwooferShot", new SubwooferShot(m_swerve, m_Spivit, m_shooter, 5000));
     NamedCommands.registerCommand("StopShooter", new InstantCommand(m_shooter::stop));
     NamedCommands.registerCommand("Intake", new AutoIntake(m_intake));
-    NamedCommands.registerCommand("Shoot", new AutoShoot(m_shooter, m_Spivit, m_intake));
+    NamedCommands.registerCommand("SpinUp", new InstantCommand(() -> m_shooter.setSpeed(ShooterConstants.fastShooterRPMSetpoint, ShooterConstants.fastShooterRPMSetpoint)));
+    NamedCommands.registerCommand("Shoot", new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake));
+    // NamedCommands.registerCommand("Break", new AutoBreak(m_Spivit));
     /*
      * Auto Chooser
      * 
@@ -245,11 +249,10 @@ public class RobotContainer {
      * Axes
      * 0 -
      * 1 -
-     * 2 -
-     * 3 -
+     * 2 - LT
+     * 3 - RT
      * 4 -
      * 5 -
-     * 6 -
      * 
      * Axis indices start at 0, button indices start at one -_-
      */
@@ -286,7 +289,9 @@ public class RobotContainer {
             // () -> m_shooter.atAngle()
             () -> true,
             () -> true,
-            gp.button(6) // feed to shooter/manual override
+            gp.button(6), // feed to shooter/manual override
+            m_trap,
+            m_Rumble
         ).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
 
@@ -307,21 +312,29 @@ public class RobotContainer {
 
     /* amp controls */ 
     //retract
-    gp.button(1).onTrue(new SetAmp(m_amp, m_Spivit, false));
+    gp.button(1).onTrue(new SetAmp(m_amp, m_Spivit, false)); // b
     //deploy
-    gp.button(2).onTrue(new SetAmp(m_amp, m_Spivit, true));
+    gp.button(2).onTrue(new SetAmp(m_amp, m_Spivit, true)); // a
+    //zero
+    gp.button(3).onTrue(new InstantCommand(m_amp::zero)); // y
+    //shooter amp speed
+    gp.button(4).onTrue(new InstantCommand(() -> m_shooter.setSpeed(2500, 2500))); // x
 
-    //gp.button(2).onTrue(new InstantCommand(m_amp::zero));
+
     //manual
     //gp.axisGreaterThan(1, .6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
     gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1), m_amp::stop, m_amp));
     //this runs it down
     //gp.axisLessThan(1, -.6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(-0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
     gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1), m_amp::stop, m_amp));
-    gp.button(8).onTrue(new InstantCommand(() -> m_swerve.resetPose(new Pose2d(FieldConstants.redSpeakerPose.plus(new Translation2d(-2, 0)), new Rotation2d()))));
+    // gp.button(8).onTrue(new InstantCommand(() -> m_swerve.resetPose(new Pose2d(FieldConstants.redSpeakerPose.plus(new Translation2d(-2, 0)), new Rotation2d()))));
 
 
     /* trap controls */
+    gp.povRight().whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1), m_trap::stopArm, m_trap));
+    gp.povLeft().whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(-0.1), m_trap::stopArm, m_trap));
+    gp.button(7).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap));
+    gp.button(8).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(-0.3), m_trap::stopRoller, m_trap));
     //gp.button(7).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap)); // left trigger
     //this drives it towards the robot, i think
     //gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1), m_trap::stopArm, m_trap));
@@ -332,9 +345,9 @@ public class RobotContainer {
 
     // climber controls
     //this *should* raise the hooks
-    gp.axisGreaterThan(3, 0.07).whileTrue(new RunCommand(() -> m_climber.setPercentOut(-gp.getRawAxis(3)*0.75), m_climber)).onFalse(new InstantCommand(m_climber::stop));
+    gp.axisGreaterThan(3, 0.07).whileTrue(new RunCommand(() -> m_climber.setPercentOut(-gp.getRawAxis(3)), m_climber)).onFalse(new InstantCommand(m_climber::stop));
     //this *should* lower the hooks
-    gp.axisGreaterThan(2, 0.07).whileTrue(new RunCommand(() -> m_climber.setPercentOut(gp.getRawAxis(2)*0.75), m_climber)).onFalse(new InstantCommand(m_climber::stop));
+    gp.axisGreaterThan(2, 0.07).whileTrue(new RunCommand(() -> m_climber.setPercentOut(gp.getRawAxis(2)), m_climber)).onFalse(new InstantCommand(m_climber::stop));
 
 
     /* Drive with gamepad */

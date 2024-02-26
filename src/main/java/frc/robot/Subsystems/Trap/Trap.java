@@ -33,4 +33,8 @@ public class Trap extends SubsystemBase {
         io.stopArm();
     }
 
+    public double getPos(){
+        return inputs.trollerPosition;
+    }
+
 }

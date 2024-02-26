@@ -17,6 +17,7 @@ public class TrapIOFalcon implements TrapIO {
     private DutyCycleOut rollerRequest;
 
     private StatusSignal<Double> position;
+    private StatusSignal<Double> trollerPos;
 
     public TrapIOFalcon() {
         armMotor = new TalonFX(TrapConstants.armID);       
@@ -37,14 +38,16 @@ public class TrapIOFalcon implements TrapIO {
         rollerRequest = new DutyCycleOut(0).withEnableFOC(true);
 
         position = armMotor.getPosition();
-        BaseStatusSignal.setUpdateFrequencyForAll(50, position);
+        trollerPos = rollerMotor.getPosition();
+        BaseStatusSignal.setUpdateFrequencyForAll(50, position, trollerPos);
         armMotor.optimizeBusUtilization();
         rollerMotor.optimizeBusUtilization();
     }
 
     public void updateInputs(TrapIOInputs inputs) {
-        BaseStatusSignal.refreshAll(position);
+        BaseStatusSignal.refreshAll(position, trollerPos);
         inputs.trapPosition = position.getValueAsDouble()*360;
+        inputs.trollerPosition = trollerPos.getValueAsDouble();
     } 
 
     public void setArmPercent(double percent) {

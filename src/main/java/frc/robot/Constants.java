@@ -64,7 +64,7 @@ public class Constants {
         public static final double driveGearRatio =  (5.36 / 1.0);
         
         /* Auto Constants */
-        public static final double translationKP = 2.25; //tuned for 1.5 m/s
+        public static final double translationKP = 2.25; //tuned for .5 m/s
         public static final double translationKI = 0.0;
         public static final double translationKD = 0.0;
 
@@ -295,7 +295,7 @@ public class Constants {
         public static final int motorID = 18;
         public static final NeutralModeValue climberMotorBrakeMode = NeutralModeValue.Brake;    
         public static final InvertedValue climberMotorInvert =  InvertedValue.Clockwise_Positive;  
-        public static final double kP = 0;
+        public static final double kP = 0.05;
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double kS = 0;
@@ -305,6 +305,9 @@ public class Constants {
         public static final double motionmagicAcceleration = 0;
         public static final double motionmagicJerk = 0;
         public static final double rotationAmount = 0.5;
+
+        public static final double topLimit = -130; // rotations
+        public static final double bottomLimit = 115;
 
         // the next constant should be the exact number of rotations that the elevator must do to get to the top position
         public static final double rotationToTopAmount = 50.0;
@@ -332,20 +335,20 @@ public class Constants {
         public static final int topMotorID = 12;
         public static final InvertedValue topMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue topMotorBrakeMode = NeutralModeValue.Coast;
-        public static final double kTopP = 0.05;//volts/rps
+        public static final double kTopP = 0.05; //volts/rps 0.05
         public static final double kTopI = 0;
         public static final double kTopD = 0;
-        public static final double kTopV = 0.0113; //volts/rps, feedforward, output per unit of requested velocity 
-        public static final double kTopS = 0;// volts, this is added to each output to overcome static friction
+        public static final double kTopV = 0.0113; //volts/rps, feedforward, output per unit of requested velocity 0.0113
+        public static final double kTopS = 0.03; // volts, this is added to each output to overcome static friction
 
         public static final int bottomMotorID = 13;
         public static final InvertedValue bottomMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue bottomMotorBrakeMode = NeutralModeValue.Coast;
-        public static final double kBottomP = 0.25;
+        public static final double kBottomP = 0.25; // .25
         public static final double kBottomI = 0;
-        public static final double kBottomD = 0.11;
-        public static final double kBottomV = 0.014;
-        public static final double kBottomS = 0;
+        public static final double kBottomD = 0; //.11
+        public static final double kBottomV = 0.016; //.014
+        public static final double kBottomS = 0.03;
 
         public static final int angleMotorID = 14;
         public static final InvertedValue angleMotorInvert = InvertedValue.Clockwise_Positive;
@@ -390,6 +393,8 @@ public class Constants {
         // public static final double motionmagicCruiseVelocity = 0;
         // public static final double motionmagicAcceleration = 0;
         // public static final double motionmagicJerk = 0;
+
+        public static final double poptartRotationAmt = 10000000.0; //the amount the trollers need to rotate for the note to be at the desired position TODO find this
     }
 
     public static final class AmpConstants {

@@ -16,5 +16,7 @@ public interface ClimberIO {
 
     public default void setPercentOut(double percent) {}
 
+    public default void holdPos(double rot) {}
+
     public default void stop() {}
 }

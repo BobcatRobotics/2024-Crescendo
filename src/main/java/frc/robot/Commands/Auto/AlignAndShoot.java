@@ -6,6 +6,7 @@ package frc.robot.Commands.Auto;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -43,7 +44,7 @@ public class AlignAndShoot extends Command {
     spivit.setAngle(swerve.calcAngleBasedOnRealRegression());
     
     
-    swerve.drive(new Translation2d(), 0, true, false, true, swerve.getAngleToSpeaker());
+    swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker()).rotateBy(Rotation2d.fromDegrees(180)));
     Logger.recordOutput("Aligment/spivit", spivit.aligned());
     Logger.recordOutput("Aligment/swerve", swerve.aligned());
     Logger.recordOutput("Aligment/shooter", shooter.aboveSpeed(3000));
@@ -66,7 +67,7 @@ public class AlignAndShoot extends Command {
     shooter.stop();
     intake.stop();
     spivit.stopMotor();
-  
+    swerve.setRotationTarget(null);
   }
 
   // Returns true when the command should end.
