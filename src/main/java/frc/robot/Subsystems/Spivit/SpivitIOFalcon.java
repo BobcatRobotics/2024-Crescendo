@@ -65,7 +65,7 @@ public class SpivitIOFalcon implements SpivitIO {
     angleConfigs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
     angleConfigs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ShooterConstants.bottomLimit / 360;
     angleConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
-    angleConfigs.CurrentLimits.StatorCurrentLimit = 40;
+    angleConfigs.CurrentLimits.StatorCurrentLimit = ShooterConstants.angleCurrentLimit;
 
     angleMotor.getConfigurator().apply(angleConfigs);
 

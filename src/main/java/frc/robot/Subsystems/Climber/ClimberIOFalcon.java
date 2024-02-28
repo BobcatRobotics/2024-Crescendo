@@ -28,7 +28,7 @@ public class ClimberIOFalcon implements ClimberIO {
         climberConfigs.MotorOutput.Inverted = ClimberConstants.climberMotorInvert;
         climberConfigs.MotorOutput.NeutralMode = ClimberConstants.climberMotorBrakeMode;
         climberConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
-        climberConfigs.CurrentLimits.StatorCurrentLimit = 50; //amps
+        climberConfigs.CurrentLimits.StatorCurrentLimit = ClimberConstants.currentLimit; //amps
         climberConfigs.Slot0.kP = ClimberConstants.kP;
         climberConfigs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
         climberConfigs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ClimberConstants.topLimit;

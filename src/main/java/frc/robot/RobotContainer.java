@@ -27,6 +27,7 @@ import frc.robot.Commands.Auto.AlignAndShoot;
 import frc.robot.Commands.Auto.AutoBreak;
 import frc.robot.Commands.Auto.AutoIntake;
 import frc.robot.Commands.Auto.ContinouslyAlignAndShoot;
+import frc.robot.Commands.Auto.ReleaseHook;
 import frc.robot.Commands.Auto.SubwooferShot;
 import frc.robot.Commands.Intake.TeleopIntake;
 import frc.robot.Commands.Multi.SetAmp;
@@ -58,6 +59,7 @@ import frc.robot.Subsystems.Swerve.SwerveModuleIOSim;
 import frc.robot.Subsystems.Trap.Trap;
 import frc.robot.Subsystems.Trap.TrapIO;
 import frc.robot.Subsystems.Trap.TrapIOFalcon;
+import frc.robot.Subsystems.Vision.CamMode;
 import frc.robot.Subsystems.Vision.Vision;
 import frc.robot.Subsystems.Vision.VisionIO;
 import frc.robot.Subsystems.Vision.VisionIOLimelight;
@@ -94,10 +96,11 @@ public class RobotContainer {
         m_intakeVision = new Vision(new VisionIOLimelight(LimelightConstants.intake.constants));// need index and
                                                                                                 // limelight constants
                                                                                                 // for the IO
+        m_intakeVision.setCamMode(CamMode.DRIVERCAM);
         m_shooterRightVision = new Vision(new VisionIOLimelight(LimelightConstants.shooterRight.constants));
-        m_shooterRightVision.setPipeline(LimelightConstants.shooterLeft.name, LimelightConstants.shooterRight.apriltagPipelineIndex);
+        m_shooterRightVision.setPipeline(LimelightConstants.shooterRight.apriltagPipelineIndex);
         m_shooterLeftVision = new Vision(new VisionIOLimelight(LimelightConstants.shooterLeft.constants));
-        m_shooterRightVision.setPipeline(LimelightConstants.shooterRight.name, LimelightConstants.shooterRight.apriltagPipelineIndex);
+        m_shooterRightVision.setPipeline(LimelightConstants.shooterRight.apriltagPipelineIndex);
         m_swerve = new Swerve(new GyroIOPigeon2(),
             new SwerveModuleIOFalcon(SwerveConstants.Module0Constants.constants),
             new SwerveModuleIOFalcon(SwerveConstants.Module1Constants.constants),
@@ -193,6 +196,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake", new AutoIntake(m_intake));
     NamedCommands.registerCommand("SpinUp", new InstantCommand(() -> m_shooter.setSpeed(ShooterConstants.fastShooterRPMSetpoint, ShooterConstants.fastShooterRPMSetpoint)));
     NamedCommands.registerCommand("Shoot", new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake));
+    NamedCommands.registerCommand("Unhook", new ReleaseHook(m_Spivit));
+    NamedCommands.registerCommand("StopIntake", new InstantCommand(m_intake::stop));
     // NamedCommands.registerCommand("Break", new AutoBreak(m_Spivit));
     /*
      * Auto Chooser
@@ -294,19 +299,18 @@ public class RobotContainer {
             m_Rumble
         ).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
+        gp.button(7).whileTrue(new StartEndCommand(() -> m_shooter.setSpeed(-1000, -1000), m_shooter::stop, m_shooter));
 
     /* Shooter Controls */
-    //start revving shooter
-    gp.button(10).onTrue(new InstantCommand(() -> m_shooter.setSpeed(5000, 5000))); // back right
-    //stop revving shooter
-    gp.button(9).onTrue(new InstantCommand(m_shooter::stop)); // back left 
+    //while button is held, rev shooter
+    gp.button(10).whileTrue(new StartEndCommand(() -> m_shooter.setSpeed(5000, 5000), m_shooter::stop, m_shooter)); // back right
     
 
     /* Spivit controls */
     //manual down
-    gp.axisGreaterThan(5, .6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(-0.03), m_Spivit::stopMotorFeedforward, m_Spivit));
+    gp.axisGreaterThan(5, .6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(-0.15), m_Spivit::stopMotorFeedforward, m_Spivit));
     //manual up
-    gp.axisLessThan(5, -.6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(0.03), m_Spivit::stopMotorFeedforward, m_Spivit));
+    gp.axisLessThan(5, -.6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(0.20), m_Spivit::stopMotorFeedforward, m_Spivit));
     //this sets it to a specific angle
     gp.button(5).whileTrue(new RunCommand(() -> m_Spivit.setAngle(m_swerve.calcAngleBasedOnRealRegression()), m_Spivit)).onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
 
@@ -327,14 +331,14 @@ public class RobotContainer {
     //this runs it down
     //gp.axisLessThan(1, -.6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(-0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
     gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1), m_amp::stop, m_amp));
-    // gp.button(8).onTrue(new InstantCommand(() -> m_swerve.resetPose(new Pose2d(FieldConstants.redSpeakerPose.plus(new Translation2d(-2, 0)), new Rotation2d()))));
-
+    gp.button(8).onTrue(new InstantCommand(() -> m_swerve.resetPose(new Pose2d(FieldConstants.redSpeakerPose.plus(new Translation2d(-2, 0)), new Rotation2d()))));
+    
 
     /* trap controls */
     gp.povRight().whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1), m_trap::stopArm, m_trap));
     gp.povLeft().whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(-0.1), m_trap::stopArm, m_trap));
     gp.button(7).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap));
-    gp.button(8).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(-0.3), m_trap::stopRoller, m_trap));
+    //gp.button(8).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(-0.3), m_trap::stopRoller, m_trap));
     //gp.button(7).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap)); // left trigger
     //this drives it towards the robot, i think
     //gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1), m_trap::stopArm, m_trap));

@@ -174,7 +174,9 @@ public class Constants {
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
         }
 
-        public static final Vector<N3> stateStdDevs = VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(1));
+        public static final Vector<N3> autostateStdDevs = VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(1));
+        public static final Vector<N3> telestateStdDevs = VecBuilder.fill(0.15, 0.15, Units.degreesToRadians(1));
+
 
     }
 
@@ -210,7 +212,13 @@ public class Constants {
 
     public static final class LimelightConstants{
 
-        public static double stdDev = 1.75; //dividing distance by this
+        public static final int blueSpeakerTag = 7;
+        public static final int redSpeakerTag = 4;
+
+
+        public static double autostdDev = 1.75; //dividing distance by this
+        public static double telestdDev = 2.5; //dividing distance by this
+
 
 
         public static final class intake{
@@ -234,6 +242,13 @@ public class Constants {
         }
 
         public static final class shooterLeft{
+
+            public static final double forward = -0.18415; //meters
+            public static final double right = -0.24765;
+            public static final double up = -0.34;
+            public static final double pitch = 33; //degrees
+            public static final double yaw = 180;
+
             public static final String name="limelight-left";
             public static final double verticalFOV = 49.7; //degrees obviously
             public static final double horizontalFOV = 63.3;
@@ -305,9 +320,10 @@ public class Constants {
         public static final double motionmagicAcceleration = 0;
         public static final double motionmagicJerk = 0;
         public static final double rotationAmount = 0.5;
+        public static final double currentLimit = 50;
 
-        public static final double topLimit = -130; // rotations
-        public static final double bottomLimit = 115;
+        public static final double topLimit = -227; // rotations
+        public static final double bottomLimit = 177;
 
         // the next constant should be the exact number of rotations that the elevator must do to get to the top position
         public static final double rotationToTopAmount = 50.0;
@@ -340,6 +356,7 @@ public class Constants {
         public static final double kTopD = 0;
         public static final double kTopV = 0.0113; //volts/rps, feedforward, output per unit of requested velocity 0.0113
         public static final double kTopS = 0.03; // volts, this is added to each output to overcome static friction
+        public static final double topCurrentLimit = 40;
 
         public static final int bottomMotorID = 13;
         public static final InvertedValue bottomMotorInvert = InvertedValue.CounterClockwise_Positive;
@@ -349,6 +366,7 @@ public class Constants {
         public static final double kBottomD = 0; //.11
         public static final double kBottomV = 0.016; //.014
         public static final double kBottomS = 0.03;
+        public static final double bottomCurrentLimit = 40;
 
         public static final int angleMotorID = 14;
         public static final InvertedValue angleMotorInvert = InvertedValue.Clockwise_Positive;
@@ -359,6 +377,7 @@ public class Constants {
         public static final double kAngleP = 7.5;
         public static final double kAngleI = 0;
         public static final double kAngleD = 0;
+        public static final double angleCurrentLimit = 40;
 
         public static final int cancoderID = 5;
         public static final AbsoluteSensorRangeValue sensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
@@ -373,6 +392,7 @@ public class Constants {
         public static final double stageShot = 259; //center of stage side closest to speaker
         public static final double subwooferShot = 285;
         public static final double ampPosition = 272;
+        public static final double releasehookSetpoint = 285;
 
 
         public static final int fastShooterRPMSetpoint = 5000; //TODO find this
@@ -388,6 +408,7 @@ public class Constants {
 
         public static final InvertedValue armInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue armBrakeMode = NeutralModeValue.Brake;
+
         public static final InvertedValue rollerInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue rollerBrakeMode = NeutralModeValue.Coast;
         // public static final double motionmagicCruiseVelocity = 0;

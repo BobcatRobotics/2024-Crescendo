@@ -9,6 +9,7 @@ import frc.robot.Constants.AmpConstants;
 import frc.robot.Constants.TrapConstants;
 import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Rumble.Rumble;
+import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Trap.Trap;
 
 public class TeleopIntake extends Command {
@@ -54,6 +55,7 @@ public class TeleopIntake extends Command {
             intake.intakeToShooter();
         } else if (runOut.getAsBoolean()) {
             intake.runOut();
+            
         } else if (intake.hasPiece()) {
             intake.stop();
         } else if (intakeShooter.getAsBoolean()) {

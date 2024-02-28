@@ -164,15 +164,22 @@
         "data": {
           "commands": [
             {
-              "type": "named",
+              "type": "parallel",
               "data": {
-                "name": "SpinUp"
-              }
-            },
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 0.5
+                "commands": [
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "Unhook"
+                    }
+                  },
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "SpinUp"
+                    }
+                  }
+                ]
               }
             },
             {
