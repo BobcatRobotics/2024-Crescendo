@@ -98,9 +98,7 @@ public class RobotContainer {
                                                                                                 // for the IO
         m_intakeVision.setCamMode(CamMode.DRIVERCAM);
         m_shooterRightVision = new Vision(new VisionIOLimelight(LimelightConstants.shooterRight.constants));
-        m_shooterRightVision.setPipeline(LimelightConstants.shooterRight.apriltagPipelineIndex);
         m_shooterLeftVision = new Vision(new VisionIOLimelight(LimelightConstants.shooterLeft.constants));
-        m_shooterRightVision.setPipeline(LimelightConstants.shooterRight.apriltagPipelineIndex);
         m_swerve = new Swerve(new GyroIOPigeon2(),
             new SwerveModuleIOFalcon(SwerveConstants.Module0Constants.constants),
             new SwerveModuleIOFalcon(SwerveConstants.Module1Constants.constants),
@@ -167,6 +165,8 @@ public class RobotContainer {
             new SwerveModuleIO() {
             },
             m_intakeVision, m_shooterLeftVision, m_shooterRightVision);
+                    m_intakeVision.setCamMode(CamMode.DRIVERCAM);
+
         m_intake = new Intake(new IntakeIO() {
         });
         m_shooter = new Shooter(new ShooterIO() {

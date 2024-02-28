@@ -101,7 +101,7 @@ public class Swerve extends SubsystemBase {
         
         poseEstimator = new SwerveDrivePoseEstimator(SwerveConstants.swerveKinematics, getYaw(), getModulePositions(),
                 new Pose2d(), SwerveConstants.autostateStdDevs, VecBuilder.fill(0, 0, 0));
-
+        
         // setpointGenerator =
         // SwerveSetpointGenerator.builder()
         // .kinematics(SwerveConstants.swerveKinematics)
@@ -215,7 +215,7 @@ public class Swerve extends SubsystemBase {
         Logger.recordOutput("Swerve/DesiredPose", desiredPose);
 
         // Update PoseEstimator if at least 1 tag is in view
-        if (Math.abs(shooterRightVision.getBotPose().getY()) <= 50
+        if (Math.abs(shooterRightVision.getBotPose().getY()) <= 50 && shooterRightVision.getBotPose().getX() < 50
                 && Math.abs(shooterRightVision.getBotPose().getY()) != 0) {
             // standard deviations are (distance to nearest apriltag)/2 for x and y and 10
             // degrees for theta
@@ -225,7 +225,7 @@ public class Swerve extends SubsystemBase {
                             shooterRightVision.getDistToTag() / getStdDev(), Units.degreesToRadians(60)));
             Logger.recordOutput("shooterrightvisiondist", shooterRightVision.getDistToTag());
         }
-        if (Math.abs(shooterLeftVision.getBotPose().getY()) <= 50
+        if (Math.abs(shooterLeftVision.getBotPose().getY()) <= 50 && shooterLeftVision.getBotPose().getX() < 50
                 && Math.abs(shooterLeftVision.getBotPose().getY()) != 0) {
             poseEstimator.addVisionMeasurement((shooterLeftVision.getBotPose()), (shooterLeftVision.getPoseTimestamp()),
                     VecBuilder.fill(shooterLeftVision.getDistToTag() / getStdDev(),
@@ -505,8 +505,8 @@ public class Swerve extends SubsystemBase {
 
     public double get0to2Pi(double rad) {
         rad = rad % (2 * Math.PI);
-        if (rad < (2 * Math.PI))
-            rad += (2 * Math.PI);
+        //if (rad < (2 * Math.PI)) //should this be here?
+        //    rad += (2 * Math.PI);
         return rad;
     }
 
@@ -524,20 +524,23 @@ public class Swerve extends SubsystemBase {
         return Math.atan(speaker.getY() / speaker.getX());
     }
 
+    private Rotation2d lastValue = new Rotation2d(); 
     public Rotation2d getAngleToSpeakerApriltag() {
 
-        //if (shooterLeftVision.getTV() && shooterRightVision.getTV()) {
-            return Rotation2d.fromRadians(get0to2Pi(getYaw().getRadians()
-                    - (-((shooterLeftVision.getTX().getRadians()) + shooterRightVision.getTX().getRadians()) / 2)));
-        //}
-        // else if(shooterLeftVision.getTV()){
-        // return shooterLeftVision.getTX().unaryMinus();
-        // }else if(shooterRightVision.getTV()){
-        // return shooterRightVision.getTX().unaryMinus();
-        // }
-        //else {
-          //  return Rotation2d.fromRadians(getAngleToSpeaker());
-        //}
+        Rotation2d odometryValue = Rotation2d.fromRadians(getAngleToSpeaker());
+
+        if (shooterLeftVision.getTV() && shooterRightVision.getTV()) {
+
+            lastValue =  Rotation2d.fromRadians(get0to2Pi((getYaw().getRadians()
+                    - (((shooterLeftVision.getTX().getRadians()) + shooterRightVision.getTX().getRadians()) / 2))));
+            return lastValue;
+        }
+
+        else if (odometryValue.minus(lastValue).getDegrees() < 2.5) { //if we dont see both tags and odometry is within 2.5 degrees of the last reported tag value
+            return odometryValue;
+        }else{
+            return odometryValue; //the previous statement does nothing because of this
+        }
     }
 
 }

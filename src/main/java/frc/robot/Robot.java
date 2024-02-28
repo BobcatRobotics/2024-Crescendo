@@ -85,12 +85,7 @@ public class Robot extends LoggedRobot {
 
     m_robotContainer = new RobotContainer();
 
-    m_robotContainer.m_intakeVision.setCamMode(CamMode.VISION);
-    m_robotContainer.m_intakeVision.setPipeline(LimelightConstants.intake.apriltagPipelineIndex);
-    m_robotContainer.m_shooterLeftVision.setCamMode(CamMode.VISION);
-    m_robotContainer.m_shooterLeftVision.setPipeline(LimelightConstants.shooterLeft.apriltagPipelineIndex);
-    m_robotContainer.m_shooterRightVision.setCamMode(CamMode.VISION);
-    m_robotContainer.m_shooterRightVision.setPipeline(LimelightConstants.shooterRight.apriltagPipelineIndex);
+    
   }
 
   @Override
@@ -104,7 +99,9 @@ public class Robot extends LoggedRobot {
   }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    
+  }
 
   @Override
   public void disabledExit() {}
@@ -131,7 +128,12 @@ public class Robot extends LoggedRobot {
     }
     m_robotContainer.configureBindings();  
 
-
+    m_robotContainer.m_intakeVision.setCamMode(CamMode.VISION);
+    m_robotContainer.m_intakeVision.setPipeline(LimelightConstants.intake.apriltagPipelineIndex);
+    m_robotContainer.m_shooterLeftVision.setCamMode(CamMode.VISION);
+    m_robotContainer.m_shooterLeftVision.setPipeline(LimelightConstants.shooterLeft.apriltagPipelineIndex);
+    m_robotContainer.m_shooterRightVision.setCamMode(CamMode.VISION);
+    m_robotContainer.m_shooterRightVision.setPipeline(LimelightConstants.shooterRight.apriltagPipelineIndex);
 
   }
 

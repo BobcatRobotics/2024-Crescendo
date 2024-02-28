@@ -19,10 +19,10 @@ import frc.lib.util.ModuleConstants;
 import frc.lib.util.limelightConstants;
 import static edu.wpi.first.apriltag.AprilTagFields.k2024Crescendo;
 
-
 public class Constants {
-    public static final Mode currentMode = RobotBase.isSimulation() ? Mode.SIM : (RobotBase.isReal() ? Mode.REAL : Mode.REPLAY);
-    
+    public static final Mode currentMode = RobotBase.isSimulation() ? Mode.SIM
+            : (RobotBase.isReal() ? Mode.REAL : Mode.REPLAY);
+
     public static enum Mode {
         /** Running on a real robot. */
         REAL,
@@ -35,7 +35,7 @@ public class Constants {
     }
 
     public static final double loopPeriodSecs = 0.02; // 50 hz
-    //public static final Integer AmpConstants = 0;
+    // public static final Integer AmpConstants = 0;
 
     public static final class SwerveConstants {
         public static final String canivore = "CANt_open_file";
@@ -43,28 +43,32 @@ public class Constants {
         public static final int pigeonID = 0;
 
         public static final double maxSpeed = 4.5; // max MODULE speed, NOT max chassis speed
-        public static final double maxAccel = 3; 
+        public static final double maxAccel = 3;
         public static final double maxAngularVelocity = Math.PI;
-        public static final double maxAngularAcceleration = Math.PI/2;
+        public static final double maxAngularAcceleration = Math.PI / 2;
 
         public static final double stickDeadband = 0.05;
 
         public static final boolean useFOC = true;
 
-        //AUTO ALIGNMENT ONLY !!!!!!11!!!1!1!!!
+        // AUTO ALIGNMENT ONLY !!!!!!11!!!1!1!!!
         public static final double rotationToleranceAlignment = 2.5;
 
         /* Drivetrain Constants */
         public static final double trackWidth = 0.521; // 20.5 in -> meters
         public static final double wheelBase = 0.521; // meters
-        public static final double driveBaseRadius = Math.sqrt(2 * Math.pow(wheelBase/2, 2));
-        public static final double wheelCircumference = Units.inchesToMeters(3.897375)*Math.PI; //avg of 3.8990 3.8985 3.8925 3.8995 checked 2/10/2024 9:36:45 AM
+        public static final double driveBaseRadius = Math.sqrt(2 * Math.pow(wheelBase / 2, 2));
+        public static final double wheelCircumference = Units.inchesToMeters(3.897375) * Math.PI; // avg of 3.8990
+                                                                                                  // 3.8985 3.8925
+                                                                                                  // 3.8995 checked
+                                                                                                  // 2/10/2024 9:36:45
+                                                                                                  // AM
         public static final double angleGearRatio = ((150.0 / 7.0) / 1.0);
-        // public static final double driveGearRatio =  (6.12 / 1.0);
-        public static final double driveGearRatio =  (5.36 / 1.0);
-        
+        // public static final double driveGearRatio = (6.12 / 1.0);
+        public static final double driveGearRatio = (5.36 / 1.0);
+
         /* Auto Constants */
-        public static final double translationKP = 2.25; //tuned for .5 m/s
+        public static final double translationKP = 2.25; // tuned for .5 m/s
         public static final double translationKI = 0.0;
         public static final double translationKD = 0.0;
 
@@ -79,10 +83,10 @@ public class Constants {
 
         /* Module Translations */
         public static final Translation2d[] moduleTranslations = new Translation2d[] {
-            new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
-            new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
-            new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
-            new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0)
+                new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
+                new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
+                new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
+                new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0)
         };
 
         /* Swerve Kinematics */
@@ -105,7 +109,7 @@ public class Constants {
         public static final double angleSupplyCurrentThreshold = 40.0;
         public static final double angleSupplyTimeThreshold = 0.1;
 
-        /* Drive  Configs */
+        /* Drive Configs */
         public static final InvertedValue driveMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
 
@@ -113,9 +117,9 @@ public class Constants {
         public static final double driveKI = 0.0;
         public static final double driveKD = 0.0;
 
-        public static final double driveKS = 0.14267/12;//(0.15565 / 12);
-        public static final double driveKV = 2.0718/12;//(2.0206 / 12);
-        public static final double driveKA = 0.42622/12;//(0.94648 / 12);
+        public static final double driveKS = 0.14267 / 12;// (0.15565 / 12);
+        public static final double driveKV = 2.0718 / 12;// (2.0206 / 12);
+        public static final double driveKA = 0.42622 / 12;// (0.94648 / 12);
 
         public static final boolean driveSupplyCurrentLimitEnable = true;
         public static final double driveSupplyCurrentLimit = 35.0;
@@ -129,7 +133,7 @@ public class Constants {
         public static final AbsoluteSensorRangeValue sensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
         public static final SensorDirectionValue sensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 
-        /* 
+        /*
          * Offsets must be done with bevels facing towards spivit motor
          */
         /* FRONT LEFT */
@@ -140,7 +144,8 @@ public class Constants {
 
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(104.8535 + 180); // 109.1 353.32
 
-            public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
+            public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
+                    angleOffset);
         }
 
         /* FRONT RIGHT */
@@ -151,7 +156,8 @@ public class Constants {
 
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(210.4102 - 180); // 214.1 9.14
 
-            public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
+            public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
+                    angleOffset);
         }
 
         /* BACK LEFT */
@@ -161,7 +167,8 @@ public class Constants {
             public static final int driveMotorID = 5;
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(251.4551 - 180); // 203.1 234.66
 
-            public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
+            public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
+                    angleOffset);
         }
 
         /* BACK RIGHT */
@@ -171,120 +178,133 @@ public class Constants {
             public static final int driveMotorID = 7;
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(141.3281 + 180); // 51.9 285.29
 
-            public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID, angleOffset);
+            public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
+                    angleOffset);
         }
 
         public static final Vector<N3> autostateStdDevs = VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(1));
         public static final Vector<N3> telestateStdDevs = VecBuilder.fill(0.15, 0.15, Units.degreesToRadians(1));
 
-
     }
 
-    public static final class FieldConstants{
-        //1 is closest to AMP, 5 is closest to SOURCE
-        public static final Translation2d centerlineNote1 = new Translation2d(250.5,29.64);
-        public static final Translation2d centerlineNote2 = new Translation2d(250.5,95.64);
-        public static final Translation2d centerlineNote3 = new Translation2d(250.5,161.64);
-        public static final Translation2d centerlineNote4 = new Translation2d(250.5,227.64);
-        public static final Translation2d centerlineNote5 = new Translation2d(250.5,293.64);
+    public static final class FieldConstants {
+        // 1 is closest to AMP, 5 is closest to SOURCE
+        public static final Translation2d centerlineNote1 = new Translation2d(250.5, 29.64);
+        public static final Translation2d centerlineNote2 = new Translation2d(250.5, 95.64);
+        public static final Translation2d centerlineNote3 = new Translation2d(250.5, 161.64);
+        public static final Translation2d centerlineNote4 = new Translation2d(250.5, 227.64);
+        public static final Translation2d centerlineNote5 = new Translation2d(250.5, 293.64);
 
         public static final double noteDiameter = Units.inchesToMeters(14);
 
         public static final double speakerHeight = Units.inchesToMeters(80.4375); // Center of opening
-        
-        public static final Translation2d blueSpeakerPose = new Translation2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42)); // Center of back of the opening
-        public static final Translation2d redSpeakerPose = new Translation2d(Units.inchesToMeters(652.73), Units.inchesToMeters(218.42)); // Center of back of the opening //652.73
-  
+
+        public static final Translation2d blueSpeakerPose = new Translation2d(Units.inchesToMeters(-1.5),
+                Units.inchesToMeters(218.42)); // Center of back of the opening
+        public static final Translation2d redSpeakerPose = new Translation2d(Units.inchesToMeters(652.73),
+                Units.inchesToMeters(218.42)); // Center of back of the opening //652.73
+
     }
 
-
-    
-    public static final class AprilTagConstants{
-    public static AprilTagFieldLayout layout;
-    static{ 
-        try{
-            layout = AprilTagFieldLayout.loadFromResource(k2024Crescendo.m_resourceFile);
-        }catch(Exception e){
-            e.printStackTrace();
+    public static final class AprilTagConstants {
+        public static AprilTagFieldLayout layout;
+        static {
+            try {
+                layout = AprilTagFieldLayout.loadFromResource(k2024Crescendo.m_resourceFile);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
-    }
 
-    public static final class LimelightConstants{
+    public static final class LimelightConstants {
 
         public static final int blueSpeakerTag = 7;
         public static final int redSpeakerTag = 4;
 
+        public static double autostdDev = 1.75; // dividing distance by this
+        public static double telestdDev = 50; // dividing distance by this
 
-        public static double autostdDev = 1.75; //dividing distance by this
-        public static double telestdDev = 2.5; //dividing distance by this
+        public static final class intake {
 
-
-
-        public static final class intake{
- 
             public static final String name = "limelight-intake";
-            public static final double verticalFOV = 49.7; //degrees obviously
+            public static final double verticalFOV = 49.7; // degrees obviously
             public static final double horizontalFOV = 63.3;
             public static final double limelightMountHeight = Units.inchesToMeters(20.5);
-            public static final int detectorPiplineIndex = 2; 
+            public static final int detectorPiplineIndex = 2;
             public static final int apriltagPipelineIndex = 1;
             public static final int horPixles = 1280;
-            public static final double filterTimeConstant=  0.1; // in seconds, inputs occuring over a time period significantly shorter than this will be thrown out
-            public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.1,0.1, Units.degreesToRadians(10));
+            public static final double filterTimeConstant = 0.1; // in seconds, inputs occuring over a time period
+                                                                 // significantly shorter than this will be thrown out
+            public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.1, 0.1,
+                    Units.degreesToRadians(10));
             public static final int movingAverageNumTaps = 20;
 
-            public static final limelightConstants constants = new limelightConstants(name, verticalFOV, horizontalFOV, limelightMountHeight, detectorPiplineIndex, apriltagPipelineIndex,horPixles, filterTimeConstant,visionMeasurementStdDevs,movingAverageNumTaps);
+            public static final limelightConstants constants = new limelightConstants(name, verticalFOV, horizontalFOV,
+                    limelightMountHeight, detectorPiplineIndex, apriltagPipelineIndex, horPixles, filterTimeConstant,
+                    visionMeasurementStdDevs, movingAverageNumTaps);
 
             public static final String ip = "10.1.77.11";
 
-
         }
 
-        public static final class shooterLeft{
+        public static final class shooterLeft {
 
-            public static final double forward = -0.18415; //meters
+            public static final double forward = -0.18415; // meters
             public static final double right = -0.24765;
             public static final double up = -0.34;
-            public static final double pitch = 33; //degrees
+            public static final double pitch = 33; // degrees
             public static final double yaw = 180;
 
-            public static final String name="limelight-left";
-            public static final double verticalFOV = 49.7; //degrees obviously
+            public static final String name = "limelight-left";
+            public static final double verticalFOV = 49.7; // degrees obviously
             public static final double horizontalFOV = 63.3;
             public static final double limelightMountHeight = Units.inchesToMeters(20.5);
-            public static final int detectorPiplineIndex = 2; 
+            public static final int detectorPiplineIndex = 2;
             public static final int apriltagPipelineIndex = 1;
             public static final int horPixles = 1280;
-            public static final double filterTimeConstant=  0.1; // in seconds, inputs occuring over a time period significantly shorter than this will be thrown out
-            public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.1,0.1, Units.degreesToRadians(10));
+            public static final double filterTimeConstant = 0.1; // in seconds, inputs occuring over a time period
+                                                                 // significantly shorter than this will be thrown out
+            public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.1, 0.1,
+                    Units.degreesToRadians(10));
             public static final int movingAverageNumTaps = 20;
 
-            public static final limelightConstants constants = new limelightConstants(name, verticalFOV, horizontalFOV, limelightMountHeight, detectorPiplineIndex, apriltagPipelineIndex,horPixles, filterTimeConstant,visionMeasurementStdDevs,movingAverageNumTaps);
+            public static final limelightConstants constants = new limelightConstants(name, verticalFOV, horizontalFOV,
+                    limelightMountHeight, detectorPiplineIndex, apriltagPipelineIndex, horPixles, filterTimeConstant,
+                    visionMeasurementStdDevs, movingAverageNumTaps);
             public static final String ip = "10.1.77.13";
 
         }
-        
-        public static final class shooterRight{
-            public static final String name="limelight-right";
-            public static final double verticalFOV = 49.7; //degrees obviously
+
+        public static final class shooterRight {
+
+            public static final double forward = -0.18415; // meters
+            public static final double right = -0.24765;
+            public static final double up = -0.34;
+            public static final double pitch = 33; // degrees
+            public static final double yaw = 180;
+
+            public static final String name = "limelight-right";
+            public static final double verticalFOV = 49.7; // degrees obviously
             public static final double horizontalFOV = 63.3;
             public static final double limelightMountHeight = Units.inchesToMeters(20.5);
-            public static final int detectorPiplineIndex = 2; 
+            public static final int detectorPiplineIndex = 2;
             public static final int apriltagPipelineIndex = 1;
             public static final int horPixles = 1280;
-            public static final double filterTimeConstant=  0.1; // in seconds, inputs occuring over a time period significantly shorter than this will be thrown out
-            public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.1,0.1, Units.degreesToRadians(10));
+            public static final double filterTimeConstant = 0.1; // in seconds, inputs occuring over a time period
+                                                                 // significantly shorter than this will be thrown out
+            public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.1, 0.1,
+                    Units.degreesToRadians(10));
             public static final int movingAverageNumTaps = 20;
 
-            public static final limelightConstants constants = new limelightConstants(name, verticalFOV, horizontalFOV, limelightMountHeight, detectorPiplineIndex, apriltagPipelineIndex,horPixles, filterTimeConstant,visionMeasurementStdDevs,movingAverageNumTaps);
+            public static final limelightConstants constants = new limelightConstants(name, verticalFOV, horizontalFOV,
+                    limelightMountHeight, detectorPiplineIndex, apriltagPipelineIndex, horPixles, filterTimeConstant,
+                    visionMeasurementStdDevs, movingAverageNumTaps);
             public static final String ip = "10.1.77.12";
 
-    
         }
 
     }
-
 
     public static final class IntakeConstants {
         public static final int switchMotorID = 9; // This one switches to feed shooter vs trap
@@ -306,10 +326,10 @@ public class Constants {
         public static final double tofTresh = 150; // millimeters
     }
 
-    public static final class ClimberConstants{
+    public static final class ClimberConstants {
         public static final int motorID = 18;
-        public static final NeutralModeValue climberMotorBrakeMode = NeutralModeValue.Brake;    
-        public static final InvertedValue climberMotorInvert =  InvertedValue.Clockwise_Positive;  
+        public static final NeutralModeValue climberMotorBrakeMode = NeutralModeValue.Brake;
+        public static final InvertedValue climberMotorInvert = InvertedValue.Clockwise_Positive;
         public static final double kP = 0.05;
         public static final double kI = 0;
         public static final double kD = 0;
@@ -325,36 +345,42 @@ public class Constants {
         public static final double topLimit = -227; // rotations
         public static final double bottomLimit = 177;
 
-        // the next constant should be the exact number of rotations that the elevator must do to get to the top position
+        // the next constant should be the exact number of rotations that the elevator
+        // must do to get to the top position
         public static final double rotationToTopAmount = 50.0;
 
     }
 
     public static final class ShooterConstants {
 
-        //public static final double bottomFeedForwardBound = 0;
-        //public static final double topFeedForwardBound = 0;
+        // public static final double bottomFeedForwardBound = 0;
+        // public static final double topFeedForwardBound = 0;
         public static final double feedforwardPercentValue = 0.0302;
 
-        //position needed to deploy the amp hood
-        public static final double ampDeploySafeValue = 280; //266.5; 
+        // position needed to deploy the amp hood
+        public static final double ampDeploySafeValue = 280; // 266.5;
 
-        public static final double rpsTolerance = 200/60; //THIS IS IN RPS
+        public static final double rpsTolerance = 200 / 60; // THIS IS IN RPS
         public static final double angleTolerance = 1; // THIS IS IN DEGREES
 
-
-        //some notes on velocity pid
+        // some notes on velocity pid
         // kI, kD - not used
         // kP - controls how your output changes with increased error
-        // kv - similar to kP, this is essentially a feedforward to calculate the voltage needed to get to the general velocity you want to be at, then the kP takes over for fine tuning
-        // kS - static friction gain, there is a small amount of energy lost to friction, this gain accounts for it. You can think of it as just the absolute minimum voltage required to get the motor spinning, this amount is added to every output
+        // kv - similar to kP, this is essentially a feedforward to calculate the
+        // voltage needed to get to the general velocity you want to be at, then the kP
+        // takes over for fine tuning
+        // kS - static friction gain, there is a small amount of energy lost to
+        // friction, this gain accounts for it. You can think of it as just the absolute
+        // minimum voltage required to get the motor spinning, this amount is added to
+        // every output
         public static final int topMotorID = 12;
         public static final InvertedValue topMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue topMotorBrakeMode = NeutralModeValue.Coast;
-        public static final double kTopP = 0.05; //volts/rps 0.05
+        public static final double kTopP = 0.05; // volts/rps 0.05
         public static final double kTopI = 0;
         public static final double kTopD = 0;
-        public static final double kTopV = 0.0113; //volts/rps, feedforward, output per unit of requested velocity 0.0113
+        public static final double kTopV = 0.0113; // volts/rps, feedforward, output per unit of requested velocity
+                                                   // 0.0113
         public static final double kTopS = 0.03; // volts, this is added to each output to overcome static friction
         public static final double topCurrentLimit = 40;
 
@@ -363,8 +389,8 @@ public class Constants {
         public static final NeutralModeValue bottomMotorBrakeMode = NeutralModeValue.Coast;
         public static final double kBottomP = 0.25; // .25
         public static final double kBottomI = 0;
-        public static final double kBottomD = 0; //.11
-        public static final double kBottomV = 0.016; //.014
+        public static final double kBottomD = 0; // .11
+        public static final double kBottomV = 0.016; // .014
         public static final double kBottomS = 0.03;
         public static final double bottomCurrentLimit = 40;
 
@@ -383,26 +409,25 @@ public class Constants {
         public static final AbsoluteSensorRangeValue sensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
         public static final SensorDirectionValue sensorDirection = SensorDirectionValue.CounterClockwise_Positive;
         public static final Rotation2d offset = new Rotation2d();
-        public static final double rotorToSensorRatio = (64/14)*(58/18)*(58/11);
+        public static final double rotorToSensorRatio = (64 / 14) * (58 / 18) * (58 / 11);
 
         public static final double bottomLimit = 250.5; // degrees, converted to rotations later on
-        public static final double topLimit = 285; 
+        public static final double topLimit = 285;
         public static final double podiumShot = 267;
         public static final double wingShot = 256.5;
-        public static final double stageShot = 259; //center of stage side closest to speaker
+        public static final double stageShot = 259; // center of stage side closest to speaker
         public static final double subwooferShot = 285;
-        public static final double ampPosition = 272;
+        public static final double ampPosition = 274.5; // 272
         public static final double releasehookSetpoint = 285;
 
-
-        public static final int fastShooterRPMSetpoint = 5000; //TODO find this
+        public static final int fastShooterRPMSetpoint = 5000; // TODO find this
         public static final int slowShooterRPMSetpoint = 0;
-     
+
         public static final double stow = bottomLimit + 2;
 
     }
 
-    public static final class TrapConstants{
+    public static final class TrapConstants {
         public static final int rollerID = 17;
         public static final int armID = 16;
 
@@ -415,12 +440,13 @@ public class Constants {
         // public static final double motionmagicAcceleration = 0;
         // public static final double motionmagicJerk = 0;
 
-        public static final double poptartRotationAmt = 10000000.0; //the amount the trollers need to rotate for the note to be at the desired position TODO find this
+        public static final double poptartRotationAmt = 10000000.0; // the amount the trollers need to rotate for the
+                                                                    // note to be at the desired position TODO find this
     }
 
     public static final class AmpConstants {
         public static final int canID = 15;
-        public static final double kP = 0.0543; 
+        public static final double kP = 0.0543;
         public static final double kI = 0.005;
         public static final double kD = 0;
         public static final double kS = 0;
@@ -430,22 +456,19 @@ public class Constants {
         public static final double motionMagicAcceleration = 0;
         public static final double motionMagicJerk = 0;
         public static final double rotationAmount = 0.5;
-        public static final double softLimitThresh = 0; //TODO find this
-		public static final double forwardSoftLimit  = 0;
-        public static final double reverseSoftLimit  = 0;
+        public static final double softLimitThresh = 0; // TODO find this
+        public static final double forwardSoftLimit = 0;
+        public static final double reverseSoftLimit = 0;
         public static final InvertedValue ampInvertedValue = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue ampNeutralModeValue = NeutralModeValue.Brake;
         public static final double ampStatorCurrentLimit = 80;
 
-
-        //encoder values
-        public static final double deployValue = 175; 
-        public static final double retractValue = 0.0;//yes zero is correct
+        // encoder values
+        public static final double deployValue = 175;
+        public static final double retractValue = 0.0;// yes zero is correct
         public static final double crashThreshold = 88;
 
         public static final double deployTolerance = 1.5; // degrees of tolerance
         public static final double retractTolerance = 2.5;
     }
 }
-
-
