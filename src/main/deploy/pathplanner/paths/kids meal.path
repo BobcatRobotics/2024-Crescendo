@@ -145,12 +145,6 @@
             {
               "type": "named",
               "data": {
-                "name": "Unhook"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
                 "name": "StartShooting"
               }
             }

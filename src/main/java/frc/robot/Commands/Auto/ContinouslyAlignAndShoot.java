@@ -51,7 +51,7 @@ public class ContinouslyAlignAndShoot extends Command {
   @Override
   public void execute() {
     //need to rotate by 180 deg to account for pathplanner strangeness
-    swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker()).rotateBy(Rotation2d.fromDegrees(180)));
+    swerve.setRotationTarget(swerve.getAngleToSpeakerApriltag().rotateBy(Rotation2d.fromDegrees(180)));
     //shooter.setSpeed(shooterRPM, shooterRPM);
     spivit.setAngle(swerve.calcAngleBasedOnRealRegression()-2);
   }

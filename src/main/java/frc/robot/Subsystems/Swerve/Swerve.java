@@ -517,7 +517,7 @@ public class Swerve extends SubsystemBase {
     /**
      * 
      * @return the angle to the speaker in radians
-     * @deprecated
+     * 
      */
     public double getAngleToSpeaker() {
         Translation2d speaker = getTranslationToSpeaker();

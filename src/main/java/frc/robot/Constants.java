@@ -223,7 +223,7 @@ public class Constants {
         public static final int redSpeakerTag = 4;
 
         public static double autostdDev = 1.75; // dividing distance by this
-        public static double telestdDev = 50; // dividing distance by this
+        public static double telestdDev = 47; // dividing distance by this
 
         public static final class intake {
 
@@ -448,7 +448,7 @@ public class Constants {
         public static final int canID = 15;
         public static final double kP = 0.0543;
         public static final double kI = 0.005;
-        public static final double kD = 0;
+        public static final double kD = 0.005;
         public static final double kS = 0;
         public static final double kV = 0;
         public static final double kA = 0;
@@ -461,10 +461,10 @@ public class Constants {
         public static final double reverseSoftLimit = 0;
         public static final InvertedValue ampInvertedValue = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue ampNeutralModeValue = NeutralModeValue.Brake;
-        public static final double ampStatorCurrentLimit = 80;
+        public static final double ampStatorCurrentLimit = 30;
 
         // encoder values
-        public static final double deployValue = 175;
+        public static final double deployValue = 172;
         public static final double retractValue = 0.0;// yes zero is correct
         public static final double crashThreshold = 88;
 

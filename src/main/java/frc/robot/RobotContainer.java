@@ -316,13 +316,13 @@ public class RobotContainer {
 
     /* amp controls */ 
     //retract
-    gp.button(1).onTrue(new SetAmp(m_amp, m_Spivit, false)); // b
+    gp.button(1).onTrue(new SetAmp(m_amp, m_Spivit, false).withInterruptBehavior(InterruptionBehavior.kCancelSelf)); // b
     //deploy
-    gp.button(2).onTrue(new SetAmp(m_amp, m_Spivit, true)); // a
+    gp.button(2).onTrue(new SetAmp(m_amp, m_Spivit, true).withInterruptBehavior(InterruptionBehavior.kCancelSelf)); // a
     //zero
     gp.button(3).onTrue(new InstantCommand(m_amp::zero)); // y
     //shooter amp speed
-    gp.button(4).onTrue(new InstantCommand(() -> m_shooter.setSpeed(2500, 2500))); // x
+    gp.button(4).onTrue(new InstantCommand(() -> m_shooter.setSpeed(2500, 2500))).onFalse(new InstantCommand(m_shooter::stop)); // x
 
 
     //manual
@@ -331,7 +331,7 @@ public class RobotContainer {
     //this runs it down
     //gp.axisLessThan(1, -.6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(-0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
     gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1), m_amp::stop, m_amp));
-    gp.button(8).onTrue(new InstantCommand(() -> m_swerve.resetPose(new Pose2d(FieldConstants.redSpeakerPose.plus(new Translation2d(-2, 0)), new Rotation2d()))));
+    gp.button(8).onTrue(new InstantCommand(() -> m_swerve.resetPose(new Pose2d(FieldConstants.redSpeakerPose.plus(new Translation2d(-1.3, 0)), Rotation2d.fromDegrees(180)))));
     
 
     /* trap controls */
