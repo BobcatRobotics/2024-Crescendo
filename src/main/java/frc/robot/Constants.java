@@ -77,9 +77,13 @@ public class Constants {
         public static final double rotationKD = 0.0;
 
         /* Teleop Constants */
-        public static final double teleopRotationKP = 3.5;
+        public static final double teleopRotationKP = 2;
         public static final double teleopRotationKI = 0.0;
         public static final double teleopRotationKD = 0.0;
+
+        public static final double autoAlignRotationKP = 3.5;
+        public static final double autoAlignRotationKI = 0.0;
+        public static final double autoAlignRotationKD = 0.0;
 
         /* Module Translations */
         public static final Translation2d[] moduleTranslations = new Translation2d[] {
@@ -188,6 +192,9 @@ public class Constants {
     }
 
     public static final class FieldConstants {
+        public static final double fieldLength = 16.541; //meters
+        public static final double fieldWidth = 8.211;
+
         // 1 is closest to AMP, 5 is closest to SOURCE
         public static final Translation2d centerlineNote1 = new Translation2d(250.5, 29.64);
         public static final Translation2d centerlineNote2 = new Translation2d(250.5, 95.64);
@@ -223,7 +230,7 @@ public class Constants {
         public static final int redSpeakerTag = 4;
 
         public static double autostdDev = 1.75; // dividing distance by this
-        public static double telestdDev = 47; // dividing distance by this
+        public static double telestdDev = 52; // dividing distance by this
 
         public static final class intake {
 

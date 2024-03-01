@@ -20,12 +20,14 @@ public class AutoIntake extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    finished = false;
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!intake.hasPiece() && !finished) {
+    if (!intake.hasPiece()) {
       intake.intakeToShooter();
     } else {
       intake.stop();

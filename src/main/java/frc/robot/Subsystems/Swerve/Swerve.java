@@ -69,6 +69,7 @@ public class Swerve extends SubsystemBase {
     // });
 
     private final PIDController rotationPID;
+    private final PIDController autoAlignPID;
     private double lastMovingYaw = 0.0;
     private boolean rotating = false;
 
@@ -96,12 +97,14 @@ public class Swerve extends SubsystemBase {
 
         rotationPID = new PIDController(SwerveConstants.teleopRotationKP, SwerveConstants.teleopRotationKI,
                 SwerveConstants.teleopRotationKD);
+        autoAlignPID = new PIDController(SwerveConstants.autoAlignRotationKP, SwerveConstants.autoAlignRotationKI,
+                SwerveConstants.autoAlignRotationKD);
 
         // Using last year's default deviations, need to tune
-        
+
         poseEstimator = new SwerveDrivePoseEstimator(SwerveConstants.swerveKinematics, getYaw(), getModulePositions(),
                 new Pose2d(), SwerveConstants.autostateStdDevs, VecBuilder.fill(0, 0, 0));
-        
+
         // setpointGenerator =
         // SwerveSetpointGenerator.builder()
         // .kinematics(SwerveConstants.swerveKinematics)
@@ -120,7 +123,7 @@ public class Swerve extends SubsystemBase {
                                 SwerveConstants.rotationKD),
                         SwerveConstants.maxSpeed,
                         SwerveConstants.driveBaseRadius,
-                        new ReplanningConfig(true, true)),
+                        new ReplanningConfig(true, false)),
                 () -> {
                     // Boolean supplier that controls when the path will be mirrored for the red
                     // alliance
@@ -215,8 +218,11 @@ public class Swerve extends SubsystemBase {
         Logger.recordOutput("Swerve/DesiredPose", desiredPose);
 
         // Update PoseEstimator if at least 1 tag is in view
-        if (Math.abs(shooterRightVision.getBotPose().getY()) <= 50 && shooterRightVision.getBotPose().getX() < 50
-                && Math.abs(shooterRightVision.getBotPose().getY()) != 0) {
+        if (shooterRightVision.getBotPose().getY() <= FieldConstants.fieldWidth &&
+                shooterRightVision.getBotPose().getY() >= 0 &&
+                shooterRightVision.getBotPose().getX() <= FieldConstants.fieldLength &&
+                shooterRightVision.getBotPose().getX() >= 0 &&
+                Math.abs(shooterRightVision.getBotPose().getY()) != 0) {
             // standard deviations are (distance to nearest apriltag)/2 for x and y and 10
             // degrees for theta
             poseEstimator.addVisionMeasurement((shooterRightVision.getBotPose()),
@@ -225,8 +231,11 @@ public class Swerve extends SubsystemBase {
                             shooterRightVision.getDistToTag() / getStdDev(), Units.degreesToRadians(60)));
             Logger.recordOutput("shooterrightvisiondist", shooterRightVision.getDistToTag());
         }
-        if (Math.abs(shooterLeftVision.getBotPose().getY()) <= 50 && shooterLeftVision.getBotPose().getX() < 50
-                && Math.abs(shooterLeftVision.getBotPose().getY()) != 0) {
+        if (shooterLeftVision.getBotPose().getY() <= FieldConstants.fieldWidth &&
+                shooterLeftVision.getBotPose().getY() >= 0 &&
+                shooterLeftVision.getBotPose().getX() <= FieldConstants.fieldLength &&
+                shooterLeftVision.getBotPose().getX() >= 0 &&
+                Math.abs(shooterLeftVision.getBotPose().getY()) != 0) {
             poseEstimator.addVisionMeasurement((shooterLeftVision.getBotPose()), (shooterLeftVision.getPoseTimestamp()),
                     VecBuilder.fill(shooterLeftVision.getDistToTag() / getStdDev(),
                             shooterLeftVision.getDistToTag() / getStdDev(),
@@ -239,7 +248,7 @@ public class Swerve extends SubsystemBase {
 
     }
 
-    public double getStdDev(){
+    public double getStdDev() {
         return DriverStation.isAutonomous() ? LimelightConstants.autostdDev : LimelightConstants.telestdDev;
     }
 
@@ -285,11 +294,11 @@ public class Swerve extends SubsystemBase {
                         rotation);
 
         if (snapToSpeaker) {
-            desiredSpeeds.omegaRadiansPerSecond = rotationPID.calculate(get0to2Pi(getYaw().getRadians()),
+            desiredSpeeds.omegaRadiansPerSecond = autoAlignPID.calculate(get0to2Pi(getYaw().getRadians()),
                     get0to2Pi(angleToSpeaker));
             lastMovingYaw = getYaw().getRadians();
         } else if (snapToAmp) {
-            desiredSpeeds.omegaRadiansPerSecond = rotationPID.calculate(get0to2Pi(getYaw().getRadians()),
+            desiredSpeeds.omegaRadiansPerSecond = autoAlignPID.calculate(get0to2Pi(getYaw().getRadians()),
                     Math.PI / 2);
             lastMovingYaw = getYaw().getRadians();
         } else {
@@ -505,8 +514,8 @@ public class Swerve extends SubsystemBase {
 
     public double get0to2Pi(double rad) {
         rad = rad % (2 * Math.PI);
-        //if (rad < (2 * Math.PI)) //should this be here?
-        //    rad += (2 * Math.PI);
+        // if (rad < (2 * Math.PI)) //should this be here?
+        // rad += (2 * Math.PI);
         return rad;
     }
 
@@ -524,22 +533,28 @@ public class Swerve extends SubsystemBase {
         return Math.atan(speaker.getY() / speaker.getX());
     }
 
-    private Rotation2d lastValue = new Rotation2d(); 
+    private Rotation2d lastValue = new Rotation2d();
+
     public Rotation2d getAngleToSpeakerApriltag() {
 
         Rotation2d odometryValue = Rotation2d.fromRadians(getAngleToSpeaker());
 
         if (shooterLeftVision.getTV() && shooterRightVision.getTV()) {
 
-            lastValue =  Rotation2d.fromRadians(get0to2Pi((getYaw().getRadians()
+            lastValue = Rotation2d.fromRadians(get0to2Pi((getYaw().getRadians()
                     - (((shooterLeftVision.getTX().getRadians()) + shooterRightVision.getTX().getRadians()) / 2))));
+            Logger.recordOutput("Autoalign/Using Tag", true);
             return lastValue;
         }
 
-        else if (odometryValue.minus(lastValue).getDegrees() < 2.5) { //if we dont see both tags and odometry is within 2.5 degrees of the last reported tag value
+        else if (odometryValue.minus(lastValue).getDegrees() < 2.5) { // if we dont see both tags and odometry is within
+                                                                      // 2.5 degrees of the last reported tag value
+            Logger.recordOutput("Autoalign/Using Tag", false);
             return odometryValue;
-        }else{
-            return odometryValue; //the previous statement does nothing because of this
+
+        } else {
+            Logger.recordOutput("Autoalign/Using Tag", false);
+            return odometryValue; // the previous statement does nothing because of this
         }
     }
 

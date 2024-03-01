@@ -48,16 +48,16 @@
     },
     {
       "anchor": {
-        "x": 7.903518212534706,
-        "y": 0.9027404996390763
+        "x": 8.08,
+        "y": 0.73
       },
       "prevControl": {
-        "x": 6.962199059064904,
-        "y": 1.2271628666968686
+        "x": 7.138680846530198,
+        "y": 1.0544223670577924
       },
       "nextControl": {
-        "x": 8.243871474059961,
-        "y": 0.7854389337112511
+        "x": 8.420353261525255,
+        "y": 0.6126984340721747
       },
       "isLocked": false,
       "linkedName": null
@@ -111,13 +111,18 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 5.05,
-      "rotationDegrees": 20.0,
+      "rotationDegrees": 2.5248119106827596,
       "rotateFast": false
     },
     {
       "waypointRelativePos": 3,
-      "rotationDegrees": -11.11855626891455,
+      "rotationDegrees": 0.0,
       "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 0.75,
+      "rotationDegrees": -46.355877312823,
+      "rotateFast": false
     }
   ],
   "constraintZones": [
@@ -170,13 +175,13 @@
                   {
                     "type": "named",
                     "data": {
-                      "name": "Unhook"
+                      "name": "SpinUp"
                     }
                   },
                   {
-                    "type": "named",
+                    "type": "wait",
                     "data": {
-                      "name": "SpinUp"
+                      "waitTime": 0.5
                     }
                   }
                 ]
@@ -211,7 +216,7 @@
     },
     {
       "name": "shoot",
-      "waypointRelativePos": 3.95,
+      "waypointRelativePos": 3.8,
       "command": {
         "type": "parallel",
         "data": {

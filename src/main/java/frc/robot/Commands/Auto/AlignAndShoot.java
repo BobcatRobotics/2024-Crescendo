@@ -34,6 +34,7 @@ public class AlignAndShoot extends Command {
   @Override
   public void initialize() {
     shooter.setSpeed(ShooterConstants.fastShooterRPMSetpoint, ShooterConstants.fastShooterRPMSetpoint);
+    finished = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -54,8 +55,11 @@ public class AlignAndShoot extends Command {
       timer.start();
       intake.intakeToShooter();
     }
-    if(timer.advanceIfElapsed(1)){
+    if(timer.hasElapsed(1)){
+      shooter.stop();
       intake.stop();
+      spivit.stopMotor();
+      swerve.setRotationTarget(null);
       finished = true;
     }
   

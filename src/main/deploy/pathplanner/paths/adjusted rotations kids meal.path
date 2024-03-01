@@ -92,7 +92,23 @@
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.95,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2.05,
+      "rotationDegrees": -23.34837607701972,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 3.95,
+      "rotationDegrees": 19.158202744866237,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [
     {
       "name": "New Constraints Zone",
@@ -133,15 +149,9 @@
       "name": "align",
       "waypointRelativePos": 0.0,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "SpinUp"
-              }
-            },
             {
               "type": "named",
               "data": {
@@ -201,7 +211,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 26.647897124692697,
+    "rotation": -5.483701391559378,
     "rotateFast": true
   },
   "reversed": false,

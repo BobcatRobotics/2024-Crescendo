@@ -207,8 +207,9 @@ public class RobotContainer {
      */
     autoChooser.addDefaultOption("Do Nothing", Commands.none());
     autoChooser.addOption("CenterShootNScoot", new PathPlannerAuto("centerShootNScoot"));
-    autoChooser.addOption("KidsMeal", new PathPlannerAuto("kids meal"));
+    autoChooser.addOption("KidsMeal", new PathPlannerAuto("AdjustedKidsMeal"));
     autoChooser.addOption("OutOfTheWay", new PathPlannerAuto("out of the way"));
+    //autoChooser.addOption("AdjustedKidsMeal", new PathPlannerAuto("AdjustedKidsMeal"));
 
     configureBindings();
     SmartDashboard.putNumber("ShooterRPM", 0);
@@ -339,7 +340,7 @@ public class RobotContainer {
     gp.povLeft().whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(-0.1), m_trap::stopArm, m_trap));
     gp.button(7).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap));
     //gp.button(8).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(-0.3), m_trap::stopRoller, m_trap));
-    //gp.button(7).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap)); // left trigger
+    gp.button(9).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap)); // back left
     //this drives it towards the robot, i think
     //gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1), m_trap::stopArm, m_trap));
     //this drives it towards the trap
