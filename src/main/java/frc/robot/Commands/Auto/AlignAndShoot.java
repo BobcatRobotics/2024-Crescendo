@@ -9,12 +9,14 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Spivit.Spivit;
 import frc.robot.Subsystems.Swerve.Swerve;
+import frc.robot.Util.BobcatUtil;
 
 public class AlignAndShoot extends Command {
   /** Creates a new AlignToShooter. */
@@ -44,8 +46,11 @@ public class AlignAndShoot extends Command {
     timer.reset();
     spivit.setAngle(swerve.calcAngleBasedOnRealRegression());
     
-    
-    swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker()).rotateBy(Rotation2d.fromDegrees(180)));
+    if (BobcatUtil.getAlliance() == Alliance.Blue) {
+      swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker()));
+    } else {
+      swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker()).rotateBy(Rotation2d.fromDegrees(180)));
+    }
     Logger.recordOutput("Aligment/spivit", spivit.aligned());
     Logger.recordOutput("Aligment/swerve", swerve.aligned());
     Logger.recordOutput("Aligment/shooter", shooter.aboveSpeed(3000));
