@@ -230,7 +230,7 @@ public class Constants {
         public static final int redSpeakerTag = 4;
 
         public static double autostdDev = 1.75; // dividing distance by this
-        public static double telestdDev = 52; // dividing distance by this
+        public static double telestdDev = 57; // dividing distance by this
 
         public static final class intake {
 
