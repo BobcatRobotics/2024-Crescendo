@@ -55,7 +55,6 @@ public class TeleopIntake extends Command {
             intake.intakeToShooter();
         } else if (runOut.getAsBoolean()) {
             intake.runOut();
-            
         } else if (intake.hasPiece()) {
             intake.stop();
         } else if (intakeShooter.getAsBoolean()) {
@@ -63,11 +62,13 @@ public class TeleopIntake extends Command {
         } else if (intakeTrap.getAsBoolean()) {    
             intake.intakeToTrap();
             trap.setArmPercent(0.05);
+            trap.setRollerPercent(-0.05);
             trapping = true;
         } else {
             intake.stop();
             if(trapping){
              trap.stopArm();
+             trap.stopRoller();
              trapping = false;
             }
         }
@@ -76,5 +77,6 @@ public class TeleopIntake extends Command {
     @Override
     public void end(boolean interrupted) {
         intake.stop();
+        trap.stopRoller();
     }
 }

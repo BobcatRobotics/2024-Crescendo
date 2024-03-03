@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -63,6 +64,7 @@ import frc.robot.Subsystems.Vision.CamMode;
 import frc.robot.Subsystems.Vision.Vision;
 import frc.robot.Subsystems.Vision.VisionIO;
 import frc.robot.Subsystems.Vision.VisionIOLimelight;
+import frc.robot.Util.BobcatUtil;
 
 public class RobotContainer {
   /* Joysticks + Gamepad */
@@ -314,6 +316,7 @@ public class RobotContainer {
     gp.axisLessThan(5, -.6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(0.20), m_Spivit::stopMotorFeedforward, m_Spivit));
     //this sets it to a specific angle
     gp.button(5).whileTrue(new RunCommand(() -> m_Spivit.setAngle(m_swerve.calcAngleBasedOnRealRegression()), m_Spivit)).onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
+    gp.button(9).whileTrue(new RunCommand(() -> m_Spivit.setAngle(ShooterConstants.subwooferShot), m_Spivit)).onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
 
     /* amp controls */ 
     //retract
@@ -323,7 +326,7 @@ public class RobotContainer {
     //zero
     gp.button(3).onTrue(new InstantCommand(m_amp::zero)); // y
     //shooter amp speed
-    gp.button(4).onTrue(new InstantCommand(() -> m_shooter.setSpeed(2500, 2500))).onFalse(new InstantCommand(m_shooter::stop)); // x
+    gp.button(4).onTrue(new InstantCommand(() -> m_shooter.setSpeed(2000, 2000))).onFalse(new InstantCommand(m_shooter::stop)); // x
 
 
     //manual
@@ -332,7 +335,9 @@ public class RobotContainer {
     //this runs it down
     //gp.axisLessThan(1, -.6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(-0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
     gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1), m_amp::stop, m_amp));
-    gp.button(8).onTrue(new InstantCommand(() -> m_swerve.resetPose(new Pose2d(FieldConstants.redSpeakerPose.plus(new Translation2d(-1.3, 0)), Rotation2d.fromDegrees(180)))));
+    gp.button(8).onTrue(new InstantCommand(() -> m_swerve.resetPose( BobcatUtil.getAlliance() == Alliance.Blue ? 
+      new Pose2d(FieldConstants.blueSpeakerPose.plus(new Translation2d(1.3, 0)), Rotation2d.fromDegrees(0)) :
+      new Pose2d(FieldConstants.redSpeakerPose.plus(new Translation2d(-1.3, 0)), Rotation2d.fromDegrees(180)))));
     
 
     /* trap controls */
@@ -340,7 +345,7 @@ public class RobotContainer {
     gp.povLeft().whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(-0.1), m_trap::stopArm, m_trap));
     gp.button(7).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap));
     //gp.button(8).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(-0.3), m_trap::stopRoller, m_trap));
-    gp.button(9).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap)); // back left
+    // gp.button(9).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap)); // back left
     //this drives it towards the robot, i think
     //gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1), m_trap::stopArm, m_trap));
     //this drives it towards the trap

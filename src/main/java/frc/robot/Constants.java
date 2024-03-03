@@ -210,6 +210,7 @@ public class Constants {
                 Units.inchesToMeters(218.42)); // Center of back of the opening
         public static final Translation2d redSpeakerPose = new Translation2d(Units.inchesToMeters(652.73),
                 Units.inchesToMeters(218.42)); // Center of back of the opening //652.73
+        
 
     }
 
