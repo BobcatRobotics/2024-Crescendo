@@ -81,8 +81,8 @@ public class RobotContainer {
   public final Shooter m_shooter;
   public final Amp m_amp;
   public final Spivit m_Spivit;
-  public final Trap m_trap;
-  public final Climber m_climber;
+  // public final Trap m_trap;
+  // public final Climber m_climber;
   public final Rumble m_Rumble; //mmmmmmmm rumble
   // public final Vision m_Vision;
 
@@ -111,8 +111,8 @@ public class RobotContainer {
         m_shooter = new Shooter(new ShooterIOFalcon());
         m_amp = new Amp(new AmpIOFalcon());
         m_Spivit = new Spivit(new SpivitIOFalcon());
-        m_trap = new Trap(new TrapIOFalcon());
-        m_climber = new Climber(new ClimberIOFalcon());
+        // m_trap = new Trap(new TrapIOFalcon());
+        // m_climber = new Climber(new ClimberIOFalcon());
         m_Rumble = new Rumble();
         // m_Vision = new Vision(new VisionIOLimelight());
         break;
@@ -140,10 +140,10 @@ public class RobotContainer {
         // m_Vision = new Vision(new VisionIOLimelight());
         m_amp = new Amp(new AmpIOFalcon());
         m_Spivit = new Spivit(new SpivitIOFalcon());
-        m_trap = new Trap(new TrapIO() {
-        });
-        m_climber = new Climber(new ClimberIO() { 
-        });
+        // m_trap = new Trap(new TrapIO() {
+        // });
+        // m_climber = new Climber(new ClimberIO() { 
+        // });
         m_Rumble = new Rumble();
 
         break;
@@ -175,10 +175,10 @@ public class RobotContainer {
         });
         m_amp = new Amp(new AmpIOFalcon());
         m_Spivit = new Spivit(new SpivitIOFalcon());
-        m_trap = new Trap(new TrapIO() {
-        });
-        m_climber = new Climber(new ClimberIO() { 
-        });
+        // m_trap = new Trap(new TrapIO() {
+        // });
+        // m_climber = new Climber(new ClimberIO() { 
+        // });
         m_Rumble = new Rumble();
 
         // m_Vision = new Vision(new VisionIOLimelight());
@@ -298,7 +298,7 @@ public class RobotContainer {
             () -> true,
             () -> true,
             gp.button(6), // feed to shooter/manual override
-            m_trap,
+            // m_trap,
             m_Rumble
         ).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
@@ -326,7 +326,7 @@ public class RobotContainer {
     //zero
     gp.button(3).onTrue(new InstantCommand(m_amp::zero)); // y
     //shooter amp speed
-    gp.button(4).onTrue(new InstantCommand(() -> m_shooter.setSpeed(2000, 2000))).onFalse(new InstantCommand(m_shooter::stop)); // x
+    gp.button(4).onTrue(new InstantCommand(() -> m_shooter.setSpeed(1800, 1800))).onFalse(new InstantCommand(m_shooter::stop)); // x
 
 
     //manual
@@ -341,9 +341,9 @@ public class RobotContainer {
     
 
     /* trap controls */
-    gp.povRight().whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1), m_trap::stopArm, m_trap));
-    gp.povLeft().whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(-0.1), m_trap::stopArm, m_trap));
-    gp.button(7).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap));
+    // gp.povRight().whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1), m_trap::stopArm, m_trap));
+    // gp.povLeft().whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(-0.1), m_trap::stopArm, m_trap));
+    // gp.button(7).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap));
     //gp.button(8).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(-0.3), m_trap::stopRoller, m_trap));
     // gp.button(9).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap)); // back left
     //this drives it towards the robot, i think
@@ -355,9 +355,9 @@ public class RobotContainer {
 
     // climber controls
     //this *should* raise the hooks
-    gp.axisGreaterThan(3, 0.07).whileTrue(new RunCommand(() -> m_climber.setPercentOut(-gp.getRawAxis(3)), m_climber)).onFalse(new InstantCommand(m_climber::stop));
+    // gp.axisGreaterThan(3, 0.07).whileTrue(new RunCommand(() -> m_climber.setPercentOut(-gp.getRawAxis(3)), m_climber)).onFalse(new InstantCommand(m_climber::stop));
     //this *should* lower the hooks
-    gp.axisGreaterThan(2, 0.07).whileTrue(new RunCommand(() -> m_climber.setPercentOut(gp.getRawAxis(2)), m_climber)).onFalse(new InstantCommand(m_climber::stop));
+    // gp.axisGreaterThan(2, 0.07).whileTrue(new RunCommand(() -> m_climber.setPercentOut(gp.getRawAxis(2)), m_climber)).onFalse(new InstantCommand(m_climber::stop));
 
 
     /* Drive with gamepad */

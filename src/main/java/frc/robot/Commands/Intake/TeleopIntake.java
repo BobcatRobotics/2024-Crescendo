@@ -20,7 +20,7 @@ public class TeleopIntake extends Command {
     private BooleanSupplier atSpeed;
     private BooleanSupplier atAngle;
     private BooleanSupplier feed;
-    private Trap trap;
+    // private Trap trap;
     private boolean trapping = false;
 
     private Rumble rumble;
@@ -36,7 +36,7 @@ public class TeleopIntake extends Command {
      * @param atAngle are we properly aligned
      * @param feed should we feed the note to the shooter
      */
-    public TeleopIntake(Intake intake, BooleanSupplier intakeShooter, BooleanSupplier intakeTrap, BooleanSupplier runOut, BooleanSupplier atSpeed, BooleanSupplier atAngle, BooleanSupplier feed, Trap trap, Rumble rumble) {
+    public TeleopIntake(Intake intake, BooleanSupplier intakeShooter, BooleanSupplier intakeTrap, BooleanSupplier runOut, BooleanSupplier atSpeed, BooleanSupplier atAngle, BooleanSupplier feed, Rumble rumble) {
         this.intake = intake;
         this.intakeShooter = intakeShooter;
         this.intakeTrap = intakeTrap;
@@ -44,7 +44,7 @@ public class TeleopIntake extends Command {
         this.atSpeed = atSpeed;
         this.atAngle = atAngle;
         this.feed = feed;
-        this.trap = trap;
+        // this.trap = trap;
         this.rumble = rumble;
         addRequirements(intake);
     }
@@ -61,14 +61,14 @@ public class TeleopIntake extends Command {
             intake.intakeToShooter();
         } else if (intakeTrap.getAsBoolean()) {    
             intake.intakeToTrap();
-            trap.setArmPercent(0.05);
-            trap.setRollerPercent(-0.05);
+            // trap.setArmPercent(0.05);
+            // trap.setRollerPercent(-0.05);
             trapping = true;
         } else {
             intake.stop();
             if(trapping){
-             trap.stopArm();
-             trap.stopRoller();
+            //  trap.stopArm();
+            //  trap.stopRoller();
              trapping = false;
             }
         }
@@ -77,6 +77,6 @@ public class TeleopIntake extends Command {
     @Override
     public void end(boolean interrupted) {
         intake.stop();
-        trap.stopRoller();
+        // trap.stopRoller();
     }
 }
