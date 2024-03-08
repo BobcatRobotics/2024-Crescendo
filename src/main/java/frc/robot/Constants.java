@@ -113,6 +113,9 @@ public class Constants {
         public static final double angleSupplyCurrentThreshold = 40.0;
         public static final double angleSupplyTimeThreshold = 0.1;
 
+        public static final boolean angleStatorCurrentLimitEnable = true;
+        public static final double angleStatorCurrentLimit = 20;
+
         /* Drive Configs */
         public static final InvertedValue driveMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
@@ -129,6 +132,9 @@ public class Constants {
         public static final double driveSupplyCurrentLimit = 35.0;
         public static final double driveSupplyCurrentThreshold = 60.0;
         public static final double driveSupplyTimeThreshold = 0.1;
+
+        public static final boolean driveStatorCurrentLimitEnable = true;
+        public static final double driveStatorCurrentLimit = 60; //for now, maybe 50 if were feeling spicy
 
         public static final double openLoopRamp = 0.25;
         public static final double closedLoopRamp = 0.0;

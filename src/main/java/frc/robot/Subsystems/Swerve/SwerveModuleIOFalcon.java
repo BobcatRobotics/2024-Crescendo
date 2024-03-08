@@ -154,12 +154,17 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         config.CurrentLimits.SupplyCurrentThreshold = SwerveConstants.driveSupplyCurrentThreshold;
         config.CurrentLimits.SupplyTimeThreshold = SwerveConstants.driveSupplyTimeThreshold;
 
+        config.CurrentLimits.StatorCurrentLimitEnable = SwerveConstants.driveStatorCurrentLimitEnable;
+        config.CurrentLimits.StatorCurrentLimit = SwerveConstants.driveStatorCurrentLimit;
+
         config.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = SwerveConstants.openLoopRamp;
         config.OpenLoopRamps.TorqueOpenLoopRampPeriod = SwerveConstants.openLoopRamp;
         config.OpenLoopRamps.VoltageOpenLoopRampPeriod = SwerveConstants.openLoopRamp;
         config.ClosedLoopRamps.DutyCycleClosedLoopRampPeriod = SwerveConstants.closedLoopRamp;
         config.ClosedLoopRamps.TorqueClosedLoopRampPeriod = SwerveConstants.closedLoopRamp;
         config.ClosedLoopRamps.VoltageClosedLoopRampPeriod = SwerveConstants.closedLoopRamp;
+
+        
 
         config.MotorOutput.Inverted = SwerveConstants.driveMotorInvert;
         config.MotorOutput.NeutralMode = SwerveConstants.driveNeutralMode;
@@ -180,6 +185,10 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         config.CurrentLimits.SupplyCurrentLimit = SwerveConstants.angleSupplyCurrentLimit;
         config.CurrentLimits.SupplyCurrentThreshold = SwerveConstants.angleSupplyCurrentThreshold;
         config.CurrentLimits.SupplyTimeThreshold = SwerveConstants.angleSupplyTimeThreshold;
+
+        config.CurrentLimits.StatorCurrentLimitEnable = SwerveConstants.angleStatorCurrentLimitEnable;
+        config.CurrentLimits.StatorCurrentLimit = SwerveConstants.angleStatorCurrentLimit;
+        
 
         config.MotorOutput.Inverted = SwerveConstants.angleMotorInvert;
         config.MotorOutput.NeutralMode = SwerveConstants.angleNeutralMode;
