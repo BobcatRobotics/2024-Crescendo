@@ -180,11 +180,11 @@ public class Constants {
 
     public static final class FieldConstants{
         //1 is closest to AMP, 5 is closest to SOURCE
-        public static final Translation2d centerlineNote1 = new Translation2d(250.5,29.64);
-        public static final Translation2d centerlineNote2 = new Translation2d(250.5,95.64);
-        public static final Translation2d centerlineNote3 = new Translation2d(250.5,161.64);
-        public static final Translation2d centerlineNote4 = new Translation2d(250.5,227.64);
-        public static final Translation2d centerlineNote5 = new Translation2d(250.5,293.64);
+        public static final Translation2d centerlineNote1 = new Translation2d(Units.inchesToMeters(250.5),Units.inchesToMeters(29.64));
+        public static final Translation2d centerlineNote2 = new Translation2d(Units.inchesToMeters(250.5),Units.inchesToMeters(95.64));
+        public static final Translation2d centerlineNote3 = new Translation2d(Units.inchesToMeters(250.5),Units.inchesToMeters(161.64));
+        public static final Translation2d centerlineNote4 = new Translation2d(Units.inchesToMeters(250.5),Units.inchesToMeters(227.64));
+        public static final Translation2d centerlineNote5 = new Translation2d(Units.inchesToMeters(250.5),Units.inchesToMeters(293.64));
 
         public static final double noteDiameter = Units.inchesToMeters(14);
 
@@ -323,7 +323,7 @@ public class Constants {
         public static final double rpsTolerance = 200/60; //THIS IS IN RPS
         public static final double angleTolerance = 1; // THIS IS IN DEGREES
 
-        public static final double noteIdealExitVelocityMPS = 10;
+        public static final double noteIdealExitVelocityMPS = 20;
 
 
         //some notes on velocity pid
@@ -378,6 +378,8 @@ public class Constants {
         public static final int slowShooterRPMSetpoint = 0;
      
         public static final double stow = bottomLimit + 2;
+
+        public static final double encoderOffsetFromHorizontal = 232; // ESTIMATE, NEEDS UPDATING
 
     }
 

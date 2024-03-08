@@ -1,7 +1,10 @@
 package frc.robot.Subsystems.Swerve;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveConstants;
@@ -38,6 +41,10 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
         inputs.driveVelocityRotPerSec = driveSim.getAngularVelocityRPM() / 60;
 
         inputs.canCoderPositionRot = angleAbsolutePosRot;
+
+        inputs.odometryTimestamps = new double[] {Timer.getFPGATimestamp()};
+        inputs.odometryDrivePositionsRad = new double[] {Units.rotationsToRadians(inputs.drivePositionRot)};
+        inputs.odometryAnglePositions = new Rotation2d[] {Rotation2d.fromRotations(inputs.canCoderPositionRot)};
     }
 
     /**

@@ -23,6 +23,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -33,7 +34,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.lib.util.ComplexNumber;
 import frc.lib.util.Quartic;
 import frc.lib.util.limelightConstants;
 import frc.robot.Constants;
@@ -150,9 +150,9 @@ public class Swerve extends SubsystemBase {
                                    // null, the default pathplanner rotation will be used
     }
 
-    public void setRotationTarget(Rotation2d target){
+    public void setRotationTarget(Rotation2d target) {
         ppRotationOverride = target;
-    }   
+    }
 
     public void periodic() {
         odometryLock.lock();
@@ -215,20 +215,22 @@ public class Swerve extends SubsystemBase {
             // standard deviations are (distance to nearest apriltag)/2 for x and y and 10
             // degrees for theta
             poseEstimator.addVisionMeasurement((shooterRightVision.getBotPose()),
-                    (shooterRightVision.getPoseTimestamp()), VecBuilder.fill(shooterRightVision.getDistToTag() / LimelightConstants.stdDev,
+                    (shooterRightVision.getPoseTimestamp()),
+                    VecBuilder.fill(shooterRightVision.getDistToTag() / LimelightConstants.stdDev,
                             shooterRightVision.getDistToTag() / LimelightConstants.stdDev, Units.degreesToRadians(60)));
             Logger.recordOutput("shooterrightvisiondist", shooterRightVision.getDistToTag());
         }
         if (Math.abs(shooterLeftVision.getBotPose().getY()) <= 50
                 && Math.abs(shooterLeftVision.getBotPose().getY()) != 0) {
             poseEstimator.addVisionMeasurement((shooterLeftVision.getBotPose()), (shooterLeftVision.getPoseTimestamp()),
-                    VecBuilder.fill(shooterLeftVision.getDistToTag() / LimelightConstants.stdDev, shooterLeftVision.getDistToTag() / LimelightConstants.stdDev,
+                    VecBuilder.fill(shooterLeftVision.getDistToTag() / LimelightConstants.stdDev,
+                            shooterLeftVision.getDistToTag() / LimelightConstants.stdDev,
                             Units.degreesToRadians(60)));
             Logger.recordOutput("shooterleftvisiondist", shooterLeftVision.getDistToTag());
 
         }
 
-        SmartDashboard.putNumber("distance to speaker", getDistanceToSpeaker());
+        // SmartDashboard.putNumber("distance to speaker", getDistanceToSpeaker());
 
     }
 
@@ -482,6 +484,11 @@ public class Swerve extends SubsystemBase {
 
     }
 
+    public double calcAngleBasedOnRealRegression(double distance) {
+        Logger.recordOutput("Spivit/DesiredAngle", 291 * Math.pow(distance, -0.074));
+        return 291 * Math.pow(distance, -0.074);
+    }
+
     /**
      * 
      * 
@@ -497,7 +504,7 @@ public class Swerve extends SubsystemBase {
      * WIP, DO NOT USE
      */
     public double calcBasedOnIdealFunction() {
-        return (Math.atan(FieldConstants.speakerHeight/(getDistanceToSpeaker()+0.2))*(180/Math.PI)+233);
+        return (Math.atan(FieldConstants.speakerHeight / (getDistanceToSpeaker() + 0.2)) * (180 / Math.PI) + 233);
     }
 
     /**
@@ -506,37 +513,58 @@ public class Swerve extends SubsystemBase {
      */
     public Rotation2d getShootWhileMoveRotation() {
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getYaw());
-        Rotation2d motionAngle = Rotation2d.fromRadians(Math.atan(chassisSpeeds.vyMetersPerSecond/chassisSpeeds.vxMetersPerSecond)); // The angle the robot is currently moving at
-        double motionScalar = Math.hypot(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond); // The current overall velocity of the robot
+        Rotation2d motionAngle = Rotation2d
+                .fromRadians(Math.atan(chassisSpeeds.vyMetersPerSecond / chassisSpeeds.vxMetersPerSecond)); // The angle
+                                                                                                            // the robot
+                                                                                                            // is
+                                                                                                            // currently
+                                                                                                            // moving at
+        double motionScalar = Math.hypot(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond); // The
+                                                                                                            // current
+                                                                                                            // overall
+                                                                                                            // velocity
+                                                                                                            // of the
+                                                                                                            // robot
         Translation2d speakerTrans = getTranslationToSpeaker();
-        Rotation2d tanAngle; // The angle that is tangent to the circle with a radius of the distance between the robot and the speaker at the point of the robot
+        Rotation2d tanAngle; // The angle that is tangent to the circle with a radius of the distance between
+                             // the robot and the speaker at the point of the robot
         if (DriverStation.getAlliance().get() == Alliance.Blue) {
-            tanAngle = Rotation2d.fromRadians(Math.atan(speakerTrans.getY()/speakerTrans.getX())-(Math.PI/2));
+            tanAngle = Rotation2d.fromRadians(Math.atan(speakerTrans.getY() / speakerTrans.getX()) - (Math.PI / 2));
         } else {
-            tanAngle = Rotation2d.fromRadians(Math.atan(speakerTrans.getY()/speakerTrans.getX())+(Math.PI/2));
+            tanAngle = Rotation2d.fromRadians(Math.atan(speakerTrans.getY() / speakerTrans.getX()) + (Math.PI / 2));
         }
-        Rotation2d angleDiff = tanAngle.minus(motionAngle).getDegrees() > 0 ? tanAngle.minus(motionAngle) : motionAngle.minus(tanAngle); // The difference in angle between the robots motion and the tangent angle, made positive
-        double tanSpeed = Math.tan(angleDiff.getRadians())*motionScalar; // The speed along the tangent line that the robot is currently moving at
-        
-        Rotation2d angleFromTan = Rotation2d.fromRadians(Math.acos(tanSpeed/ShooterConstants.noteIdealExitVelocityMPS)); // Gets the angle from the tangent line to fire the note to make it in the speaker
+        Rotation2d angleDiff = tanAngle.minus(motionAngle).getDegrees() > 0 ? tanAngle.minus(motionAngle)
+                : motionAngle.minus(tanAngle); // The difference in angle between the robots motion and the tangent
+                                               // angle, made positive
+        double tanSpeed = Math.tan(angleDiff.getRadians()) * motionScalar; // The speed along the tangent line that the
+                                                                           // robot is currently moving at
+
+        Rotation2d angleFromTan = Rotation2d
+                .fromRadians(Math.acos(tanSpeed / ShooterConstants.noteIdealExitVelocityMPS)); // Gets the angle from
+                                                                                               // the tangent line to
+                                                                                               // fire the note to make
+                                                                                               // it in the speaker
         Rotation2d finalAngle = angleFromTan.plus(tanAngle); // Adjusts to get the field relative angle
         return finalAngle;
     }
 
     /**
-     * 
      * WIP, DO NOT USE
+     * @return [0] field relative holo angle
+     * @return [1] spivit angle
      */
     public double[] getShootWhileMoveBallistics() {
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getYaw());
-        Translation2d speakerPose = DriverStation.getAlliance().get()==Alliance.Blue ? FieldConstants.blueSpeakerPose : FieldConstants.redSpeakerPose;
+        Translation2d speakerPose = FieldConstants.redSpeakerPose;
 
-        // A lot of the code from this point forward is from here: https://www.forrestthewoods.com/blog/solving_ballistic_trajectories/
+        // A lot of the code from this point forward is from here:
+        // https://www.forrestthewoods.com/blog/solving_ballistic_trajectories/
         double G = 9.81;
         double target_pos_x = speakerPose.getX();
         double target_pos_y = speakerPose.getY();
         double target_pos_z = FieldConstants.speakerHeight;
-        double target_vel_x = -chassisSpeeds.vxMetersPerSecond; // from the frame of reference of the robot, the speaker is moving towards it
+        double target_vel_x = -chassisSpeeds.vxMetersPerSecond; // from the frame of reference of the robot, the speaker
+                                                                // is moving towards it
         double target_vel_y = -chassisSpeeds.vyMetersPerSecond;
         double target_vel_z = 0;
         double proj_pos_x = getPose().getX();
@@ -561,45 +589,63 @@ public class Swerve extends SubsystemBase {
         double L = -.5f * G;
 
         // Quartic Coeffecients
-        double c0 = L*L;
-        double c1 = -2*Q*L;
-        double c2 = Q*Q - 2*K*L - S*S + P*P + R*R;
-        double c3 = 2*K*Q + 2*H*P + 2*J*R;
-        double c4 = K*K + H*H + J*J;
+        double c0 = L * L;
+        double c1 = -2 * Q * L;
+        double c2 = Q * Q - 2 * K * L - S * S + P * P + R * R;
+        double c3 = 2 * K * Q + 2 * H * P + 2 * J * R;
+        double c4 = K * K + H * H + J * J;
 
-        double[] times = new double[4];
-        ComplexNumber[] q_sols = new ComplexNumber[4];
+        double[] q_sols = new double[5];
         q_sols = Quartic.solveQuartic(c0, c1, c2, c3, c4);
-        for (int i = 0; i < 4; i++) {
-            times[i] = q_sols[i].getRe();
+        double[] times = new double[4];
+        for (int i = 0; i < times.length; i++) {
+            times[i] = q_sols[i];
         }
+        Logger.recordOutput("ShootOnTheFly/times", times);
 
         Arrays.sort(times);
-        double[] filtered_times = new double[2];
-        filtered_times[0] = times[2];
-        filtered_times[1] = times[3];
 
-        Pose3d solution_pose = new Pose3d();
+        Translation3d[] solution_poses = new Translation3d[2];
+        solution_poses[0] = new Translation3d();
+        solution_poses[1] = new Translation3d();
+        int num_sols = 0;
 
-        for (int i = 0; i < filtered_times.length; i++) {
-            double t = filtered_times[i];
+        for (int i = 0; i < times.length; i++) {
+            double t = times[i];
 
-            if (t <= 0) {
+            if (t <= 0 || Double.isNaN(t)) {
                 continue;
             }
-            solution_pose.x = (float)((H+P*t)/t);
-            solution_pose.y = (float)((K+Q*t-L*t*t)/ t);
-            solution_pose.z = (float)((J+R*t)/t);
-        }   
+
+            solution_poses[num_sols] = new Translation3d(
+                    (float) ((H + P * t) / t),
+                    (float) ((K + Q * t - L * t * t) / t),
+                    (float) ((J + R * t) / t));
+            num_sols++;
+        }
+        Logger.recordOutput("ShootOnTheFly/poses", solution_poses);
+        Translation3d sol_pose = solution_poses[0];
+        Logger.recordOutput("ShootOnTheFly/pose", sol_pose);
+        Translation2d holo_align_pose = new Translation2d(sol_pose.getX(), sol_pose.getY());
+
+        double[] ret_val = new double[2];
+
+        ret_val[0] = holo_align_pose.getAngle().getDegrees();
+        ret_val[1] = Rotation2d.fromRadians(Math.atan(sol_pose.getZ()/holo_align_pose.getNorm())).getDegrees() + ShooterConstants.encoderOffsetFromHorizontal;
+        // ret_val[1] = calcAngleBasedOnRealRegression(current_pose.getDistance(holo_align_pose));
+        Logger.recordOutput("ShootOnTheFly/angles", ret_val);
+
+        return ret_val;
     }
 
     public double get0to2Pi(double rad) {
-        rad = rad % (2*Math.PI);
-        if (rad < (2*Math.PI)) rad+=(2*Math.PI);
+        rad = rad % (2 * Math.PI);
+        if (rad < (2 * Math.PI))
+            rad += (2 * Math.PI);
         return rad;
     }
 
-    public boolean aligned(){
+    public boolean aligned() {
         return Math.abs(Math.toDegrees(rotationPID.getPositionError())) <= SwerveConstants.rotationToleranceAlignment;
     }
 
@@ -607,9 +653,9 @@ public class Swerve extends SubsystemBase {
      * 
      * @return the angle to the speaker in radians
      */
-    public double getAngleToSpeaker(){
+    public double getAngleToSpeaker() {
         Translation2d speaker = getTranslationToSpeaker();
-        return Math.atan(speaker.getY()/speaker.getX());
+        return Math.atan(speaker.getY() / speaker.getX());
     }
 
 }

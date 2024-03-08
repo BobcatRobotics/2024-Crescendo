@@ -256,69 +256,69 @@ public class RobotContainer {
 
     
      /* Drive with joysticks */
-    m_swerve.setDefaultCommand(
-        new TeleopSwerve(
-            m_swerve,
-            () -> -strafe.getRawAxis(Joystick.AxisType.kY.value)
-                * Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value)), //translation
-            () -> -strafe.getRawAxis(Joystick.AxisType.kX.value)
-                * Math.abs(strafe.getRawAxis(Joystick.AxisType.kX.value)), //strafe
-            () -> -rotate.getRawAxis(Joystick.AxisType.kX.value), //rotate
-            () -> false, //robot centric
-            () -> -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine strafe
-            () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine translation 
-            () -> false, //align to amp
-            gp.button(5) //align to speaker
-        ));
+    // m_swerve.setDefaultCommand(
+    //     new TeleopSwerve(
+    //         m_swerve,
+    //         () -> -strafe.getRawAxis(Joystick.AxisType.kY.value)
+    //             * Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value)), //translation
+    //         () -> -strafe.getRawAxis(Joystick.AxisType.kX.value)
+    //             * Math.abs(strafe.getRawAxis(Joystick.AxisType.kX.value)), //strafe
+    //         () -> -rotate.getRawAxis(Joystick.AxisType.kX.value), //rotate
+    //         () -> false, //robot centric
+    //         () -> -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine strafe
+    //         () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine translation 
+    //         () -> false, //align to amp
+    //         gp.button(5) //align to speaker
+    //     ));
     //reset gyro
-    rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
+    // rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
 
       
     /* Intake Controls */
-      m_intake.setDefaultCommand(
-        new TeleopIntake(
-            m_intake, 
-            gp.povDown(), //shooter
-            gp.povUp(), //poptart
-            // () -> (gp.button(5).getAsBoolean() && gp.povDown().getAsBoolean()), // if holding spin up shooter button, run intake to fire
-            gp.button(7), // outtake - 'back' button
-            // () -> m_shooter.atSpeed(),
-            // () -> m_shooter.atAngle()
-            () -> true,
-            () -> true,
-            gp.button(6) // feed to shooter/manual override
-        ).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+      // m_intake.setDefaultCommand(
+      //   new TeleopIntake(
+      //       m_intake, 
+      //       gp.povDown(), //shooter
+      //       gp.povUp(), //poptart
+      //       // () -> (gp.button(5).getAsBoolean() && gp.povDown().getAsBoolean()), // if holding spin up shooter button, run intake to fire
+      //       gp.button(7), // outtake - 'back' button
+      //       // () -> m_shooter.atSpeed(),
+      //       // () -> m_shooter.atAngle()
+      //       () -> true,
+      //       () -> true,
+      //       gp.button(6) // feed to shooter/manual override
+      //   ).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
 
     /* Shooter Controls */
     //start revving shooter
-    gp.button(10).onTrue(new InstantCommand(() -> m_shooter.setSpeed(5000, 5000))); // back right
+    // gp.button(10).onTrue(new InstantCommand(() -> m_shooter.setSpeed(5000, 5000))); // back right
     //stop revving shooter
-    gp.button(9).onTrue(new InstantCommand(m_shooter::stop)); // back left 
+    // gp.button(9).onTrue(new InstantCommand(m_shooter::stop)); // back left 
     
 
     /* Spivit controls */
     //manual down
-    gp.axisGreaterThan(5, .6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(-0.03), m_Spivit::stopMotorFeedforward, m_Spivit));
+    // gp.axisGreaterThan(5, .6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(-0.03), m_Spivit::stopMotorFeedforward, m_Spivit));
     //manual up
-    gp.axisLessThan(5, -.6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(0.03), m_Spivit::stopMotorFeedforward, m_Spivit));
+    // gp.axisLessThan(5, -.6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(0.03), m_Spivit::stopMotorFeedforward, m_Spivit));
     //this sets it to a specific angle
-    gp.button(5).whileTrue(new RunCommand(() -> m_Spivit.setAngle(m_swerve.calcAngleBasedOnRealRegression()), m_Spivit)).onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
+    // gp.button(5).whileTrue(new RunCommand(() -> m_Spivit.setAngle(m_swerve.calcAngleBasedOnRealRegression()), m_Spivit)).onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
 
     /* amp controls */ 
     //retract
-    gp.button(1).onTrue(new SetAmp(m_amp, m_Spivit, false));
+    // gp.button(1).onTrue(new SetAmp(m_amp, m_Spivit, false));
     //deploy
-    gp.button(2).onTrue(new SetAmp(m_amp, m_Spivit, true));
+    // gp.button(2).onTrue(new SetAmp(m_amp, m_Spivit, true));
 
     //gp.button(2).onTrue(new InstantCommand(m_amp::zero));
     //manual
     //gp.axisGreaterThan(1, .6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
-    gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1), m_amp::stop, m_amp));
+    // gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1), m_amp::stop, m_amp));
     //this runs it down
     //gp.axisLessThan(1, -.6).whileTrue(new InstantCommand(() -> m_amp.setPercentOut(-0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
-    gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1), m_amp::stop, m_amp));
-    gp.button(8).onTrue(new InstantCommand(() -> m_swerve.resetPose(new Pose2d(FieldConstants.redSpeakerPose.plus(new Translation2d(-2, 0)), new Rotation2d()))));
+    // gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1), m_amp::stop, m_amp));
+    // gp.button(8).onTrue(new InstantCommand(() -> m_swerve.resetPose(new Pose2d(FieldConstants.redSpeakerPose.plus(new Translation2d(-2, 0)), new Rotation2d()))));
 
 
     /* trap controls */
@@ -332,26 +332,27 @@ public class RobotContainer {
 
     // climber controls
     //this *should* raise the hooks
-    gp.axisGreaterThan(3, 0.07).whileTrue(new RunCommand(() -> m_climber.setPercentOut(-gp.getRawAxis(3)*0.75), m_climber)).onFalse(new InstantCommand(m_climber::stop));
+    // gp.axisGreaterThan(3, 0.07).whileTrue(new RunCommand(() -> m_climber.setPercentOut(-gp.getRawAxis(3)*0.75), m_climber)).onFalse(new InstantCommand(m_climber::stop));
     //this *should* lower the hooks
-    gp.axisGreaterThan(2, 0.07).whileTrue(new RunCommand(() -> m_climber.setPercentOut(gp.getRawAxis(2)*0.75), m_climber)).onFalse(new InstantCommand(m_climber::stop));
+    // gp.axisGreaterThan(2, 0.07).whileTrue(new RunCommand(() -> m_climber.setPercentOut(gp.getRawAxis(2)*0.75), m_climber)).onFalse(new InstantCommand(m_climber::stop));
 
 
     /* Drive with gamepad */
-    // m_swerve.setDefaultCommand(
-    //     new TeleopSwerve(
-    //         m_swerve,
-    //         () -> -gp.getRawAxis(Joystick.AxisType.kY.value)
-    //             * Math.abs(gp.getRawAxis(Joystick.AxisType.kY.value)),
-    //         () -> -gp.getRawAxis(Joystick.AxisType.kX.value)
-    //             * Math.abs(gp.getRawAxis(Joystick.AxisType.kX.value)),
-    //         () -> -gp.getRawAxis(Joystick.AxisType.kZ.value),
-    //         () -> false,
-    //         () -> 0.0,
-    //         () -> 0.0,
-    //         () -> false
-    //     ));
-    // gp.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
+    m_swerve.setDefaultCommand(
+        new TeleopSwerve(
+            m_swerve,
+            () -> -gp.getRawAxis(Joystick.AxisType.kY.value)
+                * Math.abs(gp.getRawAxis(Joystick.AxisType.kY.value)),
+            () -> -gp.getRawAxis(Joystick.AxisType.kX.value)
+                * Math.abs(gp.getRawAxis(Joystick.AxisType.kX.value)),
+            () -> -gp.getRawAxis(Joystick.AxisType.kZ.value),
+            () -> false,
+            () -> 0.0,
+            () -> 0.0,
+            () -> false,
+            () -> false
+        ));
+    gp.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
   }
 
   public Command getAutonomousCommand() {

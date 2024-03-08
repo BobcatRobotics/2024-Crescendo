@@ -61,8 +61,9 @@ public class TeleopSwerve extends Command {
         double rotationVal = MathUtil.applyDeadband(rotation.getAsDouble(), SwerveConstants.stickDeadband); //from 0 to one
 
         if (snapToSpeaker.getAsBoolean() && rotationVal == 0) {
-            Translation2d speaker = swerve.getTranslationToSpeaker();
-            angleToSpeaker = Math.atan(speaker.getY()/speaker.getX());
+            // Translation2d speaker = swerve.getTranslationToSpeaker();
+            // angleToSpeaker = Math.atan(speaker.getY()/speaker.getX());
+            angleToSpeaker = swerve.getShootWhileMoveBallistics()[0];
             overriden = false;
             
         } else {
