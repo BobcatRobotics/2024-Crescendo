@@ -11,18 +11,30 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import com.google.flatbuffers.FlexBuffers.Vector;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.FieldConstants;
+import frc.lib.util.limelightConstants;
+import frc.robot.Constants.LimelightConstants;
+import frc.robot.Constants.SwerveConstants;
+import frc.robot.Subsystems.Vision.CamMode;
+import frc.robot.Subsystems.Vision.Vision;
+import frc.robot.Subsystems.Vision.VisionIO;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+
+  public double visionStdDev;
+
+  public edu.wpi.first.math.Vector<N3> stateStdDevs;
 
   @Override
   public void robotInit() {
@@ -75,6 +87,17 @@ public class Robot extends LoggedRobot {
     Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
 
     m_robotContainer = new RobotContainer();
+
+
+    m_robotContainer.m_intakeVision.setCamMode(CamMode.DRIVERCAM);
+    // m_robotContainer.m_intakeVision.setPipeline(LimelightConstants.intake.apriltagPipelineIndex);
+    m_robotContainer.m_shooterLeftVision.setCamMode(CamMode.VISION);
+    m_robotContainer.m_shooterLeftVision.setPipeline(LimelightConstants.shooterLeft.apriltagPipelineIndex);
+    m_robotContainer.m_shooterRightVision.setCamMode(CamMode.VISION);
+    m_robotContainer.m_shooterRightVision.setPipeline(LimelightConstants.shooterRight.apriltagPipelineIndex);
+
+
+    
   }
 
   @Override
@@ -88,21 +111,39 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledInit() {
     CommandScheduler.getInstance().cancelAll();
+    
   }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    m_robotContainer.m_intakeVision.setCamMode(CamMode.DRIVERCAM);
+    // m_robotContainer.m_intakeVision.setPipeline(LimelightConstants.intake.apriltagPipelineIndex);
+    m_robotContainer.m_shooterLeftVision.setCamMode(CamMode.VISION);
+    m_robotContainer.m_shooterLeftVision.setPipeline(LimelightConstants.shooterLeft.apriltagPipelineIndex);
+    m_robotContainer.m_shooterRightVision.setCamMode(CamMode.VISION);
+    m_robotContainer.m_shooterRightVision.setPipeline(LimelightConstants.shooterRight.apriltagPipelineIndex);
+
+  }
 
   @Override
   public void disabledExit() {}
 
   @Override
-  public void autonomousInit() {
+  public void autonomousInit() {    
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    m_robotContainer.m_intakeVision.setCamMode(CamMode.DRIVERCAM);
+    // m_robotContainer.m_intakeVision.setPipeline(LimelightConstants.intake.apriltagPipelineIndex);
+    m_robotContainer.m_shooterLeftVision.setCamMode(CamMode.VISION);
+    m_robotContainer.m_shooterLeftVision.setPipeline(LimelightConstants.shooterLeft.apriltagPipelineIndex);
+    m_robotContainer.m_shooterRightVision.setCamMode(CamMode.VISION);
+    m_robotContainer.m_shooterRightVision.setPipeline(LimelightConstants.shooterRight.apriltagPipelineIndex);
+
+
   }
 
   @Override
@@ -117,10 +158,20 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
     m_robotContainer.configureBindings();  
+
+    m_robotContainer.m_intakeVision.setCamMode(CamMode.DRIVERCAM);
+    // m_robotContainer.m_intakeVision.setPipeline(LimelightConstants.intake.apriltagPipelineIndex);
+    m_robotContainer.m_shooterLeftVision.setCamMode(CamMode.VISION);
+    m_robotContainer.m_shooterLeftVision.setPipeline(LimelightConstants.shooterLeft.apriltagPipelineIndex);
+    m_robotContainer.m_shooterRightVision.setCamMode(CamMode.VISION);
+    m_robotContainer.m_shooterRightVision.setPipeline(LimelightConstants.shooterRight.apriltagPipelineIndex);
+
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    m_robotContainer.m_intakeVision.setCamMode(CamMode.DRIVERCAM);
+  }
 
   @Override
   public void teleopExit() {}

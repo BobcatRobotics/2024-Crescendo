@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Subsystems.Intake.Intake;
 
 public class Rumble extends SubsystemBase {
 
@@ -19,7 +20,6 @@ public class Rumble extends SubsystemBase {
 
   XboxController rumbleController;
   Timer timer;
-
   /** Creates a new Rumble. */
   public Rumble() {
     rumbleController = new XboxController(2);
@@ -31,14 +31,15 @@ public class Rumble extends SubsystemBase {
    * @param time seconds
    * @return command that rumbles the joystick
    */
-  public Command rumble(double intensity, double time){
-    return new 
-      ParallelRaceGroup(new InstantCommand(() -> rumbleController.setRumble(RumbleType.kBothRumble, intensity)), new WaitCommand(time));
+  public void rumble(double intensity, double time){
+    timer.reset();
+    timer.start();
+    rumbleController.setRumble(RumbleType.kBothRumble, intensity);
   }
 
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+
   }
 }

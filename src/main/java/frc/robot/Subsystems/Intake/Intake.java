@@ -1,16 +1,19 @@
 package frc.robot.Subsystems.Intake;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Subsystems.Rumble.Rumble;
 
 public class Intake extends SubsystemBase {
     private final IntakeIO io;
     private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
-    private double pieceTimestamp;
+
+    private boolean intook = false;
 
     public Intake(IntakeIO io) {
         this.io = io;
@@ -27,6 +30,7 @@ public class Intake extends SubsystemBase {
         io.switchMotorSetPercentOut(.75); //ID 9
         io.floorMotorSetPercentOut(1); //ID 10
         io.outsideMotorSetPercentOut(.75); //ID 11
+        intook = false;
     }
 
     // .4 good speed for trap
@@ -42,11 +46,10 @@ public class Intake extends SubsystemBase {
         io.outsideMotorSetPercentOut(-.4);
     }
 
+    @AutoLogOutput
     public boolean hasPiece() {
-        if (inputs.tofValue <= IntakeConstants.tofTresh) {
-            pieceTimestamp = Timer.getFPGATimestamp();
-            return true;
-        } else if (pieceTimestamp + 1 > Timer.getFPGATimestamp()) {
+        if (inputs.tofValue <= IntakeConstants.tofTresh || intook) {
+            intook = true;
             return true;
         }
         return false;

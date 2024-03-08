@@ -9,11 +9,13 @@ import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Spivit.Spivit;
 import frc.robot.Subsystems.Swerve.Swerve;
+import frc.robot.Util.BobcatUtil;
 
 public class ContinouslyAlignAndShoot extends Command {
   private Swerve swerve;
@@ -51,9 +53,13 @@ public class ContinouslyAlignAndShoot extends Command {
   @Override
   public void execute() {
     //need to rotate by 180 deg to account for pathplanner strangeness
-    swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker()).rotateBy(Rotation2d.fromDegrees(180)));
+    if (BobcatUtil.getAlliance() == Alliance.Blue) {
+      swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker()));
+    } else {
+      swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker() + Math.PI));
+    }
     //shooter.setSpeed(shooterRPM, shooterRPM);
-    spivit.setAngle(swerve.calcAngleBasedOnRealRegression()-2);
+    spivit.setAngle(swerve.calcAngleBasedOnRealRegression()-3);
   }
 
   // Called once the command ends or is interrupted.

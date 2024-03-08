@@ -25,6 +25,7 @@ public class AmpIOFalcon implements AmpIO {
     // private double kI = AmpConstants.kI;
     // private double kD = AmpConstants.kD;
     private final StatusSignal<Double> motorPosition;
+    private final StatusSignal<Double> statorCurrent;
 
     public AmpIOFalcon() {
         softLimitThresh = new SoftwareLimitSwitchConfigs();
@@ -46,6 +47,7 @@ public class AmpIOFalcon implements AmpIO {
         slot0.kI = AmpConstants.kI;
         slot0.kD = AmpConstants.kD;
         
+        
 
         configs.MotorOutput.Inverted = AmpConstants.ampInvertedValue;
         configs.MotorOutput.NeutralMode = AmpConstants.ampNeutralModeValue;
@@ -64,7 +66,8 @@ public class AmpIOFalcon implements AmpIO {
         m_request.withEnableFOC(true);
 
         motorPosition = motor.getPosition();
-        BaseStatusSignal.setUpdateFrequencyForAll(50, motorPosition);
+        statorCurrent = motor.getStatorCurrent();
+        BaseStatusSignal.setUpdateFrequencyForAll(50, motorPosition, statorCurrent);
         motor.optimizeBusUtilization();
     }
 
@@ -73,7 +76,7 @@ public class AmpIOFalcon implements AmpIO {
      * ran periodically
      */
     public void updateInputs(AmpIOInputs inputs) {
-        BaseStatusSignal.refreshAll(motorPosition);
+        BaseStatusSignal.refreshAll(motorPosition, statorCurrent);
         inputs.motorPosition = (motorPosition.getValueAsDouble()/30)*(360); //degrees
     }
 
@@ -100,6 +103,12 @@ public class AmpIOFalcon implements AmpIO {
 
     public void zeroPosition() {
         motor.getConfigurator().setPosition(0);
+    }
+
+    @Override
+    public boolean currentLimitReached(){
+        
+        return motor.getStatorCurrent().getValueAsDouble() > AmpConstants.ampStatorCurrentLimit;
     }
 
 } 

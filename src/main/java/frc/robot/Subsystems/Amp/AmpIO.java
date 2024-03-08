@@ -13,6 +13,7 @@ public interface AmpIO {
     public default void stop() {}
     public default void updateInputs(AmpIOInputs inputs) {}
     public default void zeroPosition() {}
+    public default boolean currentLimitReached(){return false;}
 
 
 }

@@ -32,32 +32,32 @@
     },
     {
       "anchor": {
-        "x": 4.715233590011339,
-        "y": 1.6722640852689115
+        "x": 4.828558385639107,
+        "y": 2.017060803881059
       },
       "prevControl": {
-        "x": 4.598292045586939,
-        "y": 1.8476764019055107
+        "x": 4.624033557541372,
+        "y": 2.0681920109054928
       },
       "nextControl": {
-        "x": 5.170211943625114,
-        "y": 0.9897965548482487
+        "x": 5.110664791776319,
+        "y": 1.9465342023467562
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.08315006943404,
-        "y": 0.7718141932010376
+        "x": 8.08,
+        "y": 0.73
       },
       "prevControl": {
-        "x": 7.263650140764145,
-        "y": 0.7982496747710358
+        "x": 7.138680846530198,
+        "y": 1.0544223670577924
       },
       "nextControl": {
-        "x": 8.442962910596332,
-        "y": 0.7602073273570921
+        "x": 8.420353261525255,
+        "y": 0.6126984340721747
       },
       "isLocked": false,
       "linkedName": null
@@ -81,15 +81,15 @@
     {
       "anchor": {
         "x": 8.08315006943404,
-        "y": 2.3739133518153084
+        "y": 2.4402204130868754
       },
       "prevControl": {
         "x": 4.376103111180581,
-        "y": 1.0056972820498358
+        "y": 1.0720043433214028
       },
       "nextControl": {
-        "x": 8.478706589813536,
-        "y": 2.5199073987692544
+        "x": 8.478706589813537,
+        "y": 2.5862144600408215
       },
       "isLocked": false,
       "linkedName": null
@@ -100,17 +100,206 @@
         "y": 3.2158924716709834
       },
       "prevControl": {
-        "x": 6.013284733122172,
-        "y": 0.725037575431277
+        "x": 5.999299971108534,
+        "y": 0.9309511402527981
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [],
-  "eventMarkers": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 5.05,
+      "rotationDegrees": 2.5248119106827596,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 3,
+      "rotationDegrees": 0.0,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 0.75,
+      "rotationDegrees": -46.355877312823,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.44999999999999996,
+      "maxWaypointRelativePos": 0.95,
+      "constraints": {
+        "maxVelocity": 0.5,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    },
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 3.9000000000000004,
+      "maxWaypointRelativePos": 4.3,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    },
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 5.8999999999999995,
+      "maxWaypointRelativePos": 6.0,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "shoot preloaded",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "parallel",
+              "data": {
+                "commands": [
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "SpinUp"
+                    }
+                  },
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 0.5
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "intake",
+      "waypointRelativePos": 2.45,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "shoot",
+      "waypointRelativePos": 3.8,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "intake 2",
+      "waypointRelativePos": 4.9,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "shoot 2",
+      "waypointRelativePos": 5.95,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "spin up",
+      "waypointRelativePos": 3.4499999999999997,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SpinUp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "spin up 2",
+      "waypointRelativePos": 5.6,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SpinUp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,

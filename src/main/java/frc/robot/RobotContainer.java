@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -23,15 +24,18 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import frc.robot.Commands.Auto.AlignAndShoot;
+import frc.robot.Commands.Auto.AutoBreak;
 import frc.robot.Commands.Auto.AutoIntake;
-import frc.robot.Commands.Auto.AutoShoot;
 import frc.robot.Commands.Auto.ContinouslyAlignAndShoot;
+import frc.robot.Commands.Auto.ReleaseHook;
 import frc.robot.Commands.Auto.SubwooferShot;
 import frc.robot.Commands.Intake.TeleopIntake;
 import frc.robot.Commands.Multi.SetAmp;
 import frc.robot.Commands.Swerve.TeleopSwerve;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LimelightConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Subsystems.Amp.Amp;
 import frc.robot.Subsystems.Amp.AmpIOFalcon;
@@ -56,9 +60,11 @@ import frc.robot.Subsystems.Swerve.SwerveModuleIOSim;
 import frc.robot.Subsystems.Trap.Trap;
 import frc.robot.Subsystems.Trap.TrapIO;
 import frc.robot.Subsystems.Trap.TrapIOFalcon;
+import frc.robot.Subsystems.Vision.CamMode;
 import frc.robot.Subsystems.Vision.Vision;
 import frc.robot.Subsystems.Vision.VisionIO;
 import frc.robot.Subsystems.Vision.VisionIOLimelight;
+import frc.robot.Util.BobcatUtil;
 
 public class RobotContainer {
   /* Joysticks + Gamepad */
@@ -75,8 +81,8 @@ public class RobotContainer {
   public final Shooter m_shooter;
   public final Amp m_amp;
   public final Spivit m_Spivit;
-  public final Trap m_trap;
-  public final Climber m_climber;
+  // public final Trap m_trap;
+  // public final Climber m_climber;
   public final Rumble m_Rumble; //mmmmmmmm rumble
   // public final Vision m_Vision;
 
@@ -92,10 +98,9 @@ public class RobotContainer {
         m_intakeVision = new Vision(new VisionIOLimelight(LimelightConstants.intake.constants));// need index and
                                                                                                 // limelight constants
                                                                                                 // for the IO
+        m_intakeVision.setCamMode(CamMode.DRIVERCAM);
         m_shooterRightVision = new Vision(new VisionIOLimelight(LimelightConstants.shooterRight.constants));
-        m_shooterRightVision.setPipeline(LimelightConstants.shooterLeft.name, LimelightConstants.shooterRight.apriltagPipelineIndex);
         m_shooterLeftVision = new Vision(new VisionIOLimelight(LimelightConstants.shooterLeft.constants));
-        m_shooterRightVision.setPipeline(LimelightConstants.shooterRight.name, LimelightConstants.shooterRight.apriltagPipelineIndex);
         m_swerve = new Swerve(new GyroIOPigeon2(),
             new SwerveModuleIOFalcon(SwerveConstants.Module0Constants.constants),
             new SwerveModuleIOFalcon(SwerveConstants.Module1Constants.constants),
@@ -106,8 +111,8 @@ public class RobotContainer {
         m_shooter = new Shooter(new ShooterIOFalcon());
         m_amp = new Amp(new AmpIOFalcon());
         m_Spivit = new Spivit(new SpivitIOFalcon());
-        m_trap = new Trap(new TrapIOFalcon());
-        m_climber = new Climber(new ClimberIOFalcon());
+        // m_trap = new Trap(new TrapIOFalcon());
+        // m_climber = new Climber(new ClimberIOFalcon());
         m_Rumble = new Rumble();
         // m_Vision = new Vision(new VisionIOLimelight());
         break;
@@ -135,10 +140,10 @@ public class RobotContainer {
         // m_Vision = new Vision(new VisionIOLimelight());
         m_amp = new Amp(new AmpIOFalcon());
         m_Spivit = new Spivit(new SpivitIOFalcon());
-        m_trap = new Trap(new TrapIO() {
-        });
-        m_climber = new Climber(new ClimberIO() { 
-        });
+        // m_trap = new Trap(new TrapIO() {
+        // });
+        // m_climber = new Climber(new ClimberIO() { 
+        // });
         m_Rumble = new Rumble();
 
         break;
@@ -162,16 +167,18 @@ public class RobotContainer {
             new SwerveModuleIO() {
             },
             m_intakeVision, m_shooterLeftVision, m_shooterRightVision);
+                    m_intakeVision.setCamMode(CamMode.DRIVERCAM);
+
         m_intake = new Intake(new IntakeIO() {
         });
         m_shooter = new Shooter(new ShooterIO() {
         });
         m_amp = new Amp(new AmpIOFalcon());
         m_Spivit = new Spivit(new SpivitIOFalcon());
-        m_trap = new Trap(new TrapIO() {
-        });
-        m_climber = new Climber(new ClimberIO() { 
-        });
+        // m_trap = new Trap(new TrapIO() {
+        // });
+        // m_climber = new Climber(new ClimberIO() { 
+        // });
         m_Rumble = new Rumble();
 
         // m_Vision = new Vision(new VisionIOLimelight());
@@ -189,7 +196,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("SubwooferShot", new SubwooferShot(m_swerve, m_Spivit, m_shooter, 5000));
     NamedCommands.registerCommand("StopShooter", new InstantCommand(m_shooter::stop));
     NamedCommands.registerCommand("Intake", new AutoIntake(m_intake));
-    NamedCommands.registerCommand("Shoot", new AutoShoot(m_shooter, m_Spivit, m_intake));
+    NamedCommands.registerCommand("SpinUp", new InstantCommand(() -> m_shooter.setSpeed(ShooterConstants.fastShooterRPMSetpoint, ShooterConstants.fastShooterRPMSetpoint)));
+    NamedCommands.registerCommand("Shoot", new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake));
+    NamedCommands.registerCommand("Unhook", new ReleaseHook(m_Spivit));
+    NamedCommands.registerCommand("StopIntake", new InstantCommand(m_intake::stop));
+    // NamedCommands.registerCommand("Break", new AutoBreak(m_Spivit));
     /*
      * Auto Chooser
      * 
@@ -198,8 +209,9 @@ public class RobotContainer {
      */
     autoChooser.addDefaultOption("Do Nothing", Commands.none());
     autoChooser.addOption("CenterShootNScoot", new PathPlannerAuto("centerShootNScoot"));
-    autoChooser.addOption("KidsMeal", new PathPlannerAuto("kids meal"));
+    autoChooser.addOption("KidsMeal", new PathPlannerAuto("AdjustedKidsMeal"));
     autoChooser.addOption("OutOfTheWay", new PathPlannerAuto("out of the way"));
+    //autoChooser.addOption("AdjustedKidsMeal", new PathPlannerAuto("AdjustedKidsMeal"));
 
     configureBindings();
     SmartDashboard.putNumber("ShooterRPM", 0);
@@ -245,11 +257,10 @@ public class RobotContainer {
      * Axes
      * 0 -
      * 1 -
-     * 2 -
-     * 3 -
+     * 2 - LT
+     * 3 - RT
      * 4 -
      * 5 -
-     * 6 -
      * 
      * Axis indices start at 0, button indices start at one -_-
      */
@@ -289,6 +300,7 @@ public class RobotContainer {
       //       gp.button(6) // feed to shooter/manual override
       //   ).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
+        gp.button(7).whileTrue(new StartEndCommand(() -> m_shooter.setSpeed(-1000, -1000), m_shooter::stop, m_shooter));
 
     /* Shooter Controls */
     //start revving shooter
@@ -322,7 +334,11 @@ public class RobotContainer {
 
 
     /* trap controls */
-    //gp.button(7).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap)); // left trigger
+    // gp.povRight().whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1), m_trap::stopArm, m_trap));
+    // gp.povLeft().whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(-0.1), m_trap::stopArm, m_trap));
+    // gp.button(7).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap));
+    //gp.button(8).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(-0.3), m_trap::stopRoller, m_trap));
+    // gp.button(9).whileTrue(new StartEndCommand(() -> m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap)); // back left
     //this drives it towards the robot, i think
     //gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1), m_trap::stopArm, m_trap));
     //this drives it towards the trap

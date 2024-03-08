@@ -4,46 +4,44 @@
 
 package frc.robot.Commands.Auto;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Subsystems.Intake.Intake;
+import frc.robot.Constants.ShooterConstants;
+import frc.robot.Subsystems.Spivit.Spivit;
 
-public class AutoIntake extends Command {
-  private Intake intake;
-  private boolean finished = false;
+public class AutoBreak extends Command {
+  private Spivit spivit;
+  private Timer timer = new Timer();
 
-  /** Creates a new AutoIntake. */
-  public AutoIntake(Intake intake) {
-    this.intake = intake;
+  /** Creates a new AutoBreak. */
+  public AutoBreak(Spivit spivit) {
+    this.spivit = spivit;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intake);
+    addRequirements(spivit);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    finished = false;
+    timer.stop();
+    timer.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!intake.hasPiece()) {
-      intake.intakeToShooter();
-    } else {
-      intake.stop();
-      finished = true;
-    }
+    spivit.setAngle(ShooterConstants.stow);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.stop();
+    spivit.stopMotor();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return finished;
+    return timer.hasElapsed(0.5);
   }
 }

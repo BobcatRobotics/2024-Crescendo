@@ -36,7 +36,7 @@ public class ShooterIOFalcon implements ShooterIO {
         topConfigs.Slot0.kV = ShooterConstants.kTopV;
         topConfigs.Slot0.kS = ShooterConstants.kTopS;
         topConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
-        topConfigs.CurrentLimits.StatorCurrentLimit = 40;
+        topConfigs.CurrentLimits.StatorCurrentLimit = ShooterConstants.topCurrentLimit;
         topMotor.getConfigurator().apply(topConfigs);
 
         // Bottom motor configurations
@@ -48,7 +48,7 @@ public class ShooterIOFalcon implements ShooterIO {
         bottomConfigs.Slot0.kV = ShooterConstants.kBottomV;
         bottomConfigs.Slot0.kS = ShooterConstants.kBottomS;
         bottomConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
-        bottomConfigs.CurrentLimits.StatorCurrentLimit = 40;
+        bottomConfigs.CurrentLimits.StatorCurrentLimit = ShooterConstants.bottomCurrentLimit;
 
         bottomMotor.getConfigurator().apply(bottomConfigs);
 

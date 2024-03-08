@@ -41,8 +41,7 @@ public class Amp extends SubsystemBase {
      * @return whether or not the amp has reached its deploy setpoint
      */
     public boolean deployed(){
-        return inputs.motorPosition <= AmpConstants.deployValue+AmpConstants.deployTolerance 
-            && inputs.motorPosition >= AmpConstants.deployValue-AmpConstants.deployTolerance;
+        return ( inputs.motorPosition >= AmpConstants.deployValue-3);
     }
 
     public boolean retracted(){

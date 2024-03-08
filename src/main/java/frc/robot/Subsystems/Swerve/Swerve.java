@@ -37,11 +37,15 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.Quartic;
 import frc.lib.util.limelightConstants;
 import frc.robot.Constants;
+import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Subsystems.Vision.Vision;
+import frc.robot.Util.BobcatUtil;
 
 public class Swerve extends SubsystemBase {
     private final GyroIO gyroIO;
@@ -70,6 +74,7 @@ public class Swerve extends SubsystemBase {
     // });
 
     private final PIDController rotationPID;
+    private final PIDController autoAlignPID;
     private double lastMovingYaw = 0.0;
     private boolean rotating = false;
 
@@ -97,10 +102,13 @@ public class Swerve extends SubsystemBase {
 
         rotationPID = new PIDController(SwerveConstants.teleopRotationKP, SwerveConstants.teleopRotationKI,
                 SwerveConstants.teleopRotationKD);
+        autoAlignPID = new PIDController(SwerveConstants.autoAlignRotationKP, SwerveConstants.autoAlignRotationKI,
+                SwerveConstants.autoAlignRotationKD);
 
         // Using last year's default deviations, need to tune
+
         poseEstimator = new SwerveDrivePoseEstimator(SwerveConstants.swerveKinematics, getYaw(), getModulePositions(),
-                new Pose2d(), SwerveConstants.stateStdDevs, VecBuilder.fill(0, 0, 0));
+                new Pose2d(), SwerveConstants.autostateStdDevs, VecBuilder.fill(0, 0, 0));
 
         // setpointGenerator =
         // SwerveSetpointGenerator.builder()
@@ -120,21 +128,19 @@ public class Swerve extends SubsystemBase {
                                 SwerveConstants.rotationKD),
                         SwerveConstants.maxSpeed,
                         SwerveConstants.driveBaseRadius,
-                        new ReplanningConfig(true, true)),
+                        new ReplanningConfig(true, false)),
                 () -> {
                     // Boolean supplier that controls when the path will be mirrored for the red
                     // alliance
                     // This will flip the path being followed to the red side of the field.
                     // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                    var alliance = DriverStation.getAlliance();
-                    if (alliance.isPresent()) {
-                        return alliance.get() == DriverStation.Alliance.Red;
-                    }
-                    return false;
+                    return BobcatUtil.getAlliance() == DriverStation.Alliance.Red;
+
                 },
                 this);
         PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
+
     }
 
     public Optional<Rotation2d> getRotationTargetOverride() {
@@ -155,6 +161,13 @@ public class Swerve extends SubsystemBase {
     }
 
     public void periodic() {
+        if (BobcatUtil.getAlliance() == Alliance.Blue) {
+            shooterLeftVision.setPriorityID(LimelightConstants.blueSpeakerTag, LimelightConstants.shooterLeft.name);
+            shooterRightVision.setPriorityID(LimelightConstants.blueSpeakerTag, LimelightConstants.shooterRight.name);
+        } else {
+            shooterLeftVision.setPriorityID(LimelightConstants.redSpeakerTag, LimelightConstants.shooterLeft.name);
+            shooterRightVision.setPriorityID(LimelightConstants.redSpeakerTag, LimelightConstants.shooterRight.name);
+        }
         odometryLock.lock();
         gyroIO.updateInputs(gyroInputs);
         for (SwerveModule module : modules) {
@@ -210,21 +223,27 @@ public class Swerve extends SubsystemBase {
         Logger.recordOutput("Swerve/DesiredPose", desiredPose);
 
         // Update PoseEstimator if at least 1 tag is in view
-        if (Math.abs(shooterRightVision.getBotPose().getY()) <= 50
-                && Math.abs(shooterRightVision.getBotPose().getY()) != 0) {
+        if (shooterRightVision.getBotPose().getY() <= FieldConstants.fieldWidth &&
+                shooterRightVision.getBotPose().getY() >= 0 &&
+                shooterRightVision.getBotPose().getX() <= FieldConstants.fieldLength &&
+                shooterRightVision.getBotPose().getX() >= 0 &&
+                Math.abs(shooterRightVision.getBotPose().getY()) != 0) {
             // standard deviations are (distance to nearest apriltag)/2 for x and y and 10
             // degrees for theta
             poseEstimator.addVisionMeasurement((shooterRightVision.getBotPose()),
                     (shooterRightVision.getPoseTimestamp()),
-                    VecBuilder.fill(shooterRightVision.getDistToTag() / LimelightConstants.stdDev,
-                            shooterRightVision.getDistToTag() / LimelightConstants.stdDev, Units.degreesToRadians(60)));
+                    VecBuilder.fill(shooterRightVision.getDistToTag() / getStdDev(),
+                            shooterRightVision.getDistToTag() / getStdDev(), Units.degreesToRadians(60)));
             Logger.recordOutput("shooterrightvisiondist", shooterRightVision.getDistToTag());
         }
-        if (Math.abs(shooterLeftVision.getBotPose().getY()) <= 50
-                && Math.abs(shooterLeftVision.getBotPose().getY()) != 0) {
+        if (shooterLeftVision.getBotPose().getY() <= FieldConstants.fieldWidth &&
+                shooterLeftVision.getBotPose().getY() >= 0 &&
+                shooterLeftVision.getBotPose().getX() <= FieldConstants.fieldLength &&
+                shooterLeftVision.getBotPose().getX() >= 0 &&
+                Math.abs(shooterLeftVision.getBotPose().getY()) != 0) {
             poseEstimator.addVisionMeasurement((shooterLeftVision.getBotPose()), (shooterLeftVision.getPoseTimestamp()),
-                    VecBuilder.fill(shooterLeftVision.getDistToTag() / LimelightConstants.stdDev,
-                            shooterLeftVision.getDistToTag() / LimelightConstants.stdDev,
+                    VecBuilder.fill(shooterLeftVision.getDistToTag() / getStdDev(),
+                            shooterLeftVision.getDistToTag() / getStdDev(),
                             Units.degreesToRadians(60)));
             Logger.recordOutput("shooterleftvisiondist", shooterLeftVision.getDistToTag());
 
@@ -232,6 +251,10 @@ public class Swerve extends SubsystemBase {
 
         // SmartDashboard.putNumber("distance to speaker", getDistanceToSpeaker());
 
+    }
+
+    public double getStdDev() {
+        return DriverStation.isAutonomous() ? LimelightConstants.autostdDev : LimelightConstants.telestdDev;
     }
 
     public Pose2d getPathfindingPose() {
@@ -276,11 +299,11 @@ public class Swerve extends SubsystemBase {
                         rotation);
 
         if (snapToSpeaker) {
-            desiredSpeeds.omegaRadiansPerSecond = rotationPID.calculate(get0to2Pi(getYaw().getRadians()),
+            desiredSpeeds.omegaRadiansPerSecond = autoAlignPID.calculate(get0to2Pi(getYaw().getRadians()),
                     get0to2Pi(angleToSpeaker));
             lastMovingYaw = getYaw().getRadians();
         } else if (snapToAmp) {
-            desiredSpeeds.omegaRadiansPerSecond = rotationPID.calculate(get0to2Pi(getYaw().getRadians()),
+            desiredSpeeds.omegaRadiansPerSecond = autoAlignPID.calculate(get0to2Pi(getYaw().getRadians()),
                     Math.PI / 2);
             lastMovingYaw = getYaw().getRadians();
         } else {
@@ -461,13 +484,13 @@ public class Swerve extends SubsystemBase {
      * @return DISTANCE TO SPEAKER OF CURRENT ALLIANCE IN METERS :D
      */
     public double getDistanceToSpeaker() {
-        return DriverStation.getAlliance().get() == Alliance.Blue
+        return BobcatUtil.getAlliance() == Alliance.Blue
                 ? getPose().getTranslation().getDistance(FieldConstants.blueSpeakerPose)
                 : getPose().getTranslation().getDistance(FieldConstants.redSpeakerPose);
     }
 
     public Translation2d getTranslationToSpeaker() {
-        return DriverStation.getAlliance().get() == Alliance.Blue
+        return BobcatUtil.getAlliance() == Alliance.Blue
                 ? FieldConstants.blueSpeakerPose.minus(getPose().getTranslation())
                 : FieldConstants.redSpeakerPose.minus(getPose().getTranslation());
     }
@@ -640,8 +663,8 @@ public class Swerve extends SubsystemBase {
 
     public double get0to2Pi(double rad) {
         rad = rad % (2 * Math.PI);
-        if (rad < (2 * Math.PI))
-            rad += (2 * Math.PI);
+        // if (rad < (2 * Math.PI)) //should this be here?
+        // rad += (2 * Math.PI);
         return rad;
     }
 
@@ -652,6 +675,7 @@ public class Swerve extends SubsystemBase {
     /**
      * 
      * @return the angle to the speaker in radians
+     * 
      */
     public double getAngleToSpeaker() {
         Translation2d speaker = getTranslationToSpeaker();

@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.34161982853880235,
-      "y": 2.92
+      "x": 1.1431832839912723,
+      "y": 5.52811290895741
     },
     "rotation": 0
   },
@@ -12,9 +12,15 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "SubwooferShot"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "out of the way"
+            "pathName": "adjusted rotations kids meal"
           }
         }
       ]
