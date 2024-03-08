@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.FieldConstants;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
@@ -80,6 +81,7 @@ public class Robot extends LoggedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     m_robotContainer.m_swerve.getShootWhileMoveBallistics();
+    Logger.recordOutput("ShootOnTheFly/prevspivitest", m_robotContainer.m_swerve.calcAngleBasedOnRealRegression(Math.hypot(FieldConstants.redSpeakerPose.getX() - m_robotContainer.m_swerve.getPose().getX(), FieldConstants.redSpeakerPose.getY() - m_robotContainer.m_swerve.getPose().getY())));
     Logger.recordOutput("ShootOnTheFly/realswervepose", new Pose2d(m_robotContainer.m_swerve.getPose().getX(), m_robotContainer.m_swerve.getPose().getY(), Rotation2d.fromDegrees(m_robotContainer.m_swerve.getShootWhileMoveBallistics()[0])));
   }
 
