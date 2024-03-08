@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.4101017713546815,
-      "y": 7.106863498687744
+      "x": 1.213769989995765,
+      "y": 5.5196408968316515
     },
-    "rotation": 1.853677358837369e-23
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,12 +14,18 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Choreo Testing 2.1"
+            "pathName": "ShootNScoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
           }
         }
       ]
     }
   },
   "folder": null,
-  "choreoAuto": true
+  "choreoAuto": false
 }

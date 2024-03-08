@@ -1,16 +1,68 @@
-# Bobcat-Base-Swerve
+02/18/2024 Shooter PID Testing
+From: Wing
 
-This repository contains Bobcat Robotics FRC team 177 base swerve code. Our swerve uses SDS MK4i L3 modules with Falcon 500 motors, CANcoders, a Pigeon2 gyro, and a CANivore.
+Angle encoder: 259.5
 
-## Using this code
+Note from Devin: Add 180 degree offset to the pigeon in configs
 
-Before using this code, you should do the following:
+4000 rpm pid gains:
 
-- Update the gyro, CANivore, and all motors and encoders to the latest Phoenix 6 firmware
-- Make sure CANivore name is correct
-- Set CAN ids in Phoenix Tuner to match what is in the code
-- Adjust swerve module offsets
-- Tune drive feedforward values with sysid
-- Ensure the drivetrain constants are correct
-- Set the useFOC variable in constants depending on whether the motors have been licensed with Phoenix 6 Pro
-- Tune all PID constants
+top p: 0.05
+top i: 0
+top d: 0.1
+top v: 0.0115
+
+bottom p: 0.14
+bottom i: 0
+bottom d: 0.11
+bottom v: 0.01165
+
+5000 rpm pid gains:
+
+top p: 0.05
+top i: 0
+top d: 0.1
+top v: 0.0113
+
+bottom p: 0.25
+bottom i: 0
+bottom d: 0.11
+bottom v: 0.014
+
+
+
+Shooter testing:
+
+
+
+Distance from Speaker: 19 feet 3 inches (Wing)
+
+Angle: 259.5
+RPM: 5000
+Result: Consistently hitting front half of speaker (too high)
+
+Angle: 257.5
+RPM: 5000
+Result: Made most (4/7) in, 2 of them went too high, 1 went too low
+
+Angle: 256.5
+RPM: 5000
+Result: Changed feeding technique, went too high for most of them, made only 2 out of 7.
+
+
+Distance from Speaker: 15 feet 3 inches (Stage shot)
+
+Angle: 259
+RPM: 5000
+Results: 100% money!!!! first try
+
+
+Distance from Speaker: 10 feet (Podium)
+
+Angle: 267
+RPM: 5000
+Results: 8/8 holy smokes!
+
+
+
+

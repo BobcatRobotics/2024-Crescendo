@@ -5,12 +5,8 @@
 package frc.robot.Subsystems.Vision;
 
 import org.littletonrobotics.junction.AutoLog;
-import org.littletonrobotics.junction.AutoLogOutput;
 
-import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.networktables.NetworkTable;
 
-import frc.robot.LimelightHelpers;
 
 /** Vision subsystem hardware interface. */
 public interface VisionIO {
@@ -27,12 +23,11 @@ public interface VisionIO {
       public double ty;
       public double fiducialID;
       public double boundingHorizontalPixels;
-       
       public double distanceToNote;
       public double rawDistanceToNote;
- 
       public double tClass;
-
+      public String name;
+      public CamMode camMode = CamMode.VISION;
     }
       /** Updates the set of loggable inputs. */
     public default void updateInputs(VisionIOInputs inputs) {}
@@ -40,7 +35,7 @@ public interface VisionIO {
       /** Sets the pipeline number. */
     public default void setLEDS(LEDMode mode) {}
 
-    public default void setPipeline(int index){}
+    public default void setPipeline(String limelight, int index){}
 
     public default double pixlesToPercent(double pixels){
       return 0.0;
@@ -48,6 +43,8 @@ public interface VisionIO {
     public default double getTClass(){
       return 0.0;
     }
+
+    public default void setCamMode(CamMode mode){}
 
   /**
    * 

@@ -4,17 +4,22 @@ import org.littletonrobotics.junction.AutoLog;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 public interface SwerveModuleIO {
     @AutoLog
     public static class SwerveModuleIOInputs {
+        public Rotation2d offset = new Rotation2d();
+
         public double drivePositionRot = 0.0;
         public double driveVelocityRotPerSec = 0.0;
-        public double drivePercentOut = 0.0;
-        
-        public double anglePercentOut = 0.0;
-        
+                
         public double canCoderPositionRot = 0.0;
         public double rawCanCoderPositionDeg = 0.0;
+
+        public double[] odometryTimestamps = new double[] {};
+        public double[] odometryDrivePositionsRad = new double[] {};
+        public Rotation2d[] odometryAnglePositions = new Rotation2d[] {};
     }
 
     public default void updateInputs(SwerveModuleIOInputs inputs) {}
