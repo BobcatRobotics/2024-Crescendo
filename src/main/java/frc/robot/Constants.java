@@ -333,7 +333,7 @@ public class Constants {
 
         public static final int outsideMotorID = 11;
         public static final InvertedValue outsideMotorInvert = InvertedValue.Clockwise_Positive;
-        public static final NeutralModeValue outsideMotorBrakeMode = NeutralModeValue.Coast;
+        public static final NeutralModeValue outsideMotorBrakeMode = NeutralModeValue.Brake;
         public static final double outsideCurrentLimit = 80;
 
         public static final int tofID = 0;
