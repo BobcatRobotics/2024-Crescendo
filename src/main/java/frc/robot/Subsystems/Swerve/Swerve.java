@@ -480,9 +480,16 @@ public class Swerve extends SubsystemBase {
      */
     public double getDistanceToSpeaker() {
         return BobcatUtil.getAlliance() == Alliance.Blue
-                ? getPose().getTranslation().getDistance(FieldConstants.blueSpeakerPose)
-                : getPose().getTranslation().getDistance(FieldConstants.redSpeakerPose);
-    }
+                ? if(shooterLeftVision.gettID()==limelightConstants.blueSpeakerTag&&shooterRightVision.getTID()==limelightConstants.blueSpeakerTag){
+                    return (shooterLeftVision.getDistToTag()+shooterRightVision.getDistToTag())/2
+                }else{
+                    return getPose().getTranslation().getDistance(FieldConstants.blueSpeakerPose)}
+                : if(shooterLeftVision.gettID()==limelightConstants.redSpeakerTag&&shooterRightVision.getTID()==limelightConstants.redSpeakerTag){
+                    return (shooterLeftVision.getDistToTag()+shooterRightVision.getDistToTag())/2
+                }else{
+                    return getPose().getTranslation().getDistance(FieldConstants.redSpeakerPose)}
+                }
+                   
 
     public Translation2d getTranslationToSpeaker() {
         return BobcatUtil.getAlliance() == Alliance.Blue

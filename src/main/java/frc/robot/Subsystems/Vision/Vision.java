@@ -49,6 +49,10 @@ public class Vision extends SubsystemBase {
     return inputs.tv;
   }
 
+  public boolean gettID(){
+    return inputs.fiducialID;
+  }
+
   public void setPipeline(int id) {
     io.setPipeline(inputs.name, id);
   }
