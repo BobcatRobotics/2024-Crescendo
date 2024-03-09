@@ -366,7 +366,7 @@ public class RobotContainer {
             () -> 0.0,
             () -> 0.0,
             () -> false,
-            () -> false
+            () -> true
         ));
     gp.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
   }

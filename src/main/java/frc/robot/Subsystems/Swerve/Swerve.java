@@ -578,21 +578,30 @@ public class Swerve extends SubsystemBase {
      */
     public double[] getShootWhileMoveBallistics() {
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getYaw());
+        // ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
+        Logger.recordOutput("chassisspeeds", chassisSpeeds);
         Translation2d speakerPose = FieldConstants.redSpeakerPose;
 
         // A lot of the code from this point forward is from here:
         // https://www.forrestthewoods.com/blog/solving_ballistic_trajectories/
         double G = 9.81;
         double target_pos_x = speakerPose.getX();
-        double target_pos_y = speakerPose.getY();
-        double target_pos_z = FieldConstants.speakerHeight;
+        // double target_pos_y = speakerPose.getY();
+        
+        // double target_pos_z = FieldConstants.speakerHeight;
+        double target_pos_y = FieldConstants.speakerHeight;
+        double target_pos_z = speakerPose.getY();
         double target_vel_x = -chassisSpeeds.vxMetersPerSecond; // from the frame of reference of the robot, the speaker
                                                                 // is moving towards it
-        double target_vel_y = -chassisSpeeds.vyMetersPerSecond;
-        double target_vel_z = 0;
+        // double target_vel_y = -chassisSpeeds.vyMetersPerSecond;
+        // double target_vel_z = 0;
+        double target_vel_y = 0;
+        double target_vel_z = -chassisSpeeds.vyMetersPerSecond;
         double proj_pos_x = getPose().getX();
-        double proj_pos_y = getPose().getY();
-        double proj_pos_z = 0;
+        // double proj_pos_y = getPose().getY();
+        // double proj_pos_z = 0;
+        double proj_pos_y = 0;
+        double proj_pos_z = getPose().getY();
         double proj_speed = ShooterConstants.noteIdealExitVelocityMPS;
 
         double A = proj_pos_x;
@@ -648,13 +657,15 @@ public class Swerve extends SubsystemBase {
         }
         Logger.recordOutput("ShootOnTheFly/poses", solution_poses);
         Translation3d sol_pose = solution_poses[0];
+        Logger.recordOutput("ShootOnTheFly/norm", sol_pose.getNorm());
         Logger.recordOutput("ShootOnTheFly/pose", sol_pose);
-        Translation2d holo_align_pose = new Translation2d(sol_pose.getX(), sol_pose.getY());
+        // Translation2d holo_align_pose = new Translation2d(sol_pose.getX(), sol_pose.getZ());
+        Rotation2d holo_align_angle = new Rotation2d(sol_pose.getX(), sol_pose.getZ());
 
         double[] ret_val = new double[2];
 
-        ret_val[0] = holo_align_pose.getAngle().getDegrees();
-        ret_val[1] = Rotation2d.fromRadians(Math.atan(sol_pose.getZ()/holo_align_pose.getNorm())).getDegrees() + ShooterConstants.encoderOffsetFromHorizontal;
+        ret_val[0] = holo_align_angle.getDegrees();
+        ret_val[1] = new Rotation2d(Math.hypot(sol_pose.getX(), sol_pose.getX()), sol_pose.getY()).getDegrees() + ShooterConstants.encoderOffsetFromHorizontal;
         // ret_val[1] = calcAngleBasedOnRealRegression(current_pose.getDistance(holo_align_pose));
         Logger.recordOutput("ShootOnTheFly/angles", ret_val);
 
