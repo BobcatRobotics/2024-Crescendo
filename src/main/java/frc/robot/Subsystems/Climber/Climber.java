@@ -3,6 +3,7 @@ package frc.robot.Subsystems.Climber;
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.*;
+import frc.robot.Subsystems.Climber.ClimberIO.ClimberIOInputs;
 
 public class Climber extends SubsystemBase {
     private final ClimberIOInputsAutoLogged inputs = new ClimberIOInputsAutoLogged();
@@ -36,10 +37,10 @@ public class Climber extends SubsystemBase {
         io.stop();
         percent = 0;
     }
+    public double getPos(){
+        return(inputs.climberMotorPosition);
+    }
 
     
-    public void climbMode(double pos){
-        io.climbMode(pos);
-    }
 }
 

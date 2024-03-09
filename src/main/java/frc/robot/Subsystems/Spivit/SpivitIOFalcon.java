@@ -120,4 +120,8 @@ public class SpivitIOFalcon implements SpivitIO {
   public boolean aligned() {
     return Math.abs(angleMotor.getClosedLoopError().getValueAsDouble() * 360) <= ShooterConstants.angleTolerance;
   }
+
+  public void stop(){
+    angleMotor.stopMotor();
+  }
 }

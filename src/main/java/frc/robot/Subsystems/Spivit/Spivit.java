@@ -80,6 +80,10 @@ public class Spivit extends SubsystemBase {
     return io.aligned();
   }
 
+  public void stop(){
+    io.stop();
+  }
+
 
 
 
