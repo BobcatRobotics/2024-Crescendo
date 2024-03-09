@@ -434,8 +434,12 @@ public class Constants {
         public static final double ampPosition = 274.5; // 272
         public static final double releasehookSetpoint = 285;
 
-        public static final int fastShooterRPMSetpoint = 5000; // TODO find this
-        public static final int slowShooterRPMSetpoint = 0;
+        public static final int fastShooterRPMSetpoint = 5000;
+        public static final int slowShooterRPMSetpoint = 1000; //TODO tune
+        public static final double slowShooterSpivitAngle = 282; //when the shooter is beyond this, use the slow shooter speed
+        public static final int ampShootRPMSetpoint = 1800;
+
+
 
         public static final double stow = bottomLimit + 2;
 
