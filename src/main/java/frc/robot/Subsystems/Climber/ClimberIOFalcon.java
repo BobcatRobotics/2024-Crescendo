@@ -1,10 +1,9 @@
 package frc.robot.Subsystems.Climber;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
- 
+
 import frc.robot.Constants.ClimberConstants;
 
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -67,5 +66,6 @@ public class ClimberIOFalcon implements ClimberIO {
         // Stops the motor
         climberMotor.stopMotor();
     }
+
 
 }

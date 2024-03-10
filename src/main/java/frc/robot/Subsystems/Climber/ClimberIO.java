@@ -19,4 +19,5 @@ public interface ClimberIO {
     public default void holdPos(double rot) {}
 
     public default void stop() {}
+    
 }

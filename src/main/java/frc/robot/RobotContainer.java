@@ -33,6 +33,7 @@ import frc.robot.Commands.Auto.SubwooferShot;
 import frc.robot.Commands.Intake.TeleopIntake;
 import frc.robot.Commands.Multi.SetAmp;
 import frc.robot.Commands.Swerve.TeleopSwerve;
+import frc.robot.Commands.Climber.ClimbMode;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -82,7 +83,7 @@ public class RobotContainer {
   public final Amp m_amp;
   public final Spivit m_Spivit;
   // public final Trap m_trap;
-  // public final Climber m_climber;
+  public final Climber m_climber;
   public final Rumble m_Rumble; //mmmmmmmm rumble
   // public final Vision m_Vision;
 
@@ -112,7 +113,7 @@ public class RobotContainer {
         m_amp = new Amp(new AmpIOFalcon());
         m_Spivit = new Spivit(new SpivitIOFalcon());
         // m_trap = new Trap(new TrapIOFalcon());
-        // m_climber = new Climber(new ClimberIOFalcon());
+        m_climber = new Climber(new ClimberIOFalcon());
         m_Rumble = new Rumble();
         // m_Vision = new Vision(new VisionIOLimelight());
         break;
@@ -142,7 +143,7 @@ public class RobotContainer {
         m_Spivit = new Spivit(new SpivitIOFalcon());
         // m_trap = new Trap(new TrapIO() {
         // });
-        // m_climber = new Climber(new ClimberIO() { 
+        m_climber = new Climber(new ClimberIOFalcon());  
         // });
         m_Rumble = new Rumble();
 
@@ -177,7 +178,7 @@ public class RobotContainer {
         m_Spivit = new Spivit(new SpivitIOFalcon());
         // m_trap = new Trap(new TrapIO() {
         // });
-        // m_climber = new Climber(new ClimberIO() { 
+        m_climber = new Climber(new ClimberIOFalcon());
         // });
         m_Rumble = new Rumble();
 
@@ -340,7 +341,7 @@ public class RobotContainer {
     gp.button(8).onTrue(new InstantCommand(() -> m_swerve.resetPose( BobcatUtil.getAlliance() == Alliance.Blue ? 
       new Pose2d(FieldConstants.blueSpeakerPose.plus(new Translation2d(1.3, 0)), Rotation2d.fromDegrees(0)) :
       new Pose2d(FieldConstants.redSpeakerPose.plus(new Translation2d(-1.3, 0)), Rotation2d.fromDegrees(180)))));
-    
+    gp.axisGreaterThan(3, 0.07).whileTrue(new ClimbMode(m_climber,m_amp, m_Spivit, () -> -gp.getRawAxis(3)));
 
     /* trap controls */
     // gp.povRight().whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1), m_trap::stopArm, m_trap));
@@ -356,10 +357,10 @@ public class RobotContainer {
 
 
     // climber controls
-    //this *should* raise the hooks
+    //this raises the hooks
     // gp.axisGreaterThan(3, 0.07).whileTrue(new RunCommand(() -> m_climber.setPercentOut(-gp.getRawAxis(3)), m_climber)).onFalse(new InstantCommand(m_climber::stop));
-    //this *should* lower the hooks
-    // gp.axisGreaterThan(2, 0.07).whileTrue(new RunCommand(() -> m_climber.setPercentOut(gp.getRawAxis(2)), m_climber)).onFalse(new InstantCommand(m_climber::stop));
+    //this lowers the hooks
+    gp.axisGreaterThan(2, 0.07).whileTrue(new RunCommand(() -> m_climber.setPercentOut(gp.getRawAxis(2)), m_climber)).onFalse(new InstantCommand(m_climber::stop));
 
 
     /* Drive with gamepad */
