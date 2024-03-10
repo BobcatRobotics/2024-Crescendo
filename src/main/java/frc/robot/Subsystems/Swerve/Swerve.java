@@ -76,8 +76,7 @@ public class Swerve extends SubsystemBase {
 
     static final Lock odometryLock = new ReentrantLock();
 
-    private final LoggedDashboardNumber driveToPoseX = new LoggedDashboardNumber("desired x");
-    private final LoggedDashboardNumber driveToPoseY = new LoggedDashboardNumber("desired y");
+    
     Pose2d desiredPose = new Pose2d();
     private Rotation2d lastYaw = new Rotation2d();
 
@@ -215,8 +214,6 @@ public class Swerve extends SubsystemBase {
                 mod.stop();
             }
         }
-        desiredPose = new Pose2d(driveToPoseX.get(), driveToPoseY.get(), new Rotation2d());
-        Logger.recordOutput("Swerve/DesiredPose", desiredPose);
 
         // Update PoseEstimator if at least 1 tag is in view
         if (shooterRightVision.getBotPose().getY() <= FieldConstants.fieldWidth &&
@@ -246,7 +243,6 @@ public class Swerve extends SubsystemBase {
 
         }
 
-        SmartDashboard.putNumber("distance to speaker", getDistanceToSpeaker());
 
     }
 
@@ -581,6 +577,11 @@ public class Swerve extends SubsystemBase {
             Logger.recordOutput("Autoalign/Using Tag", false);
             return odometryValue; // the previous statement does nothing because of this
         }
+    }
+
+    public void setLimeLEDS(boolean on) {
+        shooterLeftVision.setLEDS(on);
+        shooterRightVision.setLEDS(on);
     }
 
 }

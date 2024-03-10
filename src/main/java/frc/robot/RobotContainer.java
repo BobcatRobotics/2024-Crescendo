@@ -215,7 +215,6 @@ public class RobotContainer {
     //autoChooser.addOption("AdjustedKidsMeal", new PathPlannerAuto("AdjustedKidsMeal"));
 
     configureBindings();
-    SmartDashboard.putNumber("ShooterRPM", 0);
   }
 
   /**
@@ -292,7 +291,7 @@ public class RobotContainer {
         new TeleopIntake(
             m_intake, 
             gp.povDown(), //shooter
-            gp.povUp(), //poptart
+            // gp.povUp(), //poptart
             // () -> (gp.button(5).getAsBoolean() && gp.povDown().getAsBoolean()), // if holding spin up shooter button, run intake to fire
             gp.button(7), // outtake - 'back' button
             // () -> m_shooter.atSpeed(),
@@ -301,7 +300,8 @@ public class RobotContainer {
             () -> true,
             gp.button(6), // feed to shooter/manual override
             // m_trap,
-            m_Rumble
+            m_Rumble,
+            m_swerve
         ).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
         gp.button(7).whileTrue(new StartEndCommand(() -> m_shooter.setSpeed(-1000, -1000), m_shooter::stop, m_shooter));

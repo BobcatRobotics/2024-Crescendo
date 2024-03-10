@@ -14,6 +14,8 @@ public class Intake extends SubsystemBase {
     private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
     private boolean intook = false;
+    private boolean lastIntakeSensorValue = false;
+    private boolean currentIntakeSensorValue = false;
 
     public Intake(IntakeIO io) {
         this.io = io;
@@ -23,7 +25,9 @@ public class Intake extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Intake", inputs);
-        SmartDashboard.putBoolean("has piece", hasPiece());
+        SmartDashboard.putBoolean("has piece", hasPiece() || intook || inputs.intakeSensorTripped);
+        lastIntakeSensorValue = currentIntakeSensorValue;
+        currentIntakeSensorValue = inputs.intakeSensorTripped;
     }
 
     public void intakeToShooter() {
@@ -48,7 +52,11 @@ public class Intake extends SubsystemBase {
 
     @AutoLogOutput
     public boolean hasPiece() {
-        if (inputs.tofValue <= IntakeConstants.tofTresh || intook) {
+       /*  if (inputs.tofValue <= IntakeConstants.tofTresh || intook) {
+            // intook = true;
+            // return true;
+            return false;
+        } else */if ((!currentIntakeSensorValue && lastIntakeSensorValue) || intook) {
             intook = true;
             return true;
         }

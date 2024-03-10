@@ -24,8 +24,6 @@ public class Spivit extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Spivit", inputs);
 
-    // Put spivit angle into smart dashboard
-    SmartDashboard.putNumber("Spivit Angle", inputs.angleMotorPosition);
   }
 
   /**

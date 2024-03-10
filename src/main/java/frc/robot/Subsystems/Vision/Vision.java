@@ -37,6 +37,10 @@ public class Vision extends SubsystemBase {
 
   }
 
+  public void setLEDS(boolean on) {
+    io.setLEDS(on ? LEDMode.FORCEON : LEDMode.FORCEOFF);
+  }
+
   public void setCamMode(CamMode mode) {
     io.setCamMode(mode);
   }
