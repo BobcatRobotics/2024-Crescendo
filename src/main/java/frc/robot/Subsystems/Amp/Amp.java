@@ -59,4 +59,8 @@ public class Amp extends SubsystemBase {
     public void zero() {
         io.zeroPosition();
     }
+
+    public double getAngle(){
+        return inputs.motorPosition;
+    }
 } 

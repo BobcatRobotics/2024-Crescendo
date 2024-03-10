@@ -325,6 +325,7 @@ public class RobotContainer {
     gp.button(2).onTrue(new SetAmp(m_amp, m_Spivit, true).withInterruptBehavior(InterruptionBehavior.kCancelSelf)); // a
     //zero
     gp.button(3).onTrue(new InstantCommand(m_amp::zero)); // y
+    
     //shooter amp speed
     gp.button(4).onTrue(new InstantCommand(() -> m_shooter.setSpeed(1800, 1800))).onFalse(new InstantCommand(m_shooter::stop)); // x
 

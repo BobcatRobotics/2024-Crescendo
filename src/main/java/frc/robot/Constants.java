@@ -113,6 +113,9 @@ public class Constants {
         public static final double angleSupplyCurrentThreshold = 40.0;
         public static final double angleSupplyTimeThreshold = 0.1;
 
+        public static final boolean angleStatorCurrentLimitEnable = true;
+        public static final double angleStatorCurrentLimit = 20;
+
         /* Drive Configs */
         public static final InvertedValue driveMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
@@ -130,6 +133,9 @@ public class Constants {
         public static final double driveSupplyCurrentThreshold = 60.0;
         public static final double driveSupplyTimeThreshold = 0.1;
 
+        public static final boolean driveStatorCurrentLimitEnable = true;
+        public static final double driveStatorCurrentLimit = 60; //for now, maybe 50 if were feeling spicy
+
         public static final double openLoopRamp = 0.25;
         public static final double closedLoopRamp = 0.0;
 
@@ -146,7 +152,7 @@ public class Constants {
             public static final int angleMotorID = 2;
             public static final int driveMotorID = 1;
 
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(104.8535 + 180); // 109.1 353.32
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(280.0195); // 109.1 353.32
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -158,7 +164,7 @@ public class Constants {
             public static final int angleMotorID = 4;
             public static final int driveMotorID = 3;
 
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(210.4102 - 180); // 214.1 9.14
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(24.0820); // 214.1 9.14
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -169,7 +175,7 @@ public class Constants {
             public static final int cancoderID = 3;
             public static final int angleMotorID = 6;
             public static final int driveMotorID = 5;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(251.4551 - 180); // 203.1 234.66
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(68.9941); // 203.1 234.66
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -180,7 +186,7 @@ public class Constants {
             public static final int cancoderID = 4;
             public static final int angleMotorID = 8;
             public static final int driveMotorID = 7;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(141.3281 + 180); // 51.9 285.29
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(321.3281); // 51.9 285.29
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -327,7 +333,7 @@ public class Constants {
 
         public static final int outsideMotorID = 11;
         public static final InvertedValue outsideMotorInvert = InvertedValue.Clockwise_Positive;
-        public static final NeutralModeValue outsideMotorBrakeMode = NeutralModeValue.Coast;
+        public static final NeutralModeValue outsideMotorBrakeMode = NeutralModeValue.Brake;
         public static final double outsideCurrentLimit = 80;
 
         public static final int tofID = 0;
@@ -384,22 +390,22 @@ public class Constants {
         public static final int topMotorID = 12;
         public static final InvertedValue topMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue topMotorBrakeMode = NeutralModeValue.Coast;
-        public static final double kTopP = 0.05; // volts/rps 0.05
+        public static final double kTopP = 9; // volts/rps 0.05
         public static final double kTopI = 0;
         public static final double kTopD = 0;
-        public static final double kTopV = 0.0113; // volts/rps, feedforward, output per unit of requested velocity
+        public static final double kTopV = 0.04; // volts/rps, feedforward, output per unit of requested velocity
                                                    // 0.0113
-        public static final double kTopS = 0.03; // volts, this is added to each output to overcome static friction
+        public static final double kTopS = 6; // volts, this is added to each output to overcome static friction
         public static final double topCurrentLimit = 40;
 
         public static final int bottomMotorID = 13;
         public static final InvertedValue bottomMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue bottomMotorBrakeMode = NeutralModeValue.Coast;
-        public static final double kBottomP = 0.25; // .25
+        public static final double kBottomP = 10; // .25
         public static final double kBottomI = 0;
         public static final double kBottomD = 0; // .11
-        public static final double kBottomV = 0.016; // .014
-        public static final double kBottomS = 0.03;
+        public static final double kBottomV = 0.04; // .014
+        public static final double kBottomS = 8;
         public static final double bottomCurrentLimit = 40;
 
         public static final int angleMotorID = 14;
@@ -428,8 +434,12 @@ public class Constants {
         public static final double ampPosition = 274.5; // 272
         public static final double releasehookSetpoint = 285;
 
-        public static final int fastShooterRPMSetpoint = 5000; // TODO find this
-        public static final int slowShooterRPMSetpoint = 0;
+        public static final int fastShooterRPMSetpoint = 5000;
+        public static final int slowShooterRPMSetpoint = 1000; //TODO tune
+        public static final double slowShooterSpivitAngle = 282; //when the shooter is beyond this, use the slow shooter speed
+        public static final int ampShootRPMSetpoint = 1800;
+
+
 
         public static final double stow = bottomLimit + 2;
 
