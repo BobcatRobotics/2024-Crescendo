@@ -11,12 +11,12 @@ public class BobcatUtil {
     }
 
     public static double getShooterSpeed(double spivitAngle, double ampAngle) {
-        if(ampAngle >= AmpConstants.deployValue - AmpConstants.deployTolerance){
+        if(ampAngle >= AmpConstants.deployValue - 15){ //if the amp is within 15 degrees of being deployed, use the amp speed
             return ShooterConstants.ampShootRPMSetpoint;
-        } else if (spivitAngle >= ShooterConstants.slowShooterSpivitAngle) {
+        } else if (spivitAngle >= ShooterConstants.slowShooterSpivitAngle) { //if the spivit is high, we are close to the speaker, and we can use a slower setpoint
             return ShooterConstants.slowShooterRPMSetpoint;
         } else {
-            return ShooterConstants.fastShooterRPMSetpoint;
+            return ShooterConstants.fastShooterRPMSetpoint; //otherwise use our fast setpoint
         }
     }
 }

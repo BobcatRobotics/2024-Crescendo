@@ -519,6 +519,12 @@ public class Swerve extends SubsystemBase {
         return 291 * Math.pow(distance, -0.0762);
     }
 
+    public double calcAngleBasedOnHashMap() {
+        double distance = getDistanceToSpeaker();
+        Logger.recordOutput("Spivit/DesiredAngle", ShooterConstants.spivitAngles.get(distance));
+        return ShooterConstants.spivitAngles.get(distance);
+    }
+
     public double get0to2Pi(double rad) {
         rad = rad % (2 * Math.PI);
         // if (rad < (2 * Math.PI)) //should this be here?
