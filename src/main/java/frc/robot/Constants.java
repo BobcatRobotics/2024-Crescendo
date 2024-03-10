@@ -390,22 +390,22 @@ public class Constants {
         public static final int topMotorID = 12;
         public static final InvertedValue topMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue topMotorBrakeMode = NeutralModeValue.Coast;
-        public static final double kTopP = 0.05; // volts/rps 0.05
+        public static final double kTopP = 9; // volts/rps 0.05
         public static final double kTopI = 0;
         public static final double kTopD = 0;
-        public static final double kTopV = 0.0113; // volts/rps, feedforward, output per unit of requested velocity
+        public static final double kTopV = 0.04; // volts/rps, feedforward, output per unit of requested velocity
                                                    // 0.0113
-        public static final double kTopS = 0.03; // volts, this is added to each output to overcome static friction
+        public static final double kTopS = 6; // volts, this is added to each output to overcome static friction
         public static final double topCurrentLimit = 40;
 
         public static final int bottomMotorID = 13;
         public static final InvertedValue bottomMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue bottomMotorBrakeMode = NeutralModeValue.Coast;
-        public static final double kBottomP = 0.25; // .25
+        public static final double kBottomP = 10; // .25
         public static final double kBottomI = 0;
         public static final double kBottomD = 0; // .11
-        public static final double kBottomV = 0.016; // .014
-        public static final double kBottomS = 0.03;
+        public static final double kBottomV = 0.04; // .014
+        public static final double kBottomS = 8;
         public static final double bottomCurrentLimit = 40;
 
         public static final int angleMotorID = 14;

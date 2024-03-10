@@ -9,15 +9,15 @@ For low-friction mechanisms, just kP is sufficient. For mechanisms with more fri
 
 Generally, I’ve had a lot of success with the following process tuning for velocity-torque (for flywheels more recently but I’ve also done this with drivetrains, it just takes longer).
 
-    Start with a “low” kP (for flywheels this has been around 5)
-    Target a “low” velocity (for flywheels It’s been like 20 rps on a 1:1 reduction)
-    Increase kS until measured velocity reaches target velocity (initial gain of 1 or so)
-    Go to a “high” velocity (~60 rps)
+    1. Start with a “low” kP (for flywheels this has been around 5)
+    2. Target a “low” velocity (for flywheels It’s been like 20 rps on a 1:1 reduction)
+    3. Increase kS until measured velocity reaches target velocity (initial gain of 1 or so)
+    4. Go to a “high” velocity (~60 rps)
         If the measured velocity is at target, go to 8
-    Increase kV until measured velocity reaches target (initial gain of 1/target or so)
-    Go back to “low” velocity, and decrease kS until measured reaches target
-    Repeat from step 4.
-    Verify gains work at other target velocities
-    Increase kP until oscillation, take 90% and that’s your kP
+    5. Increase kV until measured velocity reaches target (initial gain of 1/target or so)
+    6. Go back to “low” velocity, and decrease kS until measured reaches target
+    7. Repeat from step 4.
+    8. Verify gains work at other target velocities
+    9. Increase kP until oscillation, take 90% and that’s your kP
 
 This process is basically finding the slope-intercept point of a linear formula by iteration. Slope is the kV term and intercept is the kS term. kP is just used to reach the target if the feed forwards truly neutral out the forces due to friction. Once you’re confident in the feed-forwards, you crank kP to get to target as fast as possible.
