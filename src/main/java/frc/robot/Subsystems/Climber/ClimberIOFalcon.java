@@ -1,13 +1,9 @@
 package frc.robot.Subsystems.Climber;
-import frc.robot.Subsystems.Shooter.*;
-import frc.robot.Commands.*;
-import frc.robot.Subsystems.Amp.*;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.ClimberConstants;
 
 import com.ctre.phoenix6.controls.DutyCycleOut;

@@ -341,8 +341,7 @@ public class RobotContainer {
     gp.button(8).onTrue(new InstantCommand(() -> m_swerve.resetPose( BobcatUtil.getAlliance() == Alliance.Blue ? 
       new Pose2d(FieldConstants.blueSpeakerPose.plus(new Translation2d(1.3, 0)), Rotation2d.fromDegrees(0)) :
       new Pose2d(FieldConstants.redSpeakerPose.plus(new Translation2d(-1.3, 0)), Rotation2d.fromDegrees(180)))));
-    gp.axisGreaterThan(3, 0.07).whileTrue(new ClimbMode(m_climber,m_amp, m_Spivit, () -> gp.getRawAxis(3)));
-    
+    gp.axisGreaterThan(3, 0.07).whileTrue(new ClimbMode(m_climber,m_amp, m_Spivit, () -> -gp.getRawAxis(3)));
 
     /* trap controls */
     // gp.povRight().whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1), m_trap::stopArm, m_trap));
@@ -358,10 +357,10 @@ public class RobotContainer {
 
 
     // climber controls
-    //this *should* raise the hooks
+    //this raises the hooks
     // gp.axisGreaterThan(3, 0.07).whileTrue(new RunCommand(() -> m_climber.setPercentOut(-gp.getRawAxis(3)), m_climber)).onFalse(new InstantCommand(m_climber::stop));
-    //this *should* lower the hooks
-    // gp.axisGreaterThan(2, 0.07).whileTrue(new RunCommand(() -> m_climber.setPercentOut(gp.getRawAxis(2)), m_climber)).onFalse(new InstantCommand(m_climber::stop));
+    //this lowers the hooks
+    gp.axisGreaterThan(2, 0.07).whileTrue(new RunCommand(() -> m_climber.setPercentOut(gp.getRawAxis(2)), m_climber)).onFalse(new InstantCommand(m_climber::stop));
 
 
     /* Drive with gamepad */

@@ -4,20 +4,13 @@
 
 package frc.robot.Commands.Climber;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.Constants.AmpConstants;
-import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Subsystems.Amp.Amp;
 import frc.robot.Subsystems.Climber.Climber;
-import frc.robot.Subsystems.Rumble.Rumble;
 import frc.robot.Subsystems.Spivit.Spivit;
 
 
@@ -42,13 +35,16 @@ public class ClimbMode extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    amp.setPos(AmpConstants.deployValue);
+    
     spivit.setAngle(ShooterConstants.releasehookSetpoint);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if(spivit.safeToDeploy()){
+      amp.setPos(AmpConstants.deployValue);
+    }
     climber.setPercentOut(rawAxis.getAsDouble());
   }
 
@@ -64,8 +60,6 @@ public class ClimbMode extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return(climber.getPos() <= ClimberConstants.topLimit && 
-    amp.getAngle()<=AmpConstants.deployValue && 
-    spivit.getAngle() <= ShooterConstants.releasehookSetpoint);
+    return false;
   }
 }
