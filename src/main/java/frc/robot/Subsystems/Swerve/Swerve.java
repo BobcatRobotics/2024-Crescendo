@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
@@ -227,18 +228,19 @@ public class Swerve extends SubsystemBase {
             // degrees for theta
             poseEstimator.addVisionMeasurement((shooterRightVision.getBotPose()),
                     (shooterRightVision.getPoseTimestamp()),
-                    VecBuilder.fill(shooterRightVision.getDistToTag() / getStdDev(),
-                            shooterRightVision.getDistToTag() / getStdDev(), Units.degreesToRadians(60)));
+                    VecBuilder.fill(getStdDev(shooterRightVision.getDistToTag()),
+                            getStdDev(shooterRightVision.getDistToTag()), Units.degreesToRadians(60)));
             Logger.recordOutput("shooterrightvisiondist", shooterRightVision.getDistToTag());
         }
+
         if (shooterLeftVision.getBotPose().getY() <= FieldConstants.fieldWidth &&
                 shooterLeftVision.getBotPose().getY() >= 0 &&
                 shooterLeftVision.getBotPose().getX() <= FieldConstants.fieldLength &&
                 shooterLeftVision.getBotPose().getX() >= 0 &&
                 Math.abs(shooterLeftVision.getBotPose().getY()) != 0) {
             poseEstimator.addVisionMeasurement((shooterLeftVision.getBotPose()), (shooterLeftVision.getPoseTimestamp()),
-                    VecBuilder.fill(shooterLeftVision.getDistToTag() / getStdDev(),
-                            shooterLeftVision.getDistToTag() / getStdDev(),
+                    VecBuilder.fill(getStdDev(shooterLeftVision.getDistToTag()),
+                            getStdDev(shooterLeftVision.getDistToTag()),
                             Units.degreesToRadians(60)));
             Logger.recordOutput("shooterleftvisiondist", shooterLeftVision.getDistToTag());
 
@@ -248,8 +250,12 @@ public class Swerve extends SubsystemBase {
 
     }
 
-    public double getStdDev() {
-        return DriverStation.isAutonomous() ? LimelightConstants.autostdDev : LimelightConstants.telestdDev;
+    // public double getStdDev(double dist) {
+    //     return DriverStation.isAutonomous() ? dist/LimelightConstants.autostdDev : dist/LimelightConstants.telestdDev;
+    // }
+
+    public double getStdDev(double dist) {
+        return DriverStation.isAutonomous() ? dist/LimelightConstants.autostdDev : Math.pow(dist, 2)/2;
     }
 
     public Pose2d getPathfindingPose() {
@@ -478,18 +484,24 @@ public class Swerve extends SubsystemBase {
      * 
      * @return DISTANCE TO SPEAKER OF CURRENT ALLIANCE IN METERS :D
      */
+    @AutoLogOutput
     public double getDistanceToSpeaker() {
-        return BobcatUtil.getAlliance() == Alliance.Blue
-                ? if(shooterLeftVision.gettID()==limelightConstants.blueSpeakerTag&&shooterRightVision.getTID()==limelightConstants.blueSpeakerTag){
-                    return (shooterLeftVision.getDistToTag()+shooterRightVision.getDistToTag())/2
-                }else{
-                    return getPose().getTranslation().getDistance(FieldConstants.blueSpeakerPose)}
-                : if(shooterLeftVision.gettID()==limelightConstants.redSpeakerTag&&shooterRightVision.getTID()==limelightConstants.redSpeakerTag){
-                    return (shooterLeftVision.getDistToTag()+shooterRightVision.getDistToTag())/2
-                }else{
-                    return getPose().getTranslation().getDistance(FieldConstants.redSpeakerPose)}
-                }
-                   
+        if (BobcatUtil.getAlliance() == Alliance.Blue) {
+            if (shooterLeftVision.getID() == LimelightConstants.blueSpeakerTag
+                    && shooterRightVision.getID() == LimelightConstants.blueSpeakerTag) {
+                return (shooterLeftVision.getDistToTag() + shooterRightVision.getDistToTag()) / 2;
+            } else {
+                return getPose().getTranslation().getDistance(FieldConstants.blueSpeakerPose);
+            }
+        } else {
+            if (shooterLeftVision.getID() == LimelightConstants.redSpeakerTag
+                    && shooterRightVision.getID() == LimelightConstants.redSpeakerTag) {
+                return (shooterLeftVision.getDistToTag() + shooterRightVision.getDistToTag()) / 2;
+            } else {
+                return getPose().getTranslation().getDistance(FieldConstants.redSpeakerPose);
+            }
+        }
+    }
 
     public Translation2d getTranslationToSpeaker() {
         return BobcatUtil.getAlliance() == Alliance.Blue
@@ -552,7 +564,7 @@ public class Swerve extends SubsystemBase {
 
         Rotation2d odometryValue = Rotation2d.fromRadians(getAngleToSpeaker());
 
-        if (shooterLeftVision.getTV() && shooterRightVision.getTV()) {
+        if (shooterLeftVision.getTV() && shooterRightVision.getTV() && getDistanceToSpeaker() < ShooterConstants.holonomicAprilTagThrowoutDistance) {
 
             lastValue = Rotation2d.fromRadians(get0to2Pi((getYaw().getRadians()
                     - (((shooterLeftVision.getTX().getRadians()) + shooterRightVision.getTX().getRadians()) / 2))));
