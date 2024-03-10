@@ -64,7 +64,11 @@ public class SetAmp extends Command {
   @Override
   public void end(boolean interrupted) {
     SmartDashboard.putBoolean("amp", true);
-    amp.stop();
+    if(deploy){
+      amp.stopMotorFeedforward();
+    }else{
+      amp.stop();
+    }
     spivit.stopMotorFeedforward();
   }
 
