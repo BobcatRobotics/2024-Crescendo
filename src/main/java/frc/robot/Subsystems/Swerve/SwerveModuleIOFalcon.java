@@ -61,7 +61,7 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
             PhoenixOdometryThread.getInstance().registerSignal(angleEncoder, angleEncoder.getPosition());
 
         BaseStatusSignal.setUpdateFrequencyForAll(
-            250.0, drivePosition, driveVelocity, angleAbsolutePosition);
+            100.0, drivePosition, driveVelocity, angleAbsolutePosition);
         driveMotor.optimizeBusUtilization();
         angleMotor.optimizeBusUtilization();
     }

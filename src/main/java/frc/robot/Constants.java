@@ -11,6 +11,7 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
@@ -18,6 +19,8 @@ import edu.wpi.first.wpilibj.RobotBase;
 import frc.lib.util.ModuleConstants;
 import frc.lib.util.limelightConstants;
 import static edu.wpi.first.apriltag.AprilTagFields.k2024Crescendo;
+
+import java.util.HashMap;
 
 public class Constants {
     public static final Mode currentMode = RobotBase.isSimulation() ? Mode.SIM
@@ -152,7 +155,7 @@ public class Constants {
             public static final int angleMotorID = 2;
             public static final int driveMotorID = 1;
 
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(104.8535 + 180); // 109.1 353.32
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(280.0195); // 109.1 353.32
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -164,7 +167,7 @@ public class Constants {
             public static final int angleMotorID = 4;
             public static final int driveMotorID = 3;
 
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(210.4102 - 180); // 214.1 9.14
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(24.0820); // 214.1 9.14
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -175,7 +178,7 @@ public class Constants {
             public static final int cancoderID = 3;
             public static final int angleMotorID = 6;
             public static final int driveMotorID = 5;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(251.4551 - 180); // 203.1 234.66
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(68.9941); // 203.1 234.66
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -186,7 +189,7 @@ public class Constants {
             public static final int cancoderID = 4;
             public static final int angleMotorID = 8;
             public static final int driveMotorID = 7;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(141.3281 + 180); // 51.9 285.29
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(321.3281); // 51.9 285.29
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -323,12 +326,12 @@ public class Constants {
     public static final class IntakeConstants {
         public static final int switchMotorID = 9; // This one switches to feed shooter vs trap
         public static final InvertedValue switchMotorInvert = InvertedValue.Clockwise_Positive;
-        public static final NeutralModeValue switchMotorBrakeMode = NeutralModeValue.Coast;
+        public static final NeutralModeValue switchMotorBrakeMode = NeutralModeValue.Brake;
         public static final double switchCurrentLimit = 80;
 
         public static final int floorMotorID = 10;
         public static final InvertedValue floorMotorInvert = InvertedValue.Clockwise_Positive;
-        public static final NeutralModeValue floorMotorBrakeMode = NeutralModeValue.Coast;
+        public static final NeutralModeValue floorMotorBrakeMode = NeutralModeValue.Brake;
         public static final double floorCurrentLimit = 80;
 
         public static final int outsideMotorID = 11;
@@ -390,23 +393,23 @@ public class Constants {
         public static final int topMotorID = 12;
         public static final InvertedValue topMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue topMotorBrakeMode = NeutralModeValue.Coast;
-        public static final double kTopP = 0.05; // volts/rps 0.05
+        public static final double kTopP = 9; // volts/rps 0.05
         public static final double kTopI = 0;
         public static final double kTopD = 0;
-        public static final double kTopV = 0.0113; // volts/rps, feedforward, output per unit of requested velocity
+        public static final double kTopV = 0.04; // volts/rps, feedforward, output per unit of requested velocity
                                                    // 0.0113
-        public static final double kTopS = 0.03; // volts, this is added to each output to overcome static friction
-        public static final double topCurrentLimit = 40;
+        public static final double kTopS = 6; // volts, this is added to each output to overcome static friction
+        public static final double topCurrentLimit = 100;
 
         public static final int bottomMotorID = 13;
         public static final InvertedValue bottomMotorInvert = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue bottomMotorBrakeMode = NeutralModeValue.Coast;
-        public static final double kBottomP = 0.25; // .25
+        public static final double kBottomP = 10; // .25
         public static final double kBottomI = 0;
         public static final double kBottomD = 0; // .11
-        public static final double kBottomV = 0.016; // .014
-        public static final double kBottomS = 0.03;
-        public static final double bottomCurrentLimit = 40;
+        public static final double kBottomV = 0.04; // .014
+        public static final double kBottomS = 8;
+        public static final double bottomCurrentLimit = 100;
 
         public static final int angleMotorID = 14;
         public static final InvertedValue angleMotorInvert = InvertedValue.Clockwise_Positive;
@@ -435,14 +438,27 @@ public class Constants {
         public static final double releasehookSetpoint = 285;
 
         public static final int fastShooterRPMSetpoint = 5000;
-        public static final int slowShooterRPMSetpoint = 1000; //TODO tune
-        public static final double slowShooterSpivitAngle = 282; //when the shooter is beyond this, use the slow shooter speed
+        public static final int slowShooterRPMSetpoint = 3000; //TODO tune
         public static final int ampShootRPMSetpoint = 1800;
+        public static final double slowShooterSpivitAngle = 282; //when the shooter is beyond this, use the slow shooter speed
 
+        public static final double holonomicAprilTagThrowoutDistance = 5.5;
 
 
         public static final double stow = bottomLimit + 2;
 
+        public static final InterpolatingDoubleTreeMap spivitAngles = new InterpolatingDoubleTreeMap();
+        static {
+            spivitAngles.put(Double.MIN_VALUE, 285.0);
+            spivitAngles.put(1.4, 285.0);
+            spivitAngles.put(1.868, 277.0);
+            spivitAngles.put(2.745, 269.0);
+            spivitAngles.put(3.25, 265.0);
+            spivitAngles.put(3.789, 262.0);
+            spivitAngles.put(4.698, 259.0);
+            spivitAngles.put(5.823, 257.0);
+            spivitAngles.put(Double.MAX_VALUE, 257.0);
+        }
     }
 
     public static final class TrapConstants {

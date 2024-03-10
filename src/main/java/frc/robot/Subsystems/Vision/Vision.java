@@ -49,6 +49,10 @@ public class Vision extends SubsystemBase {
     return inputs.tv;
   }
 
+  public double getID(){
+    return inputs.fiducialID;
+  }
+
   public void setPipeline(int id) {
     io.setPipeline(inputs.name, id);
   }
@@ -82,7 +86,9 @@ public class Vision extends SubsystemBase {
   }
 
   public double getDistToTag() {
-    return LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[3];
+    Logger.recordOutput("distanceToTagHypot", Math.hypot(LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[0], LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[2]));
+    return Math.hypot(LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[0], LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[2]); // 0 is x, 2 is z 
+    
   }
 
   public double getPoseTimestamp() {

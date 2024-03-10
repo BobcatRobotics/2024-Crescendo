@@ -63,4 +63,9 @@ public class Amp extends SubsystemBase {
     public double getAngle(){
         return inputs.motorPosition;
     }
+
+    
+    public void stopMotorFeedforward(){
+        io.stopMotorFeedforward();
+    }
 } 

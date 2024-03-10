@@ -4,7 +4,9 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 
 import frc.robot.Constants.ShooterConstants;
 
@@ -15,8 +17,10 @@ public class ShooterIOFalcon implements ShooterIO {
     // Here lies "feederMotor" :( R.I.P. 2024-2024; a wonderful son, brother, and
     // father.
 
-    private final VelocityDutyCycle requestTop;
-    private final VelocityDutyCycle requestBottom;
+    // private final VelocityDutyCycle requestTop;
+    // private final VelocityDutyCycle requestBottom;
+    private final VelocityTorqueCurrentFOC requestTop;
+    private final VelocityTorqueCurrentFOC requestBottom;
 
     private StatusSignal<Double> topMotorStatorCurrent;
     private StatusSignal<Double> topMotorVelocityRPS;
@@ -37,6 +41,8 @@ public class ShooterIOFalcon implements ShooterIO {
         topConfigs.Slot0.kS = ShooterConstants.kTopS;
         topConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
         topConfigs.CurrentLimits.StatorCurrentLimit = ShooterConstants.topCurrentLimit;
+        topConfigs.TorqueCurrent.PeakForwardTorqueCurrent = ShooterConstants.topCurrentLimit;
+        topConfigs.TorqueCurrent.PeakReverseTorqueCurrent = ShooterConstants.topCurrentLimit;
         topMotor.getConfigurator().apply(topConfigs);
 
         // Bottom motor configurations
@@ -49,12 +55,16 @@ public class ShooterIOFalcon implements ShooterIO {
         bottomConfigs.Slot0.kS = ShooterConstants.kBottomS;
         bottomConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
         bottomConfigs.CurrentLimits.StatorCurrentLimit = ShooterConstants.bottomCurrentLimit;
+        bottomConfigs.TorqueCurrent.PeakForwardTorqueCurrent = ShooterConstants.bottomCurrentLimit;
+        bottomConfigs.TorqueCurrent.PeakReverseTorqueCurrent = ShooterConstants.bottomCurrentLimit;
 
         bottomMotor.getConfigurator().apply(bottomConfigs);
 
         // Updates the requests for each motor
-        requestTop = new VelocityDutyCycle(0).withEnableFOC(true);
-        requestBottom = new VelocityDutyCycle(0).withEnableFOC(true);
+        // requestTop = new VelocityDutyCycle(0).withEnableFOC(true);
+        // requestBottom = new VelocityDutyCycle(0).withEnableFOC(true);
+        requestTop = new VelocityTorqueCurrentFOC(0);
+        requestBottom = new VelocityTorqueCurrentFOC(0);
 
         topMotorStatorCurrent = topMotor.getStatorCurrent();
         topMotorVelocityRPS = topMotor.getVelocity();
@@ -81,6 +91,20 @@ public class ShooterIOFalcon implements ShooterIO {
         inputs.bottomMotorStatorCurrent = bottomMotorStatorCurrent.getValueAsDouble();
         inputs.bottomMotorVelocityRPS = bottomMotorVelocityRPS.getValueAsDouble();
     }
+
+    // /**
+    //  * @param rps revs per second
+    //  */
+    // public void setTopVelocity(double rps) {
+    //     topMotor.setControl(requestTop.withVelocity(rps));
+    // }
+
+    // /**
+    //  * @param rps revs per second
+    //  */
+    // public void setBottomVelocity(double rps) {
+    //     bottomMotor.setControl(requestBottom.withVelocity(rps));
+    // }
 
     /**
      * @param rps revs per second
