@@ -306,7 +306,7 @@ public class RobotContainer {
 
     /* Shooter Controls */
     //while button is held, rev shooter
-    gp.button(10).whileTrue(new StartEndCommand(() -> m_shooter.setSpeedBasedOnAngle(m_Spivit.getAngle(), m_amp.getAngle()), m_shooter::stop, m_shooter)); // back right
+    gp.button(10).whileTrue(new StartEndCommand(() -> m_shooter.setSpeed(5000, 5000), m_shooter::stop, m_shooter)); // back right
     
 
     /* Spivit controls */
@@ -327,7 +327,7 @@ public class RobotContainer {
     gp.button(3).onTrue(new InstantCommand(m_amp::zero)); // y
     
     //shooter amp speed
-    //gp.button(4).onTrue(new InstantCommand(() -> m_shooter.setSpeed(1800, 1800))).onFalse(new InstantCommand(m_shooter::stop)); // x
+    gp.button(4).onTrue(new InstantCommand(() -> m_shooter.setSpeed(1800, 1800))).onFalse(new InstantCommand(m_shooter::stop)); // x
 
 
     //manual
