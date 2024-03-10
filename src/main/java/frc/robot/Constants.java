@@ -442,6 +442,7 @@ public class Constants {
         public static final int ampShootRPMSetpoint = 1800;
         public static final double slowShooterSpivitAngle = 282; //when the shooter is beyond this, use the slow shooter speed
 
+        public static final double holonomicAprilTagThrowoutDistance = 5.5;
 
 
         public static final double stow = bottomLimit + 2;
