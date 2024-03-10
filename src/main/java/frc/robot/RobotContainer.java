@@ -280,6 +280,7 @@ public class RobotContainer {
             () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine translation 
             () -> false, //align to amp
             gp.button(5) //align to speaker
+            //() -> false
         ));
     //reset gyro
     rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
@@ -306,7 +307,7 @@ public class RobotContainer {
 
     /* Shooter Controls */
     //while button is held, rev shooter
-    gp.button(10).whileTrue(new StartEndCommand(() -> m_shooter.setSpeed(5000, 5000), m_shooter::stop, m_shooter)); // back right
+    gp.button(10).whileTrue(new RunCommand(() -> m_shooter.setSpeed(() -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(), m_amp.getAngle()), () -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(), m_amp.getAngle())))).onFalse(new InstantCommand(m_shooter::stop)); // back right
     
 
     /* Spivit controls */
@@ -315,7 +316,7 @@ public class RobotContainer {
     //manual up
     gp.axisLessThan(5, -.6).whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(0.20), m_Spivit::stopMotorFeedforward, m_Spivit));
     //this sets it to a specific angle
-    gp.button(5).whileTrue(new RunCommand(() -> m_Spivit.setAngle(m_swerve.calcAngleBasedOnRealRegression()), m_Spivit)).onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
+    gp.button(5).whileTrue(new RunCommand(() -> m_Spivit.setAngle(m_swerve.calcAngleBasedOnHashMap()), m_Spivit)).onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
     gp.button(9).whileTrue(new RunCommand(() -> m_Spivit.setAngle(ShooterConstants.subwooferShot), m_Spivit)).onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
 
     /* amp controls */ 
