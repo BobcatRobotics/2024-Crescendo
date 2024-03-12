@@ -17,6 +17,11 @@ public interface SwerveModuleIO {
         public double canCoderPositionRot = 0.0;
         public double rawCanCoderPositionDeg = 0.0;
 
+        public double internalTempDrive = 0;
+        public double processorTempDrive = 0;
+        public double internalTempAngle = 0;
+        public double processorTempAngle = 0;
+
         public double[] odometryTimestamps = new double[] {};
         public double[] odometryDrivePositionsRad = new double[] {};
         public Rotation2d[] odometryAnglePositions = new Rotation2d[] {};
