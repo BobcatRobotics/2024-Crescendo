@@ -50,7 +50,7 @@ public class Constants {
         public static final double maxAngularVelocity = Math.PI;
         public static final double maxAngularAcceleration = Math.PI / 2;
 
-        public static final double stickDeadband = 0.05;
+        public static final double stickDeadband = 0.02;
 
         public static final boolean useFOC = true;
 
