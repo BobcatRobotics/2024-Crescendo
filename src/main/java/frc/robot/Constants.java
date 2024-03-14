@@ -436,7 +436,7 @@ public class Constants {
 
         public static final double stow = bottomLimit + 2;
 
-        public static final double encoderOffsetFromHorizontal = 232; // ESTIMATE, NEEDS UPDATING
+        public static final double encoderOffsetFromHorizontal = 230.6;
 
     }
 
