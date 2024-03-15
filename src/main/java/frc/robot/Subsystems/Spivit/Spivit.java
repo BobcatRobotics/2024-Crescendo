@@ -6,6 +6,7 @@ package frc.robot.Subsystems.Spivit;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 
@@ -22,6 +23,7 @@ public class Spivit extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Spivit", inputs);
+
   }
 
   /**
@@ -79,6 +81,12 @@ public class Spivit extends SubsystemBase {
   public boolean aligned(){
     return io.aligned();
   }
+
+  public void stop(){
+    io.stop();
+  }
+
+
 
 
   

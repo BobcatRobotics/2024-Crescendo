@@ -27,6 +27,11 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
     private final DutyCycleOut driveRequest;
     private final DutyCycleOut angleRequest;
 
+    private final StatusSignal<Double> internalTempDrive;
+    private final StatusSignal<Double> processorTempDrive;
+    private final StatusSignal<Double> internalTempAngle;
+    private final StatusSignal<Double> processorTempAngle;
+
     private final Queue<Double> timestampQueue;
 
     private final Queue<Double> drivePositionQueue;
@@ -39,11 +44,11 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
     public SwerveModuleIOFalcon(ModuleConstants moduleConstants) {
         encoderOffset = moduleConstants.angleOffset;
 
-        angleEncoder = new CANcoder(moduleConstants.cancoderID, SwerveConstants.canivore);
+        angleEncoder = new CANcoder(moduleConstants.cancoderID);
         configAngleEncoder();
-        angleMotor = new TalonFX(moduleConstants.angleMotorID, SwerveConstants.canivore);
+        angleMotor = new TalonFX(moduleConstants.angleMotorID);
         configAngleMotor();
-        driveMotor = new TalonFX(moduleConstants.driveMotorID, SwerveConstants.canivore);
+        driveMotor = new TalonFX(moduleConstants.driveMotorID);
         configDriveMotor();
 
         driveRequest = new DutyCycleOut(0.0).withEnableFOC(SwerveConstants.useFOC);
@@ -60,8 +65,14 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         anglePositionQueue =
             PhoenixOdometryThread.getInstance().registerSignal(angleEncoder, angleEncoder.getPosition());
 
+        internalTempDrive = driveMotor.getDeviceTemp();
+        processorTempDrive = driveMotor.getProcessorTemp();
+        internalTempAngle = angleMotor.getDeviceTemp();
+        processorTempAngle = angleMotor.getProcessorTemp();
+
         BaseStatusSignal.setUpdateFrequencyForAll(
-            250.0, drivePosition, driveVelocity, angleAbsolutePosition);
+            50.0, drivePosition, driveVelocity, angleAbsolutePosition);
+        BaseStatusSignal.setUpdateFrequencyForAll(5, internalTempAngle, internalTempDrive, processorTempAngle, processorTempDrive);
         driveMotor.optimizeBusUtilization();
         angleMotor.optimizeBusUtilization();
     }
@@ -71,7 +82,11 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         BaseStatusSignal.refreshAll(
         drivePosition,
         driveVelocity,
-        angleAbsolutePosition);
+        angleAbsolutePosition,
+        internalTempAngle,
+        internalTempDrive,
+        processorTempAngle,
+        processorTempDrive);
 
         inputs.drivePositionRot = drivePosition.getValueAsDouble() / SwerveConstants.driveGearRatio;
         inputs.driveVelocityRotPerSec = driveVelocity.getValueAsDouble() / SwerveConstants.driveGearRatio;
@@ -94,6 +109,11 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         timestampQueue.clear();
         drivePositionQueue.clear();
         anglePositionQueue.clear();
+
+        inputs.internalTempAngle = internalTempAngle.getValueAsDouble();
+        inputs.internalTempDrive = internalTempDrive.getValueAsDouble();
+        inputs.processorTempAngle = processorTempAngle.getValueAsDouble();
+        inputs.processorTempDrive = processorTempDrive.getValueAsDouble();
     }
 
     /**
@@ -154,12 +174,17 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         config.CurrentLimits.SupplyCurrentThreshold = SwerveConstants.driveSupplyCurrentThreshold;
         config.CurrentLimits.SupplyTimeThreshold = SwerveConstants.driveSupplyTimeThreshold;
 
+        config.CurrentLimits.StatorCurrentLimitEnable = SwerveConstants.driveStatorCurrentLimitEnable;
+        config.CurrentLimits.StatorCurrentLimit = SwerveConstants.driveStatorCurrentLimit;
+
         config.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = SwerveConstants.openLoopRamp;
         config.OpenLoopRamps.TorqueOpenLoopRampPeriod = SwerveConstants.openLoopRamp;
         config.OpenLoopRamps.VoltageOpenLoopRampPeriod = SwerveConstants.openLoopRamp;
         config.ClosedLoopRamps.DutyCycleClosedLoopRampPeriod = SwerveConstants.closedLoopRamp;
         config.ClosedLoopRamps.TorqueClosedLoopRampPeriod = SwerveConstants.closedLoopRamp;
         config.ClosedLoopRamps.VoltageClosedLoopRampPeriod = SwerveConstants.closedLoopRamp;
+
+        
 
         config.MotorOutput.Inverted = SwerveConstants.driveMotorInvert;
         config.MotorOutput.NeutralMode = SwerveConstants.driveNeutralMode;
@@ -180,6 +205,10 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         config.CurrentLimits.SupplyCurrentLimit = SwerveConstants.angleSupplyCurrentLimit;
         config.CurrentLimits.SupplyCurrentThreshold = SwerveConstants.angleSupplyCurrentThreshold;
         config.CurrentLimits.SupplyTimeThreshold = SwerveConstants.angleSupplyTimeThreshold;
+
+        config.CurrentLimits.StatorCurrentLimitEnable = SwerveConstants.angleStatorCurrentLimitEnable;
+        config.CurrentLimits.StatorCurrentLimit = SwerveConstants.angleStatorCurrentLimit;
+        
 
         config.MotorOutput.Inverted = SwerveConstants.angleMotorInvert;
         config.MotorOutput.NeutralMode = SwerveConstants.angleNeutralMode;

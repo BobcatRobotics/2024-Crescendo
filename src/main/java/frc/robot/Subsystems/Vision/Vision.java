@@ -37,6 +37,10 @@ public class Vision extends SubsystemBase {
 
   }
 
+  public void setLEDS(boolean on) {
+    io.setLEDS(on ? LEDMode.FORCEBLINK : LEDMode.PIPELINECONTROL);
+  }
+
   public void setCamMode(CamMode mode) {
     io.setCamMode(mode);
   }
@@ -47,6 +51,10 @@ public class Vision extends SubsystemBase {
 
   public boolean getTV() {
     return inputs.tv;
+  }
+
+  public double getID(){
+    return inputs.fiducialID;
   }
 
   public void setPipeline(int id) {
@@ -82,7 +90,9 @@ public class Vision extends SubsystemBase {
   }
 
   public double getDistToTag() {
-    return LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[3];
+    Logger.recordOutput("distanceToTagHypot", Math.hypot(LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[0], LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[2]));
+    return Math.hypot(LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[0], LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[2]); // 0 is x, 2 is z 
+    
   }
 
   public double getPoseTimestamp() {

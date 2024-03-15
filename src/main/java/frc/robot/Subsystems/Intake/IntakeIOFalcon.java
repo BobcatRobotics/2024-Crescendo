@@ -8,6 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.playingwithfusion.TimeOfFlight;
 import com.playingwithfusion.TimeOfFlight.RangingMode;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeIOFalcon implements IntakeIO {
@@ -16,6 +17,7 @@ public class IntakeIOFalcon implements IntakeIO {
     private final TalonFX outsideMotor;
 
     private final TimeOfFlight tof;
+    private final DigitalInput intakeSensor;
 
     private final DutyCycleOut request;
 
@@ -31,6 +33,8 @@ public class IntakeIOFalcon implements IntakeIO {
         tof = new TimeOfFlight(IntakeConstants.tofID);
         tof.setRangingMode(RangingMode.Medium, 24);
         tof.setRangeOfInterest(5, 5, 9, 9); // Reduces area of detection, reducing noise of sensor
+
+        intakeSensor = new DigitalInput(9);
 
         TalonFXConfiguration switchConfig = new TalonFXConfiguration();
         switchMotor.getConfigurator().apply(switchConfig);
@@ -77,6 +81,8 @@ public class IntakeIOFalcon implements IntakeIO {
         inputs.outsideMotorCurrent = outsideCurrent.getValueAsDouble();
 
         inputs.tofValue = tof.getRange();
+
+        inputs.intakeSensorTripped = !intakeSensor.get();
     }
 
     public void switchMotorSetPercentOut(double percent) {

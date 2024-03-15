@@ -78,6 +78,7 @@ public class AmpIOFalcon implements AmpIO {
     public void updateInputs(AmpIOInputs inputs) {
         BaseStatusSignal.refreshAll(motorPosition, statorCurrent);
         inputs.motorPosition = (motorPosition.getValueAsDouble()/30)*(360); //degrees
+        inputs.current = statorCurrent.getValueAsDouble();
     }
 
     /*
@@ -101,14 +102,13 @@ public class AmpIOFalcon implements AmpIO {
         motor.stopMotor();
     }
 
+    public void stopMotorFeedforward(){
+        motor.set(0.04);
+    }
+
     public void zeroPosition() {
         motor.getConfigurator().setPosition(0);
     }
 
-    @Override
-    public boolean currentLimitReached(){
-        
-        return motor.getStatorCurrent().getValueAsDouble() > AmpConstants.ampStatorCurrentLimit;
-    }
 
 } 

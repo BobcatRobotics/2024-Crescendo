@@ -1,12 +1,16 @@
 package frc.robot.Subsystems.Shooter;
 
 
+import java.util.function.DoubleSupplier;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Util.BobcatUtil;
 
 public class Shooter extends SubsystemBase {
     private final ShooterIO io;
@@ -37,8 +41,18 @@ public class Shooter extends SubsystemBase {
         this.rpsBotSetpoint = rpmBot/60;
         io.setTopVelocity(rpmTop/60);
         io.setBottomVelocity(rpmBot/60);
-        
+    }
 
+    public void setSpeed(DoubleSupplier rpmTop, DoubleSupplier rpmBot) {
+        this.rpsTopSetpoint = rpmTop.getAsDouble()/60;
+        this.rpsBotSetpoint = rpmBot.getAsDouble()/60;
+        io.setTopVelocity(rpmTop.getAsDouble()/60);
+        io.setBottomVelocity(rpmBot.getAsDouble()/60);
+    }
+
+    public void setSpeedBasedOnAngle(double spivitAngle, double ampAngle){
+        double shooterSpeed = BobcatUtil.getShooterSpeed(spivitAngle, ampAngle); 
+        setSpeed(shooterSpeed, shooterSpeed);
     }
 
 

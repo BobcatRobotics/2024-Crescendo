@@ -37,13 +37,11 @@ public class SetAmp extends Command {
   @Override
   public void initialize() {
     spivit.raiseForAmpMovement();
-    SmartDashboard.putBoolean("amp", false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putBoolean("deployed", amp.deployed());
     if (spivit.getAngle() >= ShooterConstants.ampDeploySafeValue - 1.5) {
       if (deploy) {
         amp.deploy();
@@ -63,8 +61,11 @@ public class SetAmp extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    SmartDashboard.putBoolean("amp", true);
-    amp.stop();
+    if(deploy){
+      amp.stopMotorFeedforward();
+    }else{
+      amp.stop();
+    }
     spivit.stopMotorFeedforward();
   }
 

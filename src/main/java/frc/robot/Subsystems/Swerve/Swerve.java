@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
@@ -80,8 +81,7 @@ public class Swerve extends SubsystemBase {
 
     static final Lock odometryLock = new ReentrantLock();
 
-    private final LoggedDashboardNumber driveToPoseX = new LoggedDashboardNumber("desired x");
-    private final LoggedDashboardNumber driveToPoseY = new LoggedDashboardNumber("desired y");
+    
     Pose2d desiredPose = new Pose2d();
     private Rotation2d lastYaw = new Rotation2d();
 
@@ -219,8 +219,6 @@ public class Swerve extends SubsystemBase {
                 mod.stop();
             }
         }
-        desiredPose = new Pose2d(driveToPoseX.get(), driveToPoseY.get(), new Rotation2d());
-        Logger.recordOutput("Swerve/DesiredPose", desiredPose);
 
         // Update PoseEstimator if at least 1 tag is in view
         if (shooterRightVision.getBotPose().getY() <= FieldConstants.fieldWidth &&
@@ -232,29 +230,33 @@ public class Swerve extends SubsystemBase {
             // degrees for theta
             poseEstimator.addVisionMeasurement((shooterRightVision.getBotPose()),
                     (shooterRightVision.getPoseTimestamp()),
-                    VecBuilder.fill(shooterRightVision.getDistToTag() / getStdDev(),
-                            shooterRightVision.getDistToTag() / getStdDev(), Units.degreesToRadians(60)));
+                    VecBuilder.fill(getStdDev(shooterRightVision.getDistToTag()),
+                            getStdDev(shooterRightVision.getDistToTag()), Units.degreesToRadians(60)));
             Logger.recordOutput("shooterrightvisiondist", shooterRightVision.getDistToTag());
         }
+
         if (shooterLeftVision.getBotPose().getY() <= FieldConstants.fieldWidth &&
                 shooterLeftVision.getBotPose().getY() >= 0 &&
                 shooterLeftVision.getBotPose().getX() <= FieldConstants.fieldLength &&
                 shooterLeftVision.getBotPose().getX() >= 0 &&
                 Math.abs(shooterLeftVision.getBotPose().getY()) != 0) {
             poseEstimator.addVisionMeasurement((shooterLeftVision.getBotPose()), (shooterLeftVision.getPoseTimestamp()),
-                    VecBuilder.fill(shooterLeftVision.getDistToTag() / getStdDev(),
-                            shooterLeftVision.getDistToTag() / getStdDev(),
+                    VecBuilder.fill(getStdDev(shooterLeftVision.getDistToTag()),
+                            getStdDev(shooterLeftVision.getDistToTag()),
                             Units.degreesToRadians(60)));
             Logger.recordOutput("shooterleftvisiondist", shooterLeftVision.getDistToTag());
 
         }
 
-        // SmartDashboard.putNumber("distance to speaker", getDistanceToSpeaker());
 
     }
 
-    public double getStdDev() {
-        return DriverStation.isAutonomous() ? LimelightConstants.autostdDev : LimelightConstants.telestdDev;
+    // public double getStdDev(double dist) {
+    //     return DriverStation.isAutonomous() ? dist/LimelightConstants.autostdDev : dist/LimelightConstants.telestdDev;
+    // }
+
+    public double getStdDev(double dist) {
+        return DriverStation.isAutonomous() ? dist/LimelightConstants.autostdDev : Math.pow(dist, 2)/2;
     }
 
     public Pose2d getPathfindingPose() {
@@ -483,10 +485,23 @@ public class Swerve extends SubsystemBase {
      * 
      * @return DISTANCE TO SPEAKER OF CURRENT ALLIANCE IN METERS :D
      */
+    @AutoLogOutput
     public double getDistanceToSpeaker() {
-        return BobcatUtil.getAlliance() == Alliance.Blue
-                ? getPose().getTranslation().getDistance(FieldConstants.blueSpeakerPose)
-                : getPose().getTranslation().getDistance(FieldConstants.redSpeakerPose);
+        if (BobcatUtil.getAlliance() == Alliance.Blue) {
+            if (shooterLeftVision.getID() == LimelightConstants.blueSpeakerTag
+                    && shooterRightVision.getID() == LimelightConstants.blueSpeakerTag) {
+                return (shooterLeftVision.getDistToTag() + shooterRightVision.getDistToTag()) / 2;
+            } else {
+                return getPose().getTranslation().getDistance(FieldConstants.blueSpeakerPose);
+            }
+        } else {
+            if (shooterLeftVision.getID() == LimelightConstants.redSpeakerTag
+                    && shooterRightVision.getID() == LimelightConstants.redSpeakerTag) {
+                return (shooterLeftVision.getDistToTag() + shooterRightVision.getDistToTag()) / 2;
+            } else {
+                return getPose().getTranslation().getDistance(FieldConstants.redSpeakerPose);
+            }
+        }
     }
 
     public Translation2d getTranslationToSpeaker() {
@@ -520,6 +535,12 @@ public class Swerve extends SubsystemBase {
     public double calcAngleBasedOnEstimatorRegression() {
         double distance = getDistanceToSpeaker();
         return 291 * Math.pow(distance, -0.0762);
+    }
+
+    public double calcAngleBasedOnHashMap() {
+        double distance = getDistanceToSpeaker();
+        Logger.recordOutput("Spivit/DesiredAngle", ShooterConstants.spivitAngles.get(distance));
+        return ShooterConstants.spivitAngles.get(distance);
     }
 
     /**
@@ -685,6 +706,36 @@ public class Swerve extends SubsystemBase {
     public double getAngleToSpeaker() {
         Translation2d speaker = getTranslationToSpeaker();
         return Math.atan(speaker.getY() / speaker.getX());
+    }
+
+    private Rotation2d lastValue = new Rotation2d();
+
+    public Rotation2d getAngleToSpeakerApriltag() {
+
+        Rotation2d odometryValue = Rotation2d.fromRadians(getAngleToSpeaker());
+
+        if (shooterLeftVision.getTV() && shooterRightVision.getTV() && getDistanceToSpeaker() < ShooterConstants.holonomicAprilTagThrowoutDistance) {
+
+            lastValue = Rotation2d.fromRadians(get0to2Pi((getYaw().getRadians()
+                    - (((shooterLeftVision.getTX().getRadians()) + shooterRightVision.getTX().getRadians()) / 2))));
+            Logger.recordOutput("Autoalign/Using Tag", true);
+            return lastValue;
+        }
+
+        else if (odometryValue.minus(lastValue).getDegrees() < 2.5) { // if we dont see both tags and odometry is within
+                                                                      // 2.5 degrees of the last reported tag value
+            Logger.recordOutput("Autoalign/Using Tag", false);
+            return odometryValue;
+
+        } else {
+            Logger.recordOutput("Autoalign/Using Tag", false);
+            return odometryValue; // the previous statement does nothing because of this
+        }
+    }
+
+    public void setLimeLEDS(boolean on) {
+        shooterLeftVision.setLEDS(on);
+        shooterRightVision.setLEDS(on);
     }
 
 }
