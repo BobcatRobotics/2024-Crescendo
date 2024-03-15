@@ -24,7 +24,6 @@ public class TeleopIntake extends Command {
     private BooleanSupplier feed;
     // private Trap trap;
     private boolean trapping = false;
-    private Swerve swerve;
 
     private Rumble rumble;
     
@@ -39,7 +38,7 @@ public class TeleopIntake extends Command {
      * @param atAngle are we properly aligned
      * @param feed should we feed the note to the shooter
      */
-    public TeleopIntake(Intake intake, BooleanSupplier intakeShooter, BooleanSupplier runOut, BooleanSupplier atSpeed, BooleanSupplier atAngle, BooleanSupplier feed, Rumble rumble, Swerve swerve) {
+    public TeleopIntake(Intake intake, BooleanSupplier intakeShooter, BooleanSupplier runOut, BooleanSupplier atSpeed, BooleanSupplier atAngle, BooleanSupplier feed, Rumble rumble) {
         this.intake = intake;
         this.intakeShooter = intakeShooter;
         // this.intakeTrap = intakeTrap;
@@ -49,7 +48,6 @@ public class TeleopIntake extends Command {
         this.feed = feed;
         // this.trap = trap;
         this.rumble = rumble;
-        this.swerve = swerve;
         addRequirements(intake);
     }
 
@@ -63,13 +61,11 @@ public class TeleopIntake extends Command {
             // swerve.setLimeLEDS(false);
         } else if (intake.hasPiece()) {
             intake.stop();
-            swerve.setLimeLEDS(true);
         } else if (intakeShooter.getAsBoolean()) {
             intake.intakeToShooter();
             // swerve.setLimeLEDS(false);
         } else {
             intake.stop();
-            swerve.setLimeLEDS(false);
             if(trapping){
             //  trap.stopArm();
             //  trap.stopRoller();

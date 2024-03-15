@@ -20,7 +20,7 @@ public class GyroIOPigeon2 implements GyroIO {
     private final StatusSignal<Double> yawVelocity;
 
     public GyroIOPigeon2() {
-        pigeon = new Pigeon2(SwerveConstants.pigeonID, SwerveConstants.canivore);
+        pigeon = new Pigeon2(SwerveConstants.pigeonID);
         Pigeon2Configuration config = new Pigeon2Configuration();
         pigeon.getConfigurator().apply(config);
         // config.MountPose.MountPoseYaw = 180;
@@ -32,8 +32,8 @@ public class GyroIOPigeon2 implements GyroIO {
         yaw = pigeon.getYaw();
         yawVelocity = pigeon.getAngularVelocityZWorld();
 
-        yaw.setUpdateFrequency(250);
-        yawVelocity.setUpdateFrequency(100);
+        yaw.setUpdateFrequency(50);
+        yawVelocity.setUpdateFrequency(50);
         pigeon.optimizeBusUtilization();
 
         yawTimestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();

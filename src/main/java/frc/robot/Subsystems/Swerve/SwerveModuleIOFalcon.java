@@ -44,11 +44,11 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
     public SwerveModuleIOFalcon(ModuleConstants moduleConstants) {
         encoderOffset = moduleConstants.angleOffset;
 
-        angleEncoder = new CANcoder(moduleConstants.cancoderID, SwerveConstants.canivore);
+        angleEncoder = new CANcoder(moduleConstants.cancoderID);
         configAngleEncoder();
-        angleMotor = new TalonFX(moduleConstants.angleMotorID, SwerveConstants.canivore);
+        angleMotor = new TalonFX(moduleConstants.angleMotorID);
         configAngleMotor();
-        driveMotor = new TalonFX(moduleConstants.driveMotorID, SwerveConstants.canivore);
+        driveMotor = new TalonFX(moduleConstants.driveMotorID);
         configDriveMotor();
 
         driveRequest = new DutyCycleOut(0.0).withEnableFOC(SwerveConstants.useFOC);
@@ -71,8 +71,8 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         processorTempAngle = angleMotor.getProcessorTemp();
 
         BaseStatusSignal.setUpdateFrequencyForAll(
-            100.0, drivePosition, driveVelocity, angleAbsolutePosition);
-        BaseStatusSignal.setUpdateFrequencyForAll(10, internalTempAngle, internalTempDrive, processorTempAngle, processorTempDrive);
+            50.0, drivePosition, driveVelocity, angleAbsolutePosition);
+        BaseStatusSignal.setUpdateFrequencyForAll(5, internalTempAngle, internalTempDrive, processorTempAngle, processorTempDrive);
         driveMotor.optimizeBusUtilization();
         angleMotor.optimizeBusUtilization();
     }
