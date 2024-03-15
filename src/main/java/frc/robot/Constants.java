@@ -155,7 +155,7 @@ public class Constants {
             public static final int angleMotorID = 2;
             public static final int driveMotorID = 1;
 
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(280.0195); // 109.1 353.32
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(285.1); // 109.1 353.32
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -167,7 +167,7 @@ public class Constants {
             public static final int angleMotorID = 4;
             public static final int driveMotorID = 3;
 
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(24.0820); // 214.1 9.14
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(28.6); // 214.1 9.14
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -178,7 +178,7 @@ public class Constants {
             public static final int cancoderID = 3;
             public static final int angleMotorID = 6;
             public static final int driveMotorID = 5;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(173.5839); // 203.1 234.66
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(204.3); // 203.1 234.66
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -189,7 +189,7 @@ public class Constants {
             public static final int cancoderID = 4;
             public static final int angleMotorID = 8;
             public static final int driveMotorID = 7;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(321.3281); // 51.9 285.29
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(321.3); // 51.9 285.29
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -244,7 +244,7 @@ public class Constants {
 
         public static final class intake {
 
-            public static final String name = "limelight-intake";
+            public static final String name = "limelight-intake"; //LL3
             public static final double verticalFOV = 49.7; // degrees obviously
             public static final double horizontalFOV = 63.3;
             public static final double limelightMountHeight = Units.inchesToMeters(20.5);
@@ -273,7 +273,7 @@ public class Constants {
             public static final double pitch = 33; // degrees
             public static final double yaw = 180;
 
-            public static final String name = "limelight-left";
+            public static final String name = "limelight-left"; //LL3
             public static final double verticalFOV = 49.7; // degrees obviously
             public static final double horizontalFOV = 63.3;
             public static final double limelightMountHeight = Units.inchesToMeters(20.5);
@@ -301,9 +301,9 @@ public class Constants {
             public static final double pitch = 33; // degrees
             public static final double yaw = 180;
 
-            public static final String name = "limelight-right";
-            public static final double verticalFOV = 49.7; // degrees obviously
-            public static final double horizontalFOV = 63.3;
+            public static final String name = "limelight-right"; //LL3G
+            public static final double verticalFOV = 56.2; // degrees obviously
+            public static final double horizontalFOV = 82; 
             public static final double limelightMountHeight = Units.inchesToMeters(20.5);
             public static final int detectorPiplineIndex = 2;
             public static final int apriltagPipelineIndex = 1;
