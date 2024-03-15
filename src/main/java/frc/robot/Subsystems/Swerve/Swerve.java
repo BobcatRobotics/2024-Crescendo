@@ -577,8 +577,8 @@ public class Swerve extends SubsystemBase {
      * @return [1] spivit angle
      */
     public double[] getShootWhileMoveBallistics() {
-        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getYaw());
-        // ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
+        // ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getYaw());
+        ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
         Logger.recordOutput("chassisspeeds", chassisSpeeds);
         Translation2d speakerPose = FieldConstants.redSpeakerPose;
 
@@ -586,21 +586,14 @@ public class Swerve extends SubsystemBase {
         // https://www.forrestthewoods.com/blog/solving_ballistic_trajectories/
         double G = 9.81;
         double target_pos_x = speakerPose.getX();
-        // double target_pos_y = speakerPose.getY();
-        
-        // double target_pos_z = FieldConstants.speakerHeight;
         double target_pos_y = FieldConstants.speakerHeight;
         double target_pos_z = speakerPose.getY();
         double target_vel_x = -chassisSpeeds.vxMetersPerSecond; // from the frame of reference of the robot, the speaker
                                                                 // is moving towards it
-        // double target_vel_y = -chassisSpeeds.vyMetersPerSecond;
-        // double target_vel_z = 0;
         double target_vel_y = 0;
         double target_vel_z = -chassisSpeeds.vyMetersPerSecond;
         double proj_pos_x = getPose().getX();
-        // double proj_pos_y = getPose().getY();
-        // double proj_pos_z = 0;
-        double proj_pos_y = 0;
+        double proj_pos_y = 0.3;
         double proj_pos_z = getPose().getY();
         double proj_speed = ShooterConstants.noteIdealExitVelocityMPS;
 
@@ -665,7 +658,8 @@ public class Swerve extends SubsystemBase {
         double[] ret_val = new double[2];
 
         ret_val[0] = holo_align_angle.getDegrees();
-        ret_val[1] = new Rotation2d(Math.hypot(sol_pose.getX(), sol_pose.getX()), sol_pose.getY()).getDegrees() + ShooterConstants.encoderOffsetFromHorizontal;
+        ret_val[1] = new Rotation2d(Math.hypot(sol_pose.getX(), sol_pose.getZ()), sol_pose.getY()).getDegrees() + ShooterConstants.encoderOffsetFromHorizontal;
+        // ret_val[1] = Rotation2d.fromRadians(Math.asin(sol_pose.getY()/sol_pose.getNorm())).getDegrees() + ShooterConstants.encoderOffsetFromHorizontal;
         // ret_val[1] = calcAngleBasedOnRealRegression(current_pose.getDistance(holo_align_pose));
         Logger.recordOutput("ShootOnTheFly/angles", ret_val);
 
