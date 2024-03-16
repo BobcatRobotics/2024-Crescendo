@@ -3,32 +3,38 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.270256540513081,
-        "y": 0.787607774477542
+        "x": 2.3480519285761825,
+        "y": 3.604820198570287
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.528431654649287,
-        "y": 0.8633392912542285
+        "x": 3.8475359607545783,
+        "y": 2.4234085368539744
       },
       "isLocked": false,
-      "linkedName": "outtathewaypickup1"
+      "linkedName": "outtathewayshootpoint"
     },
     {
       "anchor": {
-        "x": 2.469222355418881,
-        "y": 3.3624793448848895
+        "x": 8.16423241702572,
+        "y": 2.483993750275324
       },
       "prevControl": {
-        "x": 2.969050366145013,
-        "y": 2.62031048047336
+        "x": 5.1652643526689275,
+        "y": -0.24234085368539532
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "outtathewayshootpoint"
+      "linkedName": "outtathewaypickup2"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 2.7102031001746707,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
@@ -41,7 +47,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Shoot"
+                "name": "Intake"
               }
             }
           ]
@@ -51,19 +57,19 @@
   ],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 4.0,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -43.152389734005396,
+    "rotation": 17.650124219930394,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Out Of The Way 2",
   "previewStartingState": {
-    "rotation": -19.44003482817625,
+    "rotation": -37.874983651098276,
     "velocity": 0
   },
   "useDefaultConstraints": false

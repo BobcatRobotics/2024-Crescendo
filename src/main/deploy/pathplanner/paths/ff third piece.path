@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.469222355418881,
-        "y": 3.3624793448848895
+        "x": 2.75700211917029,
+        "y": 4.119794512651756
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.9687063875972766,
-        "y": 2.181067683168577
+        "x": 2.2420278050888207,
+        "y": 4.256111242849792
       },
       "isLocked": false,
-      "linkedName": "outtathewayshootpoint"
+      "linkedName": "ffsecondpiece"
     },
     {
       "anchor": {
-        "x": 8.300549147223757,
-        "y": 2.4385548402093113
+        "x": 2.8327336359469766,
+        "y": 7.043031060231863
       },
       "prevControl": {
-        "x": 5.119825442602915,
-        "y": 0.772461471122204
+        "x": 1.6513219742306646,
+        "y": 6.634080869637756
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "outtathewaypickup2"
+      "linkedName": "ffthirdpiece"
     }
   ],
   "rotationTargets": [],
@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.8,
+      "waypointRelativePos": 0.65,
       "command": {
         "type": "parallel",
         "data": {
@@ -51,19 +51,19 @@
   ],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 4.0,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 17.650124219930394,
+    "rotation": 26.56505117707802,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Out Of The Way 2",
+  "folder": "Fast Food",
   "previewStartingState": {
-    "rotation": -41.18592516570963,
+    "rotation": -29.47588900324586,
     "velocity": 0
   },
   "useDefaultConstraints": false

@@ -2,34 +2,15 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.53,
-      "y": 3.66
+      "x": 1.14,
+      "y": 5.53
     },
-    "rotation": 0.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "ootw Shoot preload piece"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AlignDontShoot"
-                }
-              }
-            ]
-          }
-        },
         {
           "type": "named",
           "data": {
@@ -39,37 +20,55 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ootw Intake first piece"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ootw Shoot first piece"
+            "pathName": "ff preload & first"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AlignAndShoot1.5"
+            "name": "AlignAndShoot1.0"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ootw Intake second piece"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ootw Shoot second piece"
+            "pathName": "ff second piece"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AlignAndShoot1.5"
+            "name": "AlignAndShoot1.0"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ff third piece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignAndShoot1.0"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ff intake fourth"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ff shoot fourth"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignAndShoot1.0"
           }
         }
       ]

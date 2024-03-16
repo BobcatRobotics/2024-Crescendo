@@ -3,6 +3,7 @@
   "robotLength": 0.521,
   "holonomicMode": true,
   "pathFolders": [
+    "Fast Food",
     "Out Of The Way 2"
   ],
   "autoFolders": [

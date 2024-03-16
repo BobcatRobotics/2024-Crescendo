@@ -71,13 +71,13 @@ public class Constants {
         public static final double driveGearRatio = (5.36 / 1.0);
 
         /* Auto Constants */
-        public static final double translationKP = 4; //tuned for 4 m/s          //2.25; // tuned for .5 m/s
+        public static final double translationKP = 7; //tuned for 4 m/s          //2.25; // tuned for .5 m/s
         public static final double translationKI = 0.0;
-        public static final double translationKD = 0.0;
+        public static final double translationKD = 1.4;
 
-        public static final double rotationKP = 1.5;
+        public static final double rotationKP = 4;
         public static final double rotationKI = 0.0;
-        public static final double rotationKD = 0.0;
+        public static final double rotationKD = 0.4;
 
         /* Teleop Constants */
         public static final double teleopRotationKP = 2;
@@ -205,20 +205,20 @@ public class Constants {
         public static final double fieldWidth = 8.211;
 
         // 1 is closest to AMP, 5 is closest to SOURCE
-        public static final Translation2d centerlineNote1 = new Translation2d(250.5, 29.64);
-        public static final Translation2d centerlineNote2 = new Translation2d(250.5, 95.64);
-        public static final Translation2d centerlineNote3 = new Translation2d(250.5, 161.64);
-        public static final Translation2d centerlineNote4 = new Translation2d(250.5, 227.64);
-        public static final Translation2d centerlineNote5 = new Translation2d(250.5, 293.64);
+        // public static final Translation2d centerlineNote1 = new Translation2d(250.5, 29.64);
+        // public static final Translation2d centerlineNote2 = new Translation2d(250.5, 95.64);
+        // public static final Translation2d centerlineNote3 = new Translation2d(250.5, 161.64);
+        // public static final Translation2d centerlineNote4 = new Translation2d(250.5, 227.64);
+        // public static final Translation2d centerlineNote5 = new Translation2d(250.5, 293.64);
 
         public static final double noteDiameter = Units.inchesToMeters(14);
 
         public static final double speakerHeight = Units.inchesToMeters(80.4375); // Center of opening
 
-        public static final Translation2d blueSpeakerPose = new Translation2d(Units.inchesToMeters(-1.5),
-                Units.inchesToMeters(218.42)); // Center of back of the opening
-        public static final Translation2d redSpeakerPose = new Translation2d(Units.inchesToMeters(652.73),
-                Units.inchesToMeters(218.42)); // Center of back of the opening //652.73
+        public static final Translation2d blueSpeakerPose = new Translation2d(Units.inchesToMeters(-1.5 + 12),
+                Units.inchesToMeters(218.42)); // Center of the opening
+        public static final Translation2d redSpeakerPose = new Translation2d(Units.inchesToMeters(652.73 - 12),
+                Units.inchesToMeters(218.42)); // Center of the opening //652.73
         
 
     }

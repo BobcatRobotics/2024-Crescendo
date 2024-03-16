@@ -21,6 +21,10 @@ public class Intake extends SubsystemBase {
         this.io = io;
     }
 
+    public void removePeice(){
+        intook = false;
+    }
+
     @Override
     public void periodic() {
         io.updateInputs(inputs);
@@ -56,7 +60,8 @@ public class Intake extends SubsystemBase {
             // intook = true;
             // return true;
             return false;
-        } else */if ((!currentIntakeSensorValue && lastIntakeSensorValue) || intook) {
+        } else */
+        if ((!currentIntakeSensorValue && lastIntakeSensorValue) || intook) {
             intook = true;
             return true;
         }

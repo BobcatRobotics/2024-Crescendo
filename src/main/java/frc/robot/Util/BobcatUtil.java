@@ -10,6 +10,13 @@ public class BobcatUtil {
         return DriverStation.getAlliance().isEmpty() ? Alliance.Blue : DriverStation.getAlliance().get();
     }
 
+    public static boolean isBlue(){
+        return getAlliance() == Alliance.Blue;
+    }
+    public static boolean isRed(){
+        return getAlliance() == Alliance.Red;
+    }
+
     public static double getShooterSpeed(double spivitAngle, double ampAngle) {
         if(ampAngle >= AmpConstants.deployValue - 15){ //if the amp is within 15 degrees of being deployed, use the amp speed
             return ShooterConstants.ampShootRPMSetpoint;
