@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.53,
+      "y": 3.66
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot preload piece"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Intake first piece"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot first piece"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Intake second piece"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot second piece"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

@@ -787,7 +787,15 @@ public class Swerve extends SubsystemBase {
     }
 
     public boolean aligned() {
-        return Math.abs(Math.toDegrees(rotationPID.getPositionError())) <= SwerveConstants.rotationToleranceAlignment;
+        if (DriverStation.isTeleop()) {
+            return Math.abs(Math.toDegrees(rotationPID.getPositionError())) <= SwerveConstants.rotationToleranceAlignment;
+        } else {
+            if (BobcatUtil.getAlliance() == Alliance.Blue) {
+                return Math.abs(ppRotationOverride.getRadians() - getYaw().getRadians()) <= 1;
+            } else {
+                return Math.abs(ppRotationOverride.getRadians() - get0to2Pi(getYaw().rotateBy(Rotation2d.fromDegrees(180)).getRadians())) <= 1;
+            }
+        }
     }
 
     /**
