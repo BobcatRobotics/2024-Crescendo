@@ -380,7 +380,8 @@ public class Constants {
         public static final double rpsTolerance = 200 / 60; // THIS IS IN RPS
         public static final double angleTolerance = 1; // THIS IS IN DEGREES
 
-        public static final double noteIdealExitVelocityMPS = 8;
+        // public static final double noteIdealExitVelocityMPS = 1.5;
+        public static final double noteIdealExitVelocityMPS = 12;
 
 
         //some notes on velocity pid

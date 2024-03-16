@@ -19,6 +19,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -29,6 +30,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -81,7 +83,6 @@ public class Swerve extends SubsystemBase {
 
     static final Lock odometryLock = new ReentrantLock();
 
-    
     Pose2d desiredPose = new Pose2d();
     private Rotation2d lastYaw = new Rotation2d();
 
@@ -248,15 +249,15 @@ public class Swerve extends SubsystemBase {
 
         }
 
-
     }
 
     // public double getStdDev(double dist) {
-    //     return DriverStation.isAutonomous() ? dist/LimelightConstants.autostdDev : dist/LimelightConstants.telestdDev;
+    // return DriverStation.isAutonomous() ? dist/LimelightConstants.autostdDev :
+    // dist/LimelightConstants.telestdDev;
     // }
 
     public double getStdDev(double dist) {
-        return DriverStation.isAutonomous() ? dist/LimelightConstants.autostdDev : Math.pow(dist, 2)/2;
+        return DriverStation.isAutonomous() ? dist / LimelightConstants.autostdDev : Math.pow(dist, 2) / 2;
     }
 
     public Pose2d getPathfindingPose() {
@@ -543,63 +544,66 @@ public class Swerve extends SubsystemBase {
         return ShooterConstants.spivitAngles.get(distance);
     }
 
-    /**
-     * 
-     * WIP, DO NOT USE
-     */
-    public double calcBasedOnIdealFunction() {
-        return (Math.atan(FieldConstants.speakerHeight / (getDistanceToSpeaker() + 0.2)) * (180 / Math.PI) + 233);
+    public double calcAngleBasedOnHashMap(double distance) {
+        Logger.recordOutput("Spivit/DesiredAngle", ShooterConstants.spivitAngles.get(distance));
+        return ShooterConstants.spivitAngles.get(distance);
     }
 
+    // /**
+    // *
+    // * WIP, DO NOT USE
+    // */
+    // public Rotation2d getShootWhileMoveRotation() {
+    // // ChassisSpeeds chassisSpeeds =
+    // ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getYaw());
+    // ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
+    // Rotation2d motionAngle = new Rotation2d(chassisSpeeds.vxMetersPerSecond,
+    // chassisSpeeds.vyMetersPerSecond);
+    // double motionScalar = Math.hypot(chassisSpeeds.vxMetersPerSecond,
+    // chassisSpeeds.vyMetersPerSecond);
+    // Translation2d speakerTrans = getTranslationToSpeaker();
+    // Rotation2d tanAngle; // The angle that is tangent to the circle with a radius
+    // of the distance between
+    // // the robot and the speaker at the point of the robot
+    // if (DriverStation.getAlliance().get() == Alliance.Blue) {
+    // tanAngle = Rotation2d.fromRadians(Math.atan(speakerTrans.getY() /
+    // speakerTrans.getX()) - (Math.PI / 2));
+    // } else {
+    // tanAngle = Rotation2d.fromRadians(Math.atan(speakerTrans.getY() /
+    // speakerTrans.getX()) + (Math.PI / 2));
+    // }
+    // tanAngle = Rotation2d.fromRadians(get0to2Pi(tanAngle.getRadians()));
+    // motionAngle = Rotation2d.fromRadians(get0to2Pi(motionAngle.getRadians()));
+    // Rotation2d angleDiff = tanAngle.minus(motionAngle).getDegrees() > 0 ?
+    // tanAngle.minus(motionAngle)
+    // : motionAngle.minus(tanAngle); // The difference in angle between the robots
+    // motion and the tangent
+    // // angle, made positive
+    // double tanSpeed = Math.tan(angleDiff.getRadians()) * motionScalar; // The
+    // speed along the tangent line that the
+    // // robot is currently moving at
+
+    // Rotation2d angleFromTan = Rotation2d
+    // .fromRadians(Math.acos(tanSpeed /
+    // ShooterConstants.noteIdealExitVelocityMPS)); // Gets the angle from
+    // // the tangent line to
+    // // fire the note to make
+    // // it in the speaker
+    // Rotation2d finalAngle = angleFromTan.plus(tanAngle); // Adjusts to get the
+    // field relative angle
+    // finalAngle = Rotation2d.fromRadians(get0to2Pi(finalAngle.getRadians()));
+    // return finalAngle;
+    // }
+
     /**
+     * WIP, DO NOT USE
      * 
-     * WIP, DO NOT USE
-     */
-    public Rotation2d getShootWhileMoveRotation() {
-        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getYaw());
-        Rotation2d motionAngle = Rotation2d
-                .fromRadians(Math.atan(chassisSpeeds.vyMetersPerSecond / chassisSpeeds.vxMetersPerSecond)); // The angle
-                                                                                                            // the robot
-                                                                                                            // is
-                                                                                                            // currently
-                                                                                                            // moving at
-        double motionScalar = Math.hypot(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond); // The
-                                                                                                            // current
-                                                                                                            // overall
-                                                                                                            // velocity
-                                                                                                            // of the
-                                                                                                            // robot
-        Translation2d speakerTrans = getTranslationToSpeaker();
-        Rotation2d tanAngle; // The angle that is tangent to the circle with a radius of the distance between
-                             // the robot and the speaker at the point of the robot
-        if (DriverStation.getAlliance().get() == Alliance.Blue) {
-            tanAngle = Rotation2d.fromRadians(Math.atan(speakerTrans.getY() / speakerTrans.getX()) - (Math.PI / 2));
-        } else {
-            tanAngle = Rotation2d.fromRadians(Math.atan(speakerTrans.getY() / speakerTrans.getX()) + (Math.PI / 2));
-        }
-        Rotation2d angleDiff = tanAngle.minus(motionAngle).getDegrees() > 0 ? tanAngle.minus(motionAngle)
-                : motionAngle.minus(tanAngle); // The difference in angle between the robots motion and the tangent
-                                               // angle, made positive
-        double tanSpeed = Math.tan(angleDiff.getRadians()) * motionScalar; // The speed along the tangent line that the
-                                                                           // robot is currently moving at
-
-        Rotation2d angleFromTan = Rotation2d
-                .fromRadians(Math.acos(tanSpeed / ShooterConstants.noteIdealExitVelocityMPS)); // Gets the angle from
-                                                                                               // the tangent line to
-                                                                                               // fire the note to make
-                                                                                               // it in the speaker
-        Rotation2d finalAngle = angleFromTan.plus(tanAngle); // Adjusts to get the field relative angle
-        return finalAngle;
-    }
-
-    /**
-     * WIP, DO NOT USE
      * @return [0] field relative holo angle
      * @return [1] spivit angle
      */
     public double[] getShootWhileMoveBallistics() {
-        // ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getYaw());
-        ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
+        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getYaw());
+        // ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
         Logger.recordOutput("chassisspeeds", chassisSpeeds);
         Translation2d speakerPose = FieldConstants.redSpeakerPose;
 
@@ -609,12 +613,11 @@ public class Swerve extends SubsystemBase {
         double target_pos_x = speakerPose.getX();
         double target_pos_y = FieldConstants.speakerHeight;
         double target_pos_z = speakerPose.getY();
-        double target_vel_x = -chassisSpeeds.vxMetersPerSecond; // from the frame of reference of the robot, the speaker
-                                                                // is moving towards it
+        double target_vel_x = -chassisSpeeds.vxMetersPerSecond;
         double target_vel_y = 0;
         double target_vel_z = -chassisSpeeds.vyMetersPerSecond;
         double proj_pos_x = getPose().getX();
-        double proj_pos_y = 0.3;
+        double proj_pos_y = 0;
         double proj_pos_z = getPose().getY();
         double proj_speed = ShooterConstants.noteIdealExitVelocityMPS;
 
@@ -632,7 +635,7 @@ public class Swerve extends SubsystemBase {
         double H = M - A;
         double J = O - C;
         double K = N - B;
-        double L = -.5f * G;
+        double L = -.5 * G;
 
         // Quartic Coeffecients
         double c0 = L * L;
@@ -669,23 +672,112 @@ public class Swerve extends SubsystemBase {
                     (float) ((J + R * t) / t));
             num_sols++;
         }
-        Logger.recordOutput("ShootOnTheFly/poses", solution_poses);
         Translation3d sol_pose = solution_poses[0];
-        Logger.recordOutput("ShootOnTheFly/norm", sol_pose.getNorm());
         Logger.recordOutput("ShootOnTheFly/pose", sol_pose);
-        // Translation2d holo_align_pose = new Translation2d(sol_pose.getX(), sol_pose.getZ());
         Rotation2d holo_align_angle = new Rotation2d(sol_pose.getX(), sol_pose.getZ());
 
         double[] ret_val = new double[2];
 
-        ret_val[0] = holo_align_angle.getDegrees();
+        ret_val[0] = holo_align_angle.getRadians();
         ret_val[1] = new Rotation2d(Math.hypot(sol_pose.getX(), sol_pose.getZ()), sol_pose.getY()).getDegrees() + ShooterConstants.encoderOffsetFromHorizontal;
-        // ret_val[1] = Rotation2d.fromRadians(Math.asin(sol_pose.getY()/sol_pose.getNorm())).getDegrees() + ShooterConstants.encoderOffsetFromHorizontal;
-        // ret_val[1] = calcAngleBasedOnRealRegression(current_pose.getDistance(holo_align_pose));
-        Logger.recordOutput("ShootOnTheFly/angles", ret_val);
 
+        Logger.recordOutput("ShootOnTheFly/retval", ret_val);
         return ret_val;
     }
+
+    // /**
+    // * WIP, DO NOT USE
+    // *
+    // * @return [0] field relative holo angle
+    // * @return [1] spivit angle
+    // */
+    // public double getShootWhileMoveBallistics() {
+    // ChassisSpeeds chassisSpeeds =
+    // ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getYaw());
+    // Rotation2d motionAngle = Rotation2d
+    // .fromRadians(Math.atan(chassisSpeeds.vyMetersPerSecond /
+    // chassisSpeeds.vxMetersPerSecond)); // The angle
+    // // the robot
+    // // is
+    // // currently
+    // // moving at
+    // double motionScalar = Math.hypot(chassisSpeeds.vxMetersPerSecond,
+    // chassisSpeeds.vyMetersPerSecond); // The
+    // // current
+    // // overall
+    // // velocity
+    // // of the
+    // // robot
+    // Translation2d speakerTrans = getTranslationToSpeaker();
+    // Rotation2d speakerAngle =
+    // Rotation2d.fromRadians(Math.atan(speakerTrans.getY() / speakerTrans.getX()));
+    // Rotation2d angleDiff = speakerAngle.minus(motionAngle).getDegrees() > 0 ?
+    // speakerAngle.minus(motionAngle)
+    // : motionAngle.minus(speakerAngle); // The difference in angle between the
+    // robots motion and the tangent
+    // // angle, made positive
+    // double speakerSpeed = Math.tan(angleDiff.getRadians()) * motionScalar; // The
+    // speed along the tangent line that
+    // // the robot is currently moving at
+    // Translation2d speakerPose = BobcatUtil.getAlliance() == Alliance.Blue ?
+    // FieldConstants.blueSpeakerPose : FieldConstants.redSpeakerPose;
+
+    // double target_pos_x = getDistanceToSpeaker();
+    // double target_pos_y = FieldConstants.speakerHeight - 0.3;
+    // double target_vel_x = speakerSpeed;
+    // double target_vel_y = 0;
+    // double proj_speed = ShooterConstants.noteIdealExitVelocityMPS;
+
+    // double PX = target_pos_x;
+    // double PY = target_pos_y;
+    // double VX = target_vel_x;
+    // double VY = target_vel_y;
+    // double S = proj_speed;
+    // double G = 9.81;
+
+    // // Quartic Coeffecients
+    // double c0 = (1/4) * (G * G);
+    // double c1 = VY * G;
+    // double c2 = PY * G + VX * VX + VY * VY - S * S;
+    // double c3 = 2 * (PX * VX + PY * VY);
+    // double c4 = PX * PX + PY * PY;
+
+    // double[] q_sols = new double[5];
+    // q_sols = Quartic.solveQuartic(c0, c1, c2, c3, c4);
+    // double[] times = new double[4];
+    // for (int i = 0; i < times.length; i++) {
+    // times[i] = q_sols[i];
+    // }
+    // Logger.recordOutput("ShootOnTheFly/times", times);
+
+    // Arrays.sort(times);
+
+    // Translation2d[] solution_poses = new Translation2d[2];
+    // solution_poses[0] = new Translation2d();
+    // solution_poses[1] = new Translation2d();
+    // int num_sols = 0;
+
+    // for (int i = 0; i < times.length; i++) {
+    // double t = times[i];
+
+    // if (t <= 0 || Double.isNaN(t)) {
+    // continue;
+    // }
+
+    // solution_poses[num_sols] = new Translation2d(
+    // PX + VX * t,
+    // PY + VY * t + 0.5 * G * t * t);
+    // num_sols++;
+    // }
+    // Logger.recordOutput("ShootOnTheFly/poses", solution_poses);
+    // Translation2d sol_pose = solution_poses[0];
+
+    // Logger.recordOutput("ShootOnTheFly/angle", sol_pose.getAngle().getDegrees() +
+    // ShooterConstants.encoderOffsetFromHorizontal);
+
+    // return sol_pose.getAngle().getDegrees() +
+    // ShooterConstants.encoderOffsetFromHorizontal;
+    // }
 
     public double get0to2Pi(double rad) {
         rad = rad % (2 * Math.PI);
@@ -714,7 +806,8 @@ public class Swerve extends SubsystemBase {
 
         Rotation2d odometryValue = Rotation2d.fromRadians(getAngleToSpeaker());
 
-        if (shooterLeftVision.getTV() && shooterRightVision.getTV() && getDistanceToSpeaker() < ShooterConstants.holonomicAprilTagThrowoutDistance) {
+        if (shooterLeftVision.getTV() && shooterRightVision.getTV()
+                && getDistanceToSpeaker() < ShooterConstants.holonomicAprilTagThrowoutDistance) {
 
             lastValue = Rotation2d.fromRadians(get0to2Pi((getYaw().getRadians()
                     - (((shooterLeftVision.getTX().getRadians()) + shooterRightVision.getTX().getRadians()) / 2))));
