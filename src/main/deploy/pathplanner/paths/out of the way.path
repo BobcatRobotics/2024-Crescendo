@@ -20,12 +20,12 @@
         "y": 2.92
       },
       "prevControl": {
-        "x": 2.115138192650537,
-        "y": 2.98327327593678
+        "x": 2.11618141032921,
+        "y": 2.998004319006453
       },
       "nextControl": {
-        "x": 3.241770130263907,
-        "y": 2.9118444561675454
+        "x": 3.6965397572017307,
+        "y": 2.874352778734362
       },
       "isLocked": false,
       "linkedName": null
@@ -36,28 +36,28 @@
         "y": 1.6605699308264719
       },
       "prevControl": {
-        "x": 4.522402916356043,
-        "y": 1.711701137850906
+        "x": 3.4522649102278256,
+        "y": 2.2101951896211496
       },
       "nextControl": {
-        "x": 5.00903415059099,
-        "y": 1.5900433292921692
+        "x": 6.015715445432226,
+        "y": 1.104854133156865
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.08,
-        "y": 0.73
+        "x": 8.194525023736395,
+        "y": 0.772461471122204
       },
       "prevControl": {
-        "x": 7.138680846530198,
-        "y": 1.0544223670577924
+        "x": 7.2532058702665925,
+        "y": 1.0968838381799966
       },
       "nextControl": {
-        "x": 8.420353261525255,
-        "y": 0.6126984340721747
+        "x": 8.53487828526165,
+        "y": 0.6551599051943787
       },
       "isLocked": false,
       "linkedName": null
@@ -80,16 +80,16 @@
     },
     {
       "anchor": {
-        "x": 8.08315006943404,
-        "y": 2.4402204130868754
+        "x": 8.194525023736395,
+        "y": 2.4385548402093113
       },
       "prevControl": {
-        "x": 4.7269277444537785,
-        "y": 1.0992505175893557
+        "x": 4.838302698756133,
+        "y": 1.0975849447117916
       },
       "nextControl": {
-        "x": 8.474692884741446,
-        "y": 2.5966603259668015
+        "x": 8.5860678390438,
+        "y": 2.5949947530892374
       },
       "isLocked": false,
       "linkedName": null
@@ -121,7 +121,27 @@
     },
     {
       "waypointRelativePos": 0.75,
-      "rotationDegrees": -46.355877312823,
+      "rotationDegrees": -46.360000000000014,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.4,
+      "rotationDegrees": -45.100386343955904,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 3.3000000000000003,
+      "rotationDegrees": -65.63108305015801,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 5.4,
+      "rotationDegrees": -46.360000000000014,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 4.15,
+      "rotationDegrees": -40.0,
       "rotateFast": false
     }
   ],
@@ -131,7 +151,7 @@
       "minWaypointRelativePos": 0.44999999999999996,
       "maxWaypointRelativePos": 0.95,
       "constraints": {
-        "maxVelocity": 0.5,
+        "maxVelocity": 1.0,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0
@@ -173,15 +193,9 @@
               "data": {
                 "commands": [
                   {
-                    "type": "named",
-                    "data": {
-                      "name": "SpinUp"
-                    }
-                  },
-                  {
                     "type": "wait",
                     "data": {
-                      "waitTime": 0.5
+                      "waitTime": 1.0
                     }
                   }
                 ]
@@ -264,40 +278,6 @@
           ]
         }
       }
-    },
-    {
-      "name": "spin up",
-      "waypointRelativePos": 3.4499999999999997,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "SpinUp"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "spin up 2",
-      "waypointRelativePos": 5.6,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "SpinUp"
-              }
-            }
-          ]
-        }
-      }
     }
   ],
   "globalConstraints": {
@@ -308,7 +288,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -36.178584124535035,
     "rotateFast": false
   },
   "reversed": false,

@@ -25,6 +25,8 @@ public class AlignAndShoot extends Command {
   private Shooter shooter;
   private Intake intake;
   private boolean finished = false;
+  private Timer timer = new Timer();
+
   public AlignAndShoot(Swerve swerve, Spivit spivit, Shooter shooter, Intake intake) {
     this.swerve = swerve;
     this.spivit = spivit;
@@ -37,13 +39,12 @@ public class AlignAndShoot extends Command {
   public void initialize() {
     shooter.setSpeed(ShooterConstants.fastShooterRPMSetpoint, ShooterConstants.fastShooterRPMSetpoint);
     finished = false;
+    timer.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Timer timer = new Timer();
-    timer.reset();
     spivit.setAngle(swerve.calcAngleBasedOnRealRegression());
     
     if (BobcatUtil.getAlliance() == Alliance.Blue) {
@@ -53,10 +54,10 @@ public class AlignAndShoot extends Command {
     }
     Logger.recordOutput("Aligment/spivit", spivit.aligned());
     Logger.recordOutput("Aligment/swerve", swerve.aligned());
-    Logger.recordOutput("Aligment/shooter", shooter.aboveSpeed(3000));
+    Logger.recordOutput("Aligment/shooter", shooter.aboveSpeed(4500));
     Logger.recordOutput("Alignment/finished", isFinished());
 
-    if(spivit.aligned() && swerve.aligned() && shooter.aboveSpeed(3000)){
+    if(spivit.aligned() && swerve.aligned() && shooter.aboveSpeed(4500)){
       timer.start();
       intake.intakeToShooter();
     }

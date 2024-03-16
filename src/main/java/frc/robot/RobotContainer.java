@@ -217,6 +217,7 @@ public class RobotContainer {
     autoChooser.addOption("CenterShootNScoot", new PathPlannerAuto("centerShootNScoot"));
     autoChooser.addOption("KidsMeal", new PathPlannerAuto("AdjustedKidsMeal"));
     autoChooser.addOption("OutOfTheWay", new PathPlannerAuto("out of the way"));
+    autoChooser.addOption("OuttaTheWay2", new PathPlannerAuto("OuttaTheWay2"));
     // autoChooser.addOption("AdjustedKidsMeal", new
     // PathPlannerAuto("AdjustedKidsMeal"));
 

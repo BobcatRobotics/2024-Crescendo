@@ -71,7 +71,7 @@ public class Constants {
         public static final double driveGearRatio = (5.36 / 1.0);
 
         /* Auto Constants */
-        public static final double translationKP = 2.25; // tuned for .5 m/s
+        public static final double translationKP = 4; //tuned for 4 m/s          //2.25; // tuned for .5 m/s
         public static final double translationKI = 0.0;
         public static final double translationKD = 0.0;
 

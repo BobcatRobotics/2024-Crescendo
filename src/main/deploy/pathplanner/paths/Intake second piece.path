@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.469222355418881,
+        "y": 3.3624793448848895
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.9687063875972766,
+        "y": 2.181067683168577
+      },
+      "isLocked": false,
+      "linkedName": "outtathewayshootpoint"
+    },
+    {
+      "anchor": {
+        "x": 8.300549147223757,
+        "y": 2.4385548402093113
+      },
+      "prevControl": {
+        "x": 5.119825442602915,
+        "y": 0.772461471122204
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "outtathewaypickup2"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.8,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 17.650124219930394,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Out Of The Way 2",
+  "previewStartingState": {
+    "rotation": -41.18592516570963,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}
