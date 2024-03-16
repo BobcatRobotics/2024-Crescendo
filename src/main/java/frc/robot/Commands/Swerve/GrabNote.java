@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Subsystems.Vision.Vision;
 
@@ -18,17 +19,23 @@ public class GrabNote extends Command {
   private Vision vision;
   private Swerve swerve;
 
-  private double kP=0.25;
+  private double kP=0.5;
   private double kPRotation = 0.025;
   private PIDController xController;
   private PIDController yController;
   private PIDController thetaController;
   private Pose2d notePos;
+  private boolean intakeNote;
+  private Intake intake;
+  
 
-  public GrabNote(Swerve swerve, Vision vision) {
+  public GrabNote(Swerve swerve, Vision vision, boolean intakeNote, Intake intake) {
     this.swerve = swerve;
     addRequirements(swerve);
     this.vision = vision;
+    this.intakeNote=intakeNote;
+    this.intake=intake;
+    addRequirements(intake);
 
   }
 
@@ -47,13 +54,23 @@ public class GrabNote extends Command {
   @Override
   public void execute() {
 
+    if(intakeNote){
+      if(!intake.hasPiece()){
+          intake.intakeToShooter();
+      }
+      else{
+        intake.stop();
+      }
+
+    }
+  
   if (vision.getTClass()==0){
     //if were more than 5 degrees off, only rotate, once were within 5 degrees, translate.
     notePos = vision.getNotePose();
-     if(!(Math.abs(thetaController.getPositionError()) < 5)){
-     swerve.drive(new Translation2d(), -thetaController.calculate(notePos.getRotation().getDegrees()),false,false,false,0);
+     if(!(Math.abs(thetaController.getPositionError()) < 10)){
+     swerve.drive(new Translation2d(), thetaController.calculate(notePos.getRotation().getDegrees()),false,false,false,0);
      }else{
-      swerve.drive(new Translation2d(0,xController.calculate(notePos.getX())), -thetaController.calculate(notePos.getRotation().getDegrees()),false,false,false,0);
+      swerve.drive(new Translation2d(xController.calculate(-notePos.getX()),yController.calculate(notePos.getY())), thetaController.calculate(notePos.getRotation().getDegrees()),false,false,false,0);
      }
   }
 }

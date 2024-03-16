@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.Commands.Auto;
+package frc.robot.Commands.Auto.Align;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -26,12 +26,17 @@ public class AlignAndShoot extends Command {
   private Intake intake;
   private boolean finished = false;
   private Timer timer = new Timer();
+  private Rotation2d angle = new Rotation2d();
+  double shootTime;
 
-  public AlignAndShoot(Swerve swerve, Spivit spivit, Shooter shooter, Intake intake) {
+  public AlignAndShoot(Swerve swerve, Spivit spivit, Shooter shooter, Intake intake, double shootTime) {
     this.swerve = swerve;
     this.spivit = spivit;
     this.shooter = shooter;
     this.intake = intake;
+    this.shootTime = shootTime;
+
+    addRequirements(spivit, shooter, intake, swerve);
   }
 
   // Called when the command is initially scheduled.
@@ -39,33 +44,36 @@ public class AlignAndShoot extends Command {
   public void initialize() {
     shooter.setSpeed(ShooterConstants.fastShooterRPMSetpoint, ShooterConstants.fastShooterRPMSetpoint);
     finished = false;
+    timer.stop();
     timer.reset();
+    Logger.recordOutput("Alignment/feeding", false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    spivit.setAngle(swerve.calcAngleBasedOnRealRegression());
+    spivit.setAngle(swerve.calcAngleBasedOnHashMap());
     
-    if (BobcatUtil.getAlliance() == Alliance.Blue) {
-      swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker()));
-    } else {
-      swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker()).rotateBy(Rotation2d.fromDegrees(180)));
-    }
+    swerve.drive(new Translation2d(), 0, true, false, true, swerve.getAngleToSpeaker());//swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker()));
+    angle = Rotation2d.fromRadians(swerve.getAngleToSpeaker());
+    
     Logger.recordOutput("Aligment/spivit", spivit.aligned());
-    Logger.recordOutput("Aligment/swerve", swerve.aligned());
+    Logger.recordOutput("Aligment/swerve", swerve.aligned(angle));
     Logger.recordOutput("Aligment/shooter", shooter.aboveSpeed(4500));
     Logger.recordOutput("Alignment/finished", isFinished());
+    
 
-    if(spivit.aligned() && swerve.aligned() && shooter.aboveSpeed(4500)){
+    if(spivit.aligned() && swerve.aligned(angle) && shooter.aboveSpeed(4500)){
       timer.start();
       intake.intakeToShooter();
+      Logger.recordOutput("Alignment/feeding", true);
     }
-    if(timer.hasElapsed(1)){
+    if(timer.hasElapsed(shootTime)){
       shooter.stop();
       intake.stop();
       spivit.stopMotor();
       swerve.setRotationTarget(null);
+      Logger.recordOutput("Alignment/feeding", false);
       finished = true;
     }
   
@@ -76,6 +84,7 @@ public class AlignAndShoot extends Command {
   public void end(boolean interrupted) {
     shooter.stop();
     intake.stop();
+    timer.stop();
     spivit.stopMotor();
     swerve.setRotationTarget(null);
   }

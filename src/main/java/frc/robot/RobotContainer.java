@@ -19,21 +19,28 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Commands.Auto.AlignAndShoot;
 import frc.robot.Commands.Auto.AutoBreak;
 import frc.robot.Commands.Auto.AutoIntake;
 import frc.robot.Commands.Auto.ContinouslyAlignAndShoot;
 import frc.robot.Commands.Auto.ReleaseHook;
+import frc.robot.Commands.Auto.RevToRPM;
 import frc.robot.Commands.Auto.SubwooferShot;
+import frc.robot.Commands.Auto.Align.AlignAndRevPPOverride;
+import frc.robot.Commands.Auto.Align.AlignAndShoot;
+import frc.robot.Commands.Auto.Align.AlignAndShootPPOverride;
 import frc.robot.Commands.Intake.TeleopIntake;
 import frc.robot.Commands.Multi.SetAmp;
+import frc.robot.Commands.Swerve.GrabNote;
 import frc.robot.Commands.Swerve.TeleopSwerve;
 import frc.robot.Commands.Climber.ClimbMode;
 import frc.robot.Constants.FieldConstants;
@@ -203,9 +210,15 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake", new AutoIntake(m_intake));
     NamedCommands.registerCommand("SpinUp", new InstantCommand(
         () -> m_shooter.setSpeed(ShooterConstants.fastShooterRPMSetpoint, ShooterConstants.fastShooterRPMSetpoint)));
-    NamedCommands.registerCommand("Shoot", new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake));
+    NamedCommands.registerCommand("ShootWhileBacking", new AlignAndShootPPOverride(m_swerve, m_Spivit, m_shooter, m_intake, 0.5, -2));
+    NamedCommands.registerCommand("AlignAndShoot1.5", new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 1.5));
+    NamedCommands.registerCommand("AlignAndShoot1.0", new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 1.0));
+    NamedCommands.registerCommand("AlignAndShoot0.5", new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 0.5));
+    // NamedCommands.registerCommand("LeftBiasedAlignAndShoot", new LeftBiasedAlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake) );
+    NamedCommands.registerCommand("AlignDontShoot", new AlignAndRevPPOverride(m_swerve, m_Spivit, m_shooter)); //Aligns and revs, but doesnt feed, this command never ends, you will have to end it manually
     NamedCommands.registerCommand("Unhook", new ReleaseHook(m_Spivit));
     NamedCommands.registerCommand("StopIntake", new InstantCommand(m_intake::stop));
+    NamedCommands.registerCommand("RevToRPM", new RevToRPM(m_shooter, ShooterConstants.fastShooterRPMSetpoint, 4500));
     // NamedCommands.registerCommand("Break", new AutoBreak(m_Spivit));
     /*
      * Auto Chooser
@@ -216,8 +229,10 @@ public class RobotContainer {
     autoChooser.addDefaultOption("Do Nothing", Commands.none());
     autoChooser.addOption("CenterShootNScoot", new PathPlannerAuto("centerShootNScoot"));
     autoChooser.addOption("KidsMeal", new PathPlannerAuto("AdjustedKidsMeal"));
-    autoChooser.addOption("OutOfTheWay", new PathPlannerAuto("out of the way"));
+    // autoChooser.addOption("OutOfTheWay", new PathPlannerAuto("out of the way"));
     autoChooser.addOption("OuttaTheWay2", new PathPlannerAuto("OuttaTheWay2"));
+    autoChooser.addOption("FastFood", new PathPlannerAuto("FastFood"));
+    // autoChooser.addOption("Odometry Tuning", new PathPlannerAuto("Odometry Tuning"));
     // autoChooser.addOption("AdjustedKidsMeal", new
     // PathPlannerAuto("AdjustedKidsMeal"));
 
@@ -387,6 +402,25 @@ public class RobotContainer {
     // this lowers the hooks
     gp.axisGreaterThan(2, 0.07).whileTrue(new RunCommand(() -> m_climber.setPercentOut(gp.getRawAxis(2)), m_climber))
         .onFalse(new InstantCommand(m_climber::stop));
+
+    // gp.povLeft().whileTrue(new ParallelCommandGroup(
+    //         new TeleopIntake(            
+    //         m_intake,
+    //         (gp.povLeft()), // shooter
+    //         // gp.povUp(), //poptart
+    //         // () -> (gp.button(5).getAsBoolean() && gp.povDown().getAsBoolean()), // if
+    //         // holding spin up shooter button, run intake to fire
+    //         null, // outtake - 'back' button
+    //         // () -> m_shooter.atSpeed(),
+    //         // () -> m_shooter.atAngle()
+    //         () -> true,
+    //         () -> true,
+    //         (null), // feed to shooter/manual override
+    //         // m_trap,
+    //         m_Rumble).withInterruptBehavior(InterruptionBehavior.kCancelSelf), 
+    //         new GrabNote(m_swerve, m_intakeVision)));
+    gp.povLeft().whileTrue(new GrabNote(m_swerve, m_intakeVision, true, m_intake));
+
 
     /* Drive with gamepad */
     // m_swerve.setDefaultCommand(

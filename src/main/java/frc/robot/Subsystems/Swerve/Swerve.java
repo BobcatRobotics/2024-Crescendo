@@ -287,6 +287,7 @@ public class Swerve extends SubsystemBase {
      * @param rotation      desired rotation speed of the swerve drive in radians
      *                      per second
      * @param fieldRelative whether the values should be field relative or not
+     * @param angleToSpeaker in radians
      */
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean snapToAmp,
             boolean snapToSpeaker, double angleToSpeaker) {
@@ -657,6 +658,14 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+    public boolean aligned(Rotation2d angle){
+        if (BobcatUtil.getAlliance() == Alliance.Blue) {
+                return Math.abs(angle.getRadians() - getYaw().getRadians()) <= 1;
+            } else {
+                return Math.abs(angle.getRadians() - getYaw().getRadians()) <= 1;
+            }
+    }
+
     /**
      * 
      * @return the angle to the speaker in radians
@@ -666,6 +675,14 @@ public class Swerve extends SubsystemBase {
         Translation2d speaker = getTranslationToSpeaker();
         return Math.atan(speaker.getY() / speaker.getX());
     }
+
+    // /**
+    //  * @return angle to the speaker biased for outta the way
+    //  */
+    // public double getAngleToSpeakerBiased() {
+    //     Translation2d speaker = getTranslationToSpeaker().plus(new Translation2d(0, 0.3));
+    //     return Math.atan(speaker.getY() / speaker.getX());
+    // }
 
     private Rotation2d lastValue = new Rotation2d();
 
@@ -682,10 +699,10 @@ public class Swerve extends SubsystemBase {
             return lastValue;
         }
 
-        else if (odometryValue.minus(lastValue).getDegrees() < 2.5) { // if we dont see both tags and odometry is within
+        else if (Math.abs(odometryValue.minus(lastValue).getDegrees()) < 2.5) { // if we dont see both tags and odometry is within
                                                                       // 2.5 degrees of the last reported tag value
             Logger.recordOutput("Autoalign/Using Tag", false);
-            return odometryValue;
+            return lastValue;
 
         } else {
             Logger.recordOutput("Autoalign/Using Tag", false);
