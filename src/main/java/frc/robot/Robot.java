@@ -103,8 +103,8 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    m_robotContainer.m_swerve.getShootWhileMoveBallistics();
-    Logger.recordOutput("ShootOnTheFly/prevspivitest", m_robotContainer.m_swerve.calcAngleBasedOnHashMap(Math.hypot(FieldConstants.redSpeakerPose.getX() - m_robotContainer.m_swerve.getPose().getX(), FieldConstants.redSpeakerPose.getY() - m_robotContainer.m_swerve.getPose().getY())));
+    // m_robotContainer.m_swerve.getShootWhileMoveBallistics();
+    // Logger.recordOutput("ShootOnTheFly/prevspivitest", m_robotContainer.m_swerve.calcAngleBasedOnHashMap(Math.hypot(FieldConstants.redSpeakerPose.getX() - m_robotContainer.m_swerve.getPose().getX(), FieldConstants.redSpeakerPose.getY() - m_robotContainer.m_swerve.getPose().getY())));
   }
 
   @Override
