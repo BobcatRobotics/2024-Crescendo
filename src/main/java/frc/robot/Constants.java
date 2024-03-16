@@ -381,7 +381,7 @@ public class Constants {
         public static final double angleTolerance = 1; // THIS IS IN DEGREES
 
         // public static final double noteIdealExitVelocityMPS = 1.5;
-        public static final double noteIdealExitVelocityMPS = 12;
+        public static final double noteIdealExitVelocityMPS = 13;
 
 
         //some notes on velocity pid

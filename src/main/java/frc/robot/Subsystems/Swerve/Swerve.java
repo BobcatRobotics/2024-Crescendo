@@ -635,13 +635,13 @@ public class Swerve extends SubsystemBase {
         double H = M - A;
         double J = O - C;
         double K = N - B;
-        double L = -.5 * G;
+        double L = -.5f * G;
 
         // Quartic Coeffecients
-        double c0 = L * L;
-        double c1 = -2 * Q * L;
-        double c2 = Q * Q - 2 * K * L - S * S + P * P + R * R;
-        double c3 = 2 * K * Q + 2 * H * P + 2 * J * R;
+        double c0 = G * G;
+        double c1 = 0;
+        double c2 = (P * P + R * R) + (K * -G) - S * S;
+        double c3 = 2 * (H * P + K * R);
         double c4 = K * K + H * H + J * J;
 
         double[] q_sols = new double[5];
@@ -679,7 +679,7 @@ public class Swerve extends SubsystemBase {
         double[] ret_val = new double[2];
 
         ret_val[0] = holo_align_angle.getRadians();
-        ret_val[1] = new Rotation2d(Math.hypot(sol_pose.getX(), sol_pose.getZ()), sol_pose.getY()).getDegrees() + ShooterConstants.encoderOffsetFromHorizontal;
+        ret_val[1] = new Rotation2d(Math.hypot(sol_pose.getX(), sol_pose.getZ()), sol_pose.getY()).getDegrees() + ShooterConstants.encoderOffsetFromHorizontal - 7;
 
         Logger.recordOutput("ShootOnTheFly/retval", ret_val);
         return ret_val;
