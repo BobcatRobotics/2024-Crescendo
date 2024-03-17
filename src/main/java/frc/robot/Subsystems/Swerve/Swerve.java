@@ -567,9 +567,9 @@ public class Swerve extends SubsystemBase {
         double target_pos_x = speakerPose.getX();
         double target_pos_y = FieldConstants.speakerHeight;
         double target_pos_z = speakerPose.getY();
-        double target_vel_x = -chassisSpeeds.vxMetersPerSecond;
+        double target_vel_x = BobcatUtil.isRed() ? chassisSpeeds.vxMetersPerSecond : -chassisSpeeds.vxMetersPerSecond;
         double target_vel_y = 0;
-        double target_vel_z = -chassisSpeeds.vyMetersPerSecond;
+        double target_vel_z = BobcatUtil.isRed() ? chassisSpeeds.vyMetersPerSecond : -chassisSpeeds.vyMetersPerSecond;
         double proj_pos_x = getPose().getX();
         double proj_pos_y = 0;
         double proj_pos_z = getPose().getY();

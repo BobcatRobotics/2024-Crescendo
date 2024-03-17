@@ -13,6 +13,8 @@ import frc.robot.Constants.ShooterConstants;
 public class Spivit extends SubsystemBase {
   private final SpivitIO io;
   private final SpivitIOInputsAutoLogged inputs = new SpivitIOInputsAutoLogged();
+
+  private double setpoint;
   
   /** Creates a new Spivit. */
   public Spivit(SpivitIO io) {
@@ -23,7 +25,7 @@ public class Spivit extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Spivit", inputs);
-
+    Logger.recordOutput("Spivit/setpoint", setpoint);
   }
 
   /**
@@ -31,6 +33,7 @@ public class Spivit extends SubsystemBase {
    */
   public void setAngle(double angle){
     io.setAngle(angle);
+    setpoint = angle;
   }
 
   public double getAngle(){
