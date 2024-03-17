@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.816555396948433,
-        "y": 1.3025820885590118
+        "x": 5.55007399801023,
+        "y": 0.682483075179928
       },
       "isLocked": false,
       "linkedName": "outtathewaypickup1"
@@ -20,8 +20,8 @@
         "y": 3.604820198570287
       },
       "prevControl": {
-        "x": 2.5601001755509047,
-        "y": 2.968675457646118
+        "x": 2.4399011268331336,
+        "y": 2.4374395542140253
       },
       "nextControl": null,
       "isLocked": false,
