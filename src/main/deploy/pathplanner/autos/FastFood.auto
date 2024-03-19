@@ -3,7 +3,7 @@
   "startingPose": {
     "position": {
       "x": 1.14,
-      "y": 5.53
+      "y": 5.548
     },
     "rotation": 0
   },
@@ -14,7 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "AlignAndShoot0.5"
+            "name": "AlignAndShootSubwoofer"
           }
         },
         {
@@ -33,12 +33,6 @@
           "type": "path",
           "data": {
             "pathName": "ff second piece"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AlignAndShoot1.0"
           }
         },
         {

@@ -18,20 +18,25 @@ import frc.robot.Subsystems.Spivit.Spivit;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Util.BobcatUtil;
 
-public class AlignAndRevPPOverride extends Command {
+public class AlignAndShootSubwoofer extends Command {
   /** Creates a new AlignToShooter. */
   private Swerve swerve;
   private Spivit spivit;
   private Shooter shooter;
+  private Intake intake;
   private boolean finished = false;
   private Timer timer = new Timer();
+  private Rotation2d angle = new Rotation2d();
+  double shootTime;
 
-  public AlignAndRevPPOverride(Swerve swerve, Spivit spivit, Shooter shooter) {
+  public AlignAndShootSubwoofer(Swerve swerve, Spivit spivit, Shooter shooter, Intake intake, double shootTime) {
     this.swerve = swerve;
     this.spivit = spivit;
     this.shooter = shooter;
+    this.intake = intake;
+    this.shootTime = shootTime;
 
-    addRequirements(spivit, shooter);
+    addRequirements(spivit, shooter, intake, swerve);
   }
 
   // Called when the command is initially scheduled.
@@ -39,7 +44,9 @@ public class AlignAndRevPPOverride extends Command {
   public void initialize() {
     shooter.setSpeed(ShooterConstants.fastShooterRPMSetpoint, ShooterConstants.fastShooterRPMSetpoint);
     finished = false;
+    timer.stop();
     timer.reset();
+    Logger.recordOutput("Alignment/feeding", false);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -47,15 +54,27 @@ public class AlignAndRevPPOverride extends Command {
   public void execute() {
     spivit.setAngle(swerve.getShootWhileMoveBallistics()[1]);
     
-    if (BobcatUtil.isBlue()) {
-      swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getShootWhileMoveBallistics()[0]));
-    } else {
-      swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getShootWhileMoveBallistics()[0]).rotateBy(Rotation2d.fromDegrees(180)));
-    }
+    // swerve.drive(new Translation2d(), 0, true, false, true, BobcatUtil.isRed() ? swerve.getShootWhileMoveBallistics()[0] : swerve.getShootWhileMoveBallistics()[0] + Math.PI);//swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker()));
+    
     Logger.recordOutput("Aligment/spivit", spivit.aligned());
-    Logger.recordOutput("Aligment/swerve", swerve.aligned());
+    Logger.recordOutput("Aligment/swerve", swerve.getAutoAligned());
     Logger.recordOutput("Aligment/shooter", shooter.aboveSpeed(4500));
     Logger.recordOutput("Alignment/finished", isFinished());
+    
+
+    if(spivit.aligned() && shooter.aboveSpeed(4500)){
+      timer.start();
+      intake.intakeToShooter();
+      Logger.recordOutput("Alignment/feeding", true);
+    }
+    if(timer.hasElapsed(shootTime)){
+      shooter.stop();
+      intake.stop();
+      spivit.stopMotor();
+      swerve.setRotationTarget(null);
+      Logger.recordOutput("Alignment/feeding", false);
+      finished = true;
+    }
   
   }
 
@@ -63,6 +82,8 @@ public class AlignAndRevPPOverride extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.stop();
+    intake.stop();
+    timer.stop();
     spivit.stopMotor();
     swerve.setRotationTarget(null);
   }
@@ -70,6 +91,6 @@ public class AlignAndRevPPOverride extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return finished;
   }
 }

@@ -38,6 +38,7 @@ import frc.robot.Commands.Auto.SubwooferShot;
 import frc.robot.Commands.Auto.Align.AlignAndRevPPOverride;
 import frc.robot.Commands.Auto.Align.AlignAndShoot;
 import frc.robot.Commands.Auto.Align.AlignAndShootPPOverride;
+import frc.robot.Commands.Auto.Align.AlignAndShootSubwoofer;
 import frc.robot.Commands.Intake.TeleopIntake;
 import frc.robot.Commands.Multi.SetAmp;
 import frc.robot.Commands.Swerve.GrabNote;
@@ -213,7 +214,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("ShootWhileBacking", new AlignAndShootPPOverride(m_swerve, m_Spivit, m_shooter, m_intake, 0.5, -2));
     NamedCommands.registerCommand("AlignAndShoot1.5", new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 1.5));
     NamedCommands.registerCommand("AlignAndShoot1.0", new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 1.0));
+    NamedCommands.registerCommand("AlignAndShootWhileMoving1.0", new AlignAndShootPPOverride(m_swerve, m_Spivit, m_shooter, m_intake, 1.0, 0));
     NamedCommands.registerCommand("AlignAndShoot0.5", new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 0.5));
+    NamedCommands.registerCommand("AlignAndShootSubwoofer", new AlignAndShootSubwoofer(m_swerve, m_Spivit, m_shooter, m_intake, 0.5));
     // NamedCommands.registerCommand("LeftBiasedAlignAndShoot", new LeftBiasedAlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake) );
     NamedCommands.registerCommand("AlignDontShoot", new AlignAndRevPPOverride(m_swerve, m_Spivit, m_shooter)); //Aligns and revs, but doesnt feed, this command never ends, you will have to end it manually
     NamedCommands.registerCommand("Unhook", new ReleaseHook(m_Spivit));
@@ -419,7 +422,7 @@ public class RobotContainer {
     //         // m_trap,
     //         m_Rumble).withInterruptBehavior(InterruptionBehavior.kCancelSelf), 
     //         new GrabNote(m_swerve, m_intakeVision)));
-    gp.povLeft().whileTrue(new GrabNote(m_swerve, m_intakeVision, true, m_intake));
+    // gp.povLeft().whileTrue(new GrabNote(m_swerve, m_intakeVision, true, m_intake));
 
 
     /* Drive with gamepad */

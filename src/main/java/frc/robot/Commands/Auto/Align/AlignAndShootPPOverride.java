@@ -53,10 +53,10 @@ public class AlignAndShootPPOverride extends Command {
   public void execute() {
     spivit.setAngle(swerve.calcAngleBasedOnRealRegression() + spivitOffset);
     
-    if (BobcatUtil.isBlue()) {
-      swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker()));
+    if (BobcatUtil.isRed()) {
+      swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getShootWhileMoveBallistics()[0]));
     } else {
-      swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker()).rotateBy(Rotation2d.fromDegrees(180)));
+      swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getShootWhileMoveBallistics()[0]).rotateBy(Rotation2d.fromDegrees(180)));
     }
     Logger.recordOutput("Aligment/spivit", spivit.aligned());
     Logger.recordOutput("Aligment/swerve", swerve.aligned());

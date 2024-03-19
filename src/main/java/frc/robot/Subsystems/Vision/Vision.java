@@ -90,8 +90,8 @@ public class Vision extends SubsystemBase {
   }
 
   public double getDistToTag() {
-    Logger.recordOutput("distanceToTagHypot", Math.hypot(LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[0], LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[2]));
-    return Math.hypot(LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[0], LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[2]); // 0 is x, 2 is z 
+    Logger.recordOutput("distanceToTagHypot", Math.hypot(LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[0], LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[1]));
+    return Math.hypot(LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[0], LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[1]); // 0 is x, 2 is z 
     
   }
 

@@ -52,18 +52,17 @@ public class AlignAndShoot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    spivit.setAngle(swerve.calcAngleBasedOnHashMap());
+    spivit.setAngle(swerve.getShootWhileMoveBallistics()[1]);
     
-    swerve.drive(new Translation2d(), 0, true, false, true, swerve.getAngleToSpeaker());//swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker()));
-    angle = Rotation2d.fromRadians(swerve.getAngleToSpeaker());
+    swerve.drive(new Translation2d(), 0, true, false, true, BobcatUtil.isRed() ? swerve.getShootWhileMoveBallistics()[0] : swerve.getShootWhileMoveBallistics()[0] + Math.PI);//swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker()));
     
     Logger.recordOutput("Aligment/spivit", spivit.aligned());
-    Logger.recordOutput("Aligment/swerve", swerve.aligned(angle));
+    Logger.recordOutput("Aligment/swerve", swerve.getAutoAligned());
     Logger.recordOutput("Aligment/shooter", shooter.aboveSpeed(4500));
     Logger.recordOutput("Alignment/finished", isFinished());
     
 
-    if(spivit.aligned() && swerve.aligned(angle) && shooter.aboveSpeed(4500)){
+    if(spivit.aligned() && swerve.getAutoAligned() && shooter.aboveSpeed(4500)){
       timer.start();
       intake.intakeToShooter();
       Logger.recordOutput("Alignment/feeding", true);

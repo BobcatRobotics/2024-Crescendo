@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.3480519285761825,
-        "y": 3.604820198570287
+        "x": 2.7713929062062417,
+        "y": 3.002925530791679
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.8475359607545783,
-        "y": 2.4234085368539744
+        "x": 4.270876938384637,
+        "y": 1.8215138690753663
       },
       "isLocked": false,
       "linkedName": "outtathewayshootpoint"
@@ -57,7 +57,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 5.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },

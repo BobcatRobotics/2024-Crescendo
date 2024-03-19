@@ -4,12 +4,11 @@
 
 package frc.robot.Commands.Auto.Align;
 
-import org.littletonrobotics.junction.Logger;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Subsystems.Intake.Intake;
@@ -18,54 +17,54 @@ import frc.robot.Subsystems.Spivit.Spivit;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Util.BobcatUtil;
 
-public class AlignAndRevPPOverride extends Command {
-  /** Creates a new AlignToShooter. */
+public class ContinuouslyAlignAndShootOnTheFly extends Command {
   private Swerve swerve;
   private Spivit spivit;
   private Shooter shooter;
-  private boolean finished = false;
+  private Intake intake;
+  private BooleanSupplier readyToFire;
+  private DoubleSupplier shootTime;
+  private BooleanSupplier spinUp;
+
   private Timer timer = new Timer();
 
-  public AlignAndRevPPOverride(Swerve swerve, Spivit spivit, Shooter shooter) {
+  private double[] currentAngles;
+
+  /** Creates a new ContinuouslyAlignAndShootOnTheFly. */
+  public ContinuouslyAlignAndShootOnTheFly(Swerve swerve, Spivit spivit, Shooter shooter, Intake intake, BooleanSupplier readyToFire, DoubleSupplier shootTime, BooleanSupplier spinUp) {
     this.swerve = swerve;
     this.spivit = spivit;
     this.shooter = shooter;
+    this.intake = intake;
+    this.readyToFire = readyToFire;
+    this.shootTime = shootTime;
+    this.spinUp = spinUp;
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(spivit, shooter, intake);
 
-    addRequirements(spivit, shooter);
+    timer.stop();
+    timer.reset();
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    currentAngles = swerve.getShootWhileMoveBallistics();
+    swerve.setRotationTarget(Rotation2d.fromRadians(BobcatUtil.isRed() ? currentAngles[0] : currentAngles[0] + Math.PI));
+    spivit.setAngle(currentAngles[1]);
     shooter.setSpeed(ShooterConstants.fastShooterRPMSetpoint, ShooterConstants.fastShooterRPMSetpoint);
-    finished = false;
-    timer.reset();
+    intake.stop();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    spivit.setAngle(swerve.getShootWhileMoveBallistics()[1]);
-    
-    if (BobcatUtil.isBlue()) {
-      swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getShootWhileMoveBallistics()[0]));
-    } else {
-      swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getShootWhileMoveBallistics()[0]).rotateBy(Rotation2d.fromDegrees(180)));
-    }
-    Logger.recordOutput("Aligment/spivit", spivit.aligned());
-    Logger.recordOutput("Aligment/swerve", swerve.aligned());
-    Logger.recordOutput("Aligment/shooter", shooter.aboveSpeed(4500));
-    Logger.recordOutput("Alignment/finished", isFinished());
-  
+    currentAngles = swerve.getShootWhileMoveBallistics();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    shooter.stop();
-    spivit.stopMotor();
-    swerve.setRotationTarget(null);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

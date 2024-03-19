@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.953216105694205,
-        "y": 0.3635112805280977
+        "x": 6.827292324418378,
+        "y": 0.5849854930113668
       },
       "isLocked": false,
       "linkedName": "outtathewaypickup2"
     },
     {
       "anchor": {
-        "x": 2.3480519285761825,
-        "y": 3.604820198570287
+        "x": 2.7713929062062417,
+        "y": 3.002925530791679
       },
       "prevControl": {
-        "x": 4.362510274836048,
-        "y": 1.5903618523104208
+        "x": 4.9065899556977275,
+        "y": 0.5557362183607982
       },
       "nextControl": null,
       "isLocked": false,
@@ -51,7 +51,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 5.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },

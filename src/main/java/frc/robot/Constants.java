@@ -239,7 +239,7 @@ public class Constants {
         public static final int blueSpeakerTag = 7;
         public static final int redSpeakerTag = 4;
 
-        public static double autostdDev = 1.75; // dividing distance by this
+        public static double autostdDev = 1.75; // dividing distance by this 1,75 at doosan, 3.5 on blue side at 195
         public static double telestdDev = 64.5; // dividing distance by this
 
         public static final class intake {

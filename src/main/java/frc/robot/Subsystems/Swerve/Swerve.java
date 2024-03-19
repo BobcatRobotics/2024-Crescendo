@@ -106,6 +106,9 @@ public class Swerve extends SubsystemBase {
         autoAlignPID = new PIDController(SwerveConstants.autoAlignRotationKP, SwerveConstants.autoAlignRotationKI,
                 SwerveConstants.autoAlignRotationKD);
 
+        rotationPID.enableContinuousInput(0, 2*Math.PI);
+        autoAlignPID.enableContinuousInput(0, 2*Math.PI);
+
         // Using last year's default deviations, need to tune
 
         poseEstimator = new SwerveDrivePoseEstimator(SwerveConstants.swerveKinematics, getYaw(), getModulePositions(),
@@ -129,7 +132,7 @@ public class Swerve extends SubsystemBase {
                                 SwerveConstants.rotationKD),
                         SwerveConstants.maxSpeed,
                         SwerveConstants.driveBaseRadius,
-                        new ReplanningConfig(true, false)),
+                        new ReplanningConfig(false, false)),
                 () -> {
                     // Boolean supplier that controls when the path will be mirrored for the red
                     // alliance
@@ -163,11 +166,11 @@ public class Swerve extends SubsystemBase {
 
     public void periodic() {
         if (BobcatUtil.getAlliance() == Alliance.Blue) {
-            shooterLeftVision.setPriorityID(LimelightConstants.blueSpeakerTag, LimelightConstants.shooterLeft.name);
-            shooterRightVision.setPriorityID(LimelightConstants.blueSpeakerTag, LimelightConstants.shooterRight.name);
+            // shooterLeftVision.setPriorityID(LimelightConstants.blueSpeakerTag, LimelightConstants.shooterLeft.name);
+            // shooterRightVision.setPriorityID(LimelightConstants.blueSpeakerTag, LimelightConstants.shooterRight.name);
         } else {
-            shooterLeftVision.setPriorityID(LimelightConstants.redSpeakerTag, LimelightConstants.shooterLeft.name);
-            shooterRightVision.setPriorityID(LimelightConstants.redSpeakerTag, LimelightConstants.shooterRight.name);
+            // shooterLeftVision.setPriorityID(LimelightConstants.redSpeakerTag, LimelightConstants.shooterLeft.name);
+            // shooterRightVision.setPriorityID(LimelightConstants.redSpeakerTag, LimelightConstants.shooterRight.name);
         }
         odometryLock.lock();
         gyroIO.updateInputs(gyroInputs);
@@ -229,10 +232,20 @@ public class Swerve extends SubsystemBase {
                 Math.abs(shooterRightVision.getBotPose().getY()) != 0) {
             // standard deviations are (distance to nearest apriltag)/2 for x and y and 10
             // degrees for theta
+            // poseEstimator.addVisionMeasurement((shooterRightVision.getBotPose()),
+            //         (shooterRightVision.getPoseTimestamp()),
+            //         VecBuilder.fill(getStdDev(shooterRightVision.getDistToTag()),
+            //                 getStdDev(shooterRightVision.getDistToTag()), Units.degreesToRadians(60)));
+            
+            if(shooterRightVision.getDistToTag()< Units.feetToMeters(8)){
             poseEstimator.addVisionMeasurement((shooterRightVision.getBotPose()),
                     (shooterRightVision.getPoseTimestamp()),
-                    VecBuilder.fill(getStdDev(shooterRightVision.getDistToTag()),
-                            getStdDev(shooterRightVision.getDistToTag()), Units.degreesToRadians(60)));
+                    VecBuilder.fill(0.99,
+                            0.99, 
+                            Units.degreesToRadians(99999)));
+            }
+
+
             Logger.recordOutput("shooterrightvisiondist", shooterRightVision.getDistToTag());
         }
 
@@ -241,10 +254,20 @@ public class Swerve extends SubsystemBase {
                 shooterLeftVision.getBotPose().getX() <= FieldConstants.fieldLength &&
                 shooterLeftVision.getBotPose().getX() >= 0 &&
                 Math.abs(shooterLeftVision.getBotPose().getY()) != 0) {
-            poseEstimator.addVisionMeasurement((shooterLeftVision.getBotPose()), (shooterLeftVision.getPoseTimestamp()),
-                    VecBuilder.fill(getStdDev(shooterLeftVision.getDistToTag()),
-                            getStdDev(shooterLeftVision.getDistToTag()),
-                            Units.degreesToRadians(60)));
+            // poseEstimator.addVisionMeasurement((shooterLeftVision.getBotPose()), (shooterLeftVision.getPoseTimestamp()),
+            //         VecBuilder.fill(getStdDev(shooterLeftVision.getDistToTag()),
+            //                 getStdDev(shooterLeftVision.getDistToTag()),
+            //                 Units.degreesToRadians(60)));
+
+            if(shooterLeftVision.getDistToTag()< Units.feetToMeters(8)){
+            poseEstimator.addVisionMeasurement((shooterLeftVision.getBotPose()),
+                    (shooterLeftVision.getPoseTimestamp()),
+                    VecBuilder.fill(0.99,
+                            0.99, 
+                            Units.degreesToRadians(99999)));
+            }
+
+
             Logger.recordOutput("shooterleftvisiondist", shooterLeftVision.getDistToTag());
 
         }
@@ -559,7 +582,7 @@ public class Swerve extends SubsystemBase {
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getYaw());
         // ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
         Logger.recordOutput("chassisspeeds", chassisSpeeds);
-        Translation2d speakerPose = FieldConstants.redSpeakerPose;
+        Translation2d speakerPose = BobcatUtil.isRed() ? FieldConstants.redSpeakerPose : FieldConstants.blueSpeakerPose;
 
         // A lot of the code from this point forward is from here:
         // https://www.forrestthewoods.com/blog/solving_ballistic_trajectories/
@@ -635,6 +658,7 @@ public class Swerve extends SubsystemBase {
         ret_val[0] = holo_align_angle.getRadians();
         ret_val[1] = new Rotation2d(Math.hypot(sol_pose.getX(), sol_pose.getZ()), sol_pose.getY()).getDegrees() + ShooterConstants.encoderOffsetFromHorizontal - 7;
 
+        Logger.recordOutput("ShootOnTheFly/angle", Math.toDegrees(ret_val[0]));
         Logger.recordOutput("ShootOnTheFly/retval", ret_val);
         return ret_val;
     }
@@ -658,12 +682,17 @@ public class Swerve extends SubsystemBase {
         }
     }
 
-    public boolean aligned(Rotation2d angle){
+    public boolean aligned(Rotation2d angle) {
         if (BobcatUtil.getAlliance() == Alliance.Blue) {
                 return Math.abs(angle.getRadians() - getYaw().getRadians()) <= 1;
             } else {
                 return Math.abs(angle.getRadians() - getYaw().getRadians()) <= 1;
             }
+    }
+
+    public boolean getAutoAligned() {
+        Logger.recordOutput("autosetpointyawerror", Math.abs(Math.toDegrees(autoAlignPID.getPositionError())));
+        return Math.abs(Math.toDegrees(autoAlignPID.getPositionError())) < SwerveConstants.rotationToleranceAlignment;
     }
 
     /**

@@ -53,10 +53,10 @@ public class ContinouslyAlignAndShoot extends Command {
   @Override
   public void execute() {
     //need to rotate by 180 deg to account for pathplanner strangeness
-    if (BobcatUtil.getAlliance() == Alliance.Blue) {
-      swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker()));
+    if (BobcatUtil.getAlliance() == Alliance.Red) {
+      swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getShootWhileMoveBallistics()[0]));
     } else {
-      swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker() + Math.PI));
+      swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getShootWhileMoveBallistics()[0] + Math.PI));
     }
     //shooter.setSpeed(shooterRPM, shooterRPM);
     spivit.setAngle(swerve.calcAngleBasedOnRealRegression()-3);

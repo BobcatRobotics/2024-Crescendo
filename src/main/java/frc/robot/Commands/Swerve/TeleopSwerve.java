@@ -2,6 +2,7 @@ package frc.robot.Commands.Swerve;
 
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Subsystems.Swerve.Swerve;
+import frc.robot.Util.BobcatUtil;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -67,7 +68,7 @@ public class TeleopSwerve extends Command {
         if (snapToSpeaker.getAsBoolean() && rotationVal == 0) {
             // Translation2d speaker = swerve.getTranslationToSpeaker();
             // angleToSpeaker = Math.atan(speaker.getY()/speaker.getX());
-            angleToSpeaker = swerve.getShootWhileMoveBallistics()[0];
+            angleToSpeaker = BobcatUtil.isRed() ? swerve.getShootWhileMoveBallistics()[0] : swerve.getShootWhileMoveBallistics()[0] + Math.PI;
             overriden = false;
             
         } else {

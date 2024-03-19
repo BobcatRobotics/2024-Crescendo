@@ -90,7 +90,7 @@ public class Robot extends LoggedRobot {
 
 
     m_robotContainer.m_intakeVision.setCamMode(CamMode.VISION);
-    // m_robotContainer.m_intakeVision.setPipeline(LimelightConstants.intake.apriltagPipelineIndex);
+    m_robotContainer.m_intakeVision.setPipeline(LimelightConstants.intake.detectorPiplineIndex);
     m_robotContainer.m_shooterLeftVision.setCamMode(CamMode.VISION);
     m_robotContainer.m_shooterLeftVision.setPipeline(LimelightConstants.shooterLeft.apriltagPipelineIndex);
     m_robotContainer.m_shooterRightVision.setCamMode(CamMode.VISION);
@@ -117,7 +117,7 @@ public class Robot extends LoggedRobot {
   public void disabledPeriodic() {
     Logger.recordOutput("Alignment/feeding", false);
     m_robotContainer.m_intakeVision.setCamMode(CamMode.VISION);
-    // m_robotContainer.m_intakeVision.setPipeline(LimelightConstants.intake.apriltagPipelineIndex);
+    m_robotContainer.m_intakeVision.setPipeline(LimelightConstants.intake.detectorPiplineIndex);
     m_robotContainer.m_shooterLeftVision.setCamMode(CamMode.VISION);
     m_robotContainer.m_shooterLeftVision.setPipeline(LimelightConstants.shooterLeft.apriltagPipelineIndex);
     m_robotContainer.m_shooterRightVision.setCamMode(CamMode.VISION);
@@ -137,7 +137,7 @@ public class Robot extends LoggedRobot {
     }
 
     m_robotContainer.m_intakeVision.setCamMode(CamMode.VISION);
-    // m_robotContainer.m_intakeVision.setPipeline(LimelightConstants.intake.apriltagPipelineIndex);
+    m_robotContainer.m_intakeVision.setPipeline(LimelightConstants.intake.detectorPiplineIndex);
     m_robotContainer.m_shooterLeftVision.setCamMode(CamMode.VISION);
     m_robotContainer.m_shooterLeftVision.setPipeline(LimelightConstants.shooterLeft.apriltagPipelineIndex);
     m_robotContainer.m_shooterRightVision.setCamMode(CamMode.VISION);
@@ -160,7 +160,7 @@ public class Robot extends LoggedRobot {
     m_robotContainer.configureBindings();  
 
     m_robotContainer.m_intakeVision.setCamMode(CamMode.VISION);
-    // m_robotContainer.m_intakeVision.setPipeline(LimelightConstants.intake.apriltagPipelineIndex);
+    m_robotContainer.m_intakeVision.setPipeline(LimelightConstants.intake.detectorPiplineIndex);
     m_robotContainer.m_shooterLeftVision.setCamMode(CamMode.VISION);
     m_robotContainer.m_shooterLeftVision.setPipeline(LimelightConstants.shooterLeft.apriltagPipelineIndex);
     m_robotContainer.m_shooterRightVision.setCamMode(CamMode.VISION);
