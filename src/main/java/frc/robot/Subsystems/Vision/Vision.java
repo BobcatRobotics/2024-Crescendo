@@ -89,14 +89,24 @@ public class Vision extends SubsystemBase {
     return pose;
   }
 
+  public Pose3d getBotPose3d() {
+    Pose3d pose = LimelightHelpers.getBotPose3d_wpiBlue(inputs.name);
+    Logger.recordOutput("Limelight" + inputs.name + "Pose3d", pose);
+    return pose;
+
+  }
+
   public double getDistToTag() {
-    Logger.recordOutput("distanceToTagHypot", Math.hypot(LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[0], LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[2]));
-    return Math.hypot(LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[0], LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[2]); // 0 is x, 2 is z 
+    //indexes don't match documentation with targetpose_robotspa""ce
+    // Logger.recordOutput("distanceToTagHypot", Math.hypot(LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[0], LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[2]));
+    // return Math.hypot(Math.abs(LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[0]), LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[2]); // 0 is x, 2 is z 
+    Logger.recordOutput("distanceToTagHypot", Math.hypot(LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[0], LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]));
+    return Math.hypot(LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[0], LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]); // 0 is x, 2 is z 
     
   }
 
   public double getPoseTimestamp() {
-    return Timer.getFPGATimestamp() - (LimelightHelpers.getLatency_Pipeline(inputs.name) / 1000.0);
+    return Timer.getFPGATimestamp() - ((LimelightHelpers.getLatency_Pipeline(inputs.name)+LimelightHelpers.getLatency_Capture(inputs.name)) / 1000.0);
   }
 
   public Translation2d getTranslationToTag(int tagID) {

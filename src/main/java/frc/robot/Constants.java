@@ -6,6 +6,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -13,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -75,9 +77,9 @@ public class Constants {
         public static final double translationKI = 0.0;
         public static final double translationKD = 1.4;
 
-        public static final double rotationKP = 4;
+        public static final double rotationKP = 3; //4
         public static final double rotationKI = 0.0;
-        public static final double rotationKD = 0.4;
+        public static final double rotationKD = 0.0; //0.4
 
         /* Teleop Constants */
         public static final double teleopRotationKP = 2;
@@ -155,7 +157,7 @@ public class Constants {
             public static final int angleMotorID = 2;
             public static final int driveMotorID = 1;
 
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(285.1); // 109.1 353.32
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(285.38); // 109.1 353.32
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -167,7 +169,7 @@ public class Constants {
             public static final int angleMotorID = 4;
             public static final int driveMotorID = 3;
 
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(28.6); // 214.1 9.14
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(28.92); // 214.1 9.14
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -178,7 +180,7 @@ public class Constants {
             public static final int cancoderID = 3;
             public static final int angleMotorID = 6;
             public static final int driveMotorID = 5;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(204.3); // 203.1 234.66
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(184.66); // 203.1 234.66
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -189,7 +191,7 @@ public class Constants {
             public static final int cancoderID = 4;
             public static final int angleMotorID = 8;
             public static final int driveMotorID = 7;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(321.3); // 51.9 285.29
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(321.42); // 51.9 285.29
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -220,7 +222,11 @@ public class Constants {
         public static final Translation2d redSpeakerPose = new Translation2d(Units.inchesToMeters(652.73 - 12),
                 Units.inchesToMeters(218.42)); // Center of the opening //652.73
         
-
+        public static final Translation2d blueSpeakerPoseSpivit = new Translation2d(Units.inchesToMeters(-1.5),
+                Units.inchesToMeters(218.42)); // Center of the opening
+        public static final Translation2d redSpeakerPoseSpivit = new Translation2d(Units.inchesToMeters(652.73),
+                Units.inchesToMeters(218.42)); // Center of the opening //652.73
+        
     }
 
     public static final class AprilTagConstants {
@@ -239,8 +245,14 @@ public class Constants {
         public static final int blueSpeakerTag = 7;
         public static final int redSpeakerTag = 4;
 
-        public static double autostdDev = 1.75; // dividing distance by this
+        public static double autostdDev = 1.75; //1.75 // dividing distance by this
         public static double telestdDev = 64.5; // dividing distance by this
+
+        public static Matrix<N3, N1> trustautostdDev = VecBuilder.fill(0.9, 0.9, 9999999);
+        public static Matrix<N3, N1> regautostdDev = VecBuilder.fill(0.2, 0.2, 9999999);
+
+        public static Matrix<N3, N1> trusttelestdDev = VecBuilder.fill(0.9, 0.9, 9999999);
+        public static Matrix<N3, N1> regtelestdDev = VecBuilder.fill(0.2, 0.2, 9999999);
 
         public static final class intake {
 

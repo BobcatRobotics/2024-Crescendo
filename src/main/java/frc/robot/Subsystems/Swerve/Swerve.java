@@ -17,6 +17,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -26,6 +27,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -42,6 +45,7 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Subsystems.Vision.Vision;
 import frc.robot.Util.BobcatUtil;
+import frc.robot.Util.RobotPoseLookup;
 
 public class Swerve extends SubsystemBase {
     private final GyroIO gyroIO;
@@ -58,6 +62,7 @@ public class Swerve extends SubsystemBase {
 
     private SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
     private Rotation2d ppRotationOverride;
+    private final RobotPoseLookup poseLookup;
 
     // private SwerveSetpointGenerator setpointGenerator;
     // private SwerveSetpoint currentSetpoint = new SwerveSetpoint(
@@ -105,6 +110,8 @@ public class Swerve extends SubsystemBase {
         poseEstimator = new SwerveDrivePoseEstimator(SwerveConstants.swerveKinematics, getYaw(), getModulePositions(),
                 new Pose2d(), SwerveConstants.autostateStdDevs, VecBuilder.fill(0, 0, 0));
 
+        poseLookup = new RobotPoseLookup();
+
         // setpointGenerator =
         // SwerveSetpointGenerator.builder()
         // .kinematics(SwerveConstants.swerveKinematics)
@@ -123,7 +130,7 @@ public class Swerve extends SubsystemBase {
                                 SwerveConstants.rotationKD),
                         SwerveConstants.maxSpeed,
                         SwerveConstants.driveBaseRadius,
-                        new ReplanningConfig(true, false)),
+                        new ReplanningConfig(false, false)),
                 () -> {
                     // Boolean supplier that controls when the path will be mirrored for the red
                     // alliance
@@ -215,6 +222,10 @@ public class Swerve extends SubsystemBase {
             }
         }
 
+        poseLookup.addPose(getPose());
+        correctOdom();
+
+        /* 
         // Update PoseEstimator if at least 1 tag is in view
         if (shooterRightVision.getBotPose().getY() <= FieldConstants.fieldWidth &&
                 shooterRightVision.getBotPose().getY() >= 0 &&
@@ -242,7 +253,7 @@ public class Swerve extends SubsystemBase {
             Logger.recordOutput("shooterleftvisiondist", shooterLeftVision.getDistToTag());
 
         }
-
+            */
 
     }
 
@@ -500,6 +511,24 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+    public double getDistanceToSpeakerForSpivit() {
+        if (BobcatUtil.getAlliance() == Alliance.Blue) {
+            if (shooterLeftVision.getID() == LimelightConstants.blueSpeakerTag
+                    && shooterRightVision.getID() == LimelightConstants.blueSpeakerTag) {
+                return (shooterLeftVision.getDistToTag() + shooterRightVision.getDistToTag()) / 2;
+            } else {
+                return getPose().getTranslation().getDistance(FieldConstants.blueSpeakerPoseSpivit);
+            }
+        } else {
+            if (shooterLeftVision.getID() == LimelightConstants.redSpeakerTag
+                    && shooterRightVision.getID() == LimelightConstants.redSpeakerTag) {
+                return (shooterLeftVision.getDistToTag() + shooterRightVision.getDistToTag()) / 2;
+            } else {
+                return getPose().getTranslation().getDistance(FieldConstants.redSpeakerPoseSpivit);
+            }
+        }
+    }
+
     public Translation2d getTranslationToSpeaker() {
         return BobcatUtil.getAlliance() == Alliance.Blue
                 ? FieldConstants.blueSpeakerPose.minus(getPose().getTranslation())
@@ -529,7 +558,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public double calcAngleBasedOnHashMap() {
-        double distance = getDistanceToSpeaker();
+        double distance = getDistanceToSpeakerForSpivit();
         Logger.recordOutput("Spivit/DesiredAngle", ShooterConstants.spivitAngles.get(distance));
         return ShooterConstants.spivitAngles.get(distance);
     }
@@ -608,5 +637,125 @@ public class Swerve extends SubsystemBase {
         shooterLeftVision.setLEDS(on);
         shooterRightVision.setLEDS(on);
     }
+
+    public void correctOdom() {
+        Pose2d leftBotPose = null;
+        double leftPoseTimestamp = shooterLeftVision.getPoseTimestamp();
+        double leftAprilTagDist = 0;
+        Pose2d rightBotPose = null;
+        double rightPoseTimestamp = shooterRightVision.getPoseTimestamp();
+        double rightAprilTagDist = 0;
+
+        Pose2d robotAtLeftCapture = poseLookup.lookup(leftPoseTimestamp);
+        Pose2d robotAtRightCapture = poseLookup.lookup(rightPoseTimestamp);
+
+        if (shooterLeftVision.getTV()) {
+        Pose2d botpose = shooterLeftVision.getBotPose();
+
+            if (botpose.getX() > 0.1
+                && botpose.getX() < FieldConstants.fieldLength - 0.1
+                && botpose.getY() > 0.1
+                && botpose.getY() < FieldConstants.fieldWidth - 1) {
+                leftBotPose = botpose;
+                leftAprilTagDist=shooterLeftVision.getDistToTag();
+            }
+        }
+
+        if (shooterRightVision.getTV()) {
+        Pose2d botpose = shooterRightVision.getBotPose();
+
+            if (botpose.getX() > 0.1
+                && botpose.getX() < FieldConstants.fieldLength - 0.1
+                && botpose.getY() > 0.1
+                && botpose.getY() < FieldConstants.fieldWidth - 1) {
+                rightBotPose = botpose;
+                rightAprilTagDist=shooterRightVision.getDistToTag();
+            }
+        }
+
+        Pose2d correctionPose = null;
+        Pose2d robotAtCorrectionPose = null;
+        double correctionTimestamp = 0;
+        Matrix<N3, N1> correctionDevs = null;
+        Matrix<N3, N1> truststdDev = DriverStation.isAutonomous() ? LimelightConstants.trustautostdDev : LimelightConstants.trusttelestdDev;
+        Matrix<N3, N1> regstdDev = DriverStation.isAutonomous() ? LimelightConstants.regautostdDev : LimelightConstants.regtelestdDev;
+
+
+        if (leftBotPose != null && rightBotPose != null) {
+        // Left and right have poses
+        Pose2d leftToRightDiff = leftBotPose.relativeTo(rightBotPose);
+        if (leftToRightDiff.getTranslation().getNorm() < 0.3
+            && (Math.abs(leftToRightDiff.getRotation().getDegrees()) < 15)) {
+            // They agree
+            correctionPose = leftBotPose.interpolate(rightBotPose, 0.5);
+            robotAtCorrectionPose = robotAtLeftCapture.interpolate(robotAtRightCapture, 0.5);
+            correctionTimestamp = (leftPoseTimestamp + rightPoseTimestamp) / 2.0;
+            // correctionDevs = VecBuilder.fill(((leftAprilTagDist + rightAprilTagDist)/2)/stdDev, ((leftAprilTagDist + rightAprilTagDist)/2)/stdDev, 99999);
+            correctionDevs = truststdDev;
+        } else {
+            // They don't agree
+            Pose2d leftDiff = leftBotPose.relativeTo(robotAtLeftCapture);
+            Pose2d rightDiff = rightBotPose.relativeTo(robotAtRightCapture);
+            double leftDist = leftDiff.getTranslation().getNorm();
+            double rightDist = rightDiff.getTranslation().getNorm();
+
+            if ((leftDist < 2.0) && leftDist <= rightDist) {
+            // Left closest
+            if ( Math.abs(leftDiff.getRotation().getDegrees()) < 15) {
+                correctionPose = leftBotPose;
+                robotAtCorrectionPose = robotAtLeftCapture;
+                correctionTimestamp = leftPoseTimestamp;
+                // correctionDevs = VecBuilder.fill(leftAprilTagDist/stdDev, leftAprilTagDist/stdDev, 99999);
+                correctionDevs = regstdDev;
+            }
+            } else if ((rightDist < 2.0) && rightDist <= leftDist) {
+            // Right closest
+            if (Math.abs(rightDiff.getRotation().getDegrees()) < 15) {
+                correctionPose = rightBotPose;
+                robotAtCorrectionPose = robotAtRightCapture;
+                correctionTimestamp = rightPoseTimestamp;
+                //correctionDevs = VecBuilder.fill(rightAprilTagDist/stdDev, rightAprilTagDist/stdDev, 99999);
+                correctionDevs = regstdDev;
+
+            }
+            }
+        }
+        } else if (leftBotPose != null) {
+        Pose2d leftDiff = leftBotPose.relativeTo(robotAtLeftCapture);
+        double leftDist = leftDiff.getTranslation().getNorm();
+
+        if (leftDist < 2.0 ) {
+            if (Math.abs(leftDiff.getRotation().getDegrees()) < 15) {
+            correctionPose = leftBotPose;
+            robotAtCorrectionPose = robotAtLeftCapture;
+            correctionTimestamp = leftPoseTimestamp;
+            // correctionDevs = VecBuilder.fill(leftAprilTagDist/stdDev, leftAprilTagDist/stdDev, 99999);
+            correctionDevs = regstdDev;
+
+            }
+        }
+        } else if (rightBotPose != null) {
+        Pose2d rightDiff = rightBotPose.relativeTo(robotAtRightCapture);
+        double rightDist = rightDiff.getTranslation().getNorm();
+
+        if (rightDist < 2.0) {
+            if (Math.abs(rightDiff.getRotation().getDegrees()) < 15) {
+            correctionPose = rightBotPose;
+            robotAtCorrectionPose = robotAtRightCapture;
+            correctionTimestamp = rightPoseTimestamp;
+            // correctionDevs = VecBuilder.fill(rightAprilTagDist/stdDev, rightAprilTagDist/stdDev, 99999);
+            correctionDevs = regstdDev;
+            }
+        }
+        }
+
+        if (correctionPose != null) {
+        poseEstimator.addVisionMeasurement(
+            new Pose2d(correctionPose.getTranslation(), BobcatUtil.isBlue() ? new Rotation2d(get0to2Pi(getYaw().getRadians())) : new Rotation2d(get0to2Pi(getYaw().getRadians())).rotateBy(Rotation2d.fromDegrees(180))),
+            correctionTimestamp,
+            correctionDevs);
+        }
+    }
+    
 
 }

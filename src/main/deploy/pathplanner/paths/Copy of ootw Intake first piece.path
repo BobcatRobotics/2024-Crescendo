@@ -8,11 +8,27 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.2198817841816214,
-        "y": 1.90120285228694
+        "x": 3.7212304624039443,
+        "y": 2.385607506257749
       },
       "isLocked": false,
       "linkedName": "outtathewayshootpoint"
+    },
+    {
+      "anchor": {
+        "x": 5.381800393230416,
+        "y": 1.508545923074753
+      },
+      "prevControl": {
+        "x": 4.585013994896508,
+        "y": 1.8153485084393088
+      },
+      "nextControl": {
+        "x": 6.178586791564324,
+        "y": 1.2017433377101974
+      },
+      "isLocked": false,
+      "linkedName": "ootw 3 avoidStage"
     },
     {
       "anchor": {
@@ -20,8 +36,8 @@
         "y": 0.787607774477542
       },
       "prevControl": {
-        "x": 6.076560941720459,
-        "y": 0.06824830751799373
+        "x": 6.63307491857149,
+        "y": 1.0875563631469138
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +46,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 1.0,
       "rotationDegrees": -8.455027677177402,
       "rotateFast": false
     }
@@ -39,7 +55,7 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.8,
+      "waypointRelativePos": 1.6,
       "command": {
         "type": "parallel",
         "data": {
@@ -67,7 +83,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Out Of The Way 2",
+  "folder": "Out of The Way 3",
   "previewStartingState": {
     "rotation": -48.012787504183436,
     "velocity": 0

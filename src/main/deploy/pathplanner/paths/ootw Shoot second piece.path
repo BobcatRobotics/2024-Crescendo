@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 4.953216105694205,
-        "y": 0.3635112805280977
+        "y": 0.363511280528098
       },
       "isLocked": false,
       "linkedName": "outtathewaypickup2"
@@ -51,7 +51,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 5.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },

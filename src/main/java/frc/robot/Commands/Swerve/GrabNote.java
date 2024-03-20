@@ -3,7 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.Commands.Swerve;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -31,11 +30,10 @@ public class GrabNote extends Command {
 
   public GrabNote(Swerve swerve, Vision vision, boolean intakeNote, Intake intake) {
     this.swerve = swerve;
-    addRequirements(swerve);
+    addRequirements(swerve, intake);
     this.vision = vision;
     this.intakeNote=intakeNote;
     this.intake=intake;
-    addRequirements(intake);
 
   }
 
