@@ -88,6 +88,10 @@ public class AmpIOFalcon implements AmpIO {
         motor.setControl(m_request.withPosition(rotationAmount*30).withFeedForward(0.1));
     }
 
+    public void setPosWithFeedforward(double pos, double ff) {
+        motor.setControl(m_request.withPosition(pos*30).withFeedForward(ff));
+    }
+
     /**
      * sets amp motor to a specific percent
      */
@@ -104,6 +108,10 @@ public class AmpIOFalcon implements AmpIO {
 
     public void stopMotorFeedforward(){
         motor.set(0.04);
+    }
+
+    public void stopMotorStowPos() {
+        motor.set(-0.04);
     }
 
     public void zeroPosition() {

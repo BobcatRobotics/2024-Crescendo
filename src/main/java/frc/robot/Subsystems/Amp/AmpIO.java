@@ -10,12 +10,14 @@ public interface AmpIO {
     }
 
     public default void setPos(double rotationAmount) {}
+    public default void setPosWithFeedforward(double pos, double ff) {}
     public default void setPercent(double percent){}
     public default void stop() {}
     public default void updateInputs(AmpIOInputs inputs) {}
     public default void zeroPosition() {}
     public default boolean currentLimitReached(){return false;}
     public default void stopMotorFeedforward(){}
+    public default void stopMotorStowPos() {}
 
 
 }

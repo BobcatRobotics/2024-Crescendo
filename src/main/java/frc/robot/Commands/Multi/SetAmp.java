@@ -64,7 +64,7 @@ public class SetAmp extends Command {
     if(deploy){
       amp.stopMotorFeedforward();
     }else{
-      amp.stop();
+      amp.stopMotorStowPos();
     }
     spivit.stopMotorFeedforward();
   }

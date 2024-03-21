@@ -507,7 +507,7 @@ public class Constants {
         public static final double reverseSoftLimit = 0;
         public static final InvertedValue ampInvertedValue = InvertedValue.CounterClockwise_Positive;
         public static final NeutralModeValue ampNeutralModeValue = NeutralModeValue.Brake;
-        public static final double ampStatorCurrentLimit = 30;
+        public static final double ampStatorCurrentLimit = 15;
 
         // encoder values
         public static final double deployValue = 172;

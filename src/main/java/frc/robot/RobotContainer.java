@@ -367,7 +367,7 @@ public class RobotContainer {
     // manual
     // gp.axisGreaterThan(1, .6).whileTrue(new InstantCommand(() ->
     // m_amp.setPercentOut(0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
-    gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1), m_amp::stop, m_amp));
+    gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1), m_amp::stopMotorStowPos, m_amp));
     // this runs it down
     // gp.axisLessThan(1, -.6).whileTrue(new InstantCommand(() ->
     // m_amp.setPercentOut(-0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));

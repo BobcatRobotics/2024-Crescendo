@@ -25,11 +25,15 @@ public class Amp extends SubsystemBase {
         io.setPos(degrees/360.0); // degrees -> rotationsss
     }
 
+    public void setPosWithFeedforward(double degrees, double ff) {
+        io.setPosWithFeedforward(degrees/360.0, ff);
+    }
+
     public void deploy(){
         setPos(AmpConstants.deployValue);
     }
     public void retract(){
-        setPos(AmpConstants.retractValue);
+        setPosWithFeedforward(AmpConstants.retractValue, -0.05);
     }
 
     public boolean beyondCrashThreshold(){
@@ -67,5 +71,9 @@ public class Amp extends SubsystemBase {
     
     public void stopMotorFeedforward(){
         io.stopMotorFeedforward();
+    }
+
+    public void stopMotorStowPos() {
+        io.stopMotorStowPos();
     }
 } 
