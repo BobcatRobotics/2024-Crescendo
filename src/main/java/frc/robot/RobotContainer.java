@@ -339,6 +339,12 @@ public class RobotContainer {
                 () -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(), m_amp.getAngle()))))
         .onFalse(new InstantCommand(m_shooter::stop)); // back right
 
+    /* feed to opponents */
+    gp.button(4).whileTrue(new RunCommand(() -> {
+        m_Spivit.setAngle(ShooterConstants.ampPosition);
+        m_shooter.setSpeed(ShooterConstants.fastShooterRPMSetpoint, ShooterConstants.fastShooterRPMSetpoint);
+    }, m_Spivit, m_shooter)).onFalse(new InstantCommand(m_shooter::stop).alongWith(new InstantCommand(m_Spivit::stopMotorFeedforward))); // x
+
     /* Spivit controls */
     // manual down
     gp.axisGreaterThan(5, .6)
@@ -360,9 +366,9 @@ public class RobotContainer {
     // zero
     gp.button(3).onTrue(new InstantCommand(m_amp::zero)); // y
 
-    // shooter amp speed
-    gp.button(4).onTrue(new InstantCommand(() -> m_shooter.setSpeed(1800, 1800)))
-        .onFalse(new InstantCommand(m_shooter::stop)); // x
+    // // shooter amp speed
+    // gp.button(4).onTrue(new InstantCommand(() -> m_shooter.setSpeed(1800, 1800)))
+    //     .onFalse(new InstantCommand(m_shooter::stop)); // x
 
     // manual
     // gp.axisGreaterThan(1, .6).whileTrue(new InstantCommand(() ->
