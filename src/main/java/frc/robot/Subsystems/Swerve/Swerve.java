@@ -1,5 +1,6 @@
 package frc.robot.Subsystems.Swerve;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import java.util.concurrent.locks.Lock;
@@ -23,6 +24,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -35,6 +37,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.util.Quartic;
 import frc.lib.util.limelightConstants;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -774,6 +777,96 @@ public class Swerve extends SubsystemBase {
             correctionTimestamp,
             correctionDevs);
         }
+    }
+
+    /**
+     * 
+     * @return [0] field relative holo angle
+     * @return [1] spivit angle
+     */
+    public double[] getShootWhileMoveBallistics() {
+        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getYaw());
+        // ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
+        Logger.recordOutput("chassisspeeds", chassisSpeeds);
+        Translation2d speakerPose = BobcatUtil.isRed() ? FieldConstants.redSpeakerPoseSpivit : FieldConstants.blueSpeakerPoseSpivit;
+
+        // A lot of the code from this point forward is from here:
+        // https://www.forrestthewoods.com/blog/solving_ballistic_trajectories/
+        double G = 9.81;
+        double target_pos_x = speakerPose.getX();
+        double target_pos_y = FieldConstants.speakerHeight;
+        double target_pos_z = speakerPose.getY();
+        double target_vel_x = BobcatUtil.isRed() ? chassisSpeeds.vxMetersPerSecond : -chassisSpeeds.vxMetersPerSecond;
+        double target_vel_y = 0;
+        double target_vel_z = BobcatUtil.isRed() ? chassisSpeeds.vyMetersPerSecond : -chassisSpeeds.vyMetersPerSecond;
+        double proj_pos_x = getPose().getX();
+        double proj_pos_y = 0;
+        double proj_pos_z = getPose().getY();
+        double proj_speed = ShooterConstants.noteIdealExitVelocityMPS;
+
+        double A = proj_pos_x;
+        double B = proj_pos_y;
+        double C = proj_pos_z;
+        double M = target_pos_x;
+        double N = target_pos_y;
+        double O = target_pos_z;
+        double P = target_vel_x;
+        double Q = target_vel_y;
+        double R = target_vel_z;
+        double S = proj_speed;
+
+        double H = M - A;
+        double J = O - C;
+        double K = N - B;
+        double L = -.5f * G;
+
+        // Quartic Coeffecients
+        double c0 = G * G;
+        double c1 = 0;
+        double c2 = (P * P + R * R) + (K * -G) - S * S;
+        double c3 = 2 * (H * P + K * R);
+        double c4 = K * K + H * H + J * J;
+
+        double[] q_sols = new double[5];
+        q_sols = Quartic.solveQuartic(c0, c1, c2, c3, c4);
+        double[] times = new double[4];
+        for (int i = 0; i < times.length; i++) {
+            times[i] = q_sols[i];
+        }
+        Logger.recordOutput("ShootOnTheFly/times", times);
+
+        Arrays.sort(times);
+
+        Translation3d[] solution_poses = new Translation3d[2];
+        solution_poses[0] = new Translation3d();
+        solution_poses[1] = new Translation3d();
+        int num_sols = 0;
+
+        for (int i = 0; i < times.length; i++) {
+            double t = times[i];
+
+            if (t <= 0 || Double.isNaN(t)) {
+                continue;
+            }
+
+            solution_poses[num_sols] = new Translation3d(
+                    (float) ((H + P * t) / t),
+                    (float) ((K + Q * t - L * t * t) / t),
+                    (float) ((J + R * t) / t));
+            num_sols++;
+        }
+        Translation3d sol_pose = solution_poses[0];
+        Logger.recordOutput("ShootOnTheFly/pose", sol_pose);
+        Rotation2d holo_align_angle = new Rotation2d(sol_pose.getX(), sol_pose.getZ());
+
+        double[] ret_val = new double[2];
+
+        ret_val[0] = get0to2Pi(holo_align_angle.getRadians());
+        ret_val[1] = new Rotation2d(Math.hypot(sol_pose.getX(), sol_pose.getZ()), sol_pose.getY()).getDegrees() + ShooterConstants.encoderOffsetFromHorizontal - 7;
+
+        Logger.recordOutput("ShootOnTheFly/angle", Math.toDegrees(ret_val[0]));
+        Logger.recordOutput("ShootOnTheFly/retval", ret_val);
+        return ret_val;
     }
     
 

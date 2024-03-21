@@ -347,7 +347,7 @@ public class RobotContainer {
     gp.axisLessThan(5, -.6)
         .whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(0.20), m_Spivit::stopMotorFeedforward, m_Spivit));
     // this sets it to a specific angle
-    gp.button(5).whileTrue(new RunCommand(() -> m_Spivit.setAngle(m_swerve.calcAngleBasedOnHashMap()), m_Spivit))
+    gp.button(5).whileTrue(new RunCommand(() -> m_Spivit.setAngle(m_swerve.getShootWhileMoveBallistics()[1]), m_Spivit))
         .onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
     gp.button(9).whileTrue(new RunCommand(() -> m_Spivit.setAngle(ShooterConstants.subwooferShot), m_Spivit))
         .onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));

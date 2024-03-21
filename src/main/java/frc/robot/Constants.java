@@ -392,6 +392,9 @@ public class Constants {
         public static final double rpsTolerance = 200 / 60; // THIS IS IN RPS
         public static final double angleTolerance = 1; // THIS IS IN DEGREES
 
+        public static final double noteIdealExitVelocityMPS = 13;
+        public static final double encoderOffsetFromHorizontal = 230.6;
+
         // some notes on velocity pid
         // kI, kD - not used
         // kP - controls how your output changes with increased error
