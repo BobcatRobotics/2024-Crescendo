@@ -515,14 +515,14 @@ public class Swerve extends SubsystemBase {
         if (BobcatUtil.getAlliance() == Alliance.Blue) {
             if (shooterLeftVision.getID() == LimelightConstants.blueSpeakerTag
                     && shooterRightVision.getID() == LimelightConstants.blueSpeakerTag) {
-                return (shooterLeftVision.getDistToTag() + shooterRightVision.getDistToTag()) / 2;
+                return (shooterLeftVision.getDistToTag() + shooterRightVision.getDistToTag() + 0.4572) / 2;
             } else {
                 return getPose().getTranslation().getDistance(FieldConstants.blueSpeakerPoseSpivit);
             }
         } else {
             if (shooterLeftVision.getID() == LimelightConstants.redSpeakerTag
                     && shooterRightVision.getID() == LimelightConstants.redSpeakerTag) {
-                return (shooterLeftVision.getDistToTag() + shooterRightVision.getDistToTag()) / 2;
+                return (shooterLeftVision.getDistToTag() + shooterRightVision.getDistToTag() + 0.4572) / 2;
             } else {
                 return getPose().getTranslation().getDistance(FieldConstants.redSpeakerPoseSpivit);
             }
@@ -631,6 +631,25 @@ public class Swerve extends SubsystemBase {
             Logger.recordOutput("Autoalign/Using Tag", false);
             return odometryValue; // the previous statement does nothing because of this
         }
+    }
+
+    public Rotation2d getAngleToSpeakerTagAuto() {
+        Rotation2d odometryValue = Rotation2d.fromRadians(getAngleToSpeaker());
+
+        Rotation2d leftLimeValue = shooterLeftVision.getTV() ? Rotation2d.fromRadians(get0to2Pi(getYaw().getRadians() - shooterLeftVision.getTX().getRadians())) : null;
+
+        Rotation2d rightLimeValue = shooterRightVision.getTV() ? Rotation2d.fromRadians(get0to2Pi(getYaw().getRadians() - shooterRightVision.getTX().getRadians())) : null;
+
+        Rotation2d total = odometryValue.plus(leftLimeValue != null ? leftLimeValue : new Rotation2d()).plus(rightLimeValue != null ? rightLimeValue : new Rotation2d());
+
+        int divisor = 1;
+        if (leftLimeValue != null) {
+            divisor++;
+        }
+        if (rightLimeValue != null) {
+            divisor++;
+        }
+        return total.div(divisor);
     }
 
     public void setLimeLEDS(boolean on) {

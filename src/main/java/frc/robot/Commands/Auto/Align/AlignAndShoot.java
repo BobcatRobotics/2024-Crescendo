@@ -54,8 +54,10 @@ public class AlignAndShoot extends Command {
   public void execute() {
     spivit.setAngle(swerve.calcAngleBasedOnHashMap());
     
-    swerve.drive(new Translation2d(), 0, true, false, true, swerve.getAngleToSpeaker());//swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker()));
-    angle = Rotation2d.fromRadians(swerve.getAngleToSpeaker());
+    swerve.drive(new Translation2d(), 0, true, false, true, swerve.getAngleToSpeakerTagAuto().getRadians());//swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker()));
+    angle = swerve.getAngleToSpeakerTagAuto();
+    // swerve.drive(new Translation2d(), 0, true, false, true, swerve.getAngleToSpeaker());//swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker()));
+    // angle = Rotation2d.fromRadians(swerve.getAngleToSpeaker());
     
     Logger.recordOutput("Aligment/spivit", spivit.aligned());
     Logger.recordOutput("Aligment/swerve", swerve.aligned(angle));

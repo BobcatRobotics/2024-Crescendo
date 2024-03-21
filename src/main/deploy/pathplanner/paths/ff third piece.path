@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.75700211917029,
-        "y": 4.119794512651756
+        "x": 2.4699559370628714,
+        "y": 4.853074093612575
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2420278050888207,
-        "y": 4.256111242849792
+        "x": 1.954981622981402,
+        "y": 4.98939082381061
       },
       "isLocked": false,
       "linkedName": "ffsecondpiece"
@@ -20,8 +20,8 @@
         "y": 7.043031060231863
       },
       "prevControl": {
-        "x": 1.6513219742306646,
-        "y": 6.634080869637756
+        "x": 1.359011265031077,
+        "y": 6.595503105536126
       },
       "nextControl": null,
       "isLocked": false,
@@ -50,8 +50,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
