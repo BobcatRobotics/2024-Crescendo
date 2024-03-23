@@ -66,8 +66,10 @@ public class TeleopSwerve extends Command {
         if (snapToSpeaker.getAsBoolean() && rotationVal == 0) {
             //Translation2d speaker = swerve.getTranslationToSpeaker();
             //angleToSpeaker = Math.atan(speaker.getY()/speaker.getX());
-            angleToSpeaker = swerve.getAngleToSpeakerApriltag().getRadians();
-            Logger.recordOutput("Swerve/AlignmentToSpeaker",new Pose2d(swerve.getPose().getTranslation(), swerve.getAngleToSpeakerApriltag()) );
+            // angleToSpeaker = swerve.getAngleToSpeakerApriltag().getRadians();
+            // Logger.recordOutput("Swerve/AlignmentToSpeaker",new Pose2d(swerve.getPose().getTranslation(), swerve.getAngleToSpeakerApriltag()) );
+            angleToSpeaker = swerve.getAngleToSpeakerTagAuto().getRadians();
+            Logger.recordOutput("Swerve/AlignmentToSpeaker",new Pose2d(swerve.getPose().getTranslation(), swerve.getAngleToSpeakerTagAuto()));
             overriden = false;
             
         } else {

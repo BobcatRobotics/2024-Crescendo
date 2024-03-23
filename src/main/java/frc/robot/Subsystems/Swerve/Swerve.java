@@ -223,8 +223,9 @@ public class Swerve extends SubsystemBase {
         }
 
         poseLookup.addPose(getPose());
-        correctOdom();
-
+        if((shooterLeftVision.getTV() && shooterLeftVision.getDistToTag() <=5.5 ) || (shooterRightVision.getTV() && shooterRightVision.getDistToTag() <=5.5)){
+            correctOdom();
+        }
         /* 
         // Update PoseEstimator if at least 1 tag is in view
         if (shooterRightVision.getBotPose().getY() <= FieldConstants.fieldWidth &&

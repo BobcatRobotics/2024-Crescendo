@@ -342,7 +342,7 @@ public class RobotContainer {
     /* feed to opponents */
     gp.button(4).whileTrue(new RunCommand(() -> {
         m_Spivit.setAngle(ShooterConstants.ampPosition);
-        m_shooter.setSpeed(ShooterConstants.fastShooterRPMSetpoint, ShooterConstants.fastShooterRPMSetpoint);
+        m_shooter.setSpeed(3700, 3700);
     }, m_Spivit, m_shooter)).onFalse(new InstantCommand(m_shooter::stop).alongWith(new InstantCommand(m_Spivit::stopMotorFeedforward))); // x
 
     /* Spivit controls */
