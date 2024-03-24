@@ -227,11 +227,11 @@ public class RobotContainer {
      * Please give descriptive names
      */
     autoChooser.addDefaultOption("Do Nothing", Commands.none());
-    autoChooser.addOption("CenterShootNScoot", new PathPlannerAuto("centerShootNScoot"));
-    autoChooser.addOption("KidsMeal", new PathPlannerAuto("AdjustedKidsMeal"));
+    // autoChooser.addOption("CenterShootNScoot", new PathPlannerAuto("centerShootNScoot"));
+    // autoChooser.addOption("KidsMeal", new PathPlannerAuto("AdjustedKidsMeal"));
     // autoChooser.addOption("OutOfTheWay", new PathPlannerAuto("out of the way"));
     autoChooser.addOption("OuttaTheWay2", new PathPlannerAuto("OuttaTheWay2"));
-    autoChooser.addOption("OUT OF THE WAY 3", new PathPlannerAuto("Outta the way 3"));
+    // autoChooser.addOption("OUT OF THE WAY 3", new PathPlannerAuto("Outta the way 3"));
     autoChooser.addOption("FastFood", new PathPlannerAuto("FastFood"));
     // autoChooser.addOption("Odometry Tuning", new PathPlannerAuto("Odometry Tuning"));
     // autoChooser.addOption("AdjustedKidsMeal", new
@@ -342,7 +342,7 @@ public class RobotContainer {
     /* feed to opponents */
     gp.button(4).whileTrue(new RunCommand(() -> {
         m_Spivit.setAngle(ShooterConstants.ampPosition);
-        m_shooter.setSpeed(3700, 3700);
+        m_shooter.setSpeed(3400, 3400);
     }, m_Spivit, m_shooter)).onFalse(new InstantCommand(m_shooter::stop).alongWith(new InstantCommand(m_Spivit::stopMotorFeedforward))); // x
 
     /* Spivit controls */

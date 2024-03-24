@@ -68,7 +68,7 @@ public class GrabNote extends Command {
      if(!(Math.abs(thetaController.getPositionError()) < 10)){
      swerve.drive(new Translation2d(), thetaController.calculate(notePos.getRotation().getDegrees()),false,false,false,0);
      }else{
-      swerve.drive(new Translation2d(xController.calculate(-notePos.getX())*1.3,yController.calculate(notePos.getY())), thetaController.calculate(notePos.getRotation().getDegrees()),false,false,false,0);
+      swerve.drive(new Translation2d(xController.calculate(-notePos.getX())*1.4,yController.calculate(notePos.getY())), thetaController.calculate(notePos.getRotation().getDegrees()),false,false,false,0);
      }
   }
 }
