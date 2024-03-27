@@ -85,12 +85,12 @@ public class AmpIOFalcon implements AmpIO {
      * runs the motor to rotiation amount for pid
      */
     public void setPos(double rotationAmount) {
-        motor.setControl(m_request.withPosition(rotationAmount*30).withFeedForward(0.1));
+        motor.setControl(m_request.withPosition(rotationAmount*30));//.withFeedForward(0.1));
     }
 
-    public void setPosWithFeedforward(double pos, double ff) {
-        motor.setControl(m_request.withPosition(pos*30).withFeedForward(ff));
-    }
+    // public void setPosWithFeedforward(double pos, double ff) {
+    //     motor.setControl(m_request.withPosition(pos*30));
+    // }
 
     /**
      * sets amp motor to a specific percent
@@ -106,12 +106,12 @@ public class AmpIOFalcon implements AmpIO {
         motor.stopMotor();
     }
 
-    public void stopMotorFeedforward(){
-        motor.set(0.04);
-    }
+    // public void stopMotorFeedforward(){
+    //     motor.set(0.001);
+    // }
 
     public void stopMotorStowPos() {
-        motor.set(-0.04);
+        motor.set(-0.01);
     }
 
     public void zeroPosition() {
