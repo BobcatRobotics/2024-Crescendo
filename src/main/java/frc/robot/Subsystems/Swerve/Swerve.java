@@ -223,7 +223,7 @@ public class Swerve extends SubsystemBase {
         }
 
         poseLookup.addPose(getPose());
-        if((shooterLeftVision.getTV() && shooterLeftVision.getDistToTag() <=5.5 ) || (shooterRightVision.getTV() && shooterRightVision.getDistToTag() <=5.5)){
+        if((shooterLeftVision.getTV() && shooterLeftVision.getDistToTag() <=4 ) || (shooterRightVision.getTV() && shooterRightVision.getDistToTag() <=4)){
             correctOdom();
         }
         /* 
@@ -311,6 +311,9 @@ public class Swerve extends SubsystemBase {
         if (snapToSpeaker) {
             desiredSpeeds.omegaRadiansPerSecond = autoAlignPID.calculate(get0to2Pi(getYaw().getRadians()),
                     get0to2Pi(angleToSpeaker));
+            Logger.recordOutput("Swerve/AutoAlignPID/setpoint", get0to2Pi(angleToSpeaker));
+            Logger.recordOutput("Swerve/AutoAlignPID/measurement", get0to2Pi(getYaw().getRadians()));
+            Logger.recordOutput("Swerve/AutoAlignPID/error", autoAlignPID.getPositionError());
             lastMovingYaw = getYaw().getRadians();
         } else if (snapToAmp) {
             desiredSpeeds.omegaRadiansPerSecond = autoAlignPID.calculate(get0to2Pi(getYaw().getRadians()),

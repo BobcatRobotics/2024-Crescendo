@@ -248,11 +248,11 @@ public class Constants {
         public static double autostdDev = 1.75; //1.75 // dividing distance by this
         public static double telestdDev = 64.5; // dividing distance by this
 
-        public static Matrix<N3, N1> trustautostdDev = VecBuilder.fill(0.9, 0.9, 9999999);
-        public static Matrix<N3, N1> regautostdDev = VecBuilder.fill(0.2, 0.2, 9999999);
+        public static Matrix<N3, N1> trustautostdDev = VecBuilder.fill(0.2, 0.2, 9999999);
+        public static Matrix<N3, N1> regautostdDev = VecBuilder.fill(0.9, 0.9, 9999999);
 
-        public static Matrix<N3, N1> trusttelestdDev = VecBuilder.fill(0.9, 0.9, 9999999);
-        public static Matrix<N3, N1> regtelestdDev = VecBuilder.fill(0.2, 0.2, 9999999);
+        public static Matrix<N3, N1> trusttelestdDev = VecBuilder.fill(0.2, 0.2, 9999999);
+        public static Matrix<N3, N1> regtelestdDev = VecBuilder.fill(0.9, 0.9, 9999999);
 
         public static final class intake {
 

@@ -336,7 +336,7 @@ public class RobotContainer {
     gp.button(10)
         .whileTrue(new RunCommand(
             () -> m_shooter.setSpeed(() -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(), m_amp.getAngle()),
-                () -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(), m_amp.getAngle()))))
+                () -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(), m_amp.getAngle())+300)))
         .onFalse(new InstantCommand(m_shooter::stop)); // back right
 
     /* feed to opponents */
