@@ -43,6 +43,7 @@ import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Constants.LimelightConstants.intake;
 import frc.robot.Subsystems.Vision.Vision;
 import frc.robot.Util.BobcatUtil;
 import frc.robot.Util.RobotPoseLookup;
@@ -222,10 +223,16 @@ public class Swerve extends SubsystemBase {
             }
         }
 
-        poseLookup.addPose(getPose());
-        if((shooterLeftVision.getTV() && shooterLeftVision.getDistToTag() <=4 ) || (shooterRightVision.getTV() && shooterRightVision.getDistToTag() <=4)){
-            correctOdom();
-        }
+        addVision(shooterLeftVision);
+        addVision(shooterRightVision);
+
+        //3015 code
+        // poseLookup.addPose(getPose());
+        // if((shooterLeftVision.getTV() && shooterLeftVision.getDistToTag() <=4 ) || (shooterRightVision.getTV() && shooterRightVision.getDistToTag() <=4)){
+        //     correctOdom();
+        // }
+
+
         /* 
         // Update PoseEstimator if at least 1 tag is in view
         if (shooterRightVision.getBotPose().getY() <= FieldConstants.fieldWidth &&
@@ -659,6 +666,25 @@ public class Swerve extends SubsystemBase {
     public void setLimeLEDS(boolean on) {
         shooterLeftVision.setLEDS(on);
         shooterRightVision.setLEDS(on);
+        IntakeVision.setLEDS(on);
+    }
+
+    public void addVision(Vision vision){
+        Matrix<N3, N1> stdDev;
+        Matrix<N3, N1> truststdDev = DriverStation.isAutonomous() ? LimelightConstants.trustautostdDev : LimelightConstants.trusttelestdDev;
+        Matrix<N3, N1> regstdDev = DriverStation.isAutonomous() ? LimelightConstants.regautostdDev : LimelightConstants.regtelestdDev;
+
+        if (vision.getPoseEstimate().tagCount>=2) {
+            stdDev = truststdDev;
+        }
+        else {
+            stdDev = regstdDev;
+        }
+
+        if (vision.getPoseValid(getYaw())){
+            poseEstimator.addVisionMeasurement(vision.getBotPose(), vision.getPoseTimestamp(), stdDev);
+        }
+
     }
 
     public void correctOdom() {

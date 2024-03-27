@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
+import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.LimelightConstants;
 
 public class Vision extends SubsystemBase {
   /** Creates a new Vision. */
@@ -85,22 +87,22 @@ public class Vision extends SubsystemBase {
 
   public Pose2d getBotPose() {
     Pose2d pose = LimelightHelpers.getBotPose2d_wpiBlue(inputs.name);
-    Logger.recordOutput("Limelight" + inputs.name, pose);
+    Logger.recordOutput("Limelight" + inputs.name + "/pose", pose);
     return pose;
   }
 
   public Pose3d getBotPose3d() {
     Pose3d pose = LimelightHelpers.getBotPose3d_wpiBlue(inputs.name);
-    Logger.recordOutput("Limelight" + inputs.name + "Pose3d", pose);
+    Logger.recordOutput("Limelight" + inputs.name + "/Pose3d", pose);
     return pose;
 
   }
 
   public double getDistToTag() {
-    //indexes don't match documentation with targetpose_robotspa""ce
+    //indexes don't match documentation with targetpose_robotspace
     // Logger.recordOutput("distanceToTagHypot", Math.hypot(LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[0], LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[2]));
     // return Math.hypot(Math.abs(LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[0]), LimelightHelpers.getTargetPose_RobotSpace(inputs.name)[2]); // 0 is x, 2 is z 
-    Logger.recordOutput("distanceToTagHypot", Math.hypot(LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[0], LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]));
+    Logger.recordOutput("Limelight" + inputs.name + "/distanceToTagHypot", Math.hypot(LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[0], LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]));
     return Math.hypot(LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[0], LimelightHelpers.getCameraPose_TargetSpace(inputs.name)[2]); // 0 is x, 2 is z 
     
   }
@@ -108,6 +110,39 @@ public class Vision extends SubsystemBase {
   public double getPoseTimestamp() {
     return Timer.getFPGATimestamp() - ((LimelightHelpers.getLatency_Pipeline(inputs.name)+LimelightHelpers.getLatency_Capture(inputs.name)) / 1000.0);
   }
+
+  public LimelightHelpers.PoseEstimate getPoseEstimate() {
+    return LimelightHelpers.getBotPoseEstimate_wpiBlue(inputs.name);
+  }
+
+  public boolean getPoseValid(Rotation2d gyro) {
+    Pose3d botpose = LimelightHelpers.getBotPose3d_wpiBlue(inputs.name);
+    double gyroval=gyro.getDegrees();
+    double llrotation=botpose.toPose2d().getRotation().getDegrees();
+    double diff = Math.abs(gyroval-llrotation);
+    double z = botpose.getZ();
+
+    LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(inputs.name);
+
+    double ambiguity = poseEstimate.rawFiducials[0].ambiguity;
+    double tagDist = poseEstimate.avgTagDist;
+
+    if(diff<LimelightConstants.rotationTolerance && 
+        z<LimelightConstants.zDistThreshold && 
+        ambiguity<LimelightConstants.poseAmbiguityThreshold && 
+        tagDist<LimelightConstants.throwoutDist &&
+        botpose.getX() > 0 &&
+        botpose.getX() < FieldConstants.fieldLength &&
+        botpose.getY() > 0 &&
+        botpose.getY() < FieldConstants.fieldWidth) {
+          return true;
+    }
+    else{
+          return false;
+    }
+
+  }
+
 
   public Translation2d getTranslationToTag(int tagID) {
     if (apriltagPipeline) {
