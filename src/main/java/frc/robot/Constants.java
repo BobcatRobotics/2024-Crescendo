@@ -505,7 +505,7 @@ public class Constants {
         public static final double softLimitThresh = 0; // TODO find this
         public static final double forwardSoftLimit = 0;
         public static final double reverseSoftLimit = 0;
-        public static final InvertedValue ampInvertedValue = InvertedValue.CounterClockwise_Positive;
+        public static final InvertedValue ampInvertedValue = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue ampNeutralModeValue = NeutralModeValue.Brake;
         public static final double ampStatorCurrentLimit = 15;
 
