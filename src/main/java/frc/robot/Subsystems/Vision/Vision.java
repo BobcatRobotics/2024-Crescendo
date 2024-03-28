@@ -124,22 +124,21 @@ public class Vision extends SubsystemBase {
 
     LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(inputs.name);
 
-    double ambiguity = poseEstimate.rawFiducials[0].ambiguity;
+    double ambiguity = poseEstimate.rawFiducials[0].ambiguity; //not tested, may not work correctly as of 3/27
     double tagDist = poseEstimate.avgTagDist;
 
-    if(diff<LimelightConstants.rotationTolerance && 
-        z<LimelightConstants.zDistThreshold && 
-        ambiguity<LimelightConstants.poseAmbiguityThreshold && 
-        tagDist<LimelightConstants.throwoutDist &&
-        botpose.getX() > 0 &&
-        botpose.getX() < FieldConstants.fieldLength &&
-        botpose.getY() > 0 &&
-        botpose.getY() < FieldConstants.fieldWidth) {
+    if( (diff<LimelightConstants.rotationTolerance) && 
+        (z<LimelightConstants.zDistThreshold) && 
+        (ambiguity<LimelightConstants.poseAmbiguityThreshold) && 
+        (tagDist<LimelightConstants.throwoutDist) &&
+        (botpose.getX() > 0) &&
+        (botpose.getX() < FieldConstants.fieldLength) &&
+        (botpose.getY() > 0) &&
+        (botpose.getY() < FieldConstants.fieldWidth)) {
           return true;
-    }
-    else{
+      } else{
           return false;
-    }
+      }
 
   }
 

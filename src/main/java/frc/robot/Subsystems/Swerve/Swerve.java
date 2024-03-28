@@ -669,7 +669,7 @@ public class Swerve extends SubsystemBase {
         IntakeVision.setLEDS(on);
     }
 
-    public void addVision(Vision vision){
+    public void addVision(Vision vision){ 
         Matrix<N3, N1> stdDev;
         Matrix<N3, N1> truststdDev = DriverStation.isAutonomous() ? LimelightConstants.trustautostdDev : LimelightConstants.trusttelestdDev;
         Matrix<N3, N1> regstdDev = DriverStation.isAutonomous() ? LimelightConstants.regautostdDev : LimelightConstants.regtelestdDev;
