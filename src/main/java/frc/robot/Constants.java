@@ -414,7 +414,7 @@ public class Constants {
         public static final double topCurrentLimit = 100;
 
         public static final int bottomMotorID = 13;
-        public static final InvertedValue bottomMotorInvert = InvertedValue.CounterClockwise_Positive;
+        public static final InvertedValue bottomMotorInvert = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue bottomMotorBrakeMode = NeutralModeValue.Coast;
         public static final double kBottomP = 10; // .25
         public static final double kBottomI = 0;
