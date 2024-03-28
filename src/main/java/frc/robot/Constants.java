@@ -243,6 +243,7 @@ public class Constants {
     public static final class CANdleConstants{
         public static final int CANdleID = 1; //TODO: find this
         public static final int LedCount = 8; //TODO: find this
+        public static final double flashTime = 2;
     }
 
     public static final class LimelightConstants {

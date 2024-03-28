@@ -73,4 +73,16 @@ public class Intake extends SubsystemBase {
         io.floorMotorStop();
         io.outsideMotorStop();
     }
+
+    public double getFloorMotorCurrent() {
+        return getFloorMotorCurrent();
+    }
+
+    public double getSwitchMotorCurrent(){
+        return getSwitchMotorCurrent();
+    }
+
+    public double getOuterMotorCurrent(){
+        return getOuterMotorCurrent();
+    }
 }

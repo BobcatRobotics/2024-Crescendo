@@ -5,14 +5,19 @@ import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.util.function.BooleanConsumer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.AmpConstants;
+import frc.robot.Constants.CANdleConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.TrapConstants;
 import frc.robot.Subsystems.Intake.Intake;
+import frc.robot.Subsystems.Intake.IntakeIO;
 import frc.robot.Subsystems.Rumble.Rumble;
 import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Subsystems.Trap.Trap;
+import frc.robot.Subsystems.CANdle.*;
 
 public class TeleopIntake extends Command {
     private Intake intake;
@@ -26,6 +31,7 @@ public class TeleopIntake extends Command {
     private boolean trapping = false;
 
     private Rumble rumble;
+    private CANdle candle;
     
 
     /**
@@ -38,9 +44,10 @@ public class TeleopIntake extends Command {
      * @param atAngle are we properly aligned
      * @param feed should we feed the note to the shooter
      */
-    public TeleopIntake(Intake intake, BooleanSupplier intakeShooter, BooleanSupplier runOut, BooleanSupplier atSpeed, BooleanSupplier atAngle, BooleanSupplier feed, Rumble rumble) {
+    public TeleopIntake(Intake intake, BooleanSupplier intakeShooter, BooleanSupplier runOut, BooleanSupplier atSpeed, BooleanSupplier atAngle, BooleanSupplier feed, Rumble rumble, CANdle candle) {
         this.intake = intake;
         this.intakeShooter = intakeShooter;
+        this.candle=candle;
         // this.intakeTrap = intakeTrap;
         this.runOut = runOut;
         this.atSpeed = atSpeed;
@@ -58,13 +65,22 @@ public class TeleopIntake extends Command {
             // swerve.setLimeLEDS(false);
         } else if (runOut.getAsBoolean()) {
             intake.runOut();
+            candle.setLEDs(CANdleState.INTAKING, CANdleConstants.flashTime); // fire animation
             // swerve.setLimeLEDS(false);
         } else if (intake.hasPiece()) {
             intake.stop();
+            candle.setLEDs(CANdleState.INTOOK, CANdleConstants.flashTime); // LEDs are green
         } else if (intakeShooter.getAsBoolean()) {
             intake.intakeToShooter();
             // swerve.setLimeLEDS(false);
-        } else {
+        
+        } else if (intake.getFloorMotorCurrent()>IntakeConstants.floorCurrentLimit
+        ||intake.getOuterMotorCurrent()>IntakeConstants.outsideCurrentLimit
+        ||intake.getSwitchMotorCurrent()>IntakeConstants.switchCurrentLimit){
+            candle.setLEDs(CANdleState.INTAKESTALL, CANdleConstants.flashTime);
+        }
+        
+        else {
             intake.stop();
             if(trapping){
             //  trap.stopArm();
@@ -72,6 +88,7 @@ public class TeleopIntake extends Command {
              trapping = false;
             }
         }
+
     }
 
     @Override
