@@ -28,11 +28,5 @@ public interface IntakeIO {
 
     public default void outsideMotorSetPercentOut(double percent) {}
 
-    public default double getFloorMotorCurrent() {return 0.0;}
-
     public default void outsideMotorStop() {}
-
-    public default double getSwitchMotorCurrent() {return 0.0;}
-
-    public default double getOuterMotorCurrent() {return 0.0;}
 }

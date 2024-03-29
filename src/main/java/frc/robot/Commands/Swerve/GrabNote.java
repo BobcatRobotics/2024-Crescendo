@@ -10,8 +10,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Subsystems.Vision.Vision;
-import frc.robot.Constants.CANdleConstants;
-import frc.robot.Subsystems.CANdle.*;
 
 
 public class GrabNote extends Command {
@@ -19,7 +17,6 @@ public class GrabNote extends Command {
 
   private Vision vision;
   private Swerve swerve;
-  private CANdle candle;
 
   private double kP=0.5;
   private double kPRotation = 0.025;
@@ -31,13 +28,12 @@ public class GrabNote extends Command {
   private Intake intake;
   
 
-  public GrabNote(Swerve swerve, Vision vision, boolean intakeNote, Intake intake, CANdle candle) {
+  public GrabNote(Swerve swerve, Vision vision, boolean intakeNote, Intake intake) {
     this.swerve = swerve;
     addRequirements(swerve, intake);
     this.vision = vision;
     this.intakeNote=intakeNote;
     this.intake=intake;
-    this.candle=candle;
 
   }
 
@@ -55,8 +51,7 @@ public class GrabNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
-    candle.setLEDs(CANdleState.NOTEHUNTING, CANdleConstants.flashTime);
+
     if(intakeNote){
       if(!intake.hasPiece()){
           intake.intakeToShooter();

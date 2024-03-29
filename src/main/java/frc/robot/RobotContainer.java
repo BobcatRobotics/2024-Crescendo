@@ -4,11 +4,8 @@
 
 package frc.robot;
 
-import java.util.concurrent.CancellationException;
-
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
-// import com.ctre.phoenix.led.CANdle;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
@@ -46,7 +43,6 @@ import frc.robot.Commands.Multi.SetAmp;
 import frc.robot.Commands.Swerve.GrabNote;
 import frc.robot.Commands.Swerve.TeleopSwerve;
 import frc.robot.Commands.Climber.ClimbMode;
-import frc.robot.Constants.CANdleConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -80,11 +76,6 @@ import frc.robot.Subsystems.Vision.Vision;
 import frc.robot.Subsystems.Vision.VisionIO;
 import frc.robot.Subsystems.Vision.VisionIOLimelight;
 import frc.robot.Util.BobcatUtil;
-// Candle imports
-import frc.robot.Subsystems.CANdle.CANdle;
-import frc.robot.Subsystems.CANdle.CANdleState;
-import frc.robot.Subsystems.CANdle.CANdleIO;
-import frc.robot.Subsystems.CANdle.CANdleIOCANdle;
 
 public class RobotContainer {
   /* Joysticks + Gamepad */
@@ -97,7 +88,6 @@ public class RobotContainer {
   public final Vision m_shooterLeftVision;
   public final Vision m_intakeVision;
   public final Vision m_shooterRightVision;
-  public final CANdle m_candle;
   public final Intake m_intake;
   public final Shooter m_shooter;
   public final Amp m_amp;
@@ -135,7 +125,6 @@ public class RobotContainer {
         // m_trap = new Trap(new TrapIOFalcon());
         m_climber = new Climber(new ClimberIOFalcon());
         m_Rumble = new Rumble();
-        m_candle = new CANdle(new CANdleIOCANdle());
         // m_Vision = new Vision(new VisionIOLimelight());
         break;
 
@@ -162,13 +151,12 @@ public class RobotContainer {
         // m_Vision = new Vision(new VisionIOLimelight());
         m_amp = new Amp(new AmpIOFalcon());
         m_Spivit = new Spivit(new SpivitIOFalcon());
-        m_candle = new CANdle(new CANdleIOCANdle());
         // m_trap = new Trap(new TrapIO() {
         // });
         m_climber = new Climber(new ClimberIOFalcon());
         // });
         m_Rumble = new Rumble();
-        //m_CaNdle = new CANdle(new CANdleIO());
+
         break;
 
       // Replayed robot, disable IO implementations
@@ -203,7 +191,6 @@ public class RobotContainer {
         m_climber = new Climber(new ClimberIOFalcon());
         // });
         m_Rumble = new Rumble();
-        m_candle = new CANdle(new CANdleIOCANdle());
 
         // m_Vision = new Vision(new VisionIOLimelight());
         break;
@@ -336,7 +323,7 @@ public class RobotContainer {
             () -> true,
             gp.button(6), // feed to shooter/manual override
             // m_trap,
-            m_Rumble, m_candle).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+            m_Rumble).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
     new Trigger(() -> m_intake.hasPiece()).onTrue(
         Commands.sequence(new InstantCommand(() -> m_swerve.setLimeLEDS(true)),
             new WaitCommand(2),
@@ -391,14 +378,11 @@ public class RobotContainer {
     // gp.axisLessThan(1, -.6).whileTrue(new InstantCommand(() ->
     // m_amp.setPercentOut(-0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
     gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1), m_amp::stop, m_amp));
-        gp.button(8).onTrue(new InstantCommand(() -> m_swerve.resetPose(BobcatUtil.getAlliance() == Alliance.Blue
+    gp.button(8).onTrue(new InstantCommand(() -> m_swerve.resetPose(BobcatUtil.getAlliance() == Alliance.Blue
         ? new Pose2d(FieldConstants.blueSpeakerPose.plus(new Translation2d(1.3, 0)), Rotation2d.fromDegrees(0))
-        : new Pose2d(FieldConstants.redSpeakerPose.plus(new Translation2d(-1.3, 0)), Rotation2d.fromDegrees(180))))
-        .alongWith(new InstantCommand(() -> m_candle.setLEDs(CANdleState.RESETPOSE,CANdleConstants.flashTime))));
+        : new Pose2d(FieldConstants.redSpeakerPose.plus(new Translation2d(-1.3, 0)), Rotation2d.fromDegrees(180)))));
     gp.axisGreaterThan(3, 0.07).whileTrue(new ClimbMode(m_climber, m_amp, m_Spivit, () -> -gp.getRawAxis(3)));
 
-
-    
     /* trap controls */
     // gp.povRight().whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1),
     // m_trap::stopArm, m_trap));
@@ -442,7 +426,7 @@ public class RobotContainer {
     //         // m_trap,
     //         m_Rumble).withInterruptBehavior(InterruptionBehavior.kCancelSelf), 
     //         new GrabNote(m_swerve, m_intakeVision)));
-    gp.povLeft().whileTrue(new GrabNote(m_swerve, m_intakeVision, true, m_intake, m_candle));
+    gp.povLeft().whileTrue(new GrabNote(m_swerve, m_intakeVision, true, m_intake));
 
 
     /* Drive with gamepad */

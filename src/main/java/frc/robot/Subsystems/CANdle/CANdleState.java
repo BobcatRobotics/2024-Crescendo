@@ -1,4 +1,3 @@
-
 package frc.robot.Subsystems.CANdle;
 
 public enum CANdleState {

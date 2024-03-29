@@ -108,16 +108,4 @@ public class IntakeIOFalcon implements IntakeIO {
     public void outsideMotorStop() {
         outsideMotor.stopMotor();
     }
-
-    public double getFloorMotorCurrent() {
-        return floorMotor.getStatorCurrent().getValueAsDouble();
-    }
-
-    public double getSwitchMotorCurrent(){
-        return switchMotor.getStatorCurrent().getValueAsDouble();
-    }
-
-    public double getOutsideMotorCurrent(){
-        return outsideMotor.getStatorCurrent().getValueAsDouble();
-    }
 }
