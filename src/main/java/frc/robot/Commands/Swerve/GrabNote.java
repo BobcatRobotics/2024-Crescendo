@@ -30,9 +30,10 @@ public class GrabNote extends Command {
   private Intake intake;
   private DoubleSupplier translation;
   private DoubleSupplier rotation;
+  private DoubleSupplier strafe;
   
 
-  public GrabNote(Swerve swerve, Vision vision, boolean intakeNote, Intake intake, DoubleSupplier translation, DoubleSupplier rotation) {
+  public GrabNote(Swerve swerve, Vision vision, boolean intakeNote, Intake intake, DoubleSupplier translation, DoubleSupplier rotation, DoubleSupplier strafe) {
     this.swerve = swerve;
     addRequirements(swerve, intake);
     this.vision = vision;
@@ -40,6 +41,7 @@ public class GrabNote extends Command {
     this.intake=intake;
     this.translation=translation;
     this.rotation=rotation;
+    this.strafe=strafe;
   }
 
   // Called when the command is initially scheduled.
@@ -69,7 +71,7 @@ public class GrabNote extends Command {
     }
   
 
-  if (rotation.getAsDouble()==0){
+  if (rotation.getAsDouble()==0 && strafe.getAsDouble()==0 && translation.getAsDouble()==0){
   if (vision.getTClass()==0){
     //if were more than 5 degrees off, only rotate, once were within 5 degrees, translate.
     notePos = vision.getNotePose();

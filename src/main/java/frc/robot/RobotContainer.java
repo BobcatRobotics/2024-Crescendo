@@ -479,9 +479,10 @@ public class RobotContainer {
         // new GrabNote(m_swerve, m_intakeVision)));
         gp.povLeft()
                 .whileTrue(new GrabNote(m_swerve, m_intakeVision, true, m_intake,
-                        () -> (-Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value))
-                                * Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value))),
-                        () -> rotate.getRawAxis(Joystick.AxisType.kX.value)));
+                        () -> (-Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value)) //translation
+                                * Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value))), 
+                        () -> rotate.getRawAxis(Joystick.AxisType.kX.value), //rotation
+                        () -> Math.abs(strafe.getRawAxis(Joystick.AxisType.kX.value)))); // strafe
 
         /* Drive with gamepad */
         // m_swerve.setDefaultCommand(
