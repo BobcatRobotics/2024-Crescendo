@@ -85,6 +85,22 @@ public class Shooter extends SubsystemBase {
         return (io.getTopVelocity() >= rpm/60 && io.getBottomVelocity() >= rpm/60);
     }
 
+    /**
+     * 
+     * @return RPM not RPS!!!! DO NOT! AND I MEAN DO NOT! CONFUSE THIS FOR RPS
+     */
+    public double getRPMTop() {
+        return io.getTopVelocity()*60.0;
+    }
+
+    /**
+     * 
+     * @return RPM not RPS!!!! DO NOT! AND I MEAN DO NOT! CONFUSE THIS FOR RPS
+     */
+    public double getRPMBottom() {
+        return io.getBottomVelocity()*60.0;
+    }
+
 
 
 }

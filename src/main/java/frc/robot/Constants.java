@@ -385,6 +385,8 @@ public class Constants {
         // public static final double bottomFeedForwardBound = 0;
         // public static final double topFeedForwardBound = 0;
         public static final double feedforwardPercentValue = 0.0302;
+        public static final double shooterAutoThreshhold = 4250; //RPM 
+
 
         // position needed to deploy the amp hood
         public static final double ampDeploySafeValue = 280; // 266.5;
