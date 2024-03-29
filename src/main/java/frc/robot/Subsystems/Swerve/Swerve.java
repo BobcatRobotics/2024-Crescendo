@@ -55,6 +55,8 @@ public class Swerve extends SubsystemBase {
     private final Vision shooterLeftVision;
     private final Vision shooterRightVision;
     private final Vision IntakeVision;
+    private final Vision shooterCenterVision;
+    private final Vision IntakeTagVision;
     private final SwerveDrivePoseEstimator poseEstimator;
     // private final SwerveDriveOdometry odometry;
 
@@ -87,10 +89,12 @@ public class Swerve extends SubsystemBase {
     private Rotation2d lastYaw = new Rotation2d();
 
     public Swerve(GyroIO gyroIO, SwerveModuleIO flIO, SwerveModuleIO frIO, SwerveModuleIO blIO, SwerveModuleIO brIO,
-            Vision intakeVision, Vision shooterLeftVision, Vision shooterRightVision) {
+            Vision intakeVision, Vision shooterLeftVision, Vision shooterRightVision, Vision shooterCenterVision, Vision intakeTagVision) {
         this.IntakeVision = intakeVision;
         this.shooterLeftVision = shooterLeftVision;
         this.shooterRightVision = shooterRightVision;
+        this.shooterCenterVision = shooterCenterVision;
+        this.IntakeTagVision = intakeTagVision;
         this.gyroIO = gyroIO;
         modules = new SwerveModule[] {
                 new SwerveModule(flIO, 0),
@@ -225,6 +229,8 @@ public class Swerve extends SubsystemBase {
 
         addVision(shooterLeftVision);
         addVision(shooterRightVision);
+        addVision(shooterCenterVision);
+        addVision(IntakeTagVision);
 
         //3015 code
         // poseLookup.addPose(getPose());

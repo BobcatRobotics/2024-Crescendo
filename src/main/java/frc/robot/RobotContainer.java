@@ -77,7 +77,9 @@ import frc.robot.Subsystems.Vision.VisionIO;
 import frc.robot.Subsystems.Vision.VisionIOLimelight;
 import frc.robot.Util.BobcatUtil;
 
+
 public class RobotContainer {
+
   /* Joysticks + Gamepad */
   private final CommandJoystick rotate = new CommandJoystick(1);
   private final CommandJoystick strafe = new CommandJoystick(0);
@@ -88,6 +90,8 @@ public class RobotContainer {
   public final Vision m_shooterLeftVision;
   public final Vision m_intakeVision;
   public final Vision m_shooterRightVision;
+  public final Vision m_shooterCenterVision;
+  public final Vision m_intakeTagVision;
   public final Intake m_intake;
   public final Shooter m_shooter;
   public final Amp m_amp;
@@ -101,7 +105,6 @@ public class RobotContainer {
 
   /* Shuffleboard Inputs */
   private final LoggedDashboardChooser<Command> autoChooser = new LoggedDashboardChooser<>("Auto Choices");
-
   public RobotContainer() {
     switch (Constants.currentMode) {
       // Real robot, instantiate hardware IO implementations
@@ -112,12 +115,14 @@ public class RobotContainer {
         m_intakeVision.setCamMode(CamMode.DRIVERCAM);
         m_shooterRightVision = new Vision(new VisionIOLimelight(LimelightConstants.shooterRight.constants));
         m_shooterLeftVision = new Vision(new VisionIOLimelight(LimelightConstants.shooterLeft.constants));
+        m_shooterCenterVision = new Vision(new VisionIOLimelight(LimelightConstants.shooterCenter.constants));
+        m_intakeTagVision = new Vision(new VisionIOLimelight(LimelightConstants.intakeTag.constants));
         m_swerve = new Swerve(new GyroIOPigeon2(),
             new SwerveModuleIOFalcon(SwerveConstants.Module0Constants.constants),
             new SwerveModuleIOFalcon(SwerveConstants.Module1Constants.constants),
             new SwerveModuleIOFalcon(SwerveConstants.Module2Constants.constants),
             new SwerveModuleIOFalcon(SwerveConstants.Module3Constants.constants),
-            m_intakeVision, m_shooterLeftVision, m_shooterRightVision);
+            m_intakeVision, m_shooterLeftVision, m_shooterRightVision, m_shooterCenterVision, m_intakeTagVision);
         m_intake = new Intake(new IntakeIOFalcon());
         m_shooter = new Shooter(new ShooterIOFalcon());
         m_amp = new Amp(new AmpIOFalcon());
@@ -136,13 +141,17 @@ public class RobotContainer {
         });
         m_shooterRightVision = new Vision(new VisionIO() {
         });
+        m_shooterCenterVision = new Vision(new VisionIO() {
+        });
+        m_intakeTagVision = new Vision(new VisionIO() {
+        });
         m_swerve = new Swerve(new GyroIO() {
         },
             new SwerveModuleIOSim(),
             new SwerveModuleIOSim(),
             new SwerveModuleIOSim(),
             new SwerveModuleIOSim(),
-            m_intakeVision, m_shooterLeftVision, m_shooterRightVision);
+            m_intakeVision, m_shooterLeftVision, m_shooterRightVision, m_shooterCenterVision, m_intakeTagVision);
 
         m_intake = new Intake(new IntakeIO() {
         });
@@ -157,10 +166,15 @@ public class RobotContainer {
         // });
         m_Rumble = new Rumble();
 
+
         break;
 
       // Replayed robot, disable IO implementations
       default:
+        m_shooterCenterVision = new Vision(new VisionIO() {
+        });
+        m_intakeTagVision = new Vision(new VisionIO() {
+        });
         m_intakeVision = new Vision(new VisionIO() {
         });
         m_shooterLeftVision = new Vision(new VisionIO() {
@@ -177,7 +191,7 @@ public class RobotContainer {
             },
             new SwerveModuleIO() {
             },
-            m_intakeVision, m_shooterLeftVision, m_shooterRightVision);
+            m_intakeVision, m_shooterLeftVision, m_shooterRightVision, m_shooterCenterVision, m_intakeTagVision);
         m_intakeVision.setCamMode(CamMode.DRIVERCAM);
 
         m_intake = new Intake(new IntakeIO() {

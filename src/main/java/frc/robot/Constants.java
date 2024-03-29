@@ -21,8 +21,9 @@ import edu.wpi.first.wpilibj.RobotBase;
 import frc.lib.util.ModuleConstants;
 import frc.lib.util.limelightConstants;
 import static edu.wpi.first.apriltag.AprilTagFields.k2024Crescendo;
-
 import java.util.HashMap;
+import smile.interpolation.BilinearInterpolation;
+
 
 public class Constants {
     public static final Mode currentMode = RobotBase.isSimulation() ? Mode.SIM
@@ -338,6 +339,63 @@ public class Constants {
 
         }
 
+        public static final class shooterCenter {
+
+            public static final double forward = -0.18415; // meters
+            public static final double right = -0.24765;
+            public static final double up = -0.34;
+            public static final double pitch = 33; // degrees
+            public static final double yaw = 180;
+
+            public static final String name = "limelight-center"; //LL3G
+            public static final double verticalFOV = 56.2; // degrees obviously
+            public static final double horizontalFOV = 82; 
+            public static final double limelightMountHeight = Units.inchesToMeters(20.5);
+            public static final int detectorPiplineIndex = 2;
+            public static final int apriltagPipelineIndex = 1;
+            public static final int horPixles = 1280;
+            public static final double filterTimeConstant = 0.1; // in seconds, inputs occuring over a time period
+                                                                 // significantly shorter than this will be thrown out
+            public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.1, 0.1,
+                    Units.degreesToRadians(10));
+            public static final int movingAverageNumTaps = 20;
+
+            public static final limelightConstants constants = new limelightConstants(name, verticalFOV, horizontalFOV,
+                    limelightMountHeight, detectorPiplineIndex, apriltagPipelineIndex, horPixles, filterTimeConstant,
+                    visionMeasurementStdDevs, movingAverageNumTaps);
+            public static final String ip = "10.1.77.14";
+
+        }
+
+        public static final class intakeTag {
+
+            public static final double forward = -0.18415; // meters
+            public static final double right = -0.24765;
+            public static final double up = -0.34;
+            public static final double pitch = 33; // degrees
+            public static final double yaw = 180;
+
+            public static final String name = "limelight-front"; //LL3G
+            public static final double verticalFOV = 56.2; // degrees obviously
+            public static final double horizontalFOV = 82; 
+            public static final double limelightMountHeight = Units.inchesToMeters(20.5);
+            public static final int detectorPiplineIndex = 2;
+            public static final int apriltagPipelineIndex = 1;
+            public static final int horPixles = 1280;
+            public static final double filterTimeConstant = 0.1; // in seconds, inputs occuring over a time period
+                                                                 // significantly shorter than this will be thrown out
+            public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.1, 0.1,
+                    Units.degreesToRadians(10));
+            public static final int movingAverageNumTaps = 20;
+
+            public static final limelightConstants constants = new limelightConstants(name, verticalFOV, horizontalFOV,
+                    limelightMountHeight, detectorPiplineIndex, apriltagPipelineIndex, horPixles, filterTimeConstant,
+                    visionMeasurementStdDevs, movingAverageNumTaps);
+            public static final String ip = "10.1.77.15";
+
+        }
+
+
     }
 
     public static final class IntakeConstants {
@@ -476,8 +534,21 @@ public class Constants {
             spivitAngles.put(5.823, 257.0);
             spivitAngles.put(Double.MAX_VALUE, 257.0);
         }
-    }
 
+        public static final double[] tagDist = {1.4,1.868,2.745,3.25,3.789,4.698,5.823};
+        public static final double[] swerveAngle = {0,5};
+        public static final double[][] spivotAngle = {
+            {285.0,285},
+            {277.0,277},
+            {269.0,269},
+            {265.0,265},
+            {262.0,262},
+            {259.0,259},
+            {257.0,257}
+        };
+        public static final BilinearInterpolation spivitBiLinearInterpolation = new BilinearInterpolation(tagDist, swerveAngle, spivotAngle);
+
+    }
     public static final class TrapConstants {
         public static final int rollerID = 17;
         public static final int armID = 16;
