@@ -537,7 +537,7 @@ public class Constants {
 
         public static final double[] tagDist = {1.4,1.868,2.745,3.25,3.789,4.698,5.823};
         public static final double[] swerveAngle = {0,5};
-        public static final double[][] spivotAngle = {
+        public static final double[][] spivitAngle = {
             {285.0,285},
             {277.0,277},
             {269.0,269},
@@ -546,7 +546,7 @@ public class Constants {
             {259.0,259},
             {257.0,257}
         };
-        public static final BilinearInterpolation spivitBiLinearInterpolation = new BilinearInterpolation(tagDist, swerveAngle, spivotAngle);
+        public static final BilinearInterpolation spivitBiLinearInterpolation = new BilinearInterpolation(tagDist, swerveAngle, spivitAngle);
 
     }
     public static final class TrapConstants {
