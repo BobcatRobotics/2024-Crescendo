@@ -40,6 +40,7 @@ import frc.robot.Commands.Auto.Align.AlignAndShoot;
 import frc.robot.Commands.Auto.Align.AlignAndShootPPOverride;
 import frc.robot.Commands.Intake.TeleopIntake;
 import frc.robot.Commands.Multi.SetAmp;
+import frc.robot.Commands.Swerve.DriveToPose;
 import frc.robot.Commands.Swerve.GrabNote;
 import frc.robot.Commands.Swerve.TeleopSwerve;
 import frc.robot.Commands.Climber.ClimbMode;
@@ -352,6 +353,9 @@ public class RobotContainer {
         // reset gyro
         rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
 
+        //Amp drive to pose, need to test
+        strafe.button(1).onTrue(new DriveToPose(m_swerve, BobcatUtil.isBlue()? FieldConstants.blueAmpCenter: FieldConstants.redAmpCenter));
+
         /* Intake Controls */
         m_intake.setDefaultCommand(
                 new TeleopIntake(
@@ -484,6 +488,7 @@ public class RobotContainer {
                         () -> rotate.getRawAxis(Joystick.AxisType.kX.value), //rotation
                         () -> Math.abs(strafe.getRawAxis(Joystick.AxisType.kX.value)))); // strafe
 
+                        
         /* Drive with gamepad */
         // m_swerve.setDefaultCommand(
         // new TeleopSwerve(

@@ -227,6 +227,15 @@ public class Constants {
                 Units.inchesToMeters(218.42)); // Center of the opening
         public static final Translation2d redSpeakerPoseSpivit = new Translation2d(Units.inchesToMeters(652.73),
                 Units.inchesToMeters(218.42)); // Center of the opening //652.73
+
+        public static final Pose2d blueAmpCenter =
+                new Pose2d(new Translation2d(Units.inchesToMeters(72.455), fieldWidth), Rotation2d.fromDegrees(90));
+
+        public static final Pose2d redAmpCenter =
+                new Pose2d(new Translation2d(fieldLength-Units.inchesToMeters(72.455), fieldWidth), Rotation2d.fromDegrees(-90));
+
+
+                
         
     }
 
