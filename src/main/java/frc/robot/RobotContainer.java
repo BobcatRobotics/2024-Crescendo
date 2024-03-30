@@ -379,14 +379,13 @@ public class RobotContainer {
 
         gp.button(7).whileTrue(new StartEndCommand(() -> m_shooter.setSpeed(-1000, -1000), m_shooter::stop, m_shooter));
 
-        /* Shooter Controls */
-        // while button is held, rev shooter
-        gp.button(10)
-                .whileTrue(new RunCommand(
-                        () -> m_shooter.setSpeed(
-                                () -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(), m_amp.getAngle()),
-                                () -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(), m_amp.getAngle()) + 300)))
-                .onFalse(new InstantCommand(m_shooter::stop)); // back right
+    /* Shooter Controls */
+    // while button is held, rev shooter
+    gp.button(10)
+        .whileTrue(new RunCommand(
+            () -> m_shooter.setSpeed(() -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(), m_amp.getAngle()),
+                () -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(), m_amp.getAngle()))))
+        .onFalse(new InstantCommand(m_shooter::stop)); // back right
 
         /* feed to opponents */
         gp.button(4).whileTrue(new RunCommand(() -> {
@@ -410,32 +409,30 @@ public class RobotContainer {
         gp.button(9).whileTrue(new RunCommand(() -> m_Spivit.setAngle(ShooterConstants.subwooferShot), m_Spivit))
                 .onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
 
-        /* amp controls */
-        // retract
-        gp.button(1).onTrue(new SetAmp(m_amp, m_Spivit, false).withInterruptBehavior(InterruptionBehavior.kCancelSelf)); // b
-        // deploy
-        gp.button(2).onTrue(new SetAmp(m_amp, m_Spivit, true).withInterruptBehavior(InterruptionBehavior.kCancelSelf)); // a
-        // zero
-        gp.button(3).onTrue(new InstantCommand(m_amp::zero)); // y
+    /* amp controls */
+    // retract
+    gp.button(1).onTrue(new SetAmp(m_amp, m_Spivit, false));//.withInterruptBehavior(InterruptionBehavior.kCancelSelf)); // b
+    // deploy
+    gp.button(2).onTrue(new SetAmp(m_amp, m_Spivit, true));//.withInterruptBehavior(InterruptionBehavior.kCancelSelf)); // a
+    // zero
+    gp.button(3).onTrue(new InstantCommand(m_amp::zero)); // y
 
         // // shooter amp speed
         // gp.button(4).onTrue(new InstantCommand(() -> m_shooter.setSpeed(1800, 1800)))
         // .onFalse(new InstantCommand(m_shooter::stop)); // x
 
-        // manual
-        // gp.axisGreaterThan(1, .6).whileTrue(new InstantCommand(() ->
-        // m_amp.setPercentOut(0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
-        gp.axisGreaterThan(1, .6)
-                .whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1), m_amp::stopMotorStowPos, m_amp));
-        // this runs it down
-        // gp.axisLessThan(1, -.6).whileTrue(new InstantCommand(() ->
-        // m_amp.setPercentOut(-0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
-        gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1), m_amp::stop, m_amp));
-        gp.button(8).onTrue(new InstantCommand(() -> m_swerve.resetPose(BobcatUtil.getAlliance() == Alliance.Blue
-                ? new Pose2d(FieldConstants.blueSpeakerPose.plus(new Translation2d(1.3, 0)), Rotation2d.fromDegrees(0))
-                : new Pose2d(FieldConstants.redSpeakerPose.plus(new Translation2d(-1.3, 0)),
-                        Rotation2d.fromDegrees(180)))));
-        gp.axisGreaterThan(3, 0.07).whileTrue(new ClimbMode(m_climber, m_amp, m_Spivit, () -> -gp.getRawAxis(3)));
+    // manual
+    // gp.axisGreaterThan(1, .6).whileTrue(new InstantCommand(() ->
+    // m_amp.setPercentOut(0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
+    gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1), m_amp::stopMotorFeedforward, m_amp));
+    // this runs it down
+    // gp.axisLessThan(1, -.6).whileTrue(new InstantCommand(() ->
+    // m_amp.setPercentOut(-0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
+    gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1), m_amp::stopMotorFeedforward, m_amp));
+    gp.button(8).onTrue(new InstantCommand(() -> m_swerve.resetPose(BobcatUtil.getAlliance() == Alliance.Blue
+        ? new Pose2d(FieldConstants.blueSpeakerPose.plus(new Translation2d(1.3, 0)), Rotation2d.fromDegrees(0))
+        : new Pose2d(FieldConstants.redSpeakerPose.plus(new Translation2d(-1.3, 0)), Rotation2d.fromDegrees(180)))));
+    gp.axisGreaterThan(3, 0.07).whileTrue(new ClimbMode(m_climber, m_amp, m_Spivit, () -> -gp.getRawAxis(3)));
 
         /* trap controls */
         // gp.povRight().whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1),
