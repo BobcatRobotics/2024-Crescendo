@@ -387,7 +387,7 @@ public class Constants {
         public static final double feedforwardPercentValue = 0.0302;
 
         // position needed to deploy the amp hood
-        public static final double ampDeploySafeValue = 280; // 266.5;
+        public static final double ampDeploySafeValue = 257; // 266.5;
 
         public static final double rpsTolerance = 200 / 60; // THIS IS IN RPS
         public static final double angleTolerance = 1; // THIS IS IN DEGREES
@@ -451,7 +451,7 @@ public class Constants {
 
         public static final int fastShooterRPMSetpoint = 5000;
         public static final int slowShooterRPMSetpoint = 3000; //TODO tune
-        public static final int ampShootRPMSetpoint = 1800;
+        public static final int ampShootRPMSetpoint = 1500;
         public static final double slowShooterSpivitAngle = 282; //when the shooter is beyond this, use the slow shooter speed
 
         public static final double holonomicAprilTagThrowoutDistance = 5.5;
@@ -510,9 +510,9 @@ public class Constants {
         public static final double ampStatorCurrentLimit = 15;
 
         // encoder values
-        public static final double deployValue = 172;
-        public static final double retractValue = 0.0;// yes zero is correct
-        public static final double crashThreshold = 88;
+        public static final double deployValue = 0;
+        public static final double retractValue = 131.8;
+        
 
         public static final double deployTolerance = 1.5; // degrees of tolerance
         public static final double retractTolerance = 2.5;

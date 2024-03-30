@@ -336,7 +336,7 @@ public class RobotContainer {
     gp.button(10)
         .whileTrue(new RunCommand(
             () -> m_shooter.setSpeed(() -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(), m_amp.getAngle()),
-                () -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(), m_amp.getAngle())+300)))
+                () -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(), m_amp.getAngle()))))
         .onFalse(new InstantCommand(m_shooter::stop)); // back right
 
     /* feed to opponents */
@@ -360,9 +360,9 @@ public class RobotContainer {
 
     /* amp controls */
     // retract
-    gp.button(1).onTrue(new SetAmp(m_amp, m_Spivit, false).withInterruptBehavior(InterruptionBehavior.kCancelSelf)); // b
+    gp.button(1).onTrue(new SetAmp(m_amp, m_Spivit, false));//.withInterruptBehavior(InterruptionBehavior.kCancelSelf)); // b
     // deploy
-    gp.button(2).onTrue(new SetAmp(m_amp, m_Spivit, true).withInterruptBehavior(InterruptionBehavior.kCancelSelf)); // a
+    gp.button(2).onTrue(new SetAmp(m_amp, m_Spivit, true));//.withInterruptBehavior(InterruptionBehavior.kCancelSelf)); // a
     // zero
     gp.button(3).onTrue(new InstantCommand(m_amp::zero)); // y
 
@@ -373,11 +373,11 @@ public class RobotContainer {
     // manual
     // gp.axisGreaterThan(1, .6).whileTrue(new InstantCommand(() ->
     // m_amp.setPercentOut(0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
-    gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1), m_amp::stopMotorStowPos, m_amp));
+    gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1), m_amp::stopMotorFeedforward, m_amp));
     // this runs it down
     // gp.axisLessThan(1, -.6).whileTrue(new InstantCommand(() ->
     // m_amp.setPercentOut(-0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
-    gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1), m_amp::stop, m_amp));
+    gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1), m_amp::stopMotorFeedforward, m_amp));
     gp.button(8).onTrue(new InstantCommand(() -> m_swerve.resetPose(BobcatUtil.getAlliance() == Alliance.Blue
         ? new Pose2d(FieldConstants.blueSpeakerPose.plus(new Translation2d(1.3, 0)), Rotation2d.fromDegrees(0))
         : new Pose2d(FieldConstants.redSpeakerPose.plus(new Translation2d(-1.3, 0)), Rotation2d.fromDegrees(180)))));

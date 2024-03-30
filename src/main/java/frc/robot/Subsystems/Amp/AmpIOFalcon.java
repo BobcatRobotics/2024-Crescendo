@@ -107,7 +107,7 @@ public class AmpIOFalcon implements AmpIO {
     }
 
     public void stopMotorFeedforward(){
-        // motor.set(0.001);
+        //motor.set(0.03);
     }
 
     public void stopMotorStowPos() {
