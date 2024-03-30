@@ -255,7 +255,7 @@ public class Constants {
         public static Matrix<N3, N1> trusttelestdDev = VecBuilder.fill(0.2, 0.2, 9999999);
         public static Matrix<N3, N1> regtelestdDev = VecBuilder.fill(0.9, 0.9, 9999999);
 
-        public static final double throwoutDist = 4; // meters
+        public static final double throwoutDist = 4.75; // meters
         public static final double rotationTolerance = 15; // maximum degrees that the limelight can be off from the gyro to update pose
         public static final double poseAmbiguityThreshold = 0.4; //It's what Jonah uses
         public static final double zDistThreshold = 0.5; // meters that the limelight can be off the ground
@@ -291,7 +291,7 @@ public class Constants {
             public static final double pitch = 33; // degrees
             public static final double yaw = 180;
 
-            public static final String name = "limelight-left"; //LL3
+            public static final String name = "limelight-left"; //LL3G
             public static final double verticalFOV = 49.7; // degrees obviously
             public static final double horizontalFOV = 63.3;
             public static final double limelightMountHeight = Units.inchesToMeters(20.5);
