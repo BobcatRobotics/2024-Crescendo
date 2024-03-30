@@ -68,7 +68,7 @@ public class AlignAndShootPPOverride extends Command {
       timer.start();
       intake.intakeToShooter();
     }
-    if(timer.hasElapsed(shootTime)){
+    if(timer.hasElapsed(shootTime) || !shooter.aboveSpeed(ShooterConstants.shooterAutoThreshhold)){
       shooter.stop();
       intake.stop();
       spivit.stopMotor();
