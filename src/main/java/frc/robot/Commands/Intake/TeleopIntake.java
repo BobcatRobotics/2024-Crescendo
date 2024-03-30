@@ -8,6 +8,8 @@ import edu.wpi.first.util.function.BooleanConsumer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.AmpConstants;
 import frc.robot.Constants.TrapConstants;
+import frc.robot.Subsystems.CANdle.CANdle;
+import frc.robot.Subsystems.CANdle.CANdleState;
 import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Rumble.Rumble;
 import frc.robot.Subsystems.Shooter.Shooter;
@@ -26,6 +28,8 @@ public class TeleopIntake extends Command {
     private boolean trapping = false;
 
     private Rumble rumble;
+    private CANdle candle;
+    private boolean intook = false;
     
 
     /**
@@ -38,7 +42,7 @@ public class TeleopIntake extends Command {
      * @param atAngle are we properly aligned
      * @param feed should we feed the note to the shooter
      */
-    public TeleopIntake(Intake intake, BooleanSupplier intakeShooter, BooleanSupplier runOut, BooleanSupplier atSpeed, BooleanSupplier atAngle, BooleanSupplier feed, Rumble rumble) {
+    public TeleopIntake(Intake intake, BooleanSupplier intakeShooter, BooleanSupplier runOut, BooleanSupplier atSpeed, BooleanSupplier atAngle, BooleanSupplier feed, Rumble rumble, CANdle leds) {
         this.intake = intake;
         this.intakeShooter = intakeShooter;
         // this.intakeTrap = intakeTrap;
@@ -48,29 +52,34 @@ public class TeleopIntake extends Command {
         this.feed = feed;
         // this.trap = trap;
         this.rumble = rumble;
+        this.candle = leds;
         addRequirements(intake);
     }
 
     @Override
     public void execute() {
+        if(!intake.hasPiece()){
+            intook = false;
+        }
+
         if (feed.getAsBoolean()) {
             intake.intakeToShooter();
-            // swerve.setLimeLEDS(false);
         } else if (runOut.getAsBoolean()) {
             intake.runOut();
-            // swerve.setLimeLEDS(false);
+            candle.setLEDs(CANdleState.OUTAKE);
         } else if (intake.hasPiece()) {
             intake.stop();
+            candle.setLEDs(CANdleState.INTOOK, 1);
+            intook = true;
         } else if (intakeShooter.getAsBoolean()) {
             intake.intakeToShooter();
-            // swerve.setLimeLEDS(false);
+            candle.setLEDs(CANdleState.INTAKING);
         } else {
             intake.stop();
-            if(trapping){
-            //  trap.stopArm();
-            //  trap.stopRoller();
-             trapping = false;
+            if(candle.getState() == CANdleState.OUTAKE || candle.getState() == CANdleState.INTAKING){
+                candle.setLEDs(CANdleState.OFF);
             }
+
         }
     }
 

@@ -44,6 +44,10 @@ public class CANdle extends SubsystemBase {
     timer.start();
   }
 
+  public CANdleState getState(){
+    return inputs.state;
+  }
+
   @Override
   public void periodic() {
 
@@ -51,9 +55,11 @@ public class CANdle extends SubsystemBase {
       setLEDs(CANdleState.OFF);
       timer.stop();
       timer.reset();
+      seconds = 1;
     }
 
     io.updateInputs(inputs);
     Logger.processInputs("CANdle", inputs);
   }
+  
 }
