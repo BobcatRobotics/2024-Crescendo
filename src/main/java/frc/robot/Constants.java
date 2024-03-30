@@ -371,8 +371,8 @@ public class Constants {
         public static final double rotationAmount = 0.5;
         public static final double currentLimit = 50;
 
-        public static final double topLimit = -103; // rotations
-        public static final double bottomLimit = 158;
+        public static final double topLimit = -123.4; // rotations
+        public static final double bottomLimit = 0;
 
         // the next constant should be the exact number of rotations that the elevator
         // must do to get to the top position

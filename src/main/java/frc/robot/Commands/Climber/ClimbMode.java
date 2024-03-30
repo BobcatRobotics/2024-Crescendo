@@ -36,15 +36,15 @@ public class ClimbMode extends Command {
   @Override
   public void initialize() {
     
-    spivit.setAngle(ShooterConstants.releasehookSetpoint);
+    spivit.setAngle(ShooterConstants.bottomLimit);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(spivit.safeToDeploy()){
-      amp.setPos(AmpConstants.deployValue);
-    }
+    
+    amp.setPos(AmpConstants.retractValue);
+    
     climber.setPercentOut(rawAxis.getAsDouble());
   }
 
