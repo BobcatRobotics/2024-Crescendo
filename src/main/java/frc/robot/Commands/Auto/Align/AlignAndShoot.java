@@ -69,7 +69,7 @@ public class AlignAndShoot extends Command {
       timer.start();
       intake.intakeToShooter();
       Logger.recordOutput("Alignment/feeding", true);
-      timer.hasElapsed(0.75); //wait 0.75 seconds before testing if RPM drops
+
     }
     if(timer.hasElapsed(shootTime) || !shooter.aboveSpeed(ShooterConstants.shooterAutoThreshhold)){
       shooter.stop();
