@@ -158,7 +158,7 @@ public class Constants {
             public static final int angleMotorID = 2;
             public static final int driveMotorID = 1;
 
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(288.63); // 109.1 353.32
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(285.56); // 109.1 353.32
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -170,7 +170,7 @@ public class Constants {
             public static final int angleMotorID = 4;
             public static final int driveMotorID = 3;
 
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(29.44); // 214.1 9.14
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(27.86); // 214.1 9.14
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -181,7 +181,7 @@ public class Constants {
             public static final int cancoderID = 3;
             public static final int angleMotorID = 6;
             public static final int driveMotorID = 5;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(176.66); // 203.1 234.66
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(176.57); // 203.1 234.66
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -192,7 +192,7 @@ public class Constants {
             public static final int cancoderID = 4;
             public static final int angleMotorID = 8;
             public static final int driveMotorID = 7;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(320.63); // 51.9 285.29
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(320.71); // 51.9 285.29
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -488,11 +488,11 @@ public class Constants {
         public static final int bottomMotorID = 13;
         public static final InvertedValue bottomMotorInvert = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue bottomMotorBrakeMode = NeutralModeValue.Coast;
-        public static final double kBottomP = 10; // .25
+        public static final double kBottomP = 9; // .25
         public static final double kBottomI = 0;
         public static final double kBottomD = 0; // .11
-        public static final double kBottomV = 0.04; // .014
-        public static final double kBottomS = 8;
+        public static final double kBottomV = 0.06; // .014
+        public static final double kBottomS = 6;
         public static final double bottomCurrentLimit = 100;
 
         public static final int angleMotorID = 14;
@@ -533,29 +533,33 @@ public class Constants {
 
         public static final InterpolatingDoubleTreeMap spivitAngles = new InterpolatingDoubleTreeMap();
         static {
-            spivitAngles.put(Double.MIN_VALUE, 285.0);
-            spivitAngles.put(1.4, 285.0);
-            spivitAngles.put(1.868, 277.0);
-            spivitAngles.put(2.745, 269.0);
-            spivitAngles.put(3.25, 265.0);
-            spivitAngles.put(3.789, 262.0);
-            spivitAngles.put(4.698, 259.0);
-            spivitAngles.put(5.823, 257.0);
-            spivitAngles.put(Double.MAX_VALUE, 257.0);
+            spivitAngles.put(1.2509, 285.0);
+            spivitAngles.put(1.7589, 280.3);
+            spivitAngles.put(2.2669, 271.0);
+            spivitAngles.put(2.7749, 266.5);
+            spivitAngles.put(3.2829, 263.4);
+            spivitAngles.put(3.7909, 260.4);
+            spivitAngles.put(4.2989, 258.5);
+            spivitAngles.put(4.8069, 257.0);
+            spivitAngles.put(5.3149, 255.7);
+            spivitAngles.put(5.8229, 255.0);
         }
 
-        public static final double[] tagDist = {1.4,1.868,2.745,3.25,3.789,4.698,5.823};
-        public static final double[] swerveAngle = {0,5};
-        public static final double[][] spivitAngle = {
-            {285.0,285},
-            {277.0,277},
-            {269.0,269},
-            {265.0,265},
-            {262.0,262},
-            {259.0,259},
-            {257.0,257}
-        };
-        public static final BilinearInterpolation spivitBiLinearInterpolation = new BilinearInterpolation(tagDist, swerveAngle, spivitAngle);
+        // public static final double[] tagDist = {1.2509, 1.7589, 2.2669, 2.7749, 3.2829, 3.7909, 4.2989, 4.8069, 5.3149, 5.8229};
+        // public static final double[] swerveAngle = {0,28.5};
+        // public static final double[][] spivitAngle = {
+        //     {285, 285},
+        //     {280.3, 277.3},            
+        //     {271,272},
+        //     {266.5,266.2},
+        //     {263.4,262},
+        //     {260.4,259.6},
+        //     {258.5, 258.9},
+        //     {257, 257.4},
+        //     {255.4, 255.7},
+        //     {255.0,255}
+        // };
+        // public static final BilinearInterpolation spivitBiLinearInterpolation = new BilinearInterpolation(tagDist, swerveAngle, spivitAngle);
 
     }
     public static final class TrapConstants {

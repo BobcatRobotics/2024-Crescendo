@@ -354,7 +354,7 @@ public class RobotContainer {
         rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
 
         //Amp drive to pose, need to test
-        strafe.button(1).onTrue(new DriveToPose(m_swerve, BobcatUtil.isBlue()? FieldConstants.blueAmpCenter: FieldConstants.redAmpCenter));
+        // strafe.button(1).onTrue(new DriveToPose(m_swerve, BobcatUtil.isBlue()? FieldConstants.blueAmpCenter: FieldConstants.redAmpCenter));
 
         /* Intake Controls */
         m_intake.setDefaultCommand(
@@ -395,14 +395,22 @@ public class RobotContainer {
                 new InstantCommand(m_shooter::stop).alongWith(new InstantCommand(m_Spivit::stopMotorFeedforward))); // x
 
         /* Spivit controls */
+        // // manual down
+        // gp.axisGreaterThan(5, .6)
+        //         .whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(-0.15), m_Spivit::stopMotorFeedforward,
+        //                 m_Spivit));
+        // // manual up
+        // gp.axisLessThan(5, -.6)
+        //         .whileTrue(
+        //                 new StartEndCommand(() -> m_Spivit.setPercent(0.20), m_Spivit::stopMotorFeedforward, m_Spivit));
         // manual down
         gp.axisGreaterThan(5, .6)
-                .whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(-0.15), m_Spivit::stopMotorFeedforward,
+                .whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(-0.05), m_Spivit::stopMotorFeedforward,
                         m_Spivit));
         // manual up
         gp.axisLessThan(5, -.6)
                 .whileTrue(
-                        new StartEndCommand(() -> m_Spivit.setPercent(0.20), m_Spivit::stopMotorFeedforward, m_Spivit));
+                        new StartEndCommand(() -> m_Spivit.setPercent(0.05), m_Spivit::stopMotorFeedforward, m_Spivit));
         // this sets it to a specific angle
         gp.button(5).whileTrue(new RunCommand(() -> m_Spivit.setAngle(m_swerve.calcAngleBasedOnHashMap()), m_Spivit))
                 .onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));

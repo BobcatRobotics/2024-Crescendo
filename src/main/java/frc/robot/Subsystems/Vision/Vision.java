@@ -14,7 +14,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,6 +25,8 @@ import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LimelightConstants;
+import frc.robot.Subsystems.Swerve.Swerve;
+import frc.robot.Util.BobcatUtil;
 
 public class Vision extends SubsystemBase {
   /** Creates a new Vision. */
@@ -115,26 +119,58 @@ public class Vision extends SubsystemBase {
     return LimelightHelpers.getBotPoseEstimate_wpiBlue(inputs.name);
   }
 
+
+   public String getLimelightName(){
+    return inputs.name;
+   }
+
+
   public boolean getPoseValid(Rotation2d gyro) {
     Pose3d botpose = LimelightHelpers.getBotPose3d_wpiBlue(inputs.name);
+    Logger.recordOutput("Pose3d/"+inputs.name, botpose);
+
     double gyroval=gyro.getDegrees();
+    gyroval = gyroval % (360);
+
+    // gyroval=Units.radiansToDegrees(BobcatUtil.get0to2Pi(gyroval));
     double llrotation=botpose.toPose2d().getRotation().getDegrees();
-    double diff = Math.abs(gyroval-llrotation);
+    double diff = Math.abs(Math.abs(gyroval-llrotation)-180);
+    // double diff = 0;
     double z = botpose.getZ();
+    double x = botpose.getX();
+    double y = botpose.getY();
+    Logger.recordOutput("LLDebug/"+inputs.name+" z val", z);
+    Logger.recordOutput("LLDebug/"+inputs.name+" x val", x);
+    Logger.recordOutput("LLDebug/"+inputs.name+" y val", y);
+    Logger.recordOutput("LLDebug/"+inputs.name+" rdiff", diff);
+
+    double ambiguity = 0;
 
     LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(inputs.name);
 
-    double ambiguity = poseEstimate.rawFiducials[0].ambiguity; //not tested, may not work correctly as of 3/27
-    double tagDist = poseEstimate.avgTagDist;
+  //  if (botpose.getX()!=0 && botpose.getY()!=0){ 
+  //    ambiguity = poseEstimate.rawFiducials[0].ambiguity; //not tested, may not work correctly as of 3/27
+  //  }
 
-    if( (diff<LimelightConstants.rotationTolerance) && 
+
+    
+    double tagDist = poseEstimate.avgTagDist;
+    Logger.recordOutput("LLDebug/"+inputs.name+" avgTagDist", tagDist);
+    Logger.recordOutput("LLDebug/"+inputs.name+" tagCount", poseEstimate.tagCount);
+
+
+    // double tagDist=0;
+
+    if( 
+        (diff<LimelightConstants.rotationTolerance) && 
         (z<LimelightConstants.zDistThreshold) && 
         (ambiguity<LimelightConstants.poseAmbiguityThreshold) && 
         (tagDist<LimelightConstants.throwoutDist) &&
-        (botpose.getX() > 0) &&
-        (botpose.getX() < FieldConstants.fieldLength) &&
-        (botpose.getY() > 0) &&
-        (botpose.getY() < FieldConstants.fieldWidth)) {
+        (botpose.getTranslation().getX() > 0) &&
+        (botpose.getTranslation().getX() < FieldConstants.fieldLength) &&
+        (botpose.getTranslation().getY() > 0) &&
+        (botpose.getTranslation().getY() < FieldConstants.fieldWidth)) {
+          
           return true;
       } else{
           return false;
