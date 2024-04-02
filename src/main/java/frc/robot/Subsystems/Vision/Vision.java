@@ -112,7 +112,8 @@ public class Vision extends SubsystemBase {
   }
 
   public double getPoseTimestamp() {
-    return Timer.getFPGATimestamp() - ((LimelightHelpers.getLatency_Pipeline(inputs.name)+LimelightHelpers.getLatency_Capture(inputs.name)) / 1000.0);
+    // return Timer.getFPGATimestamp() - ((LimelightHelpers.getLatency_Pipeline(inputs.name)+LimelightHelpers.getLatency_Capture(inputs.name)) / 1000.0);
+    return LimelightHelpers.getBotPoseEstimate_wpiBlue(inputs.name).timestampSeconds;
   }
 
   public LimelightHelpers.PoseEstimate getPoseEstimate() {

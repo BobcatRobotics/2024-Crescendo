@@ -467,7 +467,7 @@ public class Constants {
         public static final double ampDeploySafeValue = 257; // 266.5;
 
         public static final double rpsTolerance = 200 / 60; // THIS IS IN RPS
-        public static final double angleTolerance = 1; // THIS IS IN DEGREES
+        public static final double angleTolerance = 0.5; // THIS IS IN DEGREES
 
         // some notes on velocity pid
         // kI, kD - not used
@@ -532,7 +532,6 @@ public class Constants {
         public static final double slowShooterSpivitAngle = 282; //when the shooter is beyond this, use the slow shooter speed
 
         public static final double holonomicAprilTagThrowoutDistance = 5.5;
-
 
         public static final double stow = bottomLimit + 2;
 

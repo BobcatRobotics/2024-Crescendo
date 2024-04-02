@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -385,10 +386,17 @@ public class RobotContainer {
                                                 gp.button(6), // feed to shooter/manual override
                                                 // m_trap,
                                                 m_Rumble,
-                                                m_LEDs).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+                                                m_LEDs,
+                                                m_Spivit).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
                 gp.button(7).whileTrue(new StartEndCommand(() -> m_shooter.setSpeed(-1000, -1000), m_shooter::stop,
                                 m_shooter));
+
+                gp.povDown().onTrue( //if shooter too low, raise whiles intaking
+                                new ConditionalCommand(
+                                                new InstantCommand(() -> m_Spivit.setAngle(ShooterConstants.stow)),
+                                                Commands.none(),
+                                                () -> m_Spivit.getAngle() < ShooterConstants.stow));
 
                 /* Shooter Controls */
                 // while button is held, rev shooter
@@ -470,7 +478,9 @@ public class RobotContainer {
                                                                 new Translation2d(1.3, 0)), Rotation2d.fromDegrees(0))
                                                 : new Pose2d(FieldConstants.redSpeakerPose
                                                                 .plus(new Translation2d(-1.3, 0)),
-                                                                Rotation2d.fromDegrees(180)))).andThen(new InstantCommand(() -> m_LEDs.setLEDs(CANdleState.RESETGYRO, 1))));
+                                                                Rotation2d.fromDegrees(180))))
+                                                .andThen(new InstantCommand(
+                                                                () -> m_LEDs.setLEDs(CANdleState.RESETGYRO, 1))));
                 gp.axisGreaterThan(3, 0.07)
                                 .whileTrue(new ClimbMode(m_climber, m_amp, m_Spivit, () -> -gp.getRawAxis(3)));
 
@@ -573,9 +583,9 @@ public class RobotContainer {
                 // gp.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
 
                 new Trigger(() -> m_intake.hasPiece()).onTrue(
-                        Commands.sequence(new InstantCommand(() -> m_swerve.setLimeLEDS(true)),
-                                new WaitCommand(2),
-                                new InstantCommand(() -> m_swerve.setLimeLEDS(false))));
+                                Commands.sequence(new InstantCommand(() -> m_swerve.setLimeLEDS(true)),
+                                                new WaitCommand(2),
+                                                new InstantCommand(() -> m_swerve.setLimeLEDS(false))));
         }
 
         public Command getAutonomousCommand() {

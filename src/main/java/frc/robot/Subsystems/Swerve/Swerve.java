@@ -535,18 +535,19 @@ public class Swerve extends SubsystemBase {
     public double getDistanceToSpeakerForSpivit() {
         if (BobcatUtil.getAlliance() == Alliance.Blue) {
             // if (shooterLeftVision.getID() == LimelightConstants.blueSpeakerTag
-            //         && shooterRightVision.getID() == LimelightConstants.blueSpeakerTag) {
+            //         && shooterRightVision.getID() == LimelightConstants.blueSpeakerTag
+            //         && (shooterLeftVision.getDistToTag() + shooterRightVision.getDistToTag() + 0.4572) / 2 <= LimelightConstants.throwoutDist) {
             //     return (shooterLeftVision.getDistToTag() + shooterRightVision.getDistToTag() + 0.4572) / 2;
             // } else {
                 return getPose().getTranslation().getDistance(FieldConstants.blueSpeakerPoseSpivit);
-            //}
+            // }
         } else {
             // if (shooterLeftVision.getID() == LimelightConstants.redSpeakerTag
             //         && shooterRightVision.getID() == LimelightConstants.redSpeakerTag) {
             //     return (shooterLeftVision.getDistToTag() + shooterRightVision.getDistToTag() + 0.4572) / 2;
             // } else {
                 return getPose().getTranslation().getDistance(FieldConstants.redSpeakerPoseSpivit);
-            //}
+            // }
         }
     }
 

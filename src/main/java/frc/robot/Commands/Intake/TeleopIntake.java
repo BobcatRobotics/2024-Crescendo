@@ -6,13 +6,16 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.util.function.BooleanConsumer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.Constants.AmpConstants;
 import frc.robot.Constants.TrapConstants;
+import frc.robot.Constants.LimelightConstants.shooterCenter;
 import frc.robot.Subsystems.CANdle.CANdle;
 import frc.robot.Subsystems.CANdle.CANdleState;
 import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Rumble.Rumble;
 import frc.robot.Subsystems.Shooter.Shooter;
+import frc.robot.Subsystems.Spivit.Spivit;
 import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Subsystems.Trap.Trap;
 
@@ -30,6 +33,7 @@ public class TeleopIntake extends Command {
     private Rumble rumble;
     private CANdle candle;
     private boolean intook = false;
+    private Spivit spivit;
     
 
     /**
@@ -42,7 +46,7 @@ public class TeleopIntake extends Command {
      * @param atAngle are we properly aligned
      * @param feed should we feed the note to the shooter
      */
-    public TeleopIntake(Intake intake, BooleanSupplier intakeShooter, BooleanSupplier runOut, BooleanSupplier atSpeed, BooleanSupplier atAngle, BooleanSupplier feed, Rumble rumble, CANdle leds) {
+    public TeleopIntake(Intake intake, BooleanSupplier intakeShooter, BooleanSupplier runOut, BooleanSupplier atSpeed, BooleanSupplier atAngle, BooleanSupplier feed, Rumble rumble, CANdle leds, Spivit spivit) {
         this.intake = intake;
         this.intakeShooter = intakeShooter;
         // this.intakeTrap = intakeTrap;
@@ -53,11 +57,14 @@ public class TeleopIntake extends Command {
         // this.trap = trap;
         this.rumble = rumble;
         this.candle = leds;
+        this.spivit = spivit;
         addRequirements(intake);
     }
 
     @Override
     public void execute() {
+     
+        
         if(!intake.hasPiece()){
             intook = false;
         }
