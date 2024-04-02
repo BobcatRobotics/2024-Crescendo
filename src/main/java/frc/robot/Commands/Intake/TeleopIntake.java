@@ -64,6 +64,7 @@ public class TeleopIntake extends Command {
 
         if (feed.getAsBoolean()) {
             intake.intakeToShooter();
+            candle.setLEDs(CANdleState.OFF);
         } else if (runOut.getAsBoolean()) {
             intake.runOut();
             candle.setLEDs(CANdleState.OUTAKE);
@@ -76,7 +77,7 @@ public class TeleopIntake extends Command {
             candle.setLEDs(CANdleState.INTAKING);
         } else {
             intake.stop();
-            if(candle.getState() == CANdleState.OUTAKE || candle.getState() == CANdleState.INTAKING){
+            if(!intake.hasPiece()){
                 candle.setLEDs(CANdleState.OFF);
             }
 

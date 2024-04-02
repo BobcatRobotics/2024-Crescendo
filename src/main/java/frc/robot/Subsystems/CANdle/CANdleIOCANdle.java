@@ -21,10 +21,15 @@ public class CANdleIOCANdle implements CANdleIO {
 
     @Override
     public void setLEDs(CANdleState state){
+        if(state != currState){
+            leds.animate(null); //wipe old state when setting new one
+            leds.setLEDs(0, 0, 0);
+        }
         currState = state;
+        
         switch (state) {
             case INTAKING: //fire animation
-                leds.animate(BobcatUtil.getBuiltInAnimation(BuiltInAnimations.Fire));
+                leds.animate(BobcatUtil.getBuiltInAnimation(BuiltInAnimations.ColorFlow));
                 break;
             case INTOOK: //green
                 leds.setLEDs(0, 255, 0);
@@ -45,10 +50,10 @@ public class CANdleIOCANdle implements CANdleIO {
                 leds.animate(new StrobeAnimation(255, 140, 0, 255, 1, CANdleConstants.LedCount));
                 break;
             case OFF:
-                leds.setLEDs(0, 0, 0);
+                leds.animate(null);
                 break;
             default:
-                leds.setLEDs(0, 0, 0);
+                leds.animate(null);
                 break;
         }
     }

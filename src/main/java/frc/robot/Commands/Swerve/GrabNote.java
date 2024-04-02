@@ -53,6 +53,7 @@ public class GrabNote extends Command {
     yController.setTolerance(0.4);
     thetaController = new PIDController(kPRotation, 0,0);
     thetaController.setTolerance(4);
+    thetaController.enableContinuousInput(0, 360);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
