@@ -128,13 +128,14 @@ public class Vision extends SubsystemBase {
   public boolean getPoseValid(Rotation2d gyro) {
     Pose3d botpose = LimelightHelpers.getBotPose3d_wpiBlue(inputs.name);
     Logger.recordOutput("Pose3d/"+inputs.name, botpose);
+    double diff = 0;
 
     double gyroval=gyro.getDegrees();
     gyroval = gyroval % (360);
 
     // gyroval=Units.radiansToDegrees(BobcatUtil.get0to2Pi(gyroval));
     double llrotation=botpose.toPose2d().getRotation().getDegrees();
-    double diff = Math.abs(Math.abs(gyroval-llrotation)-180);
+    diff = BobcatUtil.isRed()? Math.abs(Math.abs(gyroval-llrotation)-180) : Math.abs(Math.abs(gyroval-llrotation));
     // double diff = 0;
     double z = botpose.getZ();
     double x = botpose.getX();

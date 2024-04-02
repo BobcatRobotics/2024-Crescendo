@@ -23,7 +23,6 @@ public class CANdleIOCANdle implements CANdleIO {
     public void setLEDs(CANdleState state){
         if(state != currState){
             leds.animate(null); //wipe old state when setting new one
-            leds.setLEDs(0, 0, 0);
         }
         currState = state;
         
@@ -32,7 +31,7 @@ public class CANdleIOCANdle implements CANdleIO {
                 leds.animate(BobcatUtil.getBuiltInAnimation(BuiltInAnimations.ColorFlow));
                 break;
             case INTOOK: //green
-                leds.setLEDs(0, 255, 0);
+                leds.animate(new StrobeAnimation(0, 255, 0)); 
                 break;
             case INTAKESTALL: //red strobe animation
                 leds.animate(new StrobeAnimation(255, 0, 0));

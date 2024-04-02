@@ -571,6 +571,11 @@ public class RobotContainer {
                 // () -> false
                 // ));
                 // gp.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
+
+                new Trigger(() -> m_intake.hasPiece()).onTrue(
+                        Commands.sequence(new InstantCommand(() -> m_swerve.setLimeLEDS(true)),
+                                new WaitCommand(2),
+                                new InstantCommand(() -> m_swerve.setLimeLEDS(false))));
         }
 
         public Command getAutonomousCommand() {
