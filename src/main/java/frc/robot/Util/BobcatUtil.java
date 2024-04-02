@@ -36,8 +36,7 @@ public class BobcatUtil {
     }
 
     public static double getShooterSpeed(double spivitAngle, double ampAngle) {
-        if (ampAngle >= AmpConstants.deployValue - 15) { // if the amp is within 15 degrees of being deployed, use the
-                                                         // amp speed
+        if(ampAngle <= AmpConstants.deployValue + 30){ //if the amp is within 15 degrees of being deployed, use the amp speed
             return ShooterConstants.ampShootRPMSetpoint;
         } else if (spivitAngle >= ShooterConstants.slowShooterSpivitAngle) { // if the spivit is high, we are close to
                                                                              // the speaker, and we can use a slower
@@ -47,7 +46,6 @@ public class BobcatUtil {
             return ShooterConstants.fastShooterRPMSetpoint; // otherwise use our fast setpoint
         }
     }
-
     public static Animation getBuiltInAnimation(BuiltInAnimations animation) {
         switch (animation) {
             case ColorFlow:
@@ -71,6 +69,16 @@ public class BobcatUtil {
                         TwinkleOffPercent.Percent100);
             default:
                 return new StrobeAnimation(0, 0, 0);
-        }
+        }}
+
+    
+
+    public static double get0to2Pi(double rad) {
+        rad = rad % (2 * Math.PI);
+        if (rad < (2 * Math.PI)) {
+            rad += (2 * Math.PI);
+        } //should this be here?
+        return rad;
     }
+
 }

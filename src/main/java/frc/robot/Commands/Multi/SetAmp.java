@@ -36,34 +36,30 @@ public class SetAmp extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    spivit.raiseForAmpMovement();
+    spivit.raiseForAmpScore();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (spivit.getAngle() >= ShooterConstants.ampDeploySafeValue - 1.5) {
-      if (deploy) {
+    if (deploy) {
+      if (spivit.getAngle() >= ShooterConstants.ampDeploySafeValue) {
         amp.deploy();
-        if (amp.beyondCrashThreshold()) {
-          spivit.raiseForAmpScore();
-        }
-      } else {
-        amp.retract();
-        if (amp.retracted()) {
-          spivit.stow();
-        }
+        spivit.raiseForAmpScore();
       }
+    } else {
+      // spivit.stow();
+      spivit.raiseForAmpScore();
+      amp.retract();
     }
-
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if(deploy){
+    if (deploy) {
       amp.stopMotorFeedforward();
-    }else{
+    } else {
       amp.stopMotorStowPos();
     }
     spivit.stopMotorFeedforward();
@@ -72,6 +68,7 @@ public class SetAmp extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (deploy ? amp.deployed() : amp.retracted()) || DriverStation.isDisabled();
+    // return (deploy ? amp.deployed() : amp.retracted()) || DriverStation.isDisabled();
+    return false;
   }
 }

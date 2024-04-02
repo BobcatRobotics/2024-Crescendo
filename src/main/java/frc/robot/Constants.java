@@ -21,8 +21,9 @@ import edu.wpi.first.wpilibj.RobotBase;
 import frc.lib.util.ModuleConstants;
 import frc.lib.util.limelightConstants;
 import static edu.wpi.first.apriltag.AprilTagFields.k2024Crescendo;
-
 import java.util.HashMap;
+import smile.interpolation.BilinearInterpolation;
+
 
 public class Constants {
     public static final Mode currentMode = RobotBase.isSimulation() ? Mode.SIM
@@ -157,7 +158,7 @@ public class Constants {
             public static final int angleMotorID = 2;
             public static final int driveMotorID = 1;
 
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(288.63); // 109.1 353.32
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(285.56); // 109.1 353.32
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -169,7 +170,7 @@ public class Constants {
             public static final int angleMotorID = 4;
             public static final int driveMotorID = 3;
 
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(29.44); // 214.1 9.14
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(27.86); // 214.1 9.14
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -180,7 +181,7 @@ public class Constants {
             public static final int cancoderID = 3;
             public static final int angleMotorID = 6;
             public static final int driveMotorID = 5;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(176.66); // 203.1 234.66
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(176.57); // 203.1 234.66
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -191,7 +192,7 @@ public class Constants {
             public static final int cancoderID = 4;
             public static final int angleMotorID = 8;
             public static final int driveMotorID = 7;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(320.63); // 51.9 285.29
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(320.71); // 51.9 285.29
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -226,6 +227,15 @@ public class Constants {
                 Units.inchesToMeters(218.42)); // Center of the opening
         public static final Translation2d redSpeakerPoseSpivit = new Translation2d(Units.inchesToMeters(652.73),
                 Units.inchesToMeters(218.42)); // Center of the opening //652.73
+
+        public static final Pose2d blueAmpCenter =
+                new Pose2d(new Translation2d(Units.inchesToMeters(72.455), fieldWidth), Rotation2d.fromDegrees(90));
+
+        public static final Pose2d redAmpCenter =
+                new Pose2d(new Translation2d(fieldLength-Units.inchesToMeters(72.455), fieldWidth), Rotation2d.fromDegrees(-90));
+
+
+                
         
     }
 
@@ -259,6 +269,11 @@ public class Constants {
         public static Matrix<N3, N1> trusttelestdDev = VecBuilder.fill(0.2, 0.2, 9999999);
         public static Matrix<N3, N1> regtelestdDev = VecBuilder.fill(0.9, 0.9, 9999999);
 
+        public static final double throwoutDist = 4.75; // meters
+        public static final double rotationTolerance = 15; // maximum degrees that the limelight can be off from the gyro to update pose
+        public static final double poseAmbiguityThreshold = 0.4; //It's what Jonah uses
+        public static final double zDistThreshold = 0.5; // meters that the limelight can be off the ground
+
         public static final class intake {
 
             public static final String name = "limelight-intake"; //LL3
@@ -290,7 +305,7 @@ public class Constants {
             public static final double pitch = 33; // degrees
             public static final double yaw = 180;
 
-            public static final String name = "limelight-left"; //LL3
+            public static final String name = "limelight-left"; //LL3G
             public static final double verticalFOV = 49.7; // degrees obviously
             public static final double horizontalFOV = 63.3;
             public static final double limelightMountHeight = Units.inchesToMeters(20.5);
@@ -338,6 +353,63 @@ public class Constants {
 
         }
 
+        public static final class shooterCenter {
+
+            public static final double forward = -0.18415; // meters
+            public static final double right = -0.24765;
+            public static final double up = -0.34;
+            public static final double pitch = 33; // degrees
+            public static final double yaw = 180;
+
+            public static final String name = "limelight-center"; //LL3G
+            public static final double verticalFOV = 56.2; // degrees obviously
+            public static final double horizontalFOV = 82; 
+            public static final double limelightMountHeight = Units.inchesToMeters(20.5);
+            public static final int detectorPiplineIndex = 2;
+            public static final int apriltagPipelineIndex = 1;
+            public static final int horPixles = 1280;
+            public static final double filterTimeConstant = 0.1; // in seconds, inputs occuring over a time period
+                                                                 // significantly shorter than this will be thrown out
+            public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.1, 0.1,
+                    Units.degreesToRadians(10));
+            public static final int movingAverageNumTaps = 20;
+
+            public static final limelightConstants constants = new limelightConstants(name, verticalFOV, horizontalFOV,
+                    limelightMountHeight, detectorPiplineIndex, apriltagPipelineIndex, horPixles, filterTimeConstant,
+                    visionMeasurementStdDevs, movingAverageNumTaps);
+            public static final String ip = "10.1.77.14";
+
+        }
+
+        public static final class intakeTag {
+
+            public static final double forward = -0.18415; // meters
+            public static final double right = -0.24765;
+            public static final double up = -0.34;
+            public static final double pitch = 33; // degrees
+            public static final double yaw = 180;
+
+            public static final String name = "limelight-front"; //LL3G
+            public static final double verticalFOV = 56.2; // degrees obviously
+            public static final double horizontalFOV = 82; 
+            public static final double limelightMountHeight = Units.inchesToMeters(20.5);
+            public static final int detectorPiplineIndex = 2;
+            public static final int apriltagPipelineIndex = 1;
+            public static final int horPixles = 1280;
+            public static final double filterTimeConstant = 0.1; // in seconds, inputs occuring over a time period
+                                                                 // significantly shorter than this will be thrown out
+            public static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.1, 0.1,
+                    Units.degreesToRadians(10));
+            public static final int movingAverageNumTaps = 20;
+
+            public static final limelightConstants constants = new limelightConstants(name, verticalFOV, horizontalFOV,
+                    limelightMountHeight, detectorPiplineIndex, apriltagPipelineIndex, horPixles, filterTimeConstant,
+                    visionMeasurementStdDevs, movingAverageNumTaps);
+            public static final String ip = "10.1.77.15";
+
+        }
+
+
     }
 
     public static final class IntakeConstants {
@@ -376,8 +448,8 @@ public class Constants {
         public static final double rotationAmount = 0.5;
         public static final double currentLimit = 50;
 
-        public static final double topLimit = -103; // rotations
-        public static final double bottomLimit = 158;
+        public static final double topLimit = -123.4; // rotations
+        public static final double bottomLimit = 0;
 
         // the next constant should be the exact number of rotations that the elevator
         // must do to get to the top position
@@ -392,7 +464,7 @@ public class Constants {
         public static final double feedforwardPercentValue = 0.0302;
 
         // position needed to deploy the amp hood
-        public static final double ampDeploySafeValue = 280; // 266.5;
+        public static final double ampDeploySafeValue = 257; // 266.5;
 
         public static final double rpsTolerance = 200 / 60; // THIS IS IN RPS
         public static final double angleTolerance = 1; // THIS IS IN DEGREES
@@ -419,13 +491,13 @@ public class Constants {
         public static final double topCurrentLimit = 100;
 
         public static final int bottomMotorID = 13;
-        public static final InvertedValue bottomMotorInvert = InvertedValue.CounterClockwise_Positive;
+        public static final InvertedValue bottomMotorInvert = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue bottomMotorBrakeMode = NeutralModeValue.Coast;
-        public static final double kBottomP = 10; // .25
+        public static final double kBottomP = 9; // .25
         public static final double kBottomI = 0;
         public static final double kBottomD = 0; // .11
-        public static final double kBottomV = 0.04; // .014
-        public static final double kBottomS = 8;
+        public static final double kBottomV = 0.06; // .014
+        public static final double kBottomS = 6;
         public static final double bottomCurrentLimit = 100;
 
         public static final int angleMotorID = 14;
@@ -456,7 +528,7 @@ public class Constants {
 
         public static final int fastShooterRPMSetpoint = 5000;
         public static final int slowShooterRPMSetpoint = 3000; //TODO tune
-        public static final int ampShootRPMSetpoint = 1800;
+        public static final int ampShootRPMSetpoint = 1500;
         public static final double slowShooterSpivitAngle = 282; //when the shooter is beyond this, use the slow shooter speed
 
         public static final double holonomicAprilTagThrowoutDistance = 5.5;
@@ -466,18 +538,35 @@ public class Constants {
 
         public static final InterpolatingDoubleTreeMap spivitAngles = new InterpolatingDoubleTreeMap();
         static {
-            spivitAngles.put(Double.MIN_VALUE, 285.0);
-            spivitAngles.put(1.4, 285.0);
-            spivitAngles.put(1.868, 277.0);
-            spivitAngles.put(2.745, 269.0);
-            spivitAngles.put(3.25, 265.0);
-            spivitAngles.put(3.789, 262.0);
-            spivitAngles.put(4.698, 259.0);
-            spivitAngles.put(5.823, 257.0);
-            spivitAngles.put(Double.MAX_VALUE, 257.0);
+            spivitAngles.put(1.2509, 285.0);
+            spivitAngles.put(1.7589, 280.3);
+            spivitAngles.put(2.2669, 271.0);
+            spivitAngles.put(2.7749, 266.5);
+            spivitAngles.put(3.2829, 263.4);
+            spivitAngles.put(3.7909, 260.4);
+            spivitAngles.put(4.2989, 258.5);
+            spivitAngles.put(4.8069, 257.0);
+            spivitAngles.put(5.3149, 255.7);
+            spivitAngles.put(5.8229, 255.0);
         }
-    }
 
+        // public static final double[] tagDist = {1.2509, 1.7589, 2.2669, 2.7749, 3.2829, 3.7909, 4.2989, 4.8069, 5.3149, 5.8229};
+        // public static final double[] swerveAngle = {0,28.5};
+        // public static final double[][] spivitAngle = {
+        //     {285, 285},
+        //     {280.3, 277.3},            
+        //     {271,272},
+        //     {266.5,266.2},
+        //     {263.4,262},
+        //     {260.4,259.6},
+        //     {258.5, 258.9},
+        //     {257, 257.4},
+        //     {255.4, 255.7},
+        //     {255.0,255}
+        // };
+        // public static final BilinearInterpolation spivitBiLinearInterpolation = new BilinearInterpolation(tagDist, swerveAngle, spivitAngle);
+
+    }
     public static final class TrapConstants {
         public static final int rollerID = 17;
         public static final int armID = 16;
@@ -510,14 +599,14 @@ public class Constants {
         public static final double softLimitThresh = 0; // TODO find this
         public static final double forwardSoftLimit = 0;
         public static final double reverseSoftLimit = 0;
-        public static final InvertedValue ampInvertedValue = InvertedValue.CounterClockwise_Positive;
+        public static final InvertedValue ampInvertedValue = InvertedValue.Clockwise_Positive;
         public static final NeutralModeValue ampNeutralModeValue = NeutralModeValue.Brake;
         public static final double ampStatorCurrentLimit = 15;
 
         // encoder values
-        public static final double deployValue = 172;
-        public static final double retractValue = 0.0;// yes zero is correct
-        public static final double crashThreshold = 88;
+        public static final double deployValue = 0;
+        public static final double retractValue = 131.8;
+        
 
         public static final double deployTolerance = 1.5; // degrees of tolerance
         public static final double retractTolerance = 2.5;

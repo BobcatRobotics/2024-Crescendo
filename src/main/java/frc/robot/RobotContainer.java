@@ -33,6 +33,7 @@ import frc.robot.Commands.Auto.Align.AlignAndShoot;
 import frc.robot.Commands.Auto.Align.AlignAndShootPPOverride;
 import frc.robot.Commands.Intake.TeleopIntake;
 import frc.robot.Commands.Multi.SetAmp;
+import frc.robot.Commands.Swerve.DriveToPose;
 import frc.robot.Commands.Swerve.GrabNote;
 import frc.robot.Commands.Swerve.TeleopSwerve;
 import frc.robot.Commands.Climber.ClimbMode;
@@ -69,25 +70,28 @@ import frc.robot.Subsystems.Vision.VisionIOLimelight;
 import frc.robot.Util.BobcatUtil;
 
 public class RobotContainer {
+
     /* Joysticks + Gamepad */
     private final CommandJoystick rotate = new CommandJoystick(1);
     private final CommandJoystick strafe = new CommandJoystick(0);
     private final CommandJoystick gp = new CommandJoystick(2);
 
-    /* Subsystems */
-    public final Swerve m_swerve;
-    public final Vision m_shooterLeftVision;
-    public final Vision m_intakeVision;
-    public final Vision m_shooterRightVision;
+      /* Subsystems */
+      public final Swerve m_swerve;
+      public final Vision m_shooterLeftVision;
+      public final Vision m_intakeVision;
+      public final Vision m_shooterRightVision;
+      public final Vision m_shooterCenterVision;
+    public final Vision m_intakeTagVision;
     public final Intake m_intake;
-    public final Shooter m_shooter;
-    public final Amp m_amp;
-    public final Spivit m_Spivit;
-    // public final Trap m_trap;
-    public final Climber m_climber;
-    public final Rumble m_Rumble; // mmmmmmmm rumble
+      public final Shooter m_shooter;
+      public final Amp m_amp;
+      public final Spivit m_Spivit;
+      // public final Trap m_trap;
+      public final Climber m_climber;
+      public final Rumble m_Rumble; // mmmmmmmm rumble
     public final CANdle m_LEDs;
-    // public final Vision m_Vision;
+      // public final Vision m_Vision;
 
     /* Commands */
 
@@ -122,6 +126,36 @@ public class RobotContainer {
                 m_LEDs = new CANdle(new CANdleIOCANdle());
                 // m_Vision = new Vision(new VisionIOLimelight());
                 break;
+    public RobotContainer() {
+        switch (Constants.currentMode) {
+            // Real robot, instantiate hardware IO implementations
+            case REAL:
+                m_intakeVision = new Vision(new VisionIOLimelight(LimelightConstants.intake.constants));// need index
+                                                                                                        // and
+                                                                                                        // limelight
+                                                                                                        // constants
+                                                                                                        // for the IO
+                m_intakeVision.setCamMode(CamMode.DRIVERCAM);
+                m_shooterRightVision = new Vision(new VisionIOLimelight(LimelightConstants.shooterRight.constants));
+                m_shooterLeftVision = new Vision(new VisionIOLimelight(LimelightConstants.shooterLeft.constants));
+                m_shooterCenterVision = new Vision(new VisionIOLimelight(LimelightConstants.shooterCenter.constants));
+                m_intakeTagVision = new Vision(new VisionIOLimelight(LimelightConstants.intakeTag.constants));
+                m_swerve = new Swerve(new GyroIOPigeon2(),
+                        new SwerveModuleIOFalcon(SwerveConstants.Module0Constants.constants),
+                        new SwerveModuleIOFalcon(SwerveConstants.Module1Constants.constants),
+                        new SwerveModuleIOFalcon(SwerveConstants.Module2Constants.constants),
+                        new SwerveModuleIOFalcon(SwerveConstants.Module3Constants.constants),
+                        m_intakeVision, m_shooterLeftVision, m_shooterRightVision, m_shooterCenterVision,
+                        m_intakeTagVision);
+                m_intake = new Intake(new IntakeIOFalcon());
+                m_shooter = new Shooter(new ShooterIOFalcon());
+                m_amp = new Amp(new AmpIOFalcon());
+                m_Spivit = new Spivit(new SpivitIOFalcon());
+                // m_trap = new Trap(new TrapIOFalcon());
+                m_climber = new Climber(new ClimberIOFalcon());
+                m_Rumble = new Rumble();
+                // m_Vision = new Vision(new VisionIOLimelight());
+                break;
 
             // Sim robot, instantiate physics sim IO implementations
             case SIM:
@@ -131,64 +165,74 @@ public class RobotContainer {
                 });
                 m_shooterRightVision = new Vision(new VisionIO() {
                 });
-                m_swerve = new Swerve(new GyroIO() {
-                },
-                        new SwerveModuleIOSim(),
-                        new SwerveModuleIOSim(),
-                        new SwerveModuleIOSim(),
-                        new SwerveModuleIOSim(),
-                        m_intakeVision, m_shooterLeftVision, m_shooterRightVision);
-
-                m_intake = new Intake(new IntakeIO() {
+                m_shooterCenterVision = new Vision(new VisionIO() {
                 });
-                m_shooter = new Shooter(new ShooterIO() {
-                });
-                // m_Vision = new Vision(new VisionIOLimelight());
-                m_amp = new Amp(new AmpIOFalcon());
-                m_Spivit = new Spivit(new SpivitIOFalcon());
-                // m_trap = new Trap(new TrapIO() {
-                // });
-                m_climber = new Climber(new ClimberIOFalcon());
-                // });
-                m_Rumble = new Rumble();
-                m_LEDs = new CANdle(new CANdleIOCANdle());
-                break;
-
-            // Replayed robot, disable IO implementations
-            default:
-                m_intakeVision = new Vision(new VisionIO() {
-                });
-                m_shooterLeftVision = new Vision(new VisionIO() {
-                });
-                m_shooterRightVision = new Vision(new VisionIO() {
+                m_intakeTagVision = new Vision(new VisionIO() {
                 });
                 m_swerve = new Swerve(new GyroIO() {
                 },
-                        new SwerveModuleIO() {
-                        },
-                        new SwerveModuleIO() {
-                        },
-                        new SwerveModuleIO() {
-                        },
-                        new SwerveModuleIO() {
-                        },
-                        m_intakeVision, m_shooterLeftVision, m_shooterRightVision);
-                m_intakeVision.setCamMode(CamMode.DRIVERCAM);
+                        new SwerveModuleIOSim(),
+                        new SwerveModuleIOSim(),
+                        new SwerveModuleIOSim(),
+                        new SwerveModuleIOSim(),
+                        m_intakeVision, m_shooterLeftVision, m_shooterRightVision, m_shooterCenterVision,
+                        m_intakeTagVision);
 
-                m_intake = new Intake(new IntakeIO() {
-                });
-                m_shooter = new Shooter(new ShooterIO() {
-                });
-                m_amp = new Amp(new AmpIOFalcon());
-                m_Spivit = new Spivit(new SpivitIOFalcon());
-                // m_trap = new Trap(new TrapIO() {
-                // });
-                m_climber = new Climber(new ClimberIOFalcon());
-                // });
-                m_Rumble = new Rumble();
+                        m_intake = new Intake(new IntakeIO() {
+                        });
+                        m_shooter = new Shooter(new ShooterIO() {
+                        });
+                        // m_Vision = new Vision(new VisionIOLimelight());
+                        m_amp = new Amp(new AmpIOFalcon());
+                        m_Spivit = new Spivit(new SpivitIOFalcon());
+                        // m_trap = new Trap(new TrapIO() {
+                        // });
+                        m_climber = new Climber(new ClimberIOFalcon());
+                        // });
+                        m_Rumble = new Rumble();
                 m_LEDs = new CANdle(new CANdleIOCANdle());
-                // m_Vision = new Vision(new VisionIOLimelight());
-                break;
+                        break;
+
+                  // Replayed robot, disable IO implementations
+                  default:
+                m_shooterCenterVision = new Vision(new VisionIO() {
+                });
+                m_intakeTagVision = new Vision(new VisionIO() {
+                });
+                        m_intakeVision = new Vision(new VisionIO() {
+                        });
+                        m_shooterLeftVision = new Vision(new VisionIO() {
+                        });
+                        m_shooterRightVision = new Vision(new VisionIO() {
+                        });
+                        m_swerve = new Swerve(new GyroIO() {
+                        },
+                                    new SwerveModuleIO() {
+                                    },
+                                    new SwerveModuleIO() {
+                                    },
+                                    new SwerveModuleIO() {
+                                    },
+                                    new SwerveModuleIO() {
+                                    },
+                                    m_intakeVision, m_shooterLeftVision, m_shooterRightVision, m_shooterCenterVision,
+                        m_intakeTagVision);
+                        m_intakeVision.setCamMode(CamMode.DRIVERCAM);
+
+                        m_intake = new Intake(new IntakeIO() {
+                        });
+                        m_shooter = new Shooter(new ShooterIO() {
+                        });
+                        m_amp = new Amp(new AmpIOFalcon());
+                        m_Spivit = new Spivit(new SpivitIOFalcon());
+                        // m_trap = new Trap(new TrapIO() {
+                        // });
+                        m_climber = new Climber(new ClimberIOFalcon());
+                        // });
+                        m_Rumble = new Rumble();
+                m_LEDs = new CANdle(new CANdleIOCANdle());
+                        // m_Vision = new Vision(new VisionIOLimelight());
+                        break;
 
         }
 
@@ -258,9 +302,9 @@ public class RobotContainer {
         // autoChooser.addOption("AdjustedKidsMeal", new
         // PathPlannerAuto("AdjustedKidsMeal"));
 
-        m_LEDs.setLEDs(CANdleState.OFF);
+            m_LEDs.setLEDs(CANdleState.OFF);
         configureBindings();
-    }
+      }
 
     /**
      * IMPORTANT NOTE:
@@ -311,24 +355,27 @@ public class RobotContainer {
          * Axis indices start at 0, button indices start at one -_-
          */
 
-        /* Drive with joysticks */
-        m_swerve.setDefaultCommand(
-                new TeleopSwerve(
-                        m_swerve,
-                        () -> -strafe.getRawAxis(Joystick.AxisType.kY.value)
-                                * Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value)), // translation
-                        () -> -strafe.getRawAxis(Joystick.AxisType.kX.value)
-                                * Math.abs(strafe.getRawAxis(Joystick.AxisType.kX.value)), // strafe
-                        () -> -rotate.getRawAxis(Joystick.AxisType.kX.value), // rotate
-                        () -> false, // robot centric
-                        () -> -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine strafe
-                        () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine translation
-                        () -> false, // align to amp
-                        gp.button(5) // align to speaker
-                // () -> false
-                ));
-        // reset gyro
-        rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro).alongWith(new InstantCommand(() -> m_LEDs.setLEDs(CANdleState.RESETGYRO, 1))));
+            /* Drive with joysticks */
+            m_swerve.setDefaultCommand(
+                        new TeleopSwerve(
+                                    m_swerve,
+                                    () -> -strafe.getRawAxis(Joystick.AxisType.kY.value)
+                                                * Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value)), // translation
+                                    () -> -strafe.getRawAxis(Joystick.AxisType.kX.value)
+                                                * Math.abs(strafe.getRawAxis(Joystick.AxisType.kX.value)), // strafe
+                                    () -> -rotate.getRawAxis(Joystick.AxisType.kX.value), // rotate
+                                    () -> false, // robot centric
+                                    () -> -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine strafe
+                                    () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine translation
+                                    () -> false, // align to amp
+                                    gp.button(5) // align to speaker
+                        // () -> false
+                        ));
+            // reset gyro
+            rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro).alongWith(new InstantCommand(() -> m_LEDs.setLEDs(CANdleState.RESETGYRO, 1))));
+
+        //Amp drive to pose, need to test
+        // strafe.button(1).onTrue(new DriveToPose(m_swerve, BobcatUtil.isBlue()? FieldConstants.blueAmpCenter: FieldConstants.redAmpCenter));
 
         /* Intake Controls */
         m_intake.setDefaultCommand(
@@ -349,15 +396,15 @@ public class RobotContainer {
                         m_LEDs).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
         gp.button(7).whileTrue(new StartEndCommand(() -> m_shooter.setSpeed(-1000, -1000), m_shooter::stop, m_shooter));
+        gp.button(7).whileTrue(new StartEndCommand(() -> m_shooter.setSpeed(-1000, -1000), m_shooter::stop, m_shooter));
 
-        /* Shooter Controls */
-        // while button is held, rev shooter
-        gp.button(10)
-                .whileTrue(new RunCommand(
-                        () -> m_shooter.setSpeed(
-                                () -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(), m_amp.getAngle()),
-                                () -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(), m_amp.getAngle()) + 300)))
-                .onFalse(new InstantCommand(m_shooter::stop)); // back right
+    /* Shooter Controls */
+    // while button is held, rev shooter
+    gp.button(10)
+        .whileTrue(new RunCommand(
+            () -> m_shooter.setSpeed(() -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(), m_amp.getAngle()),
+                () -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(), m_amp.getAngle()))))
+        .onFalse(new InstantCommand(m_shooter::stop)); // back right
 
         /* feed to opponents */
         gp.button(4).whileTrue(new RunCommand(() -> {
@@ -365,52 +412,80 @@ public class RobotContainer {
             m_shooter.setSpeed(3400, 3400);
         }, m_Spivit, m_shooter)).onFalse(
                 new InstantCommand(m_shooter::stop).alongWith(new InstantCommand(m_Spivit::stopMotorFeedforward))); // x
+        /* feed to opponents */
+        gp.button(4).whileTrue(new RunCommand(() -> {
+            m_Spivit.setAngle(ShooterConstants.ampPosition);
+            m_shooter.setSpeed(3400, 3400);
+        }, m_Spivit, m_shooter)).onFalse(
+                new InstantCommand(m_shooter::stop).alongWith(new InstantCommand(m_Spivit::stopMotorFeedforward))); // x
 
-        /* Spivit controls */
-        // manual down
-        gp.axisGreaterThan(5, .6)
-                .whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(-0.15), m_Spivit::stopMotorFeedforward,
+            /* Spivit controls */
+        // // manual down
+        // gp.axisGreaterThan(5, .6)
+        //         .whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(-0.15), m_Spivit::stopMotorFeedforward,
+        //                 m_Spivit));
+        // // manual up
+        // gp.axisLessThan(5, -.6)
+        //         .whileTrue(
+        //                 new StartEndCommand(() -> m_Spivit.setPercent(0.20), m_Spivit::stopMotorFeedforward, m_Spivit));
+            // manual down
+            gp.axisGreaterThan(5, .6)
+                        .whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(-0.05), m_Spivit::stopMotorFeedforward,
+                       
                         m_Spivit));
-        // manual up
-        gp.axisLessThan(5, -.6)
-                .whileTrue(
-                        new StartEndCommand(() -> m_Spivit.setPercent(0.20), m_Spivit::stopMotorFeedforward, m_Spivit));
-        // this sets it to a specific angle
-        gp.button(5).whileTrue(new RunCommand(() -> m_Spivit.setAngle(m_swerve.calcAngleBasedOnHashMap()), m_Spivit))
-                .onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
-        gp.button(9).whileTrue(new RunCommand(() -> m_Spivit.setAngle(ShooterConstants.subwooferShot), m_Spivit))
-                .onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
+            // manual up
+            gp.axisLessThan(5, -.6)
+                        .whileTrue(
+                        
+                        new StartEndCommand(() -> m_Spivit.setPercent(0.05), m_Spivit::stopMotorFeedforward, m_Spivit));
+            // this sets it to a specific angle
+            gp.button(5).whileTrue(new RunCommand(() -> m_Spivit.setAngle(m_swerve.calcAngleBasedOnHashMap()), m_Spivit))
+                        .onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
+            gp.button(9).whileTrue(new RunCommand(() -> m_Spivit.setAngle(ShooterConstants.subwooferShot), m_Spivit))
+                        .onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
 
-        /* amp controls */
-        // retract
-        gp.button(1).onTrue(new SetAmp(m_amp, m_Spivit, false).withInterruptBehavior(InterruptionBehavior.kCancelSelf)); // b
-        // deploy
-        gp.button(2).onTrue(new SetAmp(m_amp, m_Spivit, true).withInterruptBehavior(InterruptionBehavior.kCancelSelf)); // a
-        // zero
-        gp.button(3).onTrue(new InstantCommand(m_amp::zero)); // y
+    /* amp controls */
+    // retract
+    gp.button(1).onTrue(new SetAmp(m_amp, m_Spivit, false));//.withInterruptBehavior(InterruptionBehavior.kCancelSelf)); // b
+    // deploy
+    gp.button(2).onTrue(new SetAmp(m_amp, m_Spivit, true));//.withInterruptBehavior(InterruptionBehavior.kCancelSelf)); // a
+    // zero
+    gp.button(3).onTrue(new InstantCommand(m_amp::zero)); // y
 
         // // shooter amp speed
         // gp.button(4).onTrue(new InstantCommand(() -> m_shooter.setSpeed(1800, 1800)))
         // .onFalse(new InstantCommand(m_shooter::stop)); // x
 
-        // manual
-        // gp.axisGreaterThan(1, .6).whileTrue(new InstantCommand(() ->
-        // m_amp.setPercentOut(0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
-        gp.axisGreaterThan(1, .6)
-                .whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1), m_amp::stopMotorStowPos, m_amp));
-        // this runs it down
-        // gp.axisLessThan(1, -.6).whileTrue(new InstantCommand(() ->
-        // m_amp.setPercentOut(-0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
-        gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1), m_amp::stop, m_amp));
+    // manual
+    // gp.axisGreaterThan(1, .6).whileTrue(new InstantCommand(() ->
+    // m_amp.setPercentOut(0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
+    gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1), m_amp::stopMotorFeedforward, m_amp));
+    // this runs it down
+    // gp.axisLessThan(1, -.6).whileTrue(new InstantCommand(() ->
+    // m_amp.setPercentOut(-0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
+    gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1), m_amp::stopMotorFeedforward, m_amp));
+    gp.button(8).onTrue(new InstantCommand(() -> m_swerve.resetPose(BobcatUtil.getAlliance() == Alliance.Blue
+        ? new Pose2d(FieldConstants.blueSpeakerPose.plus(new Translation2d(1.3, 0)), Rotation2d.fromDegrees(0))
+        : new Pose2d(FieldConstants.redSpeakerPose.plus(new Translation2d(-1.3, 0)), Rotation2d.fromDegrees(180)))));
+    gp.axisGreaterThan(3, 0.07).whileTrue(new ClimbMode(m_climber, m_amp, m_Spivit, () -> -gp.getRawAxis(3)));
 
-        gp.button(8).onTrue(new InstantCommand(() -> m_swerve.resetPose(BobcatUtil.getAlliance() == Alliance.Blue
-                ? new Pose2d(FieldConstants.blueSpeakerPose.plus(new Translation2d(1.3, 0)), Rotation2d.fromDegrees(0))
-                : new Pose2d(FieldConstants.redSpeakerPose.plus(new Translation2d(-1.3, 0)),
-                        Rotation2d.fromDegrees(180))))
-                .alongWith(new InstantCommand(() -> m_LEDs.setLEDs(CANdleState.RESETPOSE, 1))));
-
-        gp.axisGreaterThan(3, 0.07).whileTrue(new ClimbMode(m_climber, m_amp, m_Spivit, () -> -gp.getRawAxis(3)));
-
+        /* trap controls */
+        // gp.povRight().whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1),
+        // m_trap::stopArm, m_trap));
+        // gp.povLeft().whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(-0.1),
+        // m_trap::stopArm, m_trap));
+        // gp.button(7).whileTrue(new StartEndCommand(() ->
+        // m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap));
+        // gp.button(8).whileTrue(new StartEndCommand(() ->
+        // m_trap.setRollerPercent(-0.3), m_trap::stopRoller, m_trap));
+        // gp.button(9).whileTrue(new StartEndCommand(() ->
+        // m_trap.setRollerPercent(0.3), m_trap::stopRoller, m_trap)); // back left
+        // this drives it towards the robot, i think
+        // gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() ->
+        // m_trap.setArmPercent(0.1), m_trap::stopArm, m_trap));
+        // this drives it towards the trap
+        // gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() ->
+        // m_trap.setArmPercent(-0.1), m_trap::stopArm, m_trap));
         /* trap controls */
         // gp.povRight().whileTrue(new StartEndCommand(() -> m_trap.setArmPercent(0.1),
         // m_trap::stopArm, m_trap));
@@ -438,6 +513,15 @@ public class RobotContainer {
         gp.axisGreaterThan(2, 0.07)
                 .whileTrue(new RunCommand(() -> m_climber.setPercentOut(gp.getRawAxis(2)), m_climber))
                 .onFalse(new InstantCommand(m_climber::stop));
+        // climber controls
+        // this raises the hooks
+        // gp.axisGreaterThan(3, 0.07).whileTrue(new RunCommand(() ->
+        // m_climber.setPercentOut(-gp.getRawAxis(3)), m_climber)).onFalse(new
+        // InstantCommand(m_climber::stop));
+        // this lowers the hooks
+        gp.axisGreaterThan(2, 0.07)
+                .whileTrue(new RunCommand(() -> m_climber.setPercentOut(gp.getRawAxis(2)), m_climber))
+                .onFalse(new InstantCommand(m_climber::stop));
 
         // gp.povLeft().whileTrue(new ParallelCommandGroup(
         // new TeleopIntake(
@@ -455,10 +539,17 @@ public class RobotContainer {
         // // m_trap,
         // m_Rumble).withInterruptBehavior(InterruptionBehavior.kCancelSelf),
         // new GrabNote(m_swerve, m_intakeVision)));
-        gp.povLeft().whileTrue(new GrabNote(m_swerve, m_intakeVision, true, m_intake)
-                .alongWith(new InstantCommand(() -> m_LEDs.setLEDs(CANdleState.NOTEHUNTING))))
-                .onFalse(new InstantCommand(() -> m_LEDs.setLEDs(CANdleState.OFF)));
+        gp.povLeft()
+                .whileTrue(new GrabNote(m_swerve, m_intakeVision, true, m_intake,
+                        () -> (-Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value)) //translation
+                                * Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value))), 
+                        () -> rotate.getRawAxis(Joystick.AxisType.kX.value), //rotation
+                        () -> Math.abs(strafe.getRawAxis(Joystick.AxisType.kX.value)))
+                        .alongWith(new InstantCommand(() -> m_LEDs.setLEDs(CANdleState.NOTEHUNTING))))
+                        .onFalse(new InstantCommand(() -> m_LEDs.setLEDs(CANdleState.OFF)));
+        ; // strafe
 
+                        
         /* Drive with gamepad */
         // m_swerve.setDefaultCommand(
         // new TeleopSwerve(

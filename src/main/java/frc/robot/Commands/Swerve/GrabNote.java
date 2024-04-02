@@ -3,6 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.Commands.Swerve;
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -26,15 +28,20 @@ public class GrabNote extends Command {
   private Pose2d notePos;
   private boolean intakeNote;
   private Intake intake;
+  private DoubleSupplier translation;
+  private DoubleSupplier rotation;
+  private DoubleSupplier strafe;
   
 
-  public GrabNote(Swerve swerve, Vision vision, boolean intakeNote, Intake intake) {
+  public GrabNote(Swerve swerve, Vision vision, boolean intakeNote, Intake intake, DoubleSupplier translation, DoubleSupplier rotation, DoubleSupplier strafe) {
     this.swerve = swerve;
     addRequirements(swerve, intake);
     this.vision = vision;
     this.intakeNote=intakeNote;
     this.intake=intake;
-
+    this.translation=translation;
+    this.rotation=rotation;
+    this.strafe=strafe;
   }
 
   // Called when the command is initially scheduled.
@@ -58,19 +65,31 @@ public class GrabNote extends Command {
       }
       else{
         intake.stop();
+        this.cancel();
       }
 
     }
   
+
+  if (rotation.getAsDouble()==0 && strafe.getAsDouble()==0 && translation.getAsDouble()==0){
   if (vision.getTClass()==0){
     //if were more than 5 degrees off, only rotate, once were within 5 degrees, translate.
     notePos = vision.getNotePose();
-     if(!(Math.abs(thetaController.getPositionError()) < 10)){
-     swerve.drive(new Translation2d(), thetaController.calculate(notePos.getRotation().getDegrees()),false,false,false,0);
-     }else{
-      swerve.drive(new Translation2d(xController.calculate(-notePos.getX())*1.4,yController.calculate(notePos.getY())), thetaController.calculate(notePos.getRotation().getDegrees()),false,false,false,0);
-     }
+    //  if(!(Math.abs(thetaController.getPositionError()) < 10)){
+    //  swerve.drive(new Translation2d(), thetaController.calculate(notePos.getRotation().getDegrees()),false,false,false,0);
+    //  }else{
+    //   swerve.drive(new Translation2d(xController.calculate(-notePos.getX())*1.4,yController.calculate(notePos.getY())), thetaController.calculate(notePos.getRotation().getDegrees()),false,false,false,0);
+    //  }
+    // swerve.drive(new Translation2d(xController.calculate(-notePos.getX())*1.4,yController.calculate(notePos.getY())), thetaController.calculate(notePos.getRotation().getDegrees()),false,false,false,0);
+    // swerve.drive(new Translation2d(translation.getAsDouble(),yController.calculate(notePos.getY())), thetaController.calculate(notePos.getRotation().getDegrees()),false,false,false,0);
+    swerve.drive(new Translation2d(xController.calculate(-notePos.getX())*2.5,yController.calculate(notePos.getY())), thetaController.calculate(notePos.getRotation().getDegrees()),false,false,false,0);
+
+
   }
+}
+else{
+  this.cancel();
+}
 }
 
   // Called once the command ends or is interrupted.

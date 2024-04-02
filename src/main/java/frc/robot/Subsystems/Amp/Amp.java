@@ -36,10 +36,6 @@ public class Amp extends SubsystemBase {
         setPosWithFeedforward(AmpConstants.retractValue, -0.05);
     }
 
-    public boolean beyondCrashThreshold(){
-        return inputs.motorPosition > AmpConstants.crashThreshold-2; //TODO not sure if this should be > or <, need to check motor invert and gearing stuff
-    }
-
     /**
      * 
      * @return whether or not the amp has reached its deploy setpoint
