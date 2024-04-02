@@ -28,6 +28,7 @@ public class AlignAndShoot extends Command {
   private Timer timer = new Timer();
   private Rotation2d angle = new Rotation2d();
   double shootTime;
+  private boolean feeding = false;
 
   public AlignAndShoot(Swerve swerve, Spivit spivit, Shooter shooter, Intake intake, double shootTime) {
     this.swerve = swerve;
@@ -63,20 +64,26 @@ public class AlignAndShoot extends Command {
     Logger.recordOutput("Aligment/swerve", swerve.aligned(angle));
     Logger.recordOutput("Aligment/shooter", shooter.aboveSpeed(4500));
     Logger.recordOutput("Alignment/finished", isFinished());
-    
+    Logger.recordOutput("feeding", feeding);
+
 
     if(spivit.aligned() && swerve.aligned(angle) && shooter.aboveSpeed(4500)){
       timer.start();
       intake.intakeToShooter();
       Logger.recordOutput("Alignment/feeding", true);
+      if(timer.hasElapsed(0.1)){
+      feeding = true;
+      }
+      
     }
-    if(timer.hasElapsed(shootTime)){
+    if(timer.hasElapsed(shootTime) || (!shooter.aboveSpeed(ShooterConstants.outtookShooterRPMDropThresholdForShootingEarlierInAutos) && feeding)){
       shooter.stop();
       intake.stop();
       spivit.stopMotor();
       swerve.setRotationTarget(null);
       Logger.recordOutput("Alignment/feeding", false);
       finished = true;
+      feeding = false;
     }
   
   }

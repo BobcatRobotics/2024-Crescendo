@@ -268,6 +268,8 @@ public class RobotContainer {
                 NamedCommands.registerCommand("RevToRPM",
                                 new RevToRPM(m_shooter, ShooterConstants.fastShooterRPMSetpoint, 4500));
                 // NamedCommands.registerCommand("Break", new AutoBreak(m_Spivit));
+                NamedCommands.registerCommand("AutoStowe", new InstantCommand(m_amp::retract));
+
                 /*
                  * Auto Chooser
                  * 
@@ -392,7 +394,7 @@ public class RobotContainer {
                 gp.button(7).whileTrue(new StartEndCommand(() -> m_shooter.setSpeed(-1000, -1000), m_shooter::stop,
                                 m_shooter));
 
-                gp.povDown().onTrue( //if shooter too low, raise whiles intaking
+                gp.povDown().onTrue( // if shooter too low, raise whiles intaking
                                 new ConditionalCommand(
                                                 new InstantCommand(() -> m_Spivit.setAngle(ShooterConstants.stow)),
                                                 Commands.none(),
@@ -582,10 +584,10 @@ public class RobotContainer {
                 // ));
                 // gp.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro));
 
-                new Trigger(() -> m_intake.hasPiece()).onTrue(
-                                Commands.sequence(new InstantCommand(() -> m_swerve.setLimeLEDS(true)),
-                                                new WaitCommand(2),
-                                                new InstantCommand(() -> m_swerve.setLimeLEDS(false))));
+                // new Trigger(() -> m_intake.hasPiece()).onTrue(
+                // Commands.sequence(new InstantCommand(() -> m_swerve.setLimeLEDS(true)),
+                // new WaitCommand(2),
+                // new InstantCommand(() -> m_swerve.setLimeLEDS(false))));
         }
 
         public Command getAutonomousCommand() {

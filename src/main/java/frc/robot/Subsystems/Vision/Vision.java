@@ -75,7 +75,7 @@ public class Vision extends SubsystemBase {
     apriltagPipeline = inputs.pipelineID == 0;
 
     Logger.recordOutput("note pose/note pose", getNotePose());
-    Logger.recordOutput("translation to note", getTranslationToTag((int) inputs.fiducialID));
+    // Logger.recordOutput("translation to note", getTranslationToTag((int) inputs.fiducialID));
 
   }
 
@@ -181,37 +181,37 @@ public class Vision extends SubsystemBase {
   }
 
 
-  public Translation2d getTranslationToTag(int tagID) {
-    if (apriltagPipeline) {
-      // get botpose from limelight networktables
-      if (LimelightHelpers.getTV(inputs.name)) {
+  // public Translation2d getTranslationToTag(int tagID) {
+  //   if (apriltagPipeline) {
+  //     // get botpose from limelight networktables
+  //     if (LimelightHelpers.getTV(inputs.name)) {
 
-        double[] botPose = LimelightHelpers.getBotPose_wpiBlue(inputs.name);
-        Pose3d botPose3D = new Pose3d(new Translation3d(botPose[0], botPose[1], botPose[2]),
-            new Rotation3d(Math.toRadians(botPose[3]), Math.toRadians(botPose[4]), Math.toRadians(botPose[5])));
-        Pose2d botPose2d = botPose3D.toPose2d();
+  //       double[] botPose = LimelightHelpers.getBotPose_wpiBlue(inputs.name);
+  //       Pose3d botPose3D = new Pose3d(new Translation3d(botPose[0], botPose[1], botPose[2]),
+  //           new Rotation3d(Math.toRadians(botPose[3]), Math.toRadians(botPose[4]), Math.toRadians(botPose[5])));
+  //       Pose2d botPose2d = botPose3D.toPose2d();
 
-        // get pose of apriltag on field
-        Optional<Pose3d> aprilTagPose = Constants.AprilTagConstants.layout.getTagPose(tagID);
-        Logger.recordOutput("Limelight/botpose", botPose3D);
+  //       // get pose of apriltag on field
+  //       Optional<Pose3d> aprilTagPose = Constants.AprilTagConstants.layout.getTagPose(tagID);
+  //       Logger.recordOutput("Limelight/botpose", botPose3D);
 
-        // if we have a tag, calculate our robots distance from it
-        if (aprilTagPose.isPresent()) {
-          Logger.recordOutput("Limelight/tagPose2d",
-              new Pose2d(aprilTagPose.get().getX(), aprilTagPose.get().getY(), new Rotation2d()));
-          Logger.recordOutput("Limelight/adjustedPose", new Pose2d(aprilTagPose.get().getX() - botPose[0],
-              aprilTagPose.get().getY() - botPose[1], new Rotation2d()));
-          return new Translation2d(aprilTagPose.get().getX() - botPose[0], aprilTagPose.get().getY() - botPose[1]);
-        } else {
-          return new Translation2d();
-        }
-      } else {
-        return new Translation2d();
-      }
-    } else {
-      return new Translation2d();
-    }
-  }
+  //       // if we have a tag, calculate our robots distance from it
+  //       if (aprilTagPose.isPresent()) {
+  //         Logger.recordOutput("Limelight/tagPose2d",
+  //             new Pose2d(aprilTagPose.get().getX(), aprilTagPose.get().getY(), new Rotation2d()));
+  //         Logger.recordOutput("Limelight/adjustedPose", new Pose2d(aprilTagPose.get().getX() - botPose[0],
+  //             aprilTagPose.get().getY() - botPose[1], new Rotation2d()));
+  //         return new Translation2d(aprilTagPose.get().getX() - botPose[0], aprilTagPose.get().getY() - botPose[1]);
+  //       } else {
+  //         return new Translation2d();
+  //       }
+  //     } else {
+  //       return new Translation2d();
+  //     }
+  //   } else {
+  //     return new Translation2d();
+  //   }
+  // }
 
   // angle target is from the center
   public Rotation2d getTX() {

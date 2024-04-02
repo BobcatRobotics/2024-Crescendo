@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "AutoStowe"
+          }
+        },
+        {
           "type": "deadline",
           "data": {
             "commands": [

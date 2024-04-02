@@ -564,7 +564,7 @@ public class Constants {
         //     {255.0,255}
         // };
         // public static final BilinearInterpolation spivitBiLinearInterpolation = new BilinearInterpolation(tagDist, swerveAngle, spivitAngle);
-
+        public static final int outtookShooterRPMDropThresholdForShootingEarlierInAutos = 4500;
     }
     public static final class TrapConstants {
         public static final int rollerID = 17;
