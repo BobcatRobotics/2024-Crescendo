@@ -237,10 +237,11 @@ public class Swerve extends SubsystemBase {
         shooterCenterVision.SetRobotOrientation(getYaw());
         shooterLeftVision.SetRobotOrientation(getYaw());
         shooterRightVision.SetRobotOrientation(getYaw());
+        IntakeTagVision.SetRobotOrientation(getYaw());
 
         addVisionMG2(shooterLeftVision);
         addVisionMG2(shooterRightVision);
-        addVision(IntakeTagVision);
+        addVisionMG2(IntakeTagVision);
         addVisionMG2(shooterCenterVision);
         
 
