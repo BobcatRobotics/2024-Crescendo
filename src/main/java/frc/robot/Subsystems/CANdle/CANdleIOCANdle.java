@@ -37,7 +37,7 @@ public class CANdleIOCANdle implements CANdleIO {
                 leds.animate(new StrobeAnimation(255, 0, 0,  0, 0.25, CANdleConstants.LedCount));
                 break;
             case NOTEHUNTING: 
-                leds.animate(BobcatUtil.getBuiltInAnimation(BuiltInAnimations.Fire));
+                leds.animate(BobcatUtil.getBuiltInAnimation(BuiltInAnimations.Rainbow));
                 break;
             case RESETPOSE: //strobe gold
                 leds.animate(new StrobeAnimation(255, 170, 0,  0, 0.25, CANdleConstants.LedCount));
@@ -45,9 +45,11 @@ public class CANdleIOCANdle implements CANdleIO {
             case RESETGYRO: //strobe gold
                 leds.animate(new StrobeAnimation(255, 170, 0, 0, 0.25, CANdleConstants.LedCount));
                 break;
-            case OUTAKE: //strobe orange
+            case OUTAKE: //strobe red
                 leds.animate(new StrobeAnimation(255, 0, 0, 0, 0.75, CANdleConstants.LedCount));
                 break;
+            case FEED:
+                leds.animate(new StrobeAnimation(0, 255, 0, 0, 0.6, CANdleConstants.LedCount));
             case OFF:
                 leds.animate(null);
                 break;

@@ -55,7 +55,7 @@ public class BobcatUtil {
             case Larson:
                 return new LarsonAnimation(131, 23, 194, 0, 0.25, CANdleConstants.LedCount, BounceMode.Center, 2);
             case Rainbow:
-                return new RainbowAnimation(1, 0.1, CANdleConstants.LedCount);
+                return new RainbowAnimation(1, 0.6, CANdleConstants.LedCount);
             case RgbFade:
                 return new RgbFadeAnimation(0.7, 0.4, CANdleConstants.LedCount);
             case SingleFade:

@@ -23,5 +23,6 @@ public enum CANdleState {
     RESETPOSE,
     NOTEHUNTING,
     RESETGYRO,
-    OUTAKE
+    OUTAKE,
+    FEED
 }

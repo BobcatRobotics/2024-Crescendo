@@ -71,13 +71,13 @@ public class TeleopIntake extends Command {
 
         if (feed.getAsBoolean()) {
             intake.intakeToShooter();
-            candle.setLEDs(CANdleState.OFF);
+            candle.setLEDs(CANdleState.FEED);
         } else if (runOut.getAsBoolean()) {
             intake.runOut();
             candle.setLEDs(CANdleState.OUTAKE);
         } else if (intake.hasPiece()) {
             intake.stop();
-            candle.setLEDs(CANdleState.INTOOK, 1);
+            candle.setLEDs(CANdleState.INTOOK); //changed from one second
             intook = true;
         } else if (intakeShooter.getAsBoolean()) {
             intake.intakeToShooter();
