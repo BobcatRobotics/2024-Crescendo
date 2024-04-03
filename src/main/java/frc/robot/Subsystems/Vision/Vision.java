@@ -95,6 +95,84 @@ public class Vision extends SubsystemBase {
     return pose;
   }
 
+  public Pose2d getBotPoseMG2(){
+    return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(inputs.name).pose;
+  }
+
+  public Pose2d getPoseMG2(){
+    return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(inputs.name).pose;
+  }
+
+  public LimelightHelpers.PoseEstimate getPoseEstimateMG2(){
+    return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(inputs.name);
+  }
+
+  public void SetRobotOrientation(Rotation2d gyro){
+    gyro = BobcatUtil.isBlue()? gyro : gyro.rotateBy(Rotation2d.fromDegrees(180));
+    double gyroval=gyro.getRadians();
+    // gyroval = gyroval % (2*Math.PI);
+    gyroval=BobcatUtil.get0to2Pi(gyroval);
+    gyroval=Units.radiansToDegrees(gyroval);
+
+    LimelightHelpers.SetRobotOrientation(inputs.name, gyroval, 0, 0, 0, 0, 0);
+  }
+
+  public boolean getPoseValidMG2(Rotation2d gyro){
+    // Pose3d botpose = LimelightHelpers.getBotPose3d_wpiBlue(inputs.name);
+    // Logger.recordOutput("Pose3d/"+inputs.name, botpose);
+    Pose2d botpose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(inputs.name).pose;
+    double diff = 0;
+
+    double gyroval=gyro.getDegrees();
+    gyroval = gyroval % (360);
+
+    // gyroval=Units.radiansToDegrees(BobcatUtil.get0to2Pi(gyroval));
+    double llrotation=botpose.getRotation().getDegrees();
+    diff = BobcatUtil.isRed()? Math.abs(Math.abs(gyroval-llrotation)-180) : Math.abs(Math.abs(gyroval-llrotation));
+    // double diff = 0;
+    // double z = botpose.getZ();
+    double x = botpose.getX();
+    double y = botpose.getY();
+    // Logger.recordOutput("LLDebug/"+inputs.name+" z val", z);
+    Logger.recordOutput("LLDebug/"+inputs.name+" x val", x);
+    Logger.recordOutput("LLDebug/"+inputs.name+" y val", y);
+    Logger.recordOutput("LLDebug/"+inputs.name+" rdiff", diff);
+
+    double ambiguity = 0;
+
+    LimelightHelpers.PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(inputs.name);
+
+  //  if (botpose.getX()!=0 && botpose.getY()!=0){ 
+  //    ambiguity = poseEstimate.rawFiducials[0].ambiguity; //not tested, may not work correctly as of 3/27
+  //  }
+
+
+    
+    double tagDist = poseEstimate.avgTagDist;
+    Logger.recordOutput("LLDebug/"+inputs.name+" avgTagDist", tagDist);
+    Logger.recordOutput("LLDebug/"+inputs.name+" tagCount", poseEstimate.tagCount);
+
+
+    // double tagDist=0;
+
+    if( 
+        (diff<LimelightConstants.rotationTolerance) && 
+        // (z<LimelightConstants.zDistThreshold) && 
+        (ambiguity<LimelightConstants.poseAmbiguityThreshold) && 
+        (tagDist<LimelightConstants.throwoutDist) &&
+        (botpose.getTranslation().getX() > 0) &&
+        (botpose.getTranslation().getX() < FieldConstants.fieldLength) &&
+        (botpose.getTranslation().getY() > 0) &&
+        (botpose.getTranslation().getY() < FieldConstants.fieldWidth)) {
+          
+          return true;
+      } else{
+          return false;
+      }
+
+
+  }
+
   public Pose3d getBotPose3d() {
     Pose3d pose = LimelightHelpers.getBotPose3d_wpiBlue(inputs.name);
     Logger.recordOutput("Limelight" + inputs.name + "/Pose3d", pose);
@@ -114,6 +192,10 @@ public class Vision extends SubsystemBase {
   public double getPoseTimestamp() {
     // return Timer.getFPGATimestamp() - ((LimelightHelpers.getLatency_Pipeline(inputs.name)+LimelightHelpers.getLatency_Capture(inputs.name)) / 1000.0);
     return LimelightHelpers.getBotPoseEstimate_wpiBlue(inputs.name).timestampSeconds;
+  }
+
+  public double getPoseTimestampMG2(){
+    return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(inputs.name).timestampSeconds;
   }
 
   public LimelightHelpers.PoseEstimate getPoseEstimate() {

@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.lib.util.limelightConstants;
 import frc.robot.Commands.Auto.AutoIntake;
 import frc.robot.Commands.Auto.ContinouslyAlignAndShoot;
 import frc.robot.Commands.Auto.ReleaseHook;
@@ -359,13 +360,13 @@ public class RobotContainer {
                                                                                                             // strafe
                                                 () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine
                                                                                                             // translation
-                                                () -> false, // align to amp
+                                                gp.povRight(), // align to amp
                                                 gp.button(5) // align to speaker
                                 // () -> false
                                 ));
                 // reset gyro
                 rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro)
-                                .alongWith(new InstantCommand(() -> m_LEDs.setLEDs(CANdleState.RESETGYRO, 1))));
+                                .andThen(new InstantCommand(() -> m_LEDs.setLEDs(CANdleState.RESETGYRO, 1))));
 
                 // Amp drive to pose, need to test
                 // strafe.button(1).onTrue(new DriveToPose(m_swerve, BobcatUtil.isBlue()?
@@ -399,6 +400,12 @@ public class RobotContainer {
                                                 new InstantCommand(() -> m_Spivit.setAngle(ShooterConstants.stow)),
                                                 Commands.none(),
                                                 () -> m_Spivit.getAngle() < ShooterConstants.stow));
+                gp.povLeft().onTrue( // if shooter too low, raise whiles intaking
+                                new ConditionalCommand(
+                                                new InstantCommand(() -> m_Spivit.setAngle(ShooterConstants.stow)),
+                                                Commands.none(),
+                                                () -> m_Spivit.getAngle() < ShooterConstants.stow));
+                
 
                 /* Shooter Controls */
                 // while button is held, rev shooter
@@ -432,7 +439,7 @@ public class RobotContainer {
                 // m_Spivit::stopMotorFeedforward, m_Spivit));
                 // manual down
                 gp.axisGreaterThan(5, .6)
-                                .whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(-0.05),
+                                .whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(-0.25),
                                                 m_Spivit::stopMotorFeedforward,
 
                                                 m_Spivit));
@@ -440,12 +447,13 @@ public class RobotContainer {
                 gp.axisLessThan(5, -.6)
                                 .whileTrue(
 
-                                                new StartEndCommand(() -> m_Spivit.setPercent(0.05),
+                                                new StartEndCommand(() -> m_Spivit.setPercent(0.25),
                                                                 m_Spivit::stopMotorFeedforward, m_Spivit));
                 // this sets it to a specific angle
                 gp.button(5).whileTrue(
-                                new RunCommand(() -> m_Spivit.setAngle(m_swerve.calcAngleBasedOnHashMap()), m_Spivit))
+                                new RunCommand(() -> m_Spivit.setAngle(m_swerve.getShootWhileMoveBallistics(m_Spivit.getAngle())[1]), m_Spivit))
                                 .onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
+                // gp.button(5).whileTrue(new InstantCommand(() -> m_shooterCenterVision.setPipeline(LimelightConstants.shooterCenter.fpsPipline))).onFalse(new InstantCommand(() -> m_shooterCenterVision.setPipeline(LimelightConstants.shooterCenter.resPipline)));
                 gp.button(9).whileTrue(
                                 new RunCommand(() -> m_Spivit.setAngle(ShooterConstants.subwooferShot), m_Spivit))
                                 .onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));

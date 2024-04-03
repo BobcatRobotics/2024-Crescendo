@@ -147,10 +147,9 @@ public class Robot extends LoggedRobot {
     m_robotContainer.m_shooterRightVision.setCamMode(CamMode.VISION);
     m_robotContainer.m_shooterRightVision.setPipeline(LimelightConstants.shooterRight.apriltagPipelineIndex);
     m_robotContainer.m_shooterCenterVision.setCamMode(CamMode.VISION);
-    m_robotContainer.m_shooterCenterVision.setPipeline(LimelightConstants.shooterRight.apriltagPipelineIndex);
+    m_robotContainer.m_shooterCenterVision.setPipeline(Constants.LimelightConstants.shooterCenter.fpsPipline);
     m_robotContainer.m_intakeTagVision.setCamMode(CamMode.VISION);
     m_robotContainer.m_intakeTagVision.setPipeline(LimelightConstants.shooterRight.apriltagPipelineIndex);
-
 
   }
 
@@ -174,7 +173,7 @@ public class Robot extends LoggedRobot {
     m_robotContainer.m_shooterRightVision.setCamMode(CamMode.VISION);
     m_robotContainer.m_shooterRightVision.setPipeline(LimelightConstants.shooterRight.apriltagPipelineIndex);
     m_robotContainer.m_shooterCenterVision.setCamMode(CamMode.VISION);
-    m_robotContainer.m_shooterCenterVision.setPipeline(LimelightConstants.shooterRight.apriltagPipelineIndex);
+    m_robotContainer.m_shooterCenterVision.setPipeline(Constants.LimelightConstants.shooterCenter.resPipline);
     m_robotContainer.m_intakeTagVision.setCamMode(CamMode.VISION);
     m_robotContainer.m_intakeTagVision.setPipeline(LimelightConstants.shooterRight.apriltagPipelineIndex);
 

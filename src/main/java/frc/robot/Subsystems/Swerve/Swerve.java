@@ -1,5 +1,6 @@
 package frc.robot.Subsystems.Swerve;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import java.util.concurrent.locks.Lock;
@@ -23,6 +24,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -37,6 +39,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.util.Quartic;
 import frc.lib.util.limelightConstants;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -231,10 +234,15 @@ public class Swerve extends SubsystemBase {
             }
         }
 
-        addVision(shooterLeftVision);
-        addVision(shooterRightVision);
-        addVision(shooterCenterVision);
+        shooterCenterVision.SetRobotOrientation(getYaw());
+        shooterLeftVision.SetRobotOrientation(getYaw());
+        shooterRightVision.SetRobotOrientation(getYaw());
+
+        addVisionMG2(shooterLeftVision);
+        addVisionMG2(shooterRightVision);
         addVision(IntakeTagVision);
+        addVisionMG2(shooterCenterVision);
+        
 
         //3015 code
         // poseLookup.addPose(getPose());
@@ -314,6 +322,10 @@ public class Swerve extends SubsystemBase {
      */
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean snapToAmp,
             boolean snapToSpeaker, double angleToSpeaker) {
+        
+//        Rotation2d ampVal = BobcatUtil.isBlue()?Constants.FieldConstants.blueAmpCenter.getRotation() : Constants.FieldConstants.redAmpCenter.getRotation();
+        double ampVal = BobcatUtil.isBlue()? -Math.PI/2 : Math.PI/2;
+        Logger.recordOutput("AmpAlign/ampVal", ampVal);
 
         ChassisSpeeds desiredSpeeds = fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
                 translation.getX(),
@@ -334,7 +346,7 @@ public class Swerve extends SubsystemBase {
             lastMovingYaw = getYaw().getRadians();
         } else if (snapToAmp) {
             desiredSpeeds.omegaRadiansPerSecond = autoAlignPID.calculate(get0to2Pi(getYaw().getRadians()),
-                    Math.PI / 2);
+                    ampVal);
             lastMovingYaw = getYaw().getRadians();
         } else {
             if (rotation == 0) {
@@ -588,6 +600,15 @@ public class Swerve extends SubsystemBase {
         // return ShooterConstants.spivitBiLinearInterpolation.interpolate(distance, angle);
     }
 
+    public double calcAngleBasedOnHashMap(double dist) {
+        double distance = dist;
+        // double angle = Math.abs(getAngleToSpeakerTagAuto().getDegrees());
+        Logger.recordOutput("Spivit/DesiredAngle", ShooterConstants.spivitAngles.get(distance));
+        return ShooterConstants.spivitAngles.get(distance);
+        // Logger.recordOutput("Spivit/DesiredAngle", ShooterConstants.spivitBiLinearInterpolation.interpolate(distance, angle));
+        // return ShooterConstants.spivitBiLinearInterpolation.interpolate(distance, angle);
+    }
+
     public double get0to2Pi(double rad) {
         rad = rad % (2 * Math.PI);
         if (rad < (2 * Math.PI)) {
@@ -703,6 +724,29 @@ public class Swerve extends SubsystemBase {
             poseEstimator.addVisionMeasurement(vision.getBotPose(), vision.getPoseTimestamp(), stdDev);
             // System.out.println("yes " + vision.getLimelightName() + " " + Timer.getFPGATimestamp());
         }
+
+    }
+
+    public void addVisionMG2(Vision vision){
+
+        Matrix<N3, N1> stdDev;
+        Matrix<N3, N1> truststdDev = DriverStation.isAutonomous() ? LimelightConstants.trustautostdDev : LimelightConstants.trusttelestdDev;
+        Matrix<N3, N1> regstdDev = DriverStation.isAutonomous() ? LimelightConstants.regautostdDev : LimelightConstants.regtelestdDev;
+        Logger.recordOutput("Pose/"+ vision.getLimelightName(), vision.getBotPoseMG2());
+
+        // stdDev = regstdDev;
+        if (vision.getPoseEstimateMG2().tagCount>=2) {
+            stdDev = truststdDev;
+        }
+        else {
+            stdDev = regstdDev;
+        }
+
+        if (vision.getPoseValidMG2(getYaw())){
+            poseEstimator.addVisionMeasurement(vision.getBotPoseMG2(), vision.getPoseTimestampMG2(), stdDev);
+            // System.out.println("yes " + vision.getLimelightName() + " " + Timer.getFPGATimestamp());
+        }
+
 
     }
 
@@ -824,6 +868,126 @@ public class Swerve extends SubsystemBase {
             correctionDevs);
         }
     }
-    
 
+    /**
+     * 
+     * @return [0] field relative holo angle
+     * @return [1] spivit angle
+     */
+    public double[] getShootWhileMoveBallistics(double spivitAngle) {
+        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getYaw());
+        Translation2d speakerPose = BobcatUtil.isRed() ? FieldConstants.redSpeakerPoseSpivit : FieldConstants.blueSpeakerPoseSpivit;
+        Translation2d robot = getPose().getTranslation();
+        
+        double real_spivit = spivitAngle - ShooterConstants.encoderOffsetFromHorizontal;
+        
+        // A lot of the code from this point forward is from here:
+        // https://www.forrestthewoods.com/blog/solving_ballistic_trajectories/
+        double G = 9.81;
+        double target_pos_x = speakerPose.getX();
+        double target_pos_y = FieldConstants.speakerHeight;
+        double target_pos_z = speakerPose.getY();
+        double target_vel_x = BobcatUtil.isRed() ? chassisSpeeds.vxMetersPerSecond : -chassisSpeeds.vxMetersPerSecond;
+        double target_vel_y = 0;
+        double target_vel_z = BobcatUtil.isRed() ? chassisSpeeds.vyMetersPerSecond : -chassisSpeeds.vyMetersPerSecond;
+        double proj_pos_x = robot.getX();
+        double proj_pos_y = Units.inchesToMeters(21)*Math.asin(Units.degreesToRadians(real_spivit)) + Units.inchesToMeters(9);
+        double proj_pos_z = robot.getY();
+        double proj_speed = ShooterConstants.noteIdealExitVelocityMPS;
+        Translation2d linearFieldVelocity = new Translation2d(-target_vel_x, -target_vel_z);
+
+        double A = proj_pos_x;
+        double B = proj_pos_y;
+        double C = proj_pos_z;
+        double M = target_pos_x;
+        double N = target_pos_y;
+        double O = target_pos_z;
+        double P = target_vel_x;
+        double Q = target_vel_y;
+        double R = target_vel_z;
+        double S = proj_speed;
+
+        double H = M - A;
+        double J = O - C;
+        double K = N - B;
+        double L = -.5f * G;
+
+        // Quartic Coeffecients
+        double c0 = G * G;
+        double c1 = 0;
+        double c2 = (P * P + R * R) + (K * -G) - S * S;
+        double c3 = 2 * (H * P + K * R);
+        double c4 = K * K + H * H + J * J;
+
+        double[] q_sols = new double[5];
+        q_sols = Quartic.solveQuartic(c0, c1, c2, c3, c4);
+        double[] times = new double[4];
+        for (int i = 0; i < times.length; i++) {
+            times[i] = q_sols[i];
+        }
+
+        Arrays.sort(times);
+
+        Translation3d[] solution_poses = new Translation3d[2];
+        solution_poses[0] = new Translation3d();
+        solution_poses[1] = new Translation3d();
+        int num_sols = 0;
+
+        for (int i = 0; i < times.length; i++) {
+            double t = times[i];
+
+            if (t <= 0 || Double.isNaN(t)) {
+                continue;
+            }
+
+            solution_poses[num_sols] = new Translation3d(
+                    (float) ((H + P * t) / t),
+                    (float) ((K + Q * t - L * t * t) / t),
+                    (float) ((J + R * t) / t));
+            num_sols++;
+        }
+        Translation3d sol_pose = solution_poses[0];
+        Rotation2d holo_align_angle = new Rotation2d(sol_pose.getX(), sol_pose.getZ());
+
+        double[] ret_val = new double[2];
+
+        ret_val[0] = get0to2Pi(holo_align_angle.getRadians());
+        // ret_val[1] = new Rotation2d(Math.hypot(sol_pose.getX(), sol_pose.getZ()), sol_pose.getY()).getDegrees() + ShooterConstants.encoderOffsetFromHorizontal;
+
+        double[] shotTime = new double[2];
+        int numOfTimes = 0;
+
+        for (int i = 0; i < times.length; i++) {
+            double t = times[i];
+
+            if (t <= 0 || Double.isNaN(t)) {
+                continue;
+            }
+
+            shotTime[numOfTimes] = t;
+            numOfTimes++;
+        }
+
+        Rotation2d speakerToRobotAngle = robot.minus(speakerPose).getAngle();
+        Translation2d tangentialVelocity =
+            linearFieldVelocity.rotateBy(speakerToRobotAngle.unaryMinus());
+        // Positive when velocity is away from speaker
+        double radialComponent = tangentialVelocity.getX();
+        // Positive when traveling CCW about speaker
+        double tangentialComponent = tangentialVelocity.getY();
+
+        // Add robot velocity to raw shot speed
+        double rawDistToGoal = robot.getDistance(speakerPose);
+        double shotSpeed = rawDistToGoal / shotTime[0] + radialComponent;
+        if (shotSpeed <= 0.0) shotSpeed = 0.0;
+        double effectiveDist = shotTime[0] * Math.hypot(tangentialComponent, shotSpeed);
+
+        ret_val[1] = calcAngleBasedOnHashMap(effectiveDist);
+        if (Math.abs(tangentialComponent) > 2) {
+            ret_val[1] += tangentialComponent;
+        }
+
+        return ret_val;
+    }
+    
 }

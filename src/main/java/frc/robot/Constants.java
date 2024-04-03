@@ -379,6 +379,9 @@ public class Constants {
                     visionMeasurementStdDevs, movingAverageNumTaps);
             public static final String ip = "10.1.77.14";
 
+            public static final int fpsPipline = 3;
+            public static final int resPipline = 1;
+
         }
 
         public static final class intakeTag {
@@ -465,6 +468,9 @@ public class Constants {
 
         // position needed to deploy the amp hood
         public static final double ampDeploySafeValue = 257; // 266.5;
+
+        public static final double encoderOffsetFromHorizontal = 230.6;
+        public static final double noteIdealExitVelocityMPS = 25;
 
         public static final double rpsTolerance = 200 / 60; // THIS IS IN RPS
         public static final double angleTolerance = 0.5; // THIS IS IN DEGREES

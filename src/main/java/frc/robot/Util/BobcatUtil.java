@@ -51,9 +51,9 @@ public class BobcatUtil {
             case ColorFlow:
                 return new ColorFlowAnimation(128, 20, 70, 0, 0.7, CANdleConstants.LedCount, Direction.Forward);
             case Fire:
-                return new FireAnimation(0.5, 0.7, CANdleConstants.LedCount, 0.7, 0.5);
+                return new FireAnimation(1, 0.7, CANdleConstants.LedCount, 0.7, 0.5);
             case Larson:
-                return new LarsonAnimation(0, 255, 46, 0, 1, CANdleConstants.LedCount, BounceMode.Front, 3);
+                return new LarsonAnimation(131, 23, 194, 0, 0.25, CANdleConstants.LedCount, BounceMode.Center, 2);
             case Rainbow:
                 return new RainbowAnimation(1, 0.1, CANdleConstants.LedCount);
             case RgbFade:

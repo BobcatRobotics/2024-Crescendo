@@ -33,6 +33,10 @@ public class Spivit extends SubsystemBase {
     io.setAngle(angle);
   }
 
+  /**
+   * 
+   * @return DEGRESS !!! no readians thats bad
+   */
   public double getAngle(){
     return io.getAngle();
   }

@@ -1,7 +1,10 @@
 package frc.robot.Commands.Swerve;
 
+import frc.robot.Constants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Subsystems.Swerve.Swerve;
+import frc.robot.Util.BobcatUtil;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -10,6 +13,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -62,13 +66,15 @@ public class TeleopSwerve extends Command {
         double translationVal = MathUtil.applyDeadband(translation.getAsDouble(), SwerveConstants.stickDeadband);
         double strafeVal = MathUtil.applyDeadband(strafe.getAsDouble(), SwerveConstants.stickDeadband);
         double rotationVal = MathUtil.applyDeadband(rotation.getAsDouble(), SwerveConstants.stickDeadband); //from 0 to one
+        // Rotation2d ampVal = BobcatUtil.isBlue()?Constants.FieldConstants.blueAmpCenter.getRotation() : Constants.FieldConstants.redAmpCenter.getRotation();
 
         if (snapToSpeaker.getAsBoolean() && rotationVal == 0) {
             //Translation2d speaker = swerve.getTranslationToSpeaker();
             //angleToSpeaker = Math.atan(speaker.getY()/speaker.getX());
             // angleToSpeaker = swerve.getAngleToSpeakerApriltag().getRadians();
             // Logger.recordOutput("Swerve/AlignmentToSpeaker",new Pose2d(swerve.getPose().getTranslation(), swerve.getAngleToSpeakerApriltag()) );
-            angleToSpeaker = swerve.getAngleToSpeakerTagAuto().getRadians();
+            // angleToSpeaker = swerve.getAngleToSpeakerTagAuto().getRadians();
+            angleToSpeaker = BobcatUtil.isRed() ? swerve.getShootWhileMoveBallistics(ShooterConstants.encoderOffsetFromHorizontal)[0] : swerve.getShootWhileMoveBallistics(ShooterConstants.encoderOffsetFromHorizontal)[0] + Math.PI;
             Logger.recordOutput("Swerve/AlignmentToSpeaker",new Pose2d(swerve.getPose().getTranslation(), swerve.getAngleToSpeakerTagAuto()));
             overriden = false;
             
@@ -77,11 +83,12 @@ public class TeleopSwerve extends Command {
         }
         // overriden = true;
 
-        if (snapToAmp.getAsBoolean() && rotationVal == 0) {
-            snapToAmp = () -> true;
-        } else {
-            snapToAmp = () -> false;
-        }
+        // if (snapToAmp.getAsBoolean() && rotationVal == 0) {
+        //     snapToAmp = () -> true;
+        // } else {
+        //     snapToAmp = () -> false;
+        // }
+
 
         /* If joysticks not receiving any normal input, use twist values for fine adjust */
         if (strafeVal == 0.0) {
@@ -91,7 +98,9 @@ public class TeleopSwerve extends Command {
             translationVal = fineTrans.getAsDouble();
         }
 
+        Logger.recordOutput("AmpAlign/snapToAmp", snapToAmp.getAsBoolean());
         /* Drive */
+        // if(!snapToAmp.getAsBoolean()){
         swerve.drive(
             new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed), 
             rotationVal * SwerveConstants.maxAngularVelocity,
@@ -100,5 +109,17 @@ public class TeleopSwerve extends Command {
             snapToSpeaker.getAsBoolean() && !overriden,
             angleToSpeaker
         );
+    // }else{
+    //     swerve.drive(
+    //         new Translation2d(translationVal, strafeVal).times(SwerveConstants.maxSpeed), 
+    //         ampVal,
+    //         !robotCentric.getAsBoolean(),
+    //         false,
+    //         false,
+    //         0
+    //     );
+
+    // }
+        
     }
 }
