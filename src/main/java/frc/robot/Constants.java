@@ -50,7 +50,7 @@ public class Constants {
 
         public static final double maxSpeed = 4.5; // max MODULE speed, NOT max chassis speed
         public static final double maxAccel = 3;
-        public static final double maxAngularVelocity = Math.PI;
+        public static final double maxAngularVelocity = 2*Math.PI;
         public static final double maxAngularAcceleration = Math.PI / 2;
 
         public static final double stickDeadband = 0.02;

@@ -24,5 +24,7 @@ public enum CANdleState {
     NOTEHUNTING,
     RESETGYRO,
     OUTAKE,
-    FEED
+    FEED,
+    ALIGNING,
+    ALIGNED
 }

@@ -128,7 +128,7 @@ public class Vision extends SubsystemBase {
 
     // gyroval=Units.radiansToDegrees(BobcatUtil.get0to2Pi(gyroval));
     double llrotation=botpose.getRotation().getDegrees();
-    diff = BobcatUtil.isRed()? Math.abs(Math.abs(gyroval-llrotation)-180) : Math.abs(Math.abs(gyroval-llrotation));
+    // diff = BobcatUtil.isRed()? Math.abs(Math.abs(gyroval-llrotation)-180) : Math.abs(Math.abs(gyroval-llrotation));
     // double diff = 0;
     // double z = botpose.getZ();
     double x = botpose.getX();

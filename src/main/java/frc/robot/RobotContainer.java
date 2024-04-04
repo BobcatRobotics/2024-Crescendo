@@ -77,6 +77,7 @@ public class RobotContainer {
         private final CommandJoystick rotate = new CommandJoystick(1);
         private final CommandJoystick strafe = new CommandJoystick(0);
         private final CommandJoystick gp = new CommandJoystick(2);
+        private final Trigger shouldIntake = gp.povDown().or(gp.povDownLeft()).or(gp.povDownRight());
 
         /* Subsystems */
         public final Swerve m_swerve;
@@ -376,7 +377,7 @@ public class RobotContainer {
                 m_intake.setDefaultCommand(
                                 new TeleopIntake(
                                                 m_intake,
-                                                gp.povDown(), // shooter
+                                                shouldIntake, // shooter
                                                 // gp.povUp(), //poptart
                                                 // () -> (gp.button(5).getAsBoolean() && gp.povDown().getAsBoolean()),
                                                 // // if
@@ -406,6 +407,13 @@ public class RobotContainer {
                                                 Commands.none(),
                                                 () -> m_Spivit.getAngle() < ShooterConstants.stow));
                 
+                gp.button(6).onTrue(
+                        new ConditionalCommand(
+                                new InstantCommand(() -> m_LEDs.setLEDs(CANdleState.ALIGNED)),
+                                new InstantCommand(() -> m_LEDs.setLEDs(CANdleState.ALIGNING)),
+                                () -> m_Spivit.aligned() && m_swerve.aligned()
+                        )
+                ).onFalse(new InstantCommand(() -> m_LEDs.setLEDs(CANdleState.OFF)));
 
                 /* Shooter Controls */
                 // while button is held, rev shooter
