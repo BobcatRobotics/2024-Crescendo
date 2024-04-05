@@ -564,8 +564,8 @@ public class Swerve extends SubsystemBase {
                 return getPose().getTranslation().getDistance(FieldConstants.blueSpeakerPoseSpivit);
             }
         } else {
-            Logger.recordOutput("DistanceToSpeaker/Pose", getPose().getTranslation().getDistance(FieldConstants.redSpeakerPoseSpivit));
-            Logger.recordOutput("DistanceToSpeaker/SingleTag", shooterCenterVision.getDistToTag() + 0.181);
+            Logger.recordOutput("SpeakerAlign/SpivitDist/Pose/odometry", getPose().getTranslation().getDistance(FieldConstants.redSpeakerPoseSpivit));
+            Logger.recordOutput("SpeakerAlign/SpivitDist/Pose/SingleTag", shooterCenterVision.getDistToTag() + 0.181);
             if (shooterCenterVision.getID() == LimelightConstants.redSpeakerTag
                     && (shooterCenterVision.getDistToTag() +
                             0.181) <= LimelightConstants.throwoutDist) {
@@ -687,11 +687,11 @@ public class Swerve extends SubsystemBase {
 
         Rotation2d odometryValue = Rotation2d.fromRadians(getAngleToSpeaker());
 
-        if (shooterLeftVision.getTV() && shooterRightVision.getTV()
-                && getDistanceToSpeaker() < ShooterConstants.holonomicAprilTagThrowoutDistance) {
+        if (shooterCenterVision.getTV()
+                && getDistanceToSpeakerForSpivit() < ShooterConstants.holonomicAprilTagThrowoutDistance) {
 
             lastValue = Rotation2d.fromRadians(get0to2Pi((getYaw().getRadians()
-                    - (((shooterLeftVision.getTX().getRadians()) + shooterRightVision.getTX().getRadians()) / 2))));
+                    - (((shooterCenterVision.getTX().getRadians()))))));
             Logger.recordOutput("Autoalign/Using Tag", true);
             return lastValue;
         }
@@ -710,6 +710,10 @@ public class Swerve extends SubsystemBase {
 
     public Rotation2d getAngleToSpeakerTagAuto() {
         Rotation2d odometryValue = Rotation2d.fromRadians(getAngleToSpeaker());
+        Logger.recordOutput("SpeakerAlign/Angle/odometry", odometryValue);
+        if(shooterCenterVision.getTV()){
+        Logger.recordOutput("SpeakerAlign/Angle/LLCenter", shooterCenterVision.getTX());
+        }
 
         // Rotation2d leftLimeValue = shooterLeftVision.getTV() ?
         // Rotation2d.fromRadians(get0to2Pi(getYaw().getRadians() -

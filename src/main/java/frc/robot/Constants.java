@@ -77,7 +77,7 @@ public class Constants {
         public static final double translationKI = 0.0;
         public static final double translationKD = 1.4;
 
-        public static final double rotationKP = 4.5;//3 //4
+        public static final double rotationKP = 4;//4.5 //3 //4
         public static final double rotationKI = 0.0;
         public static final double rotationKD = 0.0; //0.4
 

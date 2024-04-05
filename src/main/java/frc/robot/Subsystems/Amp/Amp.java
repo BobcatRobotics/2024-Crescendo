@@ -33,7 +33,7 @@ public class Amp extends SubsystemBase {
         setPos(AmpConstants.deployValue);
     }
     public void retract(){
-        setPosWithFeedforward(AmpConstants.retractValue, -0.05);
+        setPosWithFeedforward(AmpConstants.retractValue, -0.06);
     }
 
     /**
