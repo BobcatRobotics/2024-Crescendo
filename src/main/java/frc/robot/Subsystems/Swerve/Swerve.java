@@ -8,7 +8,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -32,23 +31,17 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Time;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.Quartic;
-import frc.lib.util.limelightConstants;
 import frc.robot.Constants;
-import frc.robot.Robot;
-import frc.robot.RobotContainer;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.Constants.LimelightConstants.intake;
 import frc.robot.Subsystems.Vision.Vision;
 import frc.robot.Util.BobcatUtil;
 import frc.robot.Util.RobotPoseLookup;
@@ -377,7 +370,7 @@ public class Swerve extends SubsystemBase {
 
         SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates(desiredSpeeds);
         // SwerveModuleState[] swerveModuleStates = currentSetpoint.moduleStates();
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxSpeed);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxModuleSpeed);
 
         for (SwerveModule mod : modules) {
             mod.setDesiredState(swerveModuleStates[mod.index]);
@@ -396,7 +389,7 @@ public class Swerve extends SubsystemBase {
         lastMovingYaw = getYaw().getRadians();
 
         SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates(targetSpeeds);
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxSpeed);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxModuleSpeed);
 
         for (SwerveModule mod : modules) {
             mod.setDesiredState(swerveModuleStates[mod.index]);
@@ -409,7 +402,7 @@ public class Swerve extends SubsystemBase {
      * @param desiredStates array of states for the modules to be set to
      */
     public void setModuleStates(SwerveModuleState[] desiredStates) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveConstants.maxSpeed);
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveConstants.maxModuleSpeed);
 
         for (SwerveModule mod : modules) {
             mod.setDesiredState(desiredStates[mod.index]);
@@ -554,23 +547,23 @@ public class Swerve extends SubsystemBase {
 
     public double getDistanceToSpeakerForSpivit() {
         if (BobcatUtil.getAlliance() == Alliance.Blue) {
-            // if (shooterLeftVision.getID() == LimelightConstants.blueSpeakerTag
-            // && shooterRightVision.getID() == LimelightConstants.blueSpeakerTag
-            // && (shooterLeftVision.getDistToTag() + shooterRightVision.getDistToTag() +
-            // 0.4572) / 2 <= LimelightConstants.throwoutDist) {
-            // return (shooterLeftVision.getDistToTag() + shooterRightVision.getDistToTag()
-            // + 0.4572) / 2;
-            // } else {
-            return getPose().getTranslation().getDistance(FieldConstants.blueSpeakerPoseSpivit);
-            // }
+            if (shooterCenterVision.getID() == LimelightConstants.blueSpeakerTag
+                    && (shooterCenterVision.getDistToTag() +
+                            0.181) <= LimelightConstants.throwoutDist) {
+                return (shooterCenterVision.getDistToTag())
+                        + 0.181;
+            } else {
+                return getPose().getTranslation().getDistance(FieldConstants.blueSpeakerPoseSpivit);
+            }
         } else {
-            // if (shooterLeftVision.getID() == LimelightConstants.redSpeakerTag
-            // && shooterRightVision.getID() == LimelightConstants.redSpeakerTag) {
-            // return (shooterLeftVision.getDistToTag() + shooterRightVision.getDistToTag()
-            // + 0.4572) / 2;
-            // } else {
-            return getPose().getTranslation().getDistance(FieldConstants.redSpeakerPoseSpivit);
-            // }
+            if (shooterCenterVision.getID() == LimelightConstants.redSpeakerTag
+                    && (shooterCenterVision.getDistToTag() +
+                            0.181) <= LimelightConstants.throwoutDist) {
+                return (shooterCenterVision.getDistToTag())
+                        + 0.181;
+            } else {
+                return getPose().getTranslation().getDistance(FieldConstants.redSpeakerPoseSpivit);
+            }
         }
     }
 
@@ -646,8 +639,8 @@ public class Swerve extends SubsystemBase {
         }
     }
 
-    public boolean alignedLEDS(){
-        return Math.abs(Math.toDegrees(autoAlignPID.getPositionError())) <= SwerveConstants.rotationToleranceAlignment - 1; 
+    public boolean alignedLEDS() {
+        return Math.abs(Math.toDegrees(autoAlignPID.getPositionError())) <= SwerveConstants.rotationToleranceAlignment;
     }
 
     public boolean aligned(Rotation2d angle) {
@@ -752,7 +745,7 @@ public class Swerve extends SubsystemBase {
         }
 
         if (vision.getPoseValid(getYaw())) {
-            poseEstimator.addVisionMeasurement(vision.getBotPose(), vision.getPoseTimestamp(), stdDev);
+            poseEstimator.addVisionMeasurement(vision.getBotPose(), vision.getPoseTimestampMG2(), stdDev);
             // System.out.println("yes " + vision.getLimelightName() + " " +
             // Timer.getFPGATimestamp());
         }
@@ -1022,7 +1015,7 @@ public class Swerve extends SubsystemBase {
         double tangentialComponent = tangentialVelocity.getY();
 
         // Add robot velocity to raw shot speed
-        double rawDistToGoal = robot.getDistance(speakerPose);
+        double rawDistToGoal = getDistanceToSpeakerForSpivit();
         double shotSpeed = rawDistToGoal / shotTime[0] + radialComponent;
         if (shotSpeed <= 0.0)
             shotSpeed = 0.0;

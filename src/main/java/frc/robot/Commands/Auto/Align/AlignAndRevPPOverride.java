@@ -7,12 +7,9 @@ package frc.robot.Commands.Auto.Align;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Spivit.Spivit;
 import frc.robot.Subsystems.Swerve.Swerve;
@@ -45,7 +42,7 @@ public class AlignAndRevPPOverride extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    spivit.setAngle(swerve.calcAngleBasedOnHashMap());
+    spivit.setAngle(swerve.calcAngleBasedOnHashMap(swerve.getDistanceToSpeakerForSpivit()));
     
     if (BobcatUtil.isBlue()) {
       swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker()));

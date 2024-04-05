@@ -3,11 +3,8 @@ package frc.robot.Subsystems.Intake;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.IntakeConstants;
-import frc.robot.Subsystems.Rumble.Rumble;
 
 public class Intake extends SubsystemBase {
     private final IntakeIO io;

@@ -4,28 +4,18 @@
 
 package frc.robot.Subsystems.Vision;
 
-import java.util.Optional;
 
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.units.Unit;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LimelightConstants;
-import frc.robot.Subsystems.Swerve.Swerve;
 import frc.robot.Util.BobcatUtil;
 
 public class Vision extends SubsystemBase {
@@ -194,7 +184,7 @@ public class Vision extends SubsystemBase {
     return LimelightHelpers.getBotPoseEstimate_wpiBlue(inputs.name).timestampSeconds;
   }
 
-  public double getPoseTimestampMG2(){
+  public double getPoseTimestampMG2() {
     return LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(inputs.name).timestampSeconds;
   }
 

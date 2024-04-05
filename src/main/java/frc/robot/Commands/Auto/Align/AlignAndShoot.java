@@ -9,14 +9,12 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Shooter.Shooter;
 import frc.robot.Subsystems.Spivit.Spivit;
 import frc.robot.Subsystems.Swerve.Swerve;
-import frc.robot.Util.BobcatUtil;
 
 public class AlignAndShoot extends Command {
   /** Creates a new AlignToShooter. */
@@ -29,13 +27,15 @@ public class AlignAndShoot extends Command {
   private Rotation2d angle = new Rotation2d();
   double shootTime;
   private boolean feeding = false;
+  private double spivitFudge = 0;
 
-  public AlignAndShoot(Swerve swerve, Spivit spivit, Shooter shooter, Intake intake, double shootTime) {
+  public AlignAndShoot(Swerve swerve, Spivit spivit, Shooter shooter, Intake intake, double shootTime, double spivitFudge) {
     this.swerve = swerve;
     this.spivit = spivit;
     this.shooter = shooter;
     this.intake = intake;
     this.shootTime = shootTime;
+    this.spivitFudge = spivitFudge;
 
     addRequirements(spivit, shooter, intake, swerve);
   }
@@ -53,7 +53,8 @@ public class AlignAndShoot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    spivit.setAngle(swerve.calcAngleBasedOnHashMap());
+    spivit.setAngle(swerve.calcAngleBasedOnHashMap(swerve.getDistanceToSpeakerForSpivit()));
+    // spivit.setAngle(swerve.getShootWhileMoveBallistics(spivit.getAngle())[1]);
     
     swerve.drive(new Translation2d(), 0, true, false, true, swerve.getAngleToSpeakerTagAuto().getRadians());//swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker()));
     angle = swerve.getAngleToSpeakerTagAuto();

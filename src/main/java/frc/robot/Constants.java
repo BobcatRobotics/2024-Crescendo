@@ -21,8 +21,6 @@ import edu.wpi.first.wpilibj.RobotBase;
 import frc.lib.util.ModuleConstants;
 import frc.lib.util.limelightConstants;
 import static edu.wpi.first.apriltag.AprilTagFields.k2024Crescendo;
-import java.util.HashMap;
-import smile.interpolation.BilinearInterpolation;
 
 
 public class Constants {
@@ -49,6 +47,7 @@ public class Constants {
         public static final int pigeonID = 0;
 
         public static final double maxSpeed = 4.5; // max MODULE speed, NOT max chassis speed
+        public static final double maxModuleSpeed = 5.5;
         public static final double maxAccel = 3;
         public static final double maxAngularVelocity = 2*Math.PI;
         public static final double maxAngularAcceleration = Math.PI / 2;
@@ -74,11 +73,11 @@ public class Constants {
         public static final double driveGearRatio = (5.36 / 1.0);
 
         /* Auto Constants */
-        public static final double translationKP = 7; //tuned for 4 m/s          //2.25; // tuned for .5 m/s
+        public static final double translationKP = 7;//5 for outta the way?? idk;//7 before; //tuned for 4 m/s          //2.25; // tuned for .5 m/s
         public static final double translationKI = 0.0;
         public static final double translationKD = 1.4;
 
-        public static final double rotationKP = 3; //4
+        public static final double rotationKP = 4.5;//3 //4
         public static final double rotationKI = 0.0;
         public static final double rotationKD = 0.0; //0.4
 
@@ -158,7 +157,7 @@ public class Constants {
             public static final int angleMotorID = 2;
             public static final int driveMotorID = 1;
 
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(285.56); // 109.1 353.32
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(284.24); //285.56 // 109.1 353.32
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
@@ -181,24 +180,25 @@ public class Constants {
             public static final int cancoderID = 3;
             public static final int angleMotorID = 6;
             public static final int driveMotorID = 5;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(176.57); // 203.1 234.66
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(177.54); //176.57 // 203.1 234.66
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
         }
+        
 
         /* BACK RIGHT */
         public static final class Module3Constants {
             public static final int cancoderID = 4;
             public static final int angleMotorID = 8;
             public static final int driveMotorID = 7;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(320.71); // 51.9 285.29
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(321.06);//320.71 // 51.9 285.29
 
             public static final ModuleConstants constants = new ModuleConstants(driveMotorID, angleMotorID, cancoderID,
                     angleOffset);
         }
 
-        public static final Vector<N3> autostateStdDevs = VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(1));
+        public static final Vector<N3> autostateStdDevs = VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(1)); //formerly 0.1
         public static final Vector<N3> telestateStdDevs = VecBuilder.fill(0.15, 0.15, Units.degreesToRadians(1));
 
     }
@@ -260,7 +260,7 @@ public class Constants {
         public static final int blueSpeakerTag = 7;
         public static final int redSpeakerTag = 4;
 
-        public static double autostdDev = 1.75; //1.75 // dividing distance by this
+        public static double autostdDev = 1.75; //1.75 // dividing distance by thisst
         public static double telestdDev = 64.5; // dividing distance by this
 
         public static Matrix<N3, N1> trustautostdDev = VecBuilder.fill(0.2, 0.2, 9999999);
@@ -269,7 +269,7 @@ public class Constants {
         public static Matrix<N3, N1> trusttelestdDev = VecBuilder.fill(0.2, 0.2, 9999999);
         public static Matrix<N3, N1> regtelestdDev = VecBuilder.fill(0.9, 0.9, 9999999);
 
-        public static final double throwoutDist = 4.75; // meters
+        public static final double throwoutDist = 5.5; // meters //It was 4.75 before 9:34:54 AM on 4/4/24, day 1 of new england district championships for the 2024 FIRST robotics competition season: Crescendo, presented by Haas
         public static final double rotationTolerance = 15; // maximum degrees that the limelight can be off from the gyro to update pose
         public static final double poseAmbiguityThreshold = 0.4; //It's what Jonah uses
         public static final double zDistThreshold = 0.5; // meters that the limelight can be off the ground
@@ -533,7 +533,7 @@ public class Constants {
         public static final double releasehookSetpoint = 285;
 
         public static final int fastShooterRPMSetpoint = 5000;
-        public static final int slowShooterRPMSetpoint = 3000; //TODO tune
+        public static final int slowShooterRPMSetpoint = 3000; 
         public static final int ampShootRPMSetpoint = 1500;
         public static final double slowShooterSpivitAngle = 282; //when the shooter is beyond this, use the slow shooter speed
 
@@ -570,7 +570,7 @@ public class Constants {
         //     {255.0,255}
         // };
         // public static final BilinearInterpolation spivitBiLinearInterpolation = new BilinearInterpolation(tagDist, swerveAngle, spivitAngle);
-        public static final int outtookShooterRPMDropThresholdForShootingEarlierInAutos = 4500;
+        public static final int outtookShooterRPMDropThresholdForShootingEarlierInAutos = 4200; //4500
     }
     public static final class TrapConstants {
         public static final int rollerID = 17;
@@ -585,8 +585,6 @@ public class Constants {
         // public static final double motionmagicAcceleration = 0;
         // public static final double motionmagicJerk = 0;
 
-        public static final double poptartRotationAmt = 10000000.0; // the amount the trollers need to rotate for the
-                                                                    // note to be at the desired position TODO find this
     }
 
     public static final class AmpConstants {
@@ -601,7 +599,7 @@ public class Constants {
         public static final double motionMagicAcceleration = 0;
         public static final double motionMagicJerk = 0;
         public static final double rotationAmount = 0.5;
-        public static final double softLimitThresh = 0; // TODO find this
+        public static final double softLimitThresh = 0; 
         public static final double forwardSoftLimit = 0;
         public static final double reverseSoftLimit = 0;
         public static final InvertedValue ampInvertedValue = InvertedValue.Clockwise_Positive;

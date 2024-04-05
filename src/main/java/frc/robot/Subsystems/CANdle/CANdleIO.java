@@ -2,7 +2,6 @@ package frc.robot.Subsystems.CANdle;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public interface CANdleIO{
     @AutoLog

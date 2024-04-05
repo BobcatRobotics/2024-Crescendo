@@ -21,3 +21,9 @@ Generally, I’ve had a lot of success with the following process tuning for vel
     9. Increase kP until oscillation, take 90% and that’s your kP
 
 This process is basically finding the slope-intercept point of a linear formula by iteration. Slope is the kV term and intercept is the kS term. kP is just used to reach the target if the feed forwards truly neutral out the forces due to friction. Once you’re confident in the feed-forwards, you crank kP to get to target as fast as possible.
+
+
+
+
+Changes:
+changed odometry stdev from 0.1 to 0.01

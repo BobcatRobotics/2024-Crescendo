@@ -10,7 +10,6 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -24,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.lib.util.limelightConstants;
+import frc.robot.Commands.CandleAlignment;
 import frc.robot.Commands.Auto.AutoIntake;
 import frc.robot.Commands.Auto.ContinouslyAlignAndShoot;
 import frc.robot.Commands.Auto.ReleaseHook;
@@ -33,9 +32,9 @@ import frc.robot.Commands.Auto.SubwooferShot;
 import frc.robot.Commands.Auto.Align.AlignAndRevPPOverride;
 import frc.robot.Commands.Auto.Align.AlignAndShoot;
 import frc.robot.Commands.Auto.Align.AlignAndShootPPOverride;
+import frc.robot.Commands.Auto.LimeLight.setSourceSidePipline;
 import frc.robot.Commands.Intake.TeleopIntake;
 import frc.robot.Commands.Multi.SetAmp;
-import frc.robot.Commands.Swerve.DriveToPose;
 import frc.robot.Commands.Swerve.GrabNote;
 import frc.robot.Commands.Swerve.TeleopSwerve;
 import frc.robot.Commands.Climber.ClimbMode;
@@ -228,6 +227,10 @@ public class RobotContainer {
                  * Names must match what is in PathPlanner
                  * Please give descriptive names
                  */
+
+                
+
+                NamedCommands.registerCommand("SetSourceSideLLPipline", new WaitCommand(.1).andThen(new setSourceSidePipline(m_shooterLeftVision, m_shooterRightVision, m_shooterCenterVision)));
                 NamedCommands.registerCommand("StartShooting",
                                 new ContinouslyAlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, () -> false,
                                                 5000));
@@ -240,11 +243,13 @@ public class RobotContainer {
                 NamedCommands.registerCommand("ShootWhileBacking",
                                 new AlignAndShootPPOverride(m_swerve, m_Spivit, m_shooter, m_intake, 0.5, -2));
                 NamedCommands.registerCommand("AlignAndShoot1.5",
-                                new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 1.5));
+                                new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 1.5, 0));
+                NamedCommands.registerCommand("AlignAndShoot1.5Fudged",
+                                new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 1.5, 2));
                 NamedCommands.registerCommand("AlignAndShoot1.0",
-                                new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 1.0));
+                                new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 1.0, 0));
                 NamedCommands.registerCommand("AlignAndShoot0.5",
-                                new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 0.5));
+                                new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 0.5, 0));
                 // NamedCommands.registerCommand("LeftBiasedAlignAndShoot", new
                 // LeftBiasedAlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake) );
                 NamedCommands.registerCommand("AlignDontShoot",
@@ -391,7 +396,8 @@ public class RobotContainer {
                                                 // m_trap,
                                                 m_Rumble,
                                                 m_LEDs,
-                                                m_Spivit).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+                                                m_Spivit,
+                                                () -> gp.button(5).getAsBoolean()).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
                 gp.button(7).whileTrue(new StartEndCommand(() -> m_shooter.setSpeed(-1000, -1000), m_shooter::stop,
                                 m_shooter));
@@ -406,14 +412,19 @@ public class RobotContainer {
                                                 new InstantCommand(() -> m_Spivit.setAngle(ShooterConstants.stow)),
                                                 Commands.none(),
                                                 () -> m_Spivit.getAngle() < ShooterConstants.stow));
-                
-                gp.button(6).onTrue(
-                        new ConditionalCommand(
-                                new InstantCommand(() -> m_LEDs.setLEDs(CANdleState.ALIGNED)),
-                                new InstantCommand(() -> m_LEDs.setLEDs(CANdleState.ALIGNING)),
-                                () -> m_Spivit.aligned() && m_swerve.aligned()
-                        )
-                ).onFalse(new InstantCommand(() -> m_LEDs.setLEDs(CANdleState.OFF)));
+
+                gp.button(5).whileTrue(
+
+                                //new RunCommand(() -> {
+                                //        if (m_Spivit.aligned() && m_swerve.aligned()) {
+                                //                m_LEDs.setLEDs(CANdleState.ALIGNED);
+                                //        } else {
+                                //                m_LEDs.setLEDs(CANdleState.ALIGNING);
+                                //        }
+                                //})
+                                new CandleAlignment(m_Spivit, m_swerve, m_LEDs).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
+
+                );
 
                 /* Shooter Controls */
                 // while button is held, rev shooter
@@ -459,9 +470,14 @@ public class RobotContainer {
                                                                 m_Spivit::stopMotorFeedforward, m_Spivit));
                 // this sets it to a specific angle
                 gp.button(5).whileTrue(
-                                new RunCommand(() -> m_Spivit.setAngle(m_swerve.getShootWhileMoveBallistics(m_Spivit.getAngle())[1]), m_Spivit))
+                                new RunCommand(() -> m_Spivit
+                                                .setAngle(m_swerve.getShootWhileMoveBallistics(m_Spivit.getAngle())[1]),
+                                                m_Spivit))
                                 .onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
-                // gp.button(5).whileTrue(new InstantCommand(() -> m_shooterCenterVision.setPipeline(LimelightConstants.shooterCenter.fpsPipline))).onFalse(new InstantCommand(() -> m_shooterCenterVision.setPipeline(LimelightConstants.shooterCenter.resPipline)));
+                // gp.button(5).whileTrue(new InstantCommand(() ->
+                // m_shooterCenterVision.setPipeline(LimelightConstants.shooterCenter.fpsPipline))).onFalse(new
+                // InstantCommand(() ->
+                // m_shooterCenterVision.setPipeline(LimelightConstants.shooterCenter.resPipline)));
                 gp.button(9).whileTrue(
                                 new RunCommand(() -> m_Spivit.setAngle(ShooterConstants.subwooferShot), m_Spivit))
                                 .onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
@@ -493,10 +509,11 @@ public class RobotContainer {
                 gp.button(8).onTrue(
                                 new InstantCommand(() -> m_swerve.resetPose(BobcatUtil.getAlliance() == Alliance.Blue
                                                 ? new Pose2d(FieldConstants.blueSpeakerPose.plus(
-                                                                new Translation2d(1.3, 0)), Rotation2d.fromDegrees(0))
+                                                                new Translation2d(1.3, 0)), 
+                                                                m_swerve.getYaw())
                                                 : new Pose2d(FieldConstants.redSpeakerPose
                                                                 .plus(new Translation2d(-1.3, 0)),
-                                                                Rotation2d.fromDegrees(180))))
+                                                                m_swerve.getYaw())))
                                                 .andThen(new InstantCommand(
                                                                 () -> m_LEDs.setLEDs(CANdleState.RESETGYRO, 1))));
                 gp.axisGreaterThan(3, 0.07)

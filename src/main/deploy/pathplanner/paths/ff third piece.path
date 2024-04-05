@@ -16,19 +16,25 @@
     },
     {
       "anchor": {
-        "x": 2.8327336359469766,
-        "y": 7.043031060231863
+        "x": 2.8441688792209487,
+        "y": 6.946327738809324
       },
       "prevControl": {
-        "x": 1.359011265031077,
-        "y": 6.595503105536126
+        "x": 1.3704304374004512,
+        "y": 6.498852709480737
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "ffthirdpiece"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 16.89,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {

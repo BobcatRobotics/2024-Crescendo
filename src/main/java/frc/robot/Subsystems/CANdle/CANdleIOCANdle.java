@@ -1,6 +1,5 @@
 package frc.robot.Subsystems.CANdle;
 
-import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.StrobeAnimation;
 
@@ -52,10 +51,11 @@ public class CANdleIOCANdle implements CANdleIO {
                 leds.animate(new StrobeAnimation(0, 255, 0, 0, 0.75, CANdleConstants.LedCount));
                 break;
             case ALIGNING: // strobe white
-                leds.animate(new StrobeAnimation(0, 0, 0, 255, 0.75, CANdleConstants.LedCount));
+                leds.animate(new StrobeAnimation(255, 255, 255, 255, 0.75, CANdleConstants.LedCount));
                 break;
             case ALIGNED: // solid blue
                 leds.animate(new StrobeAnimation(0, 0, 255, 0, 1, CANdleConstants.LedCount));
+                break;
             case OFF:
                 leds.animate(null);
                 break;
