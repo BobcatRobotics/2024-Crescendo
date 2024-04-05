@@ -171,9 +171,12 @@ public class Swerve extends SubsystemBase {
         if (BobcatUtil.getAlliance() == Alliance.Blue) {
             shooterLeftVision.setPriorityID(LimelightConstants.blueSpeakerTag, LimelightConstants.shooterLeft.name);
             shooterRightVision.setPriorityID(LimelightConstants.blueSpeakerTag, LimelightConstants.shooterRight.name);
+            shooterCenterVision.setPriorityID(LimelightConstants.blueSpeakerTag, LimelightConstants.shooterCenter.name);
         } else {
             shooterLeftVision.setPriorityID(LimelightConstants.redSpeakerTag, LimelightConstants.shooterLeft.name);
             shooterRightVision.setPriorityID(LimelightConstants.redSpeakerTag, LimelightConstants.shooterRight.name);
+            shooterCenterVision.setPriorityID(LimelightConstants.redSpeakerTag, LimelightConstants.shooterCenter.name);
+
         }
         odometryLock.lock();
         gyroIO.updateInputs(gyroInputs);
@@ -547,6 +550,9 @@ public class Swerve extends SubsystemBase {
 
     public double getDistanceToSpeakerForSpivit() {
         if (BobcatUtil.getAlliance() == Alliance.Blue) {
+            Logger.recordOutput("DistanceToSpeaker/Pose", getPose().getTranslation().getDistance(FieldConstants.blueSpeakerPoseSpivit));
+            Logger.recordOutput("DistanceToSpeaker/SingleTag", shooterCenterVision.getDistToTag() + 0.181);
+
             if (shooterCenterVision.getID() == LimelightConstants.blueSpeakerTag
                     && (shooterCenterVision.getDistToTag() +
                             0.181) <= LimelightConstants.throwoutDist) {
@@ -556,6 +562,8 @@ public class Swerve extends SubsystemBase {
                 return getPose().getTranslation().getDistance(FieldConstants.blueSpeakerPoseSpivit);
             }
         } else {
+            Logger.recordOutput("DistanceToSpeaker/Pose", getPose().getTranslation().getDistance(FieldConstants.redSpeakerPoseSpivit));
+            Logger.recordOutput("DistanceToSpeaker/SingleTag", shooterCenterVision.getDistToTag() + 0.181);
             if (shooterCenterVision.getID() == LimelightConstants.redSpeakerTag
                     && (shooterCenterVision.getDistToTag() +
                             0.181) <= LimelightConstants.throwoutDist) {
@@ -564,6 +572,7 @@ public class Swerve extends SubsystemBase {
             } else {
                 return getPose().getTranslation().getDistance(FieldConstants.redSpeakerPoseSpivit);
             }
+
         }
     }
 
