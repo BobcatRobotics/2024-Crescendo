@@ -510,6 +510,8 @@ public class Swerve extends SubsystemBase {
         modules[3].setDesiredState(new SwerveModuleState(1, new Rotation2d(Math.toRadians(45))));
     }
 
+    //boolean <- pronnounced 'bolly-un'
+    
     /**
      * Stops the swerve drive
      */
