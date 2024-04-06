@@ -1,0 +1,86 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.53,
+      "y": 3.66
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoStowe"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "sor Shoot preload piece"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AlignDontShoot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignAndShoot1.5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "sor Intake first piece"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "sor Shoot Second"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoSpit1.5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "sor Intake Third"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "sor Shoot Third"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignAndShoot5.0"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

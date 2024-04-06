@@ -3,9 +3,13 @@
   "robotLength": 0.81,
   "holonomicMode": true,
   "pathFolders": [
+    "Amp Side 2",
+    "Amp Side Auto",
     "Fast Food",
+    "Amp Side Outside First",
+    "Out Of The Way 2",
     "Out of The Way 3",
-    "Out Of The Way 2"
+    "Side of Ranch"
   ],
   "autoFolders": [
     "New Folder"

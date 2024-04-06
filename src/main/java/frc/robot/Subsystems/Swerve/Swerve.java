@@ -240,6 +240,11 @@ public class Swerve extends SubsystemBase {
         addVisionMG2(IntakeTagVision);
         addVisionMG2(shooterCenterVision);
 
+        shooterCenterVision.tagThrowOut(LimelightConstants.filtertags);
+        shooterLeftVision.tagThrowOut(LimelightConstants.filtertags);
+        shooterRightVision.tagThrowOut(LimelightConstants.filtertags);
+        IntakeTagVision.tagThrowOut(LimelightConstants.filtertags);
+
         // 3015 code
         // poseLookup.addPose(getPose());
         // if((shooterLeftVision.getTV() && shooterLeftVision.getDistToTag() <=4 ) ||

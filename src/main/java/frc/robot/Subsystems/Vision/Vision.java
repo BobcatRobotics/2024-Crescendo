@@ -107,6 +107,10 @@ public class Vision extends SubsystemBase {
     LimelightHelpers.SetRobotOrientation(inputs.name, gyroval, 0, 0, 0, 0, 0);
   }
 
+  public void tagThrowOut(int[] tags){
+      LimelightHelpers.SetFiducialIDFiltersOverride(inputs.name, tags);
+  }
+
   public boolean getPoseValidMG2(Rotation2d gyro){
     // Pose3d botpose = LimelightHelpers.getBotPose3d_wpiBlue(inputs.name);
     // Logger.recordOutput("Pose3d/"+inputs.name, botpose);

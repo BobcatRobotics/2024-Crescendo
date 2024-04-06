@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.118232532761363,
+        "y": 0.7835083476434771
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.703239845226128,
+        "y": 1.1460271353591138
+      },
+      "isLocked": false,
+      "linkedName": "sor_intake_second"
+    },
+    {
+      "anchor": {
+        "x": 5.393494547672856,
+        "y": 1.3682160697654737
+      },
+      "prevControl": {
+        "x": 6.46935675637733,
+        "y": 1.1694154442439941
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "sor_shoot_second"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -23.62937773065695,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Side of Ranch",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.001290988336962,
+        "y": 5.788606449007769
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.714933999668569,
+        "y": 6.630585568863446
+      },
+      "isLocked": false,
+      "linkedName": "amp_intake_first"
+    },
+    {
+      "anchor": {
+        "x": 4.53982127337474,
+        "y": 6.373314171129768
+      },
+      "prevControl": {
+        "x": 5.837872416485573,
+        "y": 7.039880974348844
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "amp_shoot_first"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.45,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AlignDontShoot"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 11.309932474020156,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Amp Side Auto",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

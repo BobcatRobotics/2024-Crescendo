@@ -1,0 +1,76 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.36,
+        "y": 3.38
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.231829855605439,
+        "y": 1.6763826537166528
+      },
+      "isLocked": false,
+      "linkedName": "sor_shoot_first"
+    },
+    {
+      "anchor": {
+        "x": 8.118232532761363,
+        "y": 0.7835083476434771
+      },
+      "prevControl": {
+        "x": 5.919731497582654,
+        "y": 0.7326323030396517
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "sor_intake_second"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -8.455027677177402,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.8,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Side of Ranch",
+  "previewStartingState": {
+    "rotation": -48.012787504183436,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

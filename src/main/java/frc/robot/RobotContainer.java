@@ -10,6 +10,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -25,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.CandleAlignment;
 import frc.robot.Commands.Auto.AutoIntake;
+import frc.robot.Commands.Auto.AutoSpit;
 import frc.robot.Commands.Auto.ContinouslyAlignAndShoot;
 import frc.robot.Commands.Auto.ReleaseHook;
 import frc.robot.Commands.Auto.RevToRPM;
@@ -250,6 +252,10 @@ public class RobotContainer {
                                 new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 1.0, 0));
                 NamedCommands.registerCommand("AlignAndShoot0.5",
                                 new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 0.5, 0));
+                NamedCommands.registerCommand("AlignAndShoot5.0", 
+                                new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 5.0, 0));
+                NamedCommands.registerCommand("AutoSpit1.5", 
+                                new AutoSpit(m_swerve, m_Spivit, m_shooter, m_intake, 1.5, 0));
                 // NamedCommands.registerCommand("LeftBiasedAlignAndShoot", new
                 // LeftBiasedAlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake) );
                 NamedCommands.registerCommand("AlignDontShoot",
@@ -292,6 +298,10 @@ public class RobotContainer {
                 // autoChooser.addOption("OUT OF THE WAY 3", new PathPlannerAuto("Outta the way
                 // 3"));
                 autoChooser.addOption("FastFood", new PathPlannerAuto("FastFood"));
+
+                autoChooser.addOption("AmpCenterLine3Piece", new PathPlannerAuto("AmpSideAuto"));
+                autoChooser.addOption("AmpFrontNote4Piece", new PathPlannerAuto("AmpSide4Piece"));
+                autoChooser.addOption("SideOfRanch", new PathPlannerAuto("SideOfRanch"));
                 // autoChooser.addOption("Odometry Tuning", new PathPlannerAuto("Odometry
                 // Tuning"));
                 // autoChooser.addOption("AdjustedKidsMeal", new
@@ -513,7 +523,7 @@ public class RobotContainer {
                                                                 m_swerve.getYaw())
                                                 : new Pose2d(FieldConstants.redSpeakerPose
                                                                 .plus(new Translation2d(-1.3, 0)),
-                                                                m_swerve.getYaw())))
+                                                                m_swerve.getYaw().rotateBy(Rotation2d.fromDegrees(180)))))
                                                 .andThen(new InstantCommand(
                                                                 () -> m_LEDs.setLEDs(CANdleState.RESETGYRO, 1))));
                 gp.axisGreaterThan(3, 0.07)

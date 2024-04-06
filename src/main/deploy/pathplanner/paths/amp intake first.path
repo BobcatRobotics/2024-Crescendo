@@ -1,0 +1,97 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.4291761916857164,
+        "y": 7.308846526524962
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.861859906055994,
+        "y": 7.80000101310744
+      },
+      "isLocked": false,
+      "linkedName": "amp_start_pos"
+    },
+    {
+      "anchor": {
+        "x": 2.8792513425482693,
+        "y": 7.6947536231254805
+      },
+      "prevControl": {
+        "x": 1.879259215975062,
+        "y": 7.6987218458499775
+      },
+      "nextControl": {
+        "x": 5.8261782620431335,
+        "y": 7.68305946868304
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.001290988336962,
+        "y": 5.788606449007769
+      },
+      "prevControl": {
+        "x": 7.194394331808606,
+        "y": 6.712444649960525
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "amp_intake_first"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.2,
+      "rotationDegrees": 0,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 1.2,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "intake",
+      "waypointRelativePos": 1.55,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -23.552263672894654,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Amp Side Auto",
+  "previewStartingState": {
+    "rotation": 52.523820438638644,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
