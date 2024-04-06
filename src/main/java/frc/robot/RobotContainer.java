@@ -300,6 +300,7 @@ public class RobotContainer {
                 autoChooser.addOption("FastFood", new PathPlannerAuto("FastFood"));
 
                 autoChooser.addOption("AmpCenterLine3Piece", new PathPlannerAuto("AmpSideAuto"));
+                autoChooser.addOption("AmpOutsideIn", new PathPlannerAuto("AmpSideOutsideFirst"));
                 autoChooser.addOption("AmpFrontNote4Piece", new PathPlannerAuto("AmpSide4Piece"));
                 autoChooser.addOption("SideOfRanch", new PathPlannerAuto("SideOfRanch"));
                 // autoChooser.addOption("Odometry Tuning", new PathPlannerAuto("Odometry
