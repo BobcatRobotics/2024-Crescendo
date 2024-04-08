@@ -435,7 +435,7 @@ public class RobotContainer {
                                 //                m_LEDs.setLEDs(CANdleState.ALIGNING);
                                 //        }
                                 //})
-                                new CandleAlignment(m_Spivit, m_swerve, m_LEDs).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
+                                new CandleAlignment(m_Spivit, m_swerve, m_LEDs, gp.button(6)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
 
                 );
 

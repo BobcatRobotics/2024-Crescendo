@@ -6,6 +6,10 @@ package frc.robot.Commands;
 
 
 
+import java.util.function.BooleanSupplier;
+
+import edu.wpi.first.networktables.BooleanSubscriber;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Subsystems.CANdle.CANdle;
 import frc.robot.Subsystems.CANdle.CANdleState;
@@ -16,12 +20,15 @@ public class CandleAlignment extends Command {
   Spivit spivit;
   Swerve swerve;
   CANdle candle;
+  BooleanSupplier feeding;
 
   /** Creates a new CandleAlignment. */
-  public CandleAlignment(Spivit spivit, Swerve swerve, CANdle candle) {
+  public CandleAlignment(Spivit spivit, Swerve swerve, CANdle candle, BooleanSupplier feeding) {
     this.spivit = spivit;
     this.swerve = swerve;
     this.candle = candle;
+    this.feeding = feeding;
+
     addRequirements(candle);
   }
 
@@ -33,8 +40,9 @@ public class CandleAlignment extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (spivit.aligned() && swerve.alignedLEDS()) {
-      
+    if(feeding.getAsBoolean()){
+      candle.setLEDs(CANdleState.FEED);
+    }else if (spivit.aligned() && swerve.alignedLEDS()) {
       candle.setLEDs(CANdleState.ALIGNED);
     } else {
       candle.setLEDs(CANdleState.ALIGNING);

@@ -48,7 +48,7 @@ public class CANdleIOCANdle implements CANdleIO {
                 leds.animate(new StrobeAnimation(255, 0, 0, 0, 0.75, CANdleConstants.LedCount));
                 break;
             case FEED: //strobe green
-                leds.animate(new StrobeAnimation(0, 255, 0, 0, 0.75, CANdleConstants.LedCount));
+                leds.animate(new StrobeAnimation(0, 0, 255, 0, 0.75, CANdleConstants.LedCount));
                 break;
             case ALIGNING: // strobe white
                 leds.animate(new StrobeAnimation(255, 255, 255, 255, 0.75, CANdleConstants.LedCount));
