@@ -30,6 +30,7 @@ import frc.robot.Commands.Auto.AutoSpit;
 import frc.robot.Commands.Auto.ContinouslyAlignAndShoot;
 import frc.robot.Commands.Auto.ReleaseHook;
 import frc.robot.Commands.Auto.RevToRPM;
+import frc.robot.Commands.Auto.SmoothieAuto;
 import frc.robot.Commands.Auto.SubwooferShot;
 import frc.robot.Commands.Auto.Align.AlignAndRevPPOverride;
 import frc.robot.Commands.Auto.Align.AlignAndShoot;
@@ -98,6 +99,7 @@ public class RobotContainer {
         // public final Vision m_Vision;
 
         /* Commands */
+        private SmoothieAuto smoothieAuto;;
 
         /* Shuffleboard Inputs */
         private final LoggedDashboardChooser<Command> autoChooser = new LoggedDashboardChooser<>("Auto Choices");
@@ -283,6 +285,14 @@ public class RobotContainer {
                 // NamedCommands.registerCommand("Break", new AutoBreak(m_Spivit));
                 NamedCommands.registerCommand("AutoStowe", new InstantCommand(m_amp::retract));
 
+                // Smoothie commands
+                smoothieAuto = new SmoothieAuto(m_swerve, m_Spivit, m_shooter, m_intake);
+                NamedCommands.registerCommand("Smoothie", smoothieAuto);
+                NamedCommands.registerCommand("SmoothieIntake", new InstantCommand(() -> smoothieAuto.intaking = true));
+                NamedCommands.registerCommand("SmoothieAlign", new InstantCommand(() -> smoothieAuto.aligningAndReving = true));
+                NamedCommands.registerCommand("SmoothieShoot", new InstantCommand(() -> smoothieAuto.shouldShoot = true));
+                NamedCommands.registerCommand("SmoothieShotPreload", new InstantCommand(() -> smoothieAuto.preload = false));
+
                 /*
                  * Auto Chooser
                  * 
@@ -378,7 +388,8 @@ public class RobotContainer {
                                                 () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine
                                                                                                             // translation
                                                 gp.povRight(), // align to amp
-                                                gp.button(5) // align to speaker
+                                                gp.button(5), // align to speaker
+                                                () -> m_Spivit.getAngle()
                                 // () -> false
                                 ));
                 // reset gyro
@@ -482,7 +493,7 @@ public class RobotContainer {
                 // this sets it to a specific angle
                 gp.button(5).whileTrue(
                                 new RunCommand(() -> m_Spivit
-                                                .setAngle(m_swerve.getShootWhileMoveBallistics(m_Spivit.getAngle())[1]),
+                                                .setAngle(ShooterConstants.spivitAngles.get(m_swerve.getCheesyPoofsShootOnTheFly(true, m_Spivit.getAngle()).effective_range_m)),
                                                 m_Spivit))
                                 .onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
                 // gp.button(5).whileTrue(new InstantCommand(() ->

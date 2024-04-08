@@ -28,6 +28,7 @@ public class TeleopSwerve extends Command {
     private BooleanSupplier snapToSpeaker;
     private double angleToSpeaker = 0.0;
     private boolean overriden = false;
+    private DoubleSupplier spivitAngle;
 
     /**
      * 
@@ -43,7 +44,7 @@ public class TeleopSwerve extends Command {
      * @param snapToAmp should we automatically rotate to the amp
      * @param snapToSpeaker should we automatically align to the speaker
      */
-    public TeleopSwerve(Swerve swerve, DoubleSupplier translation, DoubleSupplier strafe, DoubleSupplier rotation, BooleanSupplier robotCentric, DoubleSupplier fineStrafe, DoubleSupplier fineTrans, BooleanSupplier snapToAmp, BooleanSupplier snapToSpeaker) {
+    public TeleopSwerve(Swerve swerve, DoubleSupplier translation, DoubleSupplier strafe, DoubleSupplier rotation, BooleanSupplier robotCentric, DoubleSupplier fineStrafe, DoubleSupplier fineTrans, BooleanSupplier snapToAmp, BooleanSupplier snapToSpeaker, DoubleSupplier spivitAngle) {
         this.swerve = swerve;
         addRequirements(swerve);
 
@@ -54,7 +55,8 @@ public class TeleopSwerve extends Command {
         this.fineStrafe = fineStrafe;
         this.fineTrans = fineTrans;
         this.snapToAmp = snapToAmp;
-        this.snapToSpeaker = snapToSpeaker;        
+        this.snapToSpeaker = snapToSpeaker;      
+        this.spivitAngle = spivitAngle;  
     }
 
     @Override
@@ -72,8 +74,8 @@ public class TeleopSwerve extends Command {
             // angleToSpeaker = swerve.getAngleToSpeakerApriltag().getRadians();
             // Logger.recordOutput("Swerve/AlignmentToSpeaker",new Pose2d(swerve.getPose().getTranslation(), swerve.getAngleToSpeakerApriltag()) );
             // angleToSpeaker = swerve.getAngleToSpeakerTagAuto().getRadians();
-            angleToSpeaker = BobcatUtil.isRed() ? swerve.getShootWhileMoveBallistics(ShooterConstants.encoderOffsetFromHorizontal)[0] : swerve.getShootWhileMoveBallistics(ShooterConstants.encoderOffsetFromHorizontal)[0] + Math.PI;
-            Logger.recordOutput("Swerve/AlignmentToSpeaker",new Pose2d(swerve.getPose().getTranslation(), swerve.getAngleToSpeakerTagAuto()));
+            // angleToSpeaker = BobcatUtil.isRed() ? swerve.getShootWhileMoveBallistics(ShooterConstants.encoderOffsetFromHorizontal)[0] : swerve.getShootWhileMoveBallistics(ShooterConstants.encoderOffsetFromHorizontal)[0] + Math.PI;
+            // Logger.recordOutput("Swerve/AlignmentToSpeaker",new Pose2d(swerve.getPose().getTranslation(), swerve.getAngleToSpeakerTagAuto()));
             overriden = false;
             
         } else {
@@ -105,7 +107,7 @@ public class TeleopSwerve extends Command {
             !robotCentric.getAsBoolean(),
             snapToAmp.getAsBoolean(),
             snapToSpeaker.getAsBoolean() && !overriden,
-            angleToSpeaker
+            swerve.getCheesyPoofsShootOnTheFly(true, spivitAngle.getAsDouble())
         );
     // }else{
     //     swerve.drive(

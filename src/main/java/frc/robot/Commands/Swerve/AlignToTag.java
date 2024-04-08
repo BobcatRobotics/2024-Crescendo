@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.LimelightHelpers;
 import frc.robot.Subsystems.Swerve.Swerve;
+import frc.robot.Subsystems.Swerve.Swerve.ShootingParameters;
 import frc.robot.Subsystems.Vision.Vision;
 
 
@@ -60,7 +61,7 @@ public class AlignToTag extends Command {
 
 
     if(tagID != null && tagID.get() == currID){
-      swerve.drive(new Translation2d(), -thetaController.calculate(vision.getTX().getDegrees()), false, false, false, 0);
+      swerve.drive(new Translation2d(), -thetaController.calculate(vision.getTX().getDegrees()), false, false, false, new ShootingParameters());
     }else{
       // swerve.drive(thetaController.getPositionError() < 4? new Translation2d(0,yController.calculate(vision.getTranslationToTag(currID).getX())):new Translation2d(), -thetaController.calculate(vision.getTX().getDegrees()), false, false, false,0);
     }

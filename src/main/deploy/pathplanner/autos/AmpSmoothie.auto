@@ -1,0 +1,44 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.4291761916857164,
+      "y": 7.308846526524962
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Smoothie"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SmoothieAlign"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Amp Smoothie"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

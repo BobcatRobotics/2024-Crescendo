@@ -46,7 +46,7 @@ public class Constants {
 
         public static final int pigeonID = 0;
 
-        public static final double maxSpeed = 4.5; // max MODULE speed, NOT max chassis speed
+        public static final double maxSpeed = 4.5; 
         public static final double maxModuleSpeed = 5.5;
         public static final double maxAccel = 3;
         public static final double maxAngularVelocity = 2*Math.PI;

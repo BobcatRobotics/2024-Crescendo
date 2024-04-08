@@ -328,11 +328,8 @@ public class Swerve extends SubsystemBase {
      * @param angleToSpeaker in radians
      */
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean snapToAmp,
-            boolean snapToSpeaker, double angleToSpeaker) {
+            boolean snapToSpeaker, ShootingParameters smoothieParams) {
 
-        // Rotation2d ampVal =
-        // BobcatUtil.isBlue()?Constants.FieldConstants.blueAmpCenter.getRotation() :
-        // Constants.FieldConstants.redAmpCenter.getRotation();
         double ampVal = BobcatUtil.isBlue() ? -Math.PI / 2 : Math.PI / 2;
         Logger.recordOutput("AmpAlign/ampVal", ampVal);
 
@@ -348,8 +345,9 @@ public class Swerve extends SubsystemBase {
 
         if (snapToSpeaker) {
             desiredSpeeds.omegaRadiansPerSecond = autoAlignPID.calculate(get0to2Pi(getYaw().getRadians()),
-                    get0to2Pi(angleToSpeaker));
-            Logger.recordOutput("Swerve/AutoAlignPID/setpoint", get0to2Pi(angleToSpeaker));
+                    get0to2Pi(Units.degreesToRadians(smoothieParams.effective_yaw_angle_deg)));
+            desiredSpeeds.omegaRadiansPerSecond = desiredSpeeds.omegaRadiansPerSecond + desiredSpeeds.omegaRadiansPerSecond*Units.degreesToRadians(smoothieParams.effective_yaw_feedforward_velocity_deg_s);
+            Logger.recordOutput("Swerve/AutoAlignPID/setpoint", get0to2Pi(smoothieParams.effective_yaw_angle_deg));
             Logger.recordOutput("Swerve/AutoAlignPID/measurement", get0to2Pi(getYaw().getRadians()));
             Logger.recordOutput("Swerve/AutoAlignPID/error", autoAlignPID.getPositionError());
             lastMovingYaw = getYaw().getRadians();
@@ -1047,6 +1045,51 @@ public class Swerve extends SubsystemBase {
         }
 
         return ret_val;
+    }
+
+    public ShootingParameters getCheesyPoofsShootOnTheFly(boolean enableSmoothie, double spivitAngleDeg) {
+        ShootingParameters params = new ShootingParameters();
+
+        params.uncompensated_yaw_angle_deg = Units.radiansToDegrees(getAngleToSpeaker());
+        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getYaw());
+        Translation2d velocity_translational = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+        // Rotate by robot-to-goal rotation; x = radial component (positive towards goal), y = tangential component (positive means turret needs negative lead).
+        velocity_translational = velocity_translational.rotateBy(Rotation2d.fromRadians(params.uncompensated_yaw_angle_deg).unaryMinus());
+
+        double tangential_component = velocity_translational.getY();
+        double radial_component = velocity_translational.getX();
+        double angular_component = Units.radiansToDegrees(chassisSpeeds.omegaRadiansPerSecond);
+        params.uncompensated_range_m = getDistanceToSpeakerForSpivit();
+
+        params.effective_yaw_angle_deg = params.uncompensated_yaw_angle_deg;
+        params.effective_range_m = params.uncompensated_range_m;
+        if (enableSmoothie) {
+            double shotTime = params.uncompensated_range_m / (ShooterConstants.noteIdealExitVelocityMPS * Math.acos(Units.degreesToRadians(spivitAngleDeg - ShooterConstants.encoderOffsetFromHorizontal)));
+            double shot_speed = params.uncompensated_range_m / shotTime - radial_component;
+            if (shot_speed < 0.0) shot_speed = 0.0;
+            double swerve_adjustment = Units.radiansToDegrees(Math.atan2(-tangential_component, shot_speed));
+            params.effective_yaw_angle_deg += swerve_adjustment;
+            params.effective_range_m = shotTime * Math.sqrt(tangential_component * tangential_component + shot_speed * shot_speed);
+        }
+
+        // Feedforward is (opposite of) tangential velocity about goal + angular velocity in local frame.
+        params.effective_yaw_feedforward_velocity_deg_s = -(angular_component + Units.radiansToDegrees(tangential_component / params.uncompensated_range_m));
+        // Feedforward is (opposite of) radial velocity in local frame.
+        params.effective_range_feedforward_m_s = -radial_component;
+        return params;
+    }
+
+    public static class ShootingParameters {
+        public double effective_yaw_angle_deg;
+        public double effective_range_m;
+
+        public double effective_yaw_feedforward_velocity_deg_s;
+        public double effective_range_feedforward_m_s;
+
+        public double uncompensated_yaw_angle_deg;
+        public double uncompensated_range_m;
+
+        public ShootingParameters() {}
     }
 
 }
