@@ -378,7 +378,8 @@ public class RobotContainer {
                                                 () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine
                                                                                                             // translation
                                                 gp.povRight(), // align to amp
-                                                gp.button(5) // align to speaker
+                                                gp.button(5), // align to speaker
+                                                gp.button(4) // pass
                                 // () -> false
                                 ));
                 // reset gyro

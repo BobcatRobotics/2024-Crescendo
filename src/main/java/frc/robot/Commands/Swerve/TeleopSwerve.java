@@ -12,6 +12,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -26,7 +27,8 @@ public class TeleopSwerve extends Command {
     private DoubleSupplier fineTrans;
     private BooleanSupplier snapToAmp;
     private BooleanSupplier snapToSpeaker;
-    private double angleToSpeaker = 0.0;
+    private BooleanSupplier passToAmp;
+    private double autoAlignAngle = 0.0;
     private boolean overriden = false;
 
     /**
@@ -42,8 +44,9 @@ public class TeleopSwerve extends Command {
      * @param fineTrans slow speed control, cancled if translation or strafe is in use
      * @param snapToAmp should we automatically rotate to the amp
      * @param snapToSpeaker should we automatically align to the speaker
+     * @param pass align to be facing the amp for passing notes
      */
-    public TeleopSwerve(Swerve swerve, DoubleSupplier translation, DoubleSupplier strafe, DoubleSupplier rotation, BooleanSupplier robotCentric, DoubleSupplier fineStrafe, DoubleSupplier fineTrans, BooleanSupplier snapToAmp, BooleanSupplier snapToSpeaker) {
+    public TeleopSwerve(Swerve swerve, DoubleSupplier translation, DoubleSupplier strafe, DoubleSupplier rotation, BooleanSupplier robotCentric, DoubleSupplier fineStrafe, DoubleSupplier fineTrans, BooleanSupplier snapToAmp, BooleanSupplier snapToSpeaker, BooleanSupplier pass) {
         this.swerve = swerve;
         addRequirements(swerve);
 
@@ -54,7 +57,8 @@ public class TeleopSwerve extends Command {
         this.fineStrafe = fineStrafe;
         this.fineTrans = fineTrans;
         this.snapToAmp = snapToAmp;
-        this.snapToSpeaker = snapToSpeaker;        
+        this.snapToSpeaker = snapToSpeaker;    
+        this.passToAmp = pass;    
     }
 
     @Override
@@ -66,13 +70,19 @@ public class TeleopSwerve extends Command {
         double rotationVal = MathUtil.applyDeadband(rotation.getAsDouble(), SwerveConstants.stickDeadband); //from 0 to one
         // Rotation2d ampVal = BobcatUtil.isBlue()?Constants.FieldConstants.blueAmpCenter.getRotation() : Constants.FieldConstants.redAmpCenter.getRotation();
 
-        if (snapToSpeaker.getAsBoolean() && rotationVal == 0) {
+
+        if(passToAmp.getAsBoolean() && rotationVal == 0){
+            autoAlignAngle = BobcatUtil.isRed() ? swerve.getAngleToPassArea() : swerve.getAngleToPassArea() + Math.PI;
+            overriden = false;
+            Logger.recordOutput("Swerve/PassAngle",new Pose2d(swerve.getPose().getTranslation(), Rotation2d.fromRadians(swerve.getAngleToPassArea())));
+
+        }else if (snapToSpeaker.getAsBoolean() && rotationVal == 0) {
             //Translation2d speaker = swerve.getTranslationToSpeaker();
             //angleToSpeaker = Math.atan(speaker.getY()/speaker.getX());
             // angleToSpeaker = swerve.getAngleToSpeakerApriltag().getRadians();
             // Logger.recordOutput("Swerve/AlignmentToSpeaker",new Pose2d(swerve.getPose().getTranslation(), swerve.getAngleToSpeakerApriltag()) );
             // angleToSpeaker = swerve.getAngleToSpeakerTagAuto().getRadians();
-            angleToSpeaker = BobcatUtil.isRed() ? swerve.getShootWhileMoveBallistics(ShooterConstants.encoderOffsetFromHorizontal)[0] : swerve.getShootWhileMoveBallistics(ShooterConstants.encoderOffsetFromHorizontal)[0] + Math.PI;
+            autoAlignAngle = BobcatUtil.isRed() ? swerve.getShootWhileMoveBallistics(ShooterConstants.encoderOffsetFromHorizontal)[0] : swerve.getShootWhileMoveBallistics(ShooterConstants.encoderOffsetFromHorizontal)[0] + Math.PI;
             Logger.recordOutput("Swerve/AlignmentToSpeaker",new Pose2d(swerve.getPose().getTranslation(), swerve.getAngleToSpeakerTagAuto()));
             overriden = false;
             
@@ -105,7 +115,7 @@ public class TeleopSwerve extends Command {
             !robotCentric.getAsBoolean(),
             snapToAmp.getAsBoolean(),
             snapToSpeaker.getAsBoolean() && !overriden,
-            angleToSpeaker
+            autoAlignAngle
         );
     // }else{
     //     swerve.drive(

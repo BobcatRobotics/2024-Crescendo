@@ -589,6 +589,18 @@ public class Swerve extends SubsystemBase {
                 : FieldConstants.redSpeakerPose.minus(getPose().getTranslation());
     }
 
+
+    /**
+     * 
+     * @return the area where we want to pass, should be around the amp zone
+     */
+    public Translation2d getTranslationToPassArea() {
+        return BobcatUtil.getAlliance() == Alliance.Blue
+                ? FieldConstants.bluePassPose.minus(getPose().getTranslation())
+                : FieldConstants.redPassPose.minus(getPose().getTranslation());
+    }
+
+
     /**
      * 
      * 
@@ -675,6 +687,16 @@ public class Swerve extends SubsystemBase {
     public double getAngleToSpeaker() {
         Translation2d speaker = getTranslationToSpeaker();
         return Math.atan(speaker.getY() / speaker.getX());
+    }
+
+    /**
+     * 
+     * @return the angle to the pass area in radians
+     * 
+     */
+    public double getAngleToPassArea() {
+        Translation2d passArea = getTranslationToPassArea();
+        return Math.atan(passArea.getY() / passArea.getX());
     }
 
     // /**
