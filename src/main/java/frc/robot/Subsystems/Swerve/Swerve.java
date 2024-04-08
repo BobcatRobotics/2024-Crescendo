@@ -765,6 +765,15 @@ public class Swerve extends SubsystemBase {
         return odometryValue;
     }
 
+    /**
+     * 
+     * @return distance to amp along x axis in meters
+     * TODO might need to invert
+     */
+    public double getDistanceToAmp(){
+        return BobcatUtil.isBlue() ? getPose().getX() - FieldConstants.blueAmpXPos : FieldConstants.redAmpXPos - getPose().getX();
+    }
+
     public void setLimeLEDS(boolean on) {
         shooterLeftVision.setLEDS(on);
         shooterRightVision.setLEDS(on);

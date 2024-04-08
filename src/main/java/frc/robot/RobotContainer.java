@@ -379,7 +379,8 @@ public class RobotContainer {
                                                                                                             // translation
                                                 gp.povRight(), // align to amp
                                                 gp.button(5), // align to speaker
-                                                gp.button(4) // pass
+                                                gp.button(4), // pass
+                                                gp.povRight() // amp aim assist
                                 // () -> false
                                 ));
                 // reset gyro

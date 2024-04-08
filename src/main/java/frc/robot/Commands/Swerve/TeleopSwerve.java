@@ -11,6 +11,7 @@ import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -27,9 +28,11 @@ public class TeleopSwerve extends Command {
     private DoubleSupplier fineTrans;
     private BooleanSupplier snapToAmp;
     private BooleanSupplier snapToSpeaker;
-    private BooleanSupplier passToAmp;
+    private BooleanSupplier pass;
+    private BooleanSupplier ampAssist;
     private double autoAlignAngle = 0.0;
     private boolean overriden = false;
+    private PIDController ampAssistController = new PIDController(0.1, 0, 0); //TODO tune
 
     /**
      * 
@@ -46,7 +49,7 @@ public class TeleopSwerve extends Command {
      * @param snapToSpeaker should we automatically align to the speaker
      * @param pass align to be facing the amp for passing notes
      */
-    public TeleopSwerve(Swerve swerve, DoubleSupplier translation, DoubleSupplier strafe, DoubleSupplier rotation, BooleanSupplier robotCentric, DoubleSupplier fineStrafe, DoubleSupplier fineTrans, BooleanSupplier snapToAmp, BooleanSupplier snapToSpeaker, BooleanSupplier pass) {
+    public TeleopSwerve(Swerve swerve, DoubleSupplier translation, DoubleSupplier strafe, DoubleSupplier rotation, BooleanSupplier robotCentric, DoubleSupplier fineStrafe, DoubleSupplier fineTrans, BooleanSupplier snapToAmp, BooleanSupplier snapToSpeaker, BooleanSupplier pass, BooleanSupplier ampAssist) {
         this.swerve = swerve;
         addRequirements(swerve);
 
@@ -58,7 +61,10 @@ public class TeleopSwerve extends Command {
         this.fineTrans = fineTrans;
         this.snapToAmp = snapToAmp;
         this.snapToSpeaker = snapToSpeaker;    
-        this.passToAmp = pass;    
+        this.pass = pass;   
+        this.ampAssist = ampAssist; 
+        ampAssistController.setSetpoint(0);
+        
     }
 
     @Override
@@ -71,7 +77,7 @@ public class TeleopSwerve extends Command {
         // Rotation2d ampVal = BobcatUtil.isBlue()?Constants.FieldConstants.blueAmpCenter.getRotation() : Constants.FieldConstants.redAmpCenter.getRotation();
 
 
-        if(passToAmp.getAsBoolean() && rotationVal == 0){
+        if(pass.getAsBoolean() && rotationVal == 0){
             autoAlignAngle = BobcatUtil.isRed() ? swerve.getAngleToPassArea() : swerve.getAngleToPassArea() + Math.PI;
             overriden = false;
             Logger.recordOutput("Swerve/PassAngle",new Pose2d(swerve.getPose().getTranslation(), Rotation2d.fromRadians(swerve.getAngleToPassArea())));
@@ -104,6 +110,12 @@ public class TeleopSwerve extends Command {
         } 
         if(translationVal == 0.0) {
             translationVal = fineTrans.getAsDouble();
+        }
+
+        if(ampAssist.getAsBoolean()){ //apply aim assist for amp alignment, might need to be -=
+            translationVal += ampAssistController.calculate(swerve.getDistanceToAmp());
+            Logger.recordOutput("AimAssist/AssistValue", ampAssistController.calculate(swerve.getDistanceToAmp()));
+            Logger.recordOutput("AimAssist/distanceToAmp", swerve.getDistanceToAmp());
         }
 
         Logger.recordOutput("AmpAlign/snapToAmp", snapToAmp.getAsBoolean());

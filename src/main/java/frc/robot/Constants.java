@@ -217,7 +217,8 @@ public class Constants {
         public static final double noteDiameter = Units.inchesToMeters(14);
 
         public static final double speakerHeight = Units.inchesToMeters(80.4375); // Center of opening
-
+        public static final double redAmpXPos = 14.721; //meters
+        public static final double blueAmpXPos = 1.82;
         public static final Translation2d blueSpeakerPose = new Translation2d(Units.inchesToMeters(-1.5 + 12),
                 Units.inchesToMeters(218.42)); // Center of the opening
         public static final Translation2d redSpeakerPose = new Translation2d(Units.inchesToMeters(652.73 - 12),
