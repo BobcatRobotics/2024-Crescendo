@@ -328,7 +328,7 @@ public class Swerve extends SubsystemBase {
      * @param angleToSpeaker in radians
      */
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean snapToAmp,
-            boolean snapToSpeaker, double angleToSpeaker) {
+            boolean autoAlign, double autoAlignAngle) {
 
         // Rotation2d ampVal =
         // BobcatUtil.isBlue()?Constants.FieldConstants.blueAmpCenter.getRotation() :
@@ -346,10 +346,10 @@ public class Swerve extends SubsystemBase {
                         translation.getY(),
                         rotation);
 
-        if (snapToSpeaker) {
+        if (autoAlign) {
             desiredSpeeds.omegaRadiansPerSecond = autoAlignPID.calculate(get0to2Pi(getYaw().getRadians()),
-                    get0to2Pi(angleToSpeaker));
-            Logger.recordOutput("Swerve/AutoAlignPID/setpoint", get0to2Pi(angleToSpeaker));
+                    get0to2Pi(autoAlignAngle));
+            Logger.recordOutput("Swerve/AutoAlignPID/setpoint", get0to2Pi(autoAlignAngle));
             Logger.recordOutput("Swerve/AutoAlignPID/measurement", get0to2Pi(getYaw().getRadians()));
             Logger.recordOutput("Swerve/AutoAlignPID/error", autoAlignPID.getPositionError());
             lastMovingYaw = getYaw().getRadians();

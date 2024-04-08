@@ -126,7 +126,7 @@ public class TeleopSwerve extends Command {
             rotationVal * SwerveConstants.maxAngularVelocity,
             !robotCentric.getAsBoolean(),
             snapToAmp.getAsBoolean(),
-            snapToSpeaker.getAsBoolean() && !overriden,
+            (snapToSpeaker.getAsBoolean() || pass.getAsBoolean()) && !overriden,
             autoAlignAngle
         );
     // }else{
