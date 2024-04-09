@@ -241,7 +241,9 @@ public class Constants {
                 new Pose2d(new Translation2d(fieldLength-Units.inchesToMeters(72.455), fieldWidth), Rotation2d.fromDegrees(-90));
 
         
-        public static final Pose2d PathfindSourceSideShootPos = new Pose2d(3.10, 2.89, Rotation2d.fromDegrees(-35.88));
+        public static final Pose2d BluePathfindSourceSideShootPos = new Pose2d(3.10, 2.89, Rotation2d.fromDegrees(-35.88));
+        public static final Pose2d RedPathfindSourceSideShootPos = new Pose2d(13.441, 2.89, Rotation2d.fromDegrees(-35.88));
+
 
                 
         

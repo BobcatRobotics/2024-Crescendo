@@ -150,6 +150,9 @@ public class Swerve extends SubsystemBase {
 
     }
 
+    public void setLastMovingYaw(double value){
+        lastMovingYaw = value;
+    }
     public Optional<Rotation2d> getRotationTargetOverride() {
         if (getRotationTarget() != null) {
             return Optional.of(getRotationTarget());

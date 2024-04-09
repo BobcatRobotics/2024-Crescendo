@@ -269,11 +269,11 @@ public class RobotContainer {
                                 new RevToRPM(m_shooter, ShooterConstants.fastShooterRPMSetpoint, 4500));
                 // NamedCommands.registerCommand("Break", new AutoBreak(m_Spivit));
                 NamedCommands.registerCommand("AutoStowe", new InstantCommand(m_amp::retract));
-                NamedCommands.registerCommand("GrabNote", new AutosGrabNote(m_swerve, m_intakeVision, m_intake));
+                NamedCommands.registerCommand("GrabNote", new AutosGrabNote(m_swerve, m_intakeVision, m_intake, m_Spivit));
                 
                 NamedCommands.registerCommand("PathfindSourceSideNoteHunting", 
                         AutoBuilder.pathfindToPose(
-                                FieldConstants.PathfindSourceSideShootPos,
+                                BobcatUtil.isBlue() ? FieldConstants.BluePathfindSourceSideShootPos : FieldConstants.RedPathfindSourceSideShootPos,
                                 new PathConstraints(4, 4, 3*Math.PI, 4*Math.PI),
                                 0,
                                 0
@@ -294,19 +294,26 @@ public class RobotContainer {
                 autoChooser.addOption("OuttaTheWay2", new PathPlannerAuto("OuttaTheWay2"));
                 // autoChooser.addOption("OUT OF THE WAY 3", new PathPlannerAuto("Outta the way
                 // 3"));
+
                 autoChooser.addOption("FastFood", new PathPlannerAuto("FastFood"));
 
                 autoChooser.addOption("AmpCenterLine3Piece", new PathPlannerAuto("AmpSideAuto"));
                 autoChooser.addOption("AmpOutsideIn", new PathPlannerAuto("AmpSideOutsideFirst"));
                 autoChooser.addOption("AmpFrontNote4Piece", new PathPlannerAuto("AmpSide4Piece"));
                 autoChooser.addOption("SideOfRanch", new PathPlannerAuto("SideOfRanch"));
-                // autoChooser.addOption("Odometry Tuning", new PathPlannerAuto("Odometry
+                autoChooser.addOption("NoteHuntingSourceSide", new PathPlannerAuto("NoteHuntingSourceSide"));
+                autoChooser.addOption("real cool auto", new PathPlannerAuto("real cool auto"));
+                // autoChooser.addOption("Odometry Tuning", new PathPlannerAuto("Odometry 
                 // Tuning"));
                 // autoChooser.addOption("AdjustedKidsMeal", new
                 // PathPlannerAuto("AdjustedKidsMeal"));
 
                 m_LEDs.setLEDs(CANdleState.OFF);
                 configureBindings();
+        }
+
+        public boolean shouldUseHighResPipelineCenterLimelight(){
+                return autoChooser.get().getName() != "FastFood";
         }
 
         /**
@@ -411,6 +418,8 @@ public class RobotContainer {
 
                 gp.button(7).whileTrue(new StartEndCommand(() -> m_shooter.setSpeed(-1000, -1000), m_shooter::stop,
                                 m_shooter));
+
+                gp.povUp().onTrue(new AutosGrabNote(m_swerve, m_intakeVision, m_intake, m_Spivit));
 
                 gp.povDown().onTrue( // if shooter too low, raise whiles intaking
                                 new ConditionalCommand(
