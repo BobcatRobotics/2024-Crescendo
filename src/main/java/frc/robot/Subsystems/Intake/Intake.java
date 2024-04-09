@@ -27,6 +27,7 @@ public class Intake extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("Intake", inputs);
         SmartDashboard.putBoolean("has piece", hasPiece() || intook || inputs.intakeSensorTripped);
+        Logger.recordOutput("Intake/HasPiece", hasPiece());
         lastIntakeSensorValue = currentIntakeSensorValue;
         currentIntakeSensorValue = inputs.intakeSensorTripped;
     }

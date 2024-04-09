@@ -603,6 +603,14 @@ public class Swerve extends SubsystemBase {
                 : FieldConstants.redPassPose.minus(getPose().getTranslation());
     }
 
+    public Rotation2d getRotationToNote(){
+        if (IntakeVision.getTV()){
+            return Rotation2d.fromDegrees((getYaw().minus(IntakeVision.getTX()).getDegrees() + 360) % 360);
+        }else{
+            return getYaw();
+        }
+    }
+
 
     /**
      * 
@@ -773,9 +781,10 @@ public class Swerve extends SubsystemBase {
      * @return distance to amp along x axis in meters
      * TODO might need to invert
      */
-    public double getDistanceToAmp(){
+    public double getXDistanceToAmp(){
         return BobcatUtil.isBlue() ? getPose().getX() - FieldConstants.blueAmpXPos : FieldConstants.redAmpXPos - getPose().getX();
     }
+
 
     public void setLimeLEDS(boolean on) {
         shooterLeftVision.setLEDS(on);

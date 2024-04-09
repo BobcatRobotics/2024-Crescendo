@@ -64,6 +64,60 @@
           "data": {
             "pathName": "lo_scan"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "WaitForNoteThenGrab"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PathfindLeftoversNoteHunting"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignAndShoot1.5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "WaitForNoteThenGrab"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PathfindLeftoversNoteHunting"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignAndShoot1.5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "WaitForNoteThenGrab"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PathfindLeftoversNoteHunting"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignAndShoot1.5"
+          }
         }
       ]
     }

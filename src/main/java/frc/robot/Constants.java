@@ -244,6 +244,9 @@ public class Constants {
         public static final Pose2d BluePathfindSourceSideShootPos = new Pose2d(3.10, 2.89, Rotation2d.fromDegrees(-35.88));
         public static final Pose2d RedPathfindSourceSideShootPos = new Pose2d(13.441, 2.89, Rotation2d.fromDegrees(-35.88));
 
+        public static final Pose2d BlueLeftoversShootPos = new Pose2d(2.92, 5.53, new Rotation2d());
+        public static final Pose2d RedLeftoversShootPos = new Pose2d(13.621, 5.53, new Rotation2d());
+
 
                 
         

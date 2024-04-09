@@ -226,6 +226,27 @@ public class RobotContainer {
 
                 }
 
+                // autoChooser.addOption("Odometry Tuning", new PathPlannerAuto("Odometry 
+                // Tuning"));
+                // autoChooser.addOption("AdjustedKidsMeal", new
+                // PathPlannerAuto("AdjustedKidsMeal"));
+
+                m_LEDs.setLEDs(CANdleState.OFF);
+                configureBindings();
+        }
+
+        public boolean shouldUseHighResPipelineCenterLimelight(){
+                return autoChooser.get().getName() != "FastFood" || autoChooser.get().getName() != "Leftovers" ;
+        }
+        public boolean autoChooserInitialized(){
+                return autoChooser.get() != null;
+        }
+
+        /**
+         * this should only be called once DS and FMS are attached
+         */
+        public void configureAutos(){
+                
                 /*
                  * Auto Events
                  * 
@@ -269,11 +290,21 @@ public class RobotContainer {
                                 new RevToRPM(m_shooter, ShooterConstants.fastShooterRPMSetpoint, 4500));
                 // NamedCommands.registerCommand("Break", new AutoBreak(m_Spivit));
                 NamedCommands.registerCommand("AutoStowe", new InstantCommand(m_amp::retract));
-                NamedCommands.registerCommand("GrabNote", new AutosGrabNote(m_swerve, m_intakeVision, m_intake, m_Spivit));
+                NamedCommands.registerCommand("GrabNote", new AutosGrabNote(m_swerve, m_intakeVision, m_intake, m_Spivit, true));
+                NamedCommands.registerCommand("WaitForNoteThenGrab", new AutosGrabNote(m_swerve, m_intakeVision, m_intake, m_Spivit, false));
                 
                 NamedCommands.registerCommand("PathfindSourceSideNoteHunting", 
                         AutoBuilder.pathfindToPose(
                                 BobcatUtil.isBlue() ? FieldConstants.BluePathfindSourceSideShootPos : FieldConstants.RedPathfindSourceSideShootPos,
+                                new PathConstraints(4, 4, 3*Math.PI, 4*Math.PI),
+                                0,
+                                0
+                        )
+                );
+
+                NamedCommands.registerCommand("PathfindLeftoversNoteHunting", 
+                        AutoBuilder.pathfindToPose(
+                                BobcatUtil.isBlue() ? FieldConstants.BlueLeftoversShootPos : FieldConstants.RedLeftoversShootPos,
                                 new PathConstraints(4, 4, 3*Math.PI, 4*Math.PI),
                                 0,
                                 0
@@ -303,17 +334,7 @@ public class RobotContainer {
                 autoChooser.addOption("SideOfRanch", new PathPlannerAuto("SideOfRanch"));
                 autoChooser.addOption("NoteHuntingSourceSide", new PathPlannerAuto("NoteHuntingSourceSide"));
                 autoChooser.addOption("real cool auto", new PathPlannerAuto("real cool auto"));
-                // autoChooser.addOption("Odometry Tuning", new PathPlannerAuto("Odometry 
-                // Tuning"));
-                // autoChooser.addOption("AdjustedKidsMeal", new
-                // PathPlannerAuto("AdjustedKidsMeal"));
-
-                m_LEDs.setLEDs(CANdleState.OFF);
-                configureBindings();
-        }
-
-        public boolean shouldUseHighResPipelineCenterLimelight(){
-                return autoChooser.get().getName() != "FastFood";
+                autoChooser.addOption("leftovers", new PathPlannerAuto("Leftovers"));
         }
 
         /**
@@ -384,7 +405,8 @@ public class RobotContainer {
                                                 gp.povRight(), // align to amp
                                                 gp.button(5), // align to speaker
                                                 gp.button(4), // pass
-                                                gp.povRight() // amp aim assist
+                                                gp.povRight(), // amp aim assist
+                                                gp.povUp()
                                 // () -> false
                                 ));
                 // reset gyro
@@ -419,7 +441,6 @@ public class RobotContainer {
                 gp.button(7).whileTrue(new StartEndCommand(() -> m_shooter.setSpeed(-1000, -1000), m_shooter::stop,
                                 m_shooter));
 
-                gp.povUp().onTrue(new AutosGrabNote(m_swerve, m_intakeVision, m_intake, m_Spivit));
 
                 gp.povDown().onTrue( // if shooter too low, raise whiles intaking
                                 new ConditionalCommand(

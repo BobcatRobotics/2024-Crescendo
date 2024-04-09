@@ -33,6 +33,9 @@ public class TeleopSwerve extends Command {
     private double autoAlignAngle = 0.0;
     private boolean overriden = false;
     private PIDController ampAssistController = new PIDController(0.1, 0, 0); //TODO tune
+    private PIDController rotateToNoteController = new PIDController(0.05, 0,0);
+    private BooleanSupplier rotateToNote;
+    
 
     /**
      * 
@@ -49,7 +52,9 @@ public class TeleopSwerve extends Command {
      * @param snapToSpeaker should we automatically align to the speaker
      * @param pass align to be facing the amp for passing notes
      */
-    public TeleopSwerve(Swerve swerve, DoubleSupplier translation, DoubleSupplier strafe, DoubleSupplier rotation, BooleanSupplier robotCentric, DoubleSupplier fineStrafe, DoubleSupplier fineTrans, BooleanSupplier snapToAmp, BooleanSupplier snapToSpeaker, BooleanSupplier pass, BooleanSupplier ampAssist) {
+    public TeleopSwerve(Swerve swerve, DoubleSupplier translation, DoubleSupplier strafe, 
+    DoubleSupplier rotation, BooleanSupplier robotCentric, DoubleSupplier fineStrafe, DoubleSupplier fineTrans, 
+    BooleanSupplier snapToAmp, BooleanSupplier snapToSpeaker, BooleanSupplier pass, BooleanSupplier ampAssist, BooleanSupplier rotateToNote) {
         this.swerve = swerve;
         addRequirements(swerve);
 
@@ -63,7 +68,9 @@ public class TeleopSwerve extends Command {
         this.snapToSpeaker = snapToSpeaker;    
         this.pass = pass;   
         this.ampAssist = ampAssist; 
+        this.rotateToNote = rotateToNote;
         ampAssistController.setSetpoint(0);
+        Logger.recordOutput("RotationToNote", -1);
         
     }
 
@@ -92,7 +99,10 @@ public class TeleopSwerve extends Command {
             Logger.recordOutput("Swerve/AlignmentToSpeaker",new Pose2d(swerve.getPose().getTranslation(), swerve.getAngleToSpeakerTagAuto()));
             overriden = false;
             
-        } else {
+        }else if(rotateToNote.getAsBoolean() && rotationVal == 0){
+            autoAlignAngle = swerve.getRotationToNote().getRadians();
+            Logger.recordOutput("RotationToNote", swerve.getRotationToNote().getDegrees());
+        }else {
             overriden = true;
         }
         // overriden = true;
@@ -112,10 +122,12 @@ public class TeleopSwerve extends Command {
             translationVal = fineTrans.getAsDouble();
         }
 
-        if(ampAssist.getAsBoolean()){ //apply aim assist for amp alignment, might need to be -=
-            translationVal += ampAssistController.calculate(swerve.getDistanceToAmp());
-            Logger.recordOutput("AimAssist/AssistValue", ampAssistController.calculate(swerve.getDistanceToAmp()));
-            Logger.recordOutput("AimAssist/distanceToAmp", swerve.getDistanceToAmp());
+        
+         
+        if(ampAssist.getAsBoolean() && swerve.getXDistanceToAmp() < 1){ // if button pressed and were within 1 meter of the amp, apply aim assist for amp alignment
+            translationVal += ampAssistController.calculate(swerve.getXDistanceToAmp());
+            Logger.recordOutput("AimAssist/AssistValue", ampAssistController.calculate(swerve.getXDistanceToAmp()));
+            Logger.recordOutput("AimAssist/distanceToAmp", swerve.getXDistanceToAmp());
         }
 
         Logger.recordOutput("AmpAlign/snapToAmp", snapToAmp.getAsBoolean());
@@ -126,7 +138,7 @@ public class TeleopSwerve extends Command {
             rotationVal * SwerveConstants.maxAngularVelocity,
             !robotCentric.getAsBoolean(),
             snapToAmp.getAsBoolean(),
-            (snapToSpeaker.getAsBoolean() || pass.getAsBoolean()) && !overriden,
+            (snapToSpeaker.getAsBoolean() || pass.getAsBoolean() || rotateToNote.getAsBoolean()) && !overriden,
             autoAlignAngle
         );
     // }else{

@@ -4,9 +4,6 @@
 
 package frc.robot.Commands.Auto;
 
-import java.util.function.DoubleSupplier;
-
-import com.google.flatbuffers.Constants;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -35,14 +32,16 @@ public class AutosGrabNote extends Command {
   private Pose2d notePos;
   private Intake intake;
   private boolean finished;
+  private boolean finishInstantly;
 
-  public AutosGrabNote(Swerve swerve, Vision vision, Intake intake, Spivit spivit) {
+  public AutosGrabNote(Swerve swerve, Vision vision, Intake intake, Spivit spivit, boolean finishIfNoNotes) {
     this.swerve = swerve;
     addRequirements(swerve, intake);
     this.vision = vision;
     this.intake = intake;
     this.spivit = spivit;
     finished = false;
+    finishInstantly = finishIfNoNotes;
   }
 
   // Called when the command is initially scheduled.
@@ -69,7 +68,11 @@ public class AutosGrabNote extends Command {
     }
 
     if (!intake.hasPiece()) {
-      intake.intakeToShooter();
+      if(vision.getTClass() == 0){
+        intake.intakeToShooter();
+      }else{
+        intake.stop();
+      }
     } else {
       intake.stop();
       finished = true;
@@ -86,8 +89,9 @@ public class AutosGrabNote extends Command {
       }
       swerve.setLastMovingYaw(swerve.getYaw().getRadians());
     } else {
-      //TODO scan for notes
-      finished = true;
+      if(finishInstantly){
+        finished = true;
+      }
     }
 
   }

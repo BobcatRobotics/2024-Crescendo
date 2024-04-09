@@ -14,10 +14,13 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Subsystems.Vision.CamMode;
+import frc.robot.Util.BobcatUtil;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
@@ -27,6 +30,8 @@ public class Robot extends LoggedRobot {
   public double visionStdDev;
 
   public edu.wpi.first.math.Vector<N3> stateStdDevs;
+  private boolean autosInitialized = false;
+  private Alliance currAlliance = Alliance.Blue;
 
   @Override
   public void robotInit() {
@@ -99,6 +104,11 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    if((!autosInitialized && DriverStation.isDSAttached()) || currAlliance != BobcatUtil.getAlliance()){
+      m_robotContainer.configureAutos();
+      autosInitialized = true;
+      currAlliance = BobcatUtil.getAlliance();
+    }
   }
 
   @Override
@@ -117,11 +127,17 @@ public class Robot extends LoggedRobot {
     m_robotContainer.m_shooterRightVision.setCamMode(CamMode.VISION);
     m_robotContainer.m_shooterRightVision.setPipeline(LimelightConstants.shooterRight.apriltagPipelineIndex);
     m_robotContainer.m_shooterCenterVision.setCamMode(CamMode.VISION);
-    if(m_robotContainer.shouldUseHighResPipelineCenterLimelight()){
-      m_robotContainer.m_shooterCenterVision.setPipeline(Constants.LimelightConstants.shooterCenter.resPipline);
+    
+    if(m_robotContainer.autoChooserInitialized()){
+      if(m_robotContainer.shouldUseHighResPipelineCenterLimelight()){
+        m_robotContainer.m_shooterCenterVision.setPipeline(Constants.LimelightConstants.shooterCenter.resPipline);
+      }else{
+        m_robotContainer.m_shooterCenterVision.setPipeline(Constants.LimelightConstants.shooterCenter.fpsPipline);
+      }
     }else{
       m_robotContainer.m_shooterCenterVision.setPipeline(Constants.LimelightConstants.shooterCenter.fpsPipline);
     }
+    
     m_robotContainer.m_intakeTagVision.setCamMode(CamMode.VISION);
     m_robotContainer.m_intakeTagVision.setPipeline(LimelightConstants.shooterRight.apriltagPipelineIndex);
 
