@@ -6,8 +6,10 @@ package frc.robot;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -27,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Commands.CandleAlignment;
 import frc.robot.Commands.Auto.AutoIntake;
 import frc.robot.Commands.Auto.AutoSpit;
+import frc.robot.Commands.Auto.AutosGrabNote;
 import frc.robot.Commands.Auto.ContinouslyAlignAndShoot;
 import frc.robot.Commands.Auto.ReleaseHook;
 import frc.robot.Commands.Auto.RevToRPM;
@@ -259,29 +262,23 @@ public class RobotContainer {
                 // NamedCommands.registerCommand("LeftBiasedAlignAndShoot", new
                 // LeftBiasedAlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake) );
                 NamedCommands.registerCommand("AlignDontShoot",
-                                new AlignAndRevPPOverride(m_swerve, m_Spivit, m_shooter)); // Aligns
-                                                                                           // and
-                                                                                           // revs,
-                                                                                           // but
-                                                                                           // doesnt
-                                                                                           // feed,
-                                                                                           // this
-                                                                                           // command
-                                                                                           // never
-                                                                                           // ends,
-                                                                                           // you
-                                                                                           // will
-                                                                                           // have
-                                                                                           // to
-                                                                                           // end
-                                                                                           // it
-                                                                                           // manually
+                                new AlignAndRevPPOverride(m_swerve, m_Spivit, m_shooter)); // Aligns and revs but doesnt feed, this command never ends, you will have to end it manually                                                                                                                                         
                 NamedCommands.registerCommand("Unhook", new ReleaseHook(m_Spivit));
                 NamedCommands.registerCommand("StopIntake", new InstantCommand(m_intake::stop));
                 NamedCommands.registerCommand("RevToRPM",
                                 new RevToRPM(m_shooter, ShooterConstants.fastShooterRPMSetpoint, 4500));
                 // NamedCommands.registerCommand("Break", new AutoBreak(m_Spivit));
                 NamedCommands.registerCommand("AutoStowe", new InstantCommand(m_amp::retract));
+                NamedCommands.registerCommand("GrabNote", new AutosGrabNote(m_swerve, m_intakeVision, m_intake));
+                
+                NamedCommands.registerCommand("PathfindSourceSideNoteHunting", 
+                        AutoBuilder.pathfindToPose(
+                                FieldConstants.PathfindSourceSideShootPos,
+                                new PathConstraints(4, 4, 3*Math.PI, 4*Math.PI),
+                                0,
+                                0
+                        )
+                );
 
                 /*
                  * Auto Chooser

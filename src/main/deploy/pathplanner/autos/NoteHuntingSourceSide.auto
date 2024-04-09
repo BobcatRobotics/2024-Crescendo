@@ -1,0 +1,79 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.53,
+      "y": 3.66
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoStowe"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignAndShoot1.5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NH intake first"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GrabNote"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PathfindSourceSideNoteHunting"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignAndShoot1.5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NH intake second"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GrabNote"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PathfindSourceSideNoteHunting"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignAndShoot1.5"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

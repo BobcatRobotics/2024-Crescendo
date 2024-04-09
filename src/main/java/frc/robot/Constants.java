@@ -207,6 +207,8 @@ public class Constants {
         public static final double fieldLength = 16.541; //meters
         public static final double fieldWidth = 8.211;
 
+        public static final double centerlineX = 8.2705;
+
         // 1 is closest to AMP, 5 is closest to SOURCE
         // public static final Translation2d centerlineNote1 = new Translation2d(250.5, 29.64);
         // public static final Translation2d centerlineNote2 = new Translation2d(250.5, 95.64);
@@ -238,6 +240,8 @@ public class Constants {
         public static final Pose2d redAmpCenter =
                 new Pose2d(new Translation2d(fieldLength-Units.inchesToMeters(72.455), fieldWidth), Rotation2d.fromDegrees(-90));
 
+        
+        public static final Pose2d PathfindSourceSideShootPos = new Pose2d(3.10, 2.89, Rotation2d.fromDegrees(-35.88));
 
                 
         
