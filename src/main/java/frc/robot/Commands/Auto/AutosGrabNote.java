@@ -82,9 +82,9 @@ public class AutosGrabNote extends Command {
 
       notePos = vision.getNotePose();
       if(thetaController.getPositionError() > 0.5){
-      swerve.drive(new Translation2d(0,0), thetaController.calculate(notePos.getRotation().getDegrees()),false,false,false,0);
+      swerve.drive(new Translation2d(0,0), thetaController.calculate(notePos.getRotation().getDegrees()),false,false,false,0,false, 0);
       }else{
-      swerve.drive(new Translation2d(xController.calculate(-notePos.getX())*2.5,yController.calculate(notePos.getY())), thetaController.calculate(notePos.getRotation().getDegrees()),false,false,false,0);
+      swerve.drive(new Translation2d(xController.calculate(-notePos.getX())*2.5,yController.calculate(notePos.getY())), thetaController.calculate(notePos.getRotation().getDegrees()),false,false,false,0,false,0);
       //swerve.drive(new Translation2d(xController.calculate(-notePos.getX())*2.5,0), thetaController.calculate(notePos.getRotation().getDegrees()),false,false,false,0);
       }
       swerve.setLastMovingYaw(swerve.getYaw().getRadians());

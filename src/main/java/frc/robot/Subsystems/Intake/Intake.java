@@ -50,6 +50,7 @@ public class Intake extends SubsystemBase {
         io.switchMotorSetPercentOut(-.4);
         io.floorMotorSetPercentOut(-.4);
         io.outsideMotorSetPercentOut(-.4);
+        intook = false;
     }
 
     @AutoLogOutput

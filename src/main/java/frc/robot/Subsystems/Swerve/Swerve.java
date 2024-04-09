@@ -227,6 +227,7 @@ public class Swerve extends SubsystemBase {
         Logger.recordOutput("Swerve/DesiredModuleStates", desiredSwerveModuleStates);
         Logger.recordOutput("Swerve/ModuleStates", swerveModuleStates);
         Logger.recordOutput("Swerve/Pose", getPose());
+        Logger.recordOutput("Swerve/ChassisSpeeds", new Translation2d(ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getYaw()).vxMetersPerSecond, ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getYaw()).vyMetersPerSecond));
         if (DriverStation.isDisabled()) {
             for (SwerveModule mod : modules) {
                 mod.stop();
@@ -331,7 +332,7 @@ public class Swerve extends SubsystemBase {
      * @param angleToSpeaker in radians
      */
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean snapToAmp,
-            boolean autoAlign, double autoAlignAngle) {
+            boolean autoAlign, double autoAlignAngle, boolean rotateToNote, double tx) {
 
         // Rotation2d ampVal =
         // BobcatUtil.isBlue()?Constants.FieldConstants.blueAmpCenter.getRotation() :
@@ -359,6 +360,10 @@ public class Swerve extends SubsystemBase {
         } else if (snapToAmp) {
             desiredSpeeds.omegaRadiansPerSecond = autoAlignPID.calculate(get0to2Pi(getYaw().getRadians()),
                     ampVal);
+            lastMovingYaw = getYaw().getRadians();
+        }else if(rotateToNote){
+            
+            desiredSpeeds.omegaRadiansPerSecond = autoAlignPID.calculate(tx/1.75,0);
             lastMovingYaw = getYaw().getRadians();
         } else {
             if (rotation == 0) {
@@ -603,11 +608,11 @@ public class Swerve extends SubsystemBase {
                 : FieldConstants.redPassPose.minus(getPose().getTranslation());
     }
 
-    public Rotation2d getRotationToNote(){
+    public double getRotationToNote(){
         if (IntakeVision.getTV()){
-            return Rotation2d.fromDegrees((getYaw().minus(IntakeVision.getTX()).getDegrees() + 360) % 360);
+            return IntakeVision.getTX().getRadians();
         }else{
-            return getYaw();
+            return 0;
         }
     }
 
@@ -1086,7 +1091,7 @@ public class Swerve extends SubsystemBase {
 
         ret_val[1] = calcAngleBasedOnHashMap(effectiveDist);
         if (Math.abs(tangentialComponent) > 2) {
-            ret_val[1] += tangentialComponent;
+            ret_val[1] += (1.2*tangentialComponent);
         }
 
         return ret_val;

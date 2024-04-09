@@ -33,7 +33,6 @@ public class TeleopSwerve extends Command {
     private double autoAlignAngle = 0.0;
     private boolean overriden = false;
     private PIDController ampAssistController = new PIDController(0.1, 0, 0); //TODO tune
-    private PIDController rotateToNoteController = new PIDController(0.05, 0,0);
     private BooleanSupplier rotateToNote;
     
 
@@ -83,7 +82,6 @@ public class TeleopSwerve extends Command {
         double rotationVal = MathUtil.applyDeadband(rotation.getAsDouble(), SwerveConstants.stickDeadband); //from 0 to one
         // Rotation2d ampVal = BobcatUtil.isBlue()?Constants.FieldConstants.blueAmpCenter.getRotation() : Constants.FieldConstants.redAmpCenter.getRotation();
 
-
         if(pass.getAsBoolean() && rotationVal == 0){
             autoAlignAngle = BobcatUtil.isRed() ? swerve.getAngleToPassArea() : swerve.getAngleToPassArea() + Math.PI;
             overriden = false;
@@ -99,12 +97,12 @@ public class TeleopSwerve extends Command {
             Logger.recordOutput("Swerve/AlignmentToSpeaker",new Pose2d(swerve.getPose().getTranslation(), swerve.getAngleToSpeakerTagAuto()));
             overriden = false;
             
-        }else if(rotateToNote.getAsBoolean() && rotationVal == 0){
-            autoAlignAngle = swerve.getRotationToNote().getRadians();
-            Logger.recordOutput("RotationToNote", swerve.getRotationToNote().getDegrees());
         }else {
             overriden = true;
         }
+        Logger.recordOutput("RotationToNote/rotatingRotationToNote should run", rotateToNote.getAsBoolean() && rotationVal == 0);
+        Logger.recordOutput("RotationToNote/rotatingRot button pressed", rotateToNote.getAsBoolean());
+
         // overriden = true;
 
         // if (snapToAmp.getAsBoolean() && rotationVal == 0) {
@@ -138,8 +136,10 @@ public class TeleopSwerve extends Command {
             rotationVal * SwerveConstants.maxAngularVelocity,
             !robotCentric.getAsBoolean(),
             snapToAmp.getAsBoolean(),
-            (snapToSpeaker.getAsBoolean() || pass.getAsBoolean() || rotateToNote.getAsBoolean()) && !overriden,
-            autoAlignAngle
+            (snapToSpeaker.getAsBoolean() || pass.getAsBoolean()) && !overriden,
+            autoAlignAngle,
+            rotateToNote.getAsBoolean(),
+            swerve.getRotationToNote()
         );
     // }else{
     //     swerve.drive(
