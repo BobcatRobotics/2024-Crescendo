@@ -1,0 +1,73 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.2888463383764373,
+      "y": 5.53
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoStowe"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignAndShoot0.5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ff preload & first"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignAndShoot1.5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ff second piece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignAndShoot1.5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ff third piece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignAndShoot1.5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "lo_scan"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
