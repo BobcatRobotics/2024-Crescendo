@@ -39,14 +39,14 @@ public class SubwooferShot extends Command {
   @Override
   public void initialize() {
     shooter.setSpeed(shooterRPM, shooterRPM);
-    spivit.setAngle(swerve.calcAngleBasedOnRealRegression());
+    spivit.setAngle(swerve.calcAngleBasedOnHashMap());
     timer.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    spivit.setAngle(swerve.calcAngleBasedOnRealRegression());
+    spivit.setAngle(swerve.calcAngleBasedOnHashMap());
     if(shooter.aboveSpeed(3700)){
       upToSpeed = true;
     }

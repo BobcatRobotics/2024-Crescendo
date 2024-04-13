@@ -540,28 +540,28 @@ public class Swerve extends SubsystemBase {
                         Constants.SwerveConstants.maxAngularAcceleration));
     }
 
-    /**
-     * 
-     * @return DISTANCE TO SPEAKER OF CURRENT ALLIANCE IN METERS :D
-     */
-    @AutoLogOutput
-    public double getDistanceToSpeaker() {
-        if (BobcatUtil.getAlliance() == Alliance.Blue) {
-            if (shooterLeftVision.getID() == LimelightConstants.blueSpeakerTag
-                    && shooterRightVision.getID() == LimelightConstants.blueSpeakerTag) {
-                return (shooterLeftVision.getDistToTag() + shooterRightVision.getDistToTag()) / 2;
-            } else {
-                return getPose().getTranslation().getDistance(FieldConstants.blueSpeakerPose);
-            }
-        } else {
-            if (shooterLeftVision.getID() == LimelightConstants.redSpeakerTag
-                    && shooterRightVision.getID() == LimelightConstants.redSpeakerTag) {
-                return (shooterLeftVision.getDistToTag() + shooterRightVision.getDistToTag()) / 2;
-            } else {
-                return getPose().getTranslation().getDistance(FieldConstants.redSpeakerPose);
-            }
-        }
-    }
+    // /**
+    //  * 
+    //  * @return DISTANCE TO SPEAKER OF CURRENT ALLIANCE IN METERS :D
+    //  */
+    // @AutoLogOutput
+    // public double getDistanceToSpeaker() {
+    //     if (BobcatUtil.getAlliance() == Alliance.Blue) {
+    //         if (shooterLeftVision.getID() == LimelightConstants.blueSpeakerTag
+    //                 && shooterRightVision.getID() == LimelightConstants.blueSpeakerTag) {
+    //             return (shooterLeftVision.getDistToTag() + shooterRightVision.getDistToTag()) / 2;
+    //         } else {
+    //             return getPose().getTranslation().getDistance(FieldConstants.blueSpeakerPose);
+    //         }
+    //     } else {
+    //         if (shooterLeftVision.getID() == LimelightConstants.redSpeakerTag
+    //                 && shooterRightVision.getID() == LimelightConstants.redSpeakerTag) {
+    //             return (shooterLeftVision.getDistToTag() + shooterRightVision.getDistToTag()) / 2;
+    //         } else {
+    //             return getPose().getTranslation().getDistance(FieldConstants.redSpeakerPose);
+    //         }
+    //     }
+    // }
 
     public double getDistanceToSpeakerForSpivit() {
         if (BobcatUtil.getAlliance() == Alliance.Blue) {
@@ -617,27 +617,27 @@ public class Swerve extends SubsystemBase {
     }
 
 
-    /**
-     * 
-     * 
-     * r^2 = 0.983
-     */
-    public double calcAngleBasedOnRealRegression() {
-        double distance = getDistanceToSpeaker();
-        Logger.recordOutput("Spivit/DesiredAngle", 291 * Math.pow(distance, -0.074));
-        return 291 * Math.pow(distance, -0.074);
+    // /**
+    //  * 
+    //  * 
+    //  * r^2 = 0.983
+    //  */
+    // public double calcAngleBasedOnRealRegression() {
+    //     double distance = getDistanceToSpeaker();
+    //     Logger.recordOutput("Spivit/DesiredAngle", 291 * Math.pow(distance, -0.074));
+    //     return 291 * Math.pow(distance, -0.074);
 
-    }
+    // }
 
-    /**
-     * 
-     * 
-     * r^2 = 0.996
-     */
-    public double calcAngleBasedOnEstimatorRegression() {
-        double distance = getDistanceToSpeaker();
-        return 291 * Math.pow(distance, -0.0762);
-    }
+    // /**
+    //  * 
+    //  * 
+    //  * r^2 = 0.996
+    //  */
+    // public double calcAngleBasedOnEstimatorRegression() {
+    //     double distance = getDistanceToSpeaker();
+    //     return 291 * Math.pow(distance, -0.0762);
+    // }
 
     public double calcAngleBasedOnHashMap() {
         double distance = getDistanceToSpeakerForSpivit();

@@ -43,7 +43,7 @@ public class ContinouslyAlignAndShoot extends Command {
   @Override
   public void initialize() {
     shooter.setSpeed(shooterRPM, shooterRPM);
-    spivit.setAngle(swerve.calcAngleBasedOnRealRegression());
+    spivit.setAngle(swerve.calcAngleBasedOnHashMap());
     intake.intakeToShooter();
   }
 
@@ -57,7 +57,7 @@ public class ContinouslyAlignAndShoot extends Command {
       swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker() + Math.PI));
     }
     //shooter.setSpeed(shooterRPM, shooterRPM);
-    spivit.setAngle(swerve.calcAngleBasedOnRealRegression()-3);
+    spivit.setAngle(swerve.calcAngleBasedOnHashMap()-3);
   }
 
   // Called once the command ends or is interrupted.

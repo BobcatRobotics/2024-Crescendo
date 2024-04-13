@@ -49,7 +49,7 @@ public class AlignAndShootPPOverride extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    spivit.setAngle(swerve.calcAngleBasedOnRealRegression() + spivitOffset);
+    spivit.setAngle(swerve.calcAngleBasedOnHashMap() + spivitOffset);
     
     if (BobcatUtil.isBlue()) {
       swerve.setRotationTarget(Rotation2d.fromRadians(swerve.getAngleToSpeaker()));
