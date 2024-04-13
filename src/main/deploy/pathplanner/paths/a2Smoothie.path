@@ -20,12 +20,28 @@
         "y": 7.016492665463964
       },
       "prevControl": {
-        "x": 1.9547974979140843,
-        "y": 6.841080348827365
+        "x": 1.963627748562105,
+        "y": 6.804985733378956
+      },
+      "nextControl": {
+        "x": 3.4148769485187436,
+        "y": 7.195321564039803
+      },
+      "isLocked": false,
+      "linkedName": "a2_second_leg_start"
+    },
+    {
+      "anchor": {
+        "x": 8.001290988336962,
+        "y": 5.788606449007769
+      },
+      "prevControl": {
+        "x": 8.41257018181894,
+        "y": 5.869771102881427
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "a2_second_leg_start"
+      "linkedName": "amp_intake_first"
     }
   ],
   "rotationTargets": [
@@ -39,7 +55,7 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 0.55,
+      "waypointRelativePos": 1.65,
       "command": {
         "type": "parallel",
         "data": {
@@ -48,6 +64,29 @@
               "type": "named",
               "data": {
                 "name": "Intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PrepareToSmoothie"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "SmoothieAlignAndShoot"
               }
             }
           ]

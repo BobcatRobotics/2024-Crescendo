@@ -32,12 +32,14 @@ import frc.robot.Commands.Auto.AutoIntake;
 import frc.robot.Commands.Auto.AutoSpit;
 import frc.robot.Commands.Auto.AutosGrabNote;
 import frc.robot.Commands.Auto.ContinouslyAlignAndShoot;
+import frc.robot.Commands.Auto.PrepareToSmoothie;
 import frc.robot.Commands.Auto.ReleaseHook;
 import frc.robot.Commands.Auto.RevToRPM;
 import frc.robot.Commands.Auto.SubwooferShot;
 import frc.robot.Commands.Auto.Align.AlignAndRevPPOverride;
 import frc.robot.Commands.Auto.Align.AlignAndShoot;
 import frc.robot.Commands.Auto.Align.AlignAndShootPPOverride;
+import frc.robot.Commands.Auto.Align.SmoothieAlignAndShootPPOverride;
 import frc.robot.Commands.Auto.LimeLight.setSourceSidePipline;
 import frc.robot.Commands.Intake.TeleopIntake;
 import frc.robot.Commands.Multi.SetAmp;
@@ -314,7 +316,8 @@ public class RobotContainer {
                                 0
                         )
                 );
-
+                NamedCommands.registerCommand("SmoothieAlignAndShoot", new SmoothieAlignAndShootPPOverride(m_swerve, m_Spivit, m_shooter, m_intake, 1.25));
+                NamedCommands.registerCommand("PrepareToSmoothie", new PrepareToSmoothie(m_intake, m_shooter));
                 /*
                  * Auto Chooser
                  * 

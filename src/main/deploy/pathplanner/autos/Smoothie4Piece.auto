@@ -1,0 +1,85 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.4291761916857164,
+      "y": 7.308846526524962
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoStowe"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignAndShoot1.5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "a2 intake first"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignAndShoot1.5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "a2 second leg"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "amp shoot first"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignAndShoot1.5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "amp intake second"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "amp shoot second"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignAndShoot1.5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "amp race to center"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
