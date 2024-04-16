@@ -22,7 +22,7 @@ public class SmoothieAlignAndShootPPOverride extends Command {
   private Intake intake;
   private boolean aligned = false;
   double shootTime = 0;
-  double spivitTolerance = 1; //degrees
+  double spivitTolerance = 0.5; //degrees
   double swerveTolerance = 0.1; //radians
   private Timer timer = new Timer();
   private boolean feeding = false;

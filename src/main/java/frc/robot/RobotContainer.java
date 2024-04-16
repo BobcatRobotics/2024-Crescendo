@@ -317,7 +317,7 @@ public class RobotContainer {
                         )
                 );
                 NamedCommands.registerCommand("SmoothieAlignAndShoot", new SmoothieAlignAndShootPPOverride(m_swerve, m_Spivit, m_shooter, m_intake, 1.25));
-                NamedCommands.registerCommand("PrepareToSmoothie", new PrepareToSmoothie(m_intake, m_shooter));
+                NamedCommands.registerCommand("PrepareToSmoothie", new PrepareToSmoothie(m_intake, m_shooter, m_Spivit));
                 /*
                  * Auto Chooser
                  * 

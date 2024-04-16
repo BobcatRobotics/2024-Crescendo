@@ -8,18 +8,21 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Subsystems.Intake.Intake;
 import frc.robot.Subsystems.Shooter.Shooter;
+import frc.robot.Subsystems.Spivit.Spivit;
 
 public class PrepareToSmoothie extends Command {
   private Intake intake;
   private boolean finished = false;
   private Shooter shooter;
+  private Spivit spivit;
 
   /** Creates a new AutoIntake. */
-  public PrepareToSmoothie(Intake intake, Shooter shooter) {
+  public PrepareToSmoothie(Intake intake, Shooter shooter, Spivit spivit) {
     this.intake = intake;
     this.shooter = shooter;
+    this.spivit = spivit;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intake, shooter);
+    addRequirements(intake, shooter, spivit);
   }
 
   // Called when the command is initially scheduled.
@@ -27,6 +30,7 @@ public class PrepareToSmoothie extends Command {
   public void initialize() {
     finished = false;
     intake.removePeice();
+    spivit.setAngle(ShooterConstants.stow);
     shooter.setSpeed(ShooterConstants.fastShooterRPMSetpoint, ShooterConstants.fastShooterRPMSetpoint);
   }
 

@@ -689,9 +689,9 @@ public class Swerve extends SubsystemBase {
 
     public boolean aligned(Rotation2d angle) {
         if (BobcatUtil.getAlliance() == Alliance.Blue) {
-            return Math.abs(angle.getRadians() - getYaw().getRadians()) <= 1;
+            return Math.abs(angle.getRadians() - getYaw().getRadians()) <= Math.toRadians(2.5); // TODO Formerly 1 radian -_-
         } else {
-            return Math.abs(angle.getRadians() - getYaw().getRadians()) <= 1;
+            return Math.abs(angle.getRadians() - getYaw().getRadians()) <= Math.toRadians(2.5);
         }
     }
 
