@@ -14,6 +14,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -84,7 +85,7 @@ public class RobotContainer {
         private final CommandJoystick rotate = new CommandJoystick(1);
         private final CommandJoystick strafe = new CommandJoystick(0);
         private final CommandJoystick gp = new CommandJoystick(2);
-        private final Trigger shouldIntake = gp.povDown().or(gp.povDownLeft()).or(gp.povDownRight());
+        private final Trigger shouldIntake = gp.povDown().or(gp.povDownLeft()).or(gp.povDownRight()).or(gp.povUp());
 
         /* Subsystems */
         public final Swerve m_swerve;
@@ -330,17 +331,18 @@ public class RobotContainer {
                 // autoChooser.addOption("KidsMeal", new PathPlannerAuto("AdjustedKidsMeal"));
                 // autoChooser.addOption("OutOfTheWay", new PathPlannerAuto("out of the way"));
                 autoChooser.addOption("OuttaTheWay2", new PathPlannerAuto("OuttaTheWay2"));
+                autoChooser.addOption("SmoothieAmp4piece", new PathPlannerAuto("SmoothieAmp4Piece"));
                 // autoChooser.addOption("OUT OF THE WAY 3", new PathPlannerAuto("Outta the way
                 // 3"));
 
                 autoChooser.addOption("FastFood", new PathPlannerAuto("FastFood"));
 
-                autoChooser.addOption("AmpCenterLine3Piece", new PathPlannerAuto("AmpSideAuto"));
+                autoChooser.addOption("AmpInsideOut", new PathPlannerAuto("AmpSideAuto"));
                 autoChooser.addOption("AmpOutsideIn", new PathPlannerAuto("AmpSideOutsideFirst"));
                 autoChooser.addOption("AmpFrontNote4Piece", new PathPlannerAuto("AmpSide4Piece"));
                 autoChooser.addOption("SideOfRanch", new PathPlannerAuto("SideOfRanch"));
                 autoChooser.addOption("NoteHuntingSourceSide", new PathPlannerAuto("NoteHuntingSourceSide"));
-                autoChooser.addOption("real cool auto", new PathPlannerAuto("real cool auto"));
+                //autoChooser.addOption("real cool auto", new PathPlannerAuto("real cool auto"));
                 autoChooser.addOption("leftovers", new PathPlannerAuto("Leftovers"));
         }
 
@@ -445,7 +447,7 @@ public class RobotContainer {
                                                 m_Spivit,
                                                 () -> gp.button(5).getAsBoolean()).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
-                gp.button(7).whileTrue(new StartEndCommand(() -> m_shooter.setSpeed(-1000, -1000), m_shooter::stop,
+                gp.button(7).whileTrue(new StartEndCommand(() -> m_shooter.setSpeed(-2000, -2000), m_shooter::stop,
                                 m_shooter));
 
 
@@ -486,7 +488,7 @@ public class RobotContainer {
 
                 /* feed to opponents */
                 gp.button(4).whileTrue(new RunCommand(() -> {
-                        m_Spivit.setAngle(ShooterConstants.ampPosition);
+                        m_Spivit.setAngle(ShooterConstants.ampPosition + m_swerve.velocityTowardsPassingSpot());
                         m_shooter.setSpeed(3400, 3400);
                 }, m_Spivit, m_shooter)).onFalse(
                                 new InstantCommand(m_shooter::stop)

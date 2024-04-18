@@ -42,7 +42,7 @@ public class CandleAlignment extends Command {
   public void execute() {
     if(feeding.getAsBoolean()){
       candle.setLEDs(CANdleState.FEED);
-    }else if (spivit.aligned() && swerve.alignedLEDS()) {
+    }else if (spivit.aligned() && swerve.alignedLEDS(spivit.getDesiredAngle())) {
       candle.setLEDs(CANdleState.ALIGNED);
     } else {
       candle.setLEDs(CANdleState.ALIGNING);

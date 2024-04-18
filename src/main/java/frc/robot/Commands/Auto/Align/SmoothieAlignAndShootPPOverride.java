@@ -23,7 +23,7 @@ public class SmoothieAlignAndShootPPOverride extends Command {
   private boolean aligned = false;
   double shootTime = 0;
   double spivitTolerance = 0.5; //degrees
-  double swerveTolerance = 0.1; //radians
+  double swerveTolerance = Math.toRadians(2.5); //radians
   private Timer timer = new Timer();
   private boolean feeding = false;
   private boolean finished = true;
@@ -79,7 +79,9 @@ public class SmoothieAlignAndShootPPOverride extends Command {
   }
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    swerve.setRotationTarget(null);
+  }
 
   // Returns true when the command should end.
   @Override

@@ -83,7 +83,7 @@ public class TeleopSwerve extends Command {
         // Rotation2d ampVal = BobcatUtil.isBlue()?Constants.FieldConstants.blueAmpCenter.getRotation() : Constants.FieldConstants.redAmpCenter.getRotation();
 
         if(pass.getAsBoolean() && rotationVal == 0){
-            autoAlignAngle = BobcatUtil.isRed() ? swerve.getAngleToPassArea() : swerve.getAngleToPassArea() + Math.PI;
+            autoAlignAngle = BobcatUtil.isRed() ? swerve.getAngleToPassArea() : swerve.getAngleToPassArea();
             overriden = false;
             Logger.recordOutput("Swerve/PassAngle",new Pose2d(swerve.getPose().getTranslation(), Rotation2d.fromRadians(swerve.getAngleToPassArea())));
 

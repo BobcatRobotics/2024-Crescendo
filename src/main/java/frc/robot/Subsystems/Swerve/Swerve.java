@@ -683,8 +683,12 @@ public class Swerve extends SubsystemBase {
         }
     }
 
-    public boolean alignedLEDS() {
-        return Math.abs(Math.toDegrees(autoAlignPID.getPositionError())) <= SwerveConstants.rotationToleranceAlignment;
+    public boolean alignedLEDS(double spivitAngle) {
+        if(spivitAngle < ShooterConstants.ampPosition){
+            return Math.abs(Math.toDegrees(autoAlignPID.getPositionError())) <= 3; //3 degrees of tolerance if we're far away
+        }else{
+            return Math.abs(Math.toDegrees(autoAlignPID.getPositionError())) <= 5; //5 degrees of tolerance if we're close
+        }
     }
 
     public boolean aligned(Rotation2d angle) {
@@ -1095,6 +1099,25 @@ public class Swerve extends SubsystemBase {
         }
 
         return ret_val;
+    }
+
+    public double velocityTowardsPassingSpot() {
+        Translation2d speakerPose;
+        ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getYaw());
+        Translation2d linearFieldVelocity = new Translation2d(-(BobcatUtil.isRed() ? chassisSpeeds.vxMetersPerSecond : -chassisSpeeds.vxMetersPerSecond), -(BobcatUtil.isRed() ? chassisSpeeds.vyMetersPerSecond : -chassisSpeeds.vyMetersPerSecond));
+        if (BobcatUtil.isBlue()) {
+            speakerPose = FieldConstants.bluePassPose;
+        } else {
+            speakerPose = FieldConstants.redPassPose;
+        }
+        Rotation2d speakerToRobotAngle = getPose().getTranslation().minus(speakerPose).getAngle();
+        Translation2d tangentialVelocity = linearFieldVelocity.rotateBy(speakerToRobotAngle.unaryMinus());
+        // Positive when velocity is away from speaker
+        double radialComponent = tangentialVelocity.getX();
+        // Positive when traveling CCW about speaker
+        double tangentialComponent = tangentialVelocity.getY();
+
+        return -tangentialComponent*1.25;
     }
 
 }

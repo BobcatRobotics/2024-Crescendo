@@ -12,6 +12,7 @@ import frc.robot.Constants.ShooterConstants;
 public class Spivit extends SubsystemBase {
   private final SpivitIO io;
   private final SpivitIOInputsAutoLogged inputs = new SpivitIOInputsAutoLogged();
+  private double desiredAngle = 0;
   
   /** Creates a new Spivit. */
   public Spivit(SpivitIO io) {
@@ -29,7 +30,12 @@ public class Spivit extends SubsystemBase {
    * @param angle IN DEGRES!!!!!!!!!!!!!!>:(
    */
   public void setAngle(double angle){
+    desiredAngle = angle;
     io.setAngle(angle);
+  }
+
+  public double getDesiredAngle(){
+    return desiredAngle;
   }
 
   /**

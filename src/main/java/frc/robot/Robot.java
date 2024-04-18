@@ -162,7 +162,15 @@ public class Robot extends LoggedRobot {
     m_robotContainer.m_shooterRightVision.setCamMode(CamMode.VISION);
     m_robotContainer.m_shooterRightVision.setPipeline(LimelightConstants.shooterRight.apriltagPipelineIndex);
     m_robotContainer.m_shooterCenterVision.setCamMode(CamMode.VISION);
-    m_robotContainer.m_shooterCenterVision.setPipeline(Constants.LimelightConstants.shooterCenter.resPipline);
+    // if(m_robotContainer.autoChooserInitialized()){
+    //   if(m_robotContainer.shouldUseHighResPipelineCenterLimelight()){
+    //     m_robotContainer.m_shooterCenterVision.setPipeline(Constants.LimelightConstants.shooterCenter.resPipline);
+    //   }else{
+    //     m_robotContainer.m_shooterCenterVision.setPipeline(Constants.LimelightConstants.shooterCenter.fpsPipline);
+    //   }
+    // }else{
+    //   m_robotContainer.m_shooterCenterVision.setPipeline(Constants.LimelightConstants.shooterCenter.fpsPipline);
+    // }
     m_robotContainer.m_intakeTagVision.setCamMode(CamMode.VISION);
     m_robotContainer.m_intakeTagVision.setPipeline(LimelightConstants.shooterRight.apriltagPipelineIndex);
 
