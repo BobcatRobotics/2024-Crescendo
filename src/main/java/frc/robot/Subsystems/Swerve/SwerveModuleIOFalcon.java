@@ -37,6 +37,7 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
     private final Queue<Double> drivePositionQueue;
     private final StatusSignal<Double> drivePosition;
     private final StatusSignal<Double> driveVelocity;
+    private final StatusSignal<Double> driveAcceleration;
 
     private final Queue<Double> anglePositionQueue;
     private final StatusSignal<Double> angleAbsolutePosition;
@@ -60,7 +61,7 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         drivePositionQueue =
             PhoenixOdometryThread.getInstance().registerSignal(driveMotor, driveMotor.getPosition());
         driveVelocity = driveMotor.getVelocity();
-
+        driveAcceleration = driveMotor.getAcceleration();
         angleAbsolutePosition = angleEncoder.getAbsolutePosition();
         anglePositionQueue =
             PhoenixOdometryThread.getInstance().registerSignal(angleEncoder, angleEncoder.getPosition());
@@ -86,7 +87,8 @@ public class SwerveModuleIOFalcon implements SwerveModuleIO {
         internalTempAngle,
         internalTempDrive,
         processorTempAngle,
-        processorTempDrive);
+        processorTempDrive,
+        driveAcceleration);
 
         inputs.drivePositionRot = drivePosition.getValueAsDouble() / SwerveConstants.driveGearRatio;
         inputs.driveVelocityRotPerSec = driveVelocity.getValueAsDouble() / SwerveConstants.driveGearRatio;

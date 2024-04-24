@@ -37,9 +37,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.Quartic;
+import frc.lib.util.BobcatLib.BobcatSwerveEstimator;
 import frc.robot.Constants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LimelightConstants;
+import frc.robot.Constants.PoseEstimatorConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Subsystems.Vision.Vision;
@@ -55,7 +57,7 @@ public class Swerve extends SubsystemBase {
     private final Vision IntakeVision;
     private final Vision shooterCenterVision;
     private final Vision IntakeTagVision;
-    private final SwerveDrivePoseEstimator poseEstimator;
+    private final BobcatSwerveEstimator poseEstimator;
     // private final SwerveDriveOdometry odometry;
 
     private final double[] swerveModuleStates = new double[8];
@@ -112,7 +114,7 @@ public class Swerve extends SubsystemBase {
 
         // Using last year's default deviations, need to tune
 
-        poseEstimator = new SwerveDrivePoseEstimator(SwerveConstants.swerveKinematics, getYaw(), getModulePositions(),
+        poseEstimator = new BobcatSwerveEstimator(SwerveConstants.swerveKinematics, getYaw(), getModulePositions(),
                 new Pose2d(), SwerveConstants.autostateStdDevs, VecBuilder.fill(0, 0, 0));
 
         poseLookup = new RobotPoseLookup();
@@ -211,7 +213,20 @@ public class Swerve extends SubsystemBase {
                 lastYaw = yaw;
             }
 
-            poseEstimator.updateWithTime(sampleTimestamps[i], lastYaw, modulePositions);
+            switch (getOdometryState()) {
+                case THROWOUT:
+                    break;
+                case DISTRUST:
+                    poseEstimator.updateWithTime(sampleTimestamps[i], lastYaw, modulePositions, PoseEstimatorConstants.distrustStdDevs);
+                    break;
+                case TRUST:
+                    poseEstimator.updateWithTime(sampleTimestamps[i], lastYaw, modulePositions, PoseEstimatorConstants.trustStdDevs);
+                    break;
+                default:
+                    poseEstimator.updateWithTime(sampleTimestamps[i], lastYaw, modulePositions, PoseEstimatorConstants.trustStdDevs);
+                    break;
+            }
+            
             swerveModulePositions = modulePositions;
         }
 
@@ -291,6 +306,24 @@ public class Swerve extends SubsystemBase {
          */
 
     }
+
+    public OdometryState getOdometryState(){
+        double avgAccel = 0;
+        for(SwerveModule module : modules){
+            if(module.getDriveAcceleration() > 5){
+                return OdometryState.THROWOUT;
+            }
+            avgAccel += module.getDriveAcceleration() / modules.length;
+        }
+        if(avgAccel > 4){
+            return OdometryState.DISTRUST;
+        }else{
+            return OdometryState.TRUST;
+        }
+    }
+
+
+    
 
     // public double getStdDev(double dist) {
     // return DriverStation.isAutonomous() ? dist/LimelightConstants.autostdDev :
@@ -1119,5 +1152,11 @@ public class Swerve extends SubsystemBase {
 
         return -tangentialComponent*1.25;
     }
-
+    
+public enum OdometryState{
+    TRUST,
+    DISTRUST,
+    THROWOUT
 }
+}
+

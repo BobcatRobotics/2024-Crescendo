@@ -630,4 +630,12 @@ public class Constants {
         public static final double deployTolerance = 1.5; // degrees of tolerance
         public static final double retractTolerance = 2.5;
     }
+
+    public static final class PoseEstimatorConstants{
+        public static final Matrix<N3, N1> trustStdDevs = VecBuilder.fill(0.01, 0.01, Units.degreesToRadians(1));
+        public static final Matrix<N3, N1> distrustStdDevs = VecBuilder.fill(0.15, 0.15, Units.degreesToRadians(1));
+        public static final double odometryThrowoutAccel = 5.5; //m/s^2
+        public static final double odometryDistrustAccel = 4; //m/s^2
+    }
+
 }

@@ -181,4 +181,8 @@ public class SwerveModule {
     public double[] getOdometryTimestamps() {
         return inputs.odometryTimestamps;
     }
+
+    public double getDriveAcceleration(){
+        return inputs.driveAcceleration;
+    }
 }
