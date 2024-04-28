@@ -68,7 +68,7 @@ public class AlignAndShoot extends Command {
     Logger.recordOutput("feeding", feeding);
 
 
-    if(spivit.aligned() && swerve.aligned(angle) && shooter.aboveSpeed(4500)){
+    if(spivit.aligned() && swerve.aligned(angle) && shooter.aboveSpeed(4750)){
       timer.start();
       intake.intakeToShooter();
       Logger.recordOutput("Alignment/feeding", true);
@@ -77,7 +77,7 @@ public class AlignAndShoot extends Command {
       }
       
     }
-    if(timer.hasElapsed(shootTime) || (!shooter.aboveSpeed(ShooterConstants.outtookShooterRPMDropThresholdForShootingEarlierInAutos) && feeding)){
+    if(timer.hasElapsed(shootTime) || (!shooter.eitherAboveSpeed(ShooterConstants.outtookShooterRPMDropThresholdForShootingEarlierInAutos) && feeding)){
       shooter.stop();
       intake.stop();
       spivit.stopMotor();

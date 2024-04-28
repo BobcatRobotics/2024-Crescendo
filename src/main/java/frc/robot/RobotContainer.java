@@ -6,6 +6,7 @@ package frc.robot;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
+import com.fasterxml.jackson.core.sym.Name;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -41,6 +42,9 @@ import frc.robot.Commands.Auto.Align.AlignAndRevPPOverride;
 import frc.robot.Commands.Auto.Align.AlignAndShoot;
 import frc.robot.Commands.Auto.Align.AlignAndShootPPOverride;
 import frc.robot.Commands.Auto.Align.SmoothieAlignAndShootPPOverride;
+import frc.robot.Commands.Auto.Align.SmoothieAlignDontShoot;
+import frc.robot.Commands.Auto.Align.SmoothieShootOnly;
+import frc.robot.Commands.Auto.Align.StopSwervePPOverride;
 import frc.robot.Commands.Auto.LimeLight.setSourceSidePipline;
 import frc.robot.Commands.Intake.TeleopIntake;
 import frc.robot.Commands.Multi.SetAmp;
@@ -257,7 +261,9 @@ public class RobotContainer {
                  * Names must match what is in PathPlanner
                  * Please give descriptive names
                  */
-
+                NamedCommands.registerCommand("SmoothieAlignDontShoot", new SmoothieAlignDontShoot(m_swerve, m_Spivit, m_shooter, m_intake).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+                NamedCommands.registerCommand("SmoothieShootOnly", new SmoothieShootOnly(m_intake, shouldIntake, 2.5));
+                NamedCommands.registerCommand("StopSwervePPOverride", new StopSwervePPOverride(m_swerve).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
                 NamedCommands.registerCommand("CoolCenterlineSweepShoot", new ParallelCommandGroup(
                         new InstantCommand(() -> m_Spivit.setAngle(ShooterConstants.stow)),
                         new InstantCommand(() -> m_intake.intakeToShooter()),
@@ -344,6 +350,8 @@ public class RobotContainer {
                 autoChooser.addOption("NoteHuntingSourceSide", new PathPlannerAuto("NoteHuntingSourceSide"));
                 //autoChooser.addOption("real cool auto", new PathPlannerAuto("real cool auto"));
                 autoChooser.addOption("leftovers", new PathPlannerAuto("Leftovers"));
+                autoChooser.addOption("Source Inside Out", new PathPlannerAuto("SourceInsideOut"));
+                //autoChooser.addOption("CenterlineFirst5", new PathPlannerAuto("CenterlineFirst5"));
         }
 
         /**

@@ -84,6 +84,8 @@ public class Shooter extends SubsystemBase {
         return (io.getTopVelocity() >= rpm/60 && io.getBottomVelocity() >= rpm/60);
     }
 
-
+    public boolean eitherAboveSpeed(double rpm) {
+        return (io.getTopVelocity() >= rpm/60 || io.getBottomVelocity() >= rpm/60);
+    }
 
 }

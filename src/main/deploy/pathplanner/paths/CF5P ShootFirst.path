@@ -1,0 +1,86 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.9875135522242555,
+        "y": 4.085148692862707
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 8.987513552224256,
+        "y": 4.085148692862707
+      },
+      "isLocked": false,
+      "linkedName": "CF5P 1E"
+    },
+    {
+      "anchor": {
+        "x": 5.147917304381616,
+        "y": 4.291754680375458
+      },
+      "prevControl": {
+        "x": 6.032835526763591,
+        "y": 3.8260082475428403
+      },
+      "nextControl": {
+        "x": 4.703539435568899,
+        "y": 4.525637769224256
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.9377221147604686,
+        "y": 5.274063653540413
+      },
+      "prevControl": {
+        "x": 4.212384948986422,
+        "y": 5.005098101364294
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "CF5P ShootFirst"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.1,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "AlignDontShoot"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Centerline first 5 piece ",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

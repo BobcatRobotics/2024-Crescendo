@@ -64,6 +64,7 @@ public class Swerve extends SubsystemBase {
     private SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
     private Rotation2d ppRotationOverride;
     private final RobotPoseLookup poseLookup;
+    public boolean isSmoothieAligned = false;
 
     // private SwerveSetpointGenerator setpointGenerator;
     // private SwerveSetpoint currentSetpoint = new SwerveSetpoint(
@@ -1117,7 +1118,15 @@ public class Swerve extends SubsystemBase {
         // Positive when traveling CCW about speaker
         double tangentialComponent = tangentialVelocity.getY();
 
-        return -tangentialComponent*1.25;
+        return -tangentialComponent*1.25    ;
+    }
+
+    public void SetSmoothieAutoIsAligned(boolean aligned){
+        isSmoothieAligned = aligned;
+    }
+
+    public boolean isSmoothieAutoAligned(){
+        return isSmoothieAligned;
     }
 
 }
