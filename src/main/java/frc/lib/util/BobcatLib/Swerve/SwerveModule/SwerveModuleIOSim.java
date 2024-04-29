@@ -1,4 +1,4 @@
-package frc.lib.util.BobcatLib.Swerve;
+package frc.lib.util.BobcatLib.Swerve.SwerveModule;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;

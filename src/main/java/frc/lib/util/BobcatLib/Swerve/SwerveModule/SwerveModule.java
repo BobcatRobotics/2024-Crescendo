@@ -1,4 +1,4 @@
-package frc.lib.util.BobcatLib.Swerve;
+package frc.lib.util.BobcatLib.Swerve.SwerveModule;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -10,8 +10,8 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import frc.lib.util.BobcatLib.Swerve.SwerveModuleIOInputsAutoLogged;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.Subsystems.Swerve.SwerveModuleIOInputsAutoLogged;
 
 public class SwerveModule {
     private final SwerveModuleIO io;

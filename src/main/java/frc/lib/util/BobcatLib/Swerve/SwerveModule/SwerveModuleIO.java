@@ -1,4 +1,4 @@
-package frc.lib.util.BobcatLib.Swerve;
+package frc.lib.util.BobcatLib.Swerve.SwerveModule;
 
 import org.littletonrobotics.junction.AutoLog;
 
