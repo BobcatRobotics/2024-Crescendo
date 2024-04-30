@@ -10,9 +10,10 @@ public class DynamicTunePID extends PIDController {
     private double d;
 
     /**
-     * WIP
+     * TODO: WIP <p>
      * 
-     * Should automatically publish pid to nt for tuning purposes, NOT FOR USE IN COMP
+     * NOT FOR USE IN COMP <n>
+     * Should automatically publish pid to nt for tuning purposes,<n> 
      * robot will prob need to be in test mode for this to work
      */
     public DynamicTunePID(double kp, double ki, double kd){
@@ -23,9 +24,7 @@ public class DynamicTunePID extends PIDController {
         Shuffleboard.getTab("tuning").add(this).withWidget(BuiltInWidgets.kPIDController);
     }
 
-    //public void setPID(){
-    //    setPID(p, i, d);
-    //}
+
 
     
     
