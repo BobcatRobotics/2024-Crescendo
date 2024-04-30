@@ -50,6 +50,8 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.Subsystems.Vision.Vision;
 import frc.robot.Util.BobcatUtil;
 import frc.robot.Util.RobotPoseLookup;
+import frc.lib.util.BobcatLib.Swerve.GyroIOInputsAutoLogged;
+
 
 public class Swerve extends SubsystemBase {
     private final GyroIO gyroIO;
