@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.Quartic;
 import frc.lib.util.BobcatLib.PoseEstimation.BobcatSwerveEstimator;
+import frc.lib.util.BobcatLib.Swerve.GyroIO;
 import frc.lib.util.BobcatLib.Swerve.SwerveModule.SwerveModule;
 import frc.lib.util.BobcatLib.Swerve.SwerveModule.SwerveModuleIO;
 import frc.robot.Constants;

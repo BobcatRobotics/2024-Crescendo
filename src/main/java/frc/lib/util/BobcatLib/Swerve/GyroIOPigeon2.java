@@ -1,4 +1,4 @@
-package frc.robot.Subsystems.Swerve;
+package frc.lib.util.BobcatLib.Swerve;
 
 import java.util.Queue;
 
@@ -10,6 +10,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Subsystems.Swerve.PhoenixOdometryThread;
 
 public class GyroIOPigeon2 implements GyroIO {
     private final Pigeon2 pigeon;
