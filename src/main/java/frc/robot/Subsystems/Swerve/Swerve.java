@@ -2,9 +2,11 @@ package frc.robot.Subsystems.Swerve;
 
 import java.util.Arrays;
 import java.util.Optional;
+
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -14,9 +16,10 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -30,17 +33,14 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.Quartic;
 import frc.lib.util.BobcatLib.PoseEstimation.BobcatSwerveEstimator;
 import frc.lib.util.BobcatLib.Swerve.GyroIO;
-import frc.lib.util.BobcatLib.Swerve.GyroIOInputsAutoLogged;
 import frc.lib.util.BobcatLib.Swerve.SwerveModule.SwerveModule;
 import frc.lib.util.BobcatLib.Swerve.SwerveModule.SwerveModuleIO;
-import frc.lib.util.BobcatLib.Swerve.Team6328.ModuleLimits;
-import frc.lib.util.BobcatLib.Swerve.Team6328.SwerveSetpoint;
-import frc.lib.util.BobcatLib.Swerve.Team6328.SwerveSetpointGenerator;
 import frc.robot.Constants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LimelightConstants;
@@ -64,7 +64,6 @@ public class Swerve extends SubsystemBase {
     private final Vision IntakeTagVision;
     private final BobcatSwerveEstimator poseEstimator;
     // private final SwerveDriveOdometry odometry;
-    private final SwerveSetpointGenerator setpointGenerator;
 
     private final double[] swerveModuleStates = new double[8];
     private final double[] desiredSwerveModuleStates = new double[8];
@@ -72,10 +71,6 @@ public class Swerve extends SubsystemBase {
     private SwerveModulePosition[] swerveModulePositions = new SwerveModulePosition[4];
     private Rotation2d ppRotationOverride;
     private final RobotPoseLookup poseLookup;
-    private SwerveSetpoint currentSetpoint = SwerveSetpointGenerator.getBlankSetpoint();
-    private final ModuleLimits modLimits = new ModuleLimits(
-        SwerveConstants.maxModuleSpeed, SwerveConstants.maxAccel, SwerveConstants.maxAngularAcceleration
-    );
 
     // private SwerveSetpointGenerator setpointGenerator;
     // private SwerveSetpoint currentSetpoint = new SwerveSetpoint(
@@ -159,10 +154,6 @@ public class Swerve extends SubsystemBase {
                 },
                 this);
         PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
-        setpointGenerator = SwerveSetpointGenerator.builder()
-                                    .kinematics(SwerveConstants.swerveKinematics)
-                                    .moduleLocations(SwerveConstants.moduleTranslations)
-                                    .build();
 
     }
 
@@ -244,13 +235,13 @@ public class Swerve extends SubsystemBase {
             swerveModulePositions = modulePositions;
         }
 
-        // for (SwerveModule mod : modules) {
-        //     SmartDashboard.putNumber("Mod " + mod.index + " Angle", mod.getRawCanCoder());
-        //     desiredSwerveModuleStates[mod.index * 2 + 1] = mod.getDesiredState().speedMetersPerSecond;
-        //     desiredSwerveModuleStates[mod.index * 2] = mod.getDesiredState().angle.getDegrees();
-        //     swerveModuleStates[mod.index * 2 + 1] = mod.getState().speedMetersPerSecond;
-        //     swerveModuleStates[mod.index * 2] = mod.getState().angle.getDegrees();
-        // }
+        for (SwerveModule mod : modules) {
+            SmartDashboard.putNumber("Mod " + mod.index + " Angle", mod.getRawCanCoder());
+            desiredSwerveModuleStates[mod.index * 2 + 1] = mod.getDesiredState().speedMetersPerSecond;
+            desiredSwerveModuleStates[mod.index * 2] = mod.getDesiredState().angle.getDegrees();
+            swerveModuleStates[mod.index * 2 + 1] = mod.getState().speedMetersPerSecond;
+            swerveModuleStates[mod.index * 2] = mod.getState().angle.getDegrees();
+        }
 
         Logger.recordOutput("Swerve/Rotation", gyroInputs.yawPosition.getDegrees());
         Logger.recordOutput("Swerve/DesiredModuleStates", desiredSwerveModuleStates);
@@ -449,17 +440,10 @@ public class Swerve extends SubsystemBase {
     public void drive(ChassisSpeeds targetSpeeds) {
         targetSpeeds = ChassisSpeeds.discretize(targetSpeeds, Constants.loopPeriodSecs);
 
-        currentSetpoint = setpointGenerator.generateSetpoint(modLimits, currentSetpoint, targetSpeeds, Constants.loopPeriodSecs);
-
         lastMovingYaw = getYaw().getRadians();
 
         SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates(targetSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, SwerveConstants.maxModuleSpeed);
-        SwerveModuleState[] optimizedSetpointStates = new SwerveModuleState[4];
-        for (int i = 0; i < modules.length; i++) {
-            // Optimize setpoints
-            optimizedSetpointStates[i] = SwerveModuleState.optimize(currentSetpoint.moduleStates()[i], modules[i].getAngle());
-        }
 
         for (SwerveModule mod : modules) {
             mod.setDesiredState(swerveModuleStates[mod.index]);

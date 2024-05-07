@@ -1,4 +1,4 @@
-package frc.lib.util.BobcatLib.Swerve.Team6328;
+package frc.lib.util.swerve;
 
 public record ModuleLimits(double maxDriveVelocity, double maxDriveAcceleration, double maxSteeringVelocity) {
     
