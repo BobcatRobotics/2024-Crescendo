@@ -6,7 +6,6 @@ package frc.lib.util.BobcatLib.PoseEstimation;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -17,11 +16,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 
 /**
- * This is a wrapper of our custom swerve estimator, which allows for logging of pure odometry, without vision updates,
- * this is particularly useful for tuning swerve state std devs
- * 
- * 
- * This class wraps {@link BaseBobcatSwerveEstimator BaseBobcaSwervetEstimator}, which wraps {@link BobcatEstimator} to fuse latency-compensated
+ * This class wraps {@link SwerveDriveOdometry Swerve Drive Odometry} to fuse latency-compensated
  * vision measurements with swerve drive encoder distance measurements. It is intended to be a
  * drop-in replacement for {@link edu.wpi.first.math.kinematics.SwerveDriveOdometry}.
  *
@@ -30,8 +25,8 @@ import edu.wpi.first.math.numbers.N3;
  * <p>{@link SwerveDrivePoseEstimator#addVisionMeasurement} can be called as infrequently as you
  * want; if you never call it, then this class will behave as regular encoder odometry.
  */
-public class BobcatSwerveEstimator extends BaseBobcatSwerveEstimator {
-  private BaseBobcatSwerveEstimator odometryTracker;
+public class BaseBobcatSwerveEstimator extends BobcatEstimator<SwerveDriveWheelPositions> {
+  private final int m_numModules;
 
   /**
    * Constructs a SwerveDrivePoseEstimator with default standard deviations for the model and vision
@@ -46,13 +41,18 @@ public class BobcatSwerveEstimator extends BaseBobcatSwerveEstimator {
    * @param modulePositions The current distance measurements and rotations of the swerve modules.
    * @param initialPoseMeters The starting pose estimate.
    */
-  public BobcatSwerveEstimator(
+  public BaseBobcatSwerveEstimator(
       SwerveDriveKinematics kinematics,
       Rotation2d gyroAngle,
       SwerveModulePosition[] modulePositions,
       Pose2d initialPoseMeters) {
-      super(kinematics, gyroAngle, modulePositions, initialPoseMeters);
-      odometryTracker = new BaseBobcatSwerveEstimator(kinematics, gyroAngle, modulePositions, initialPoseMeters);
+    this(
+        kinematics,
+        gyroAngle,
+        modulePositions,
+        initialPoseMeters,
+        VecBuilder.fill(0.1, 0.1, 0.1),
+        VecBuilder.fill(0.9, 0.9, 0.9));
   }
 
   /**
@@ -69,18 +69,38 @@ public class BobcatSwerveEstimator extends BaseBobcatSwerveEstimator {
    *     in meters, y position in meters, and heading in radians). Increase these numbers to trust
    *     the vision pose measurement less.
    */
-  public BobcatSwerveEstimator(
+  public BaseBobcatSwerveEstimator(
       SwerveDriveKinematics kinematics,
       Rotation2d gyroAngle,
       SwerveModulePosition[] modulePositions,
       Pose2d initialPoseMeters,
       Matrix<N3, N1> stateStdDevs,
       Matrix<N3, N1> visionMeasurementStdDevs) {
-    super(kinematics, gyroAngle, modulePositions, initialPoseMeters, stateStdDevs, visionMeasurementStdDevs);
-    odometryTracker = new BaseBobcatSwerveEstimator(kinematics, gyroAngle, modulePositions, initialPoseMeters);
+    super(
+        kinematics,
+        new SwerveDriveOdometry(kinematics, gyroAngle, modulePositions, initialPoseMeters),
+        stateStdDevs,
+        visionMeasurementStdDevs);
+
+    m_numModules = modulePositions.length;
   }
 
-   /**
+  /**
+   * Resets the robot's position on the field.
+   *
+   * <p>The gyroscope angle does not need to be reset in the user's robot code. The library
+   * automatically takes care of offsetting the gyro angle.
+   *
+   * @param gyroAngle The angle reported by the gyroscope.
+   * @param modulePositions The current distance measurements and rotations of the swerve modules.
+   * @param poseMeters The position on the field that your robot is at.
+   */
+  public void resetPosition(
+      Rotation2d gyroAngle, SwerveModulePosition[] modulePositions, Pose2d poseMeters) {
+    resetPosition(gyroAngle, new SwerveDriveWheelPositions(modulePositions), poseMeters);
+  }
+
+  /**
    * Updates the pose estimator with wheel encoder and gyro information. This should be called every
    * loop.
    *
@@ -88,29 +108,11 @@ public class BobcatSwerveEstimator extends BaseBobcatSwerveEstimator {
    * @param modulePositions The current distance measurements and rotations of the swerve modules.
    * @return The estimated pose of the robot in meters.
    */
-  @Override
   public Pose2d update(Rotation2d gyroAngle, SwerveModulePosition[] modulePositions) {
-    odometryTracker.update(gyroAngle, modulePositions);
-    return super.update(gyroAngle, new SwerveDriveWheelPositions(modulePositions));
+    return update(gyroAngle, new SwerveDriveWheelPositions(modulePositions));
   }
 
-    /**
-   * Updates the pose estimator with wheel encoder and gyro information. This should be called every
-   * loop.
-   *
-   * @param currentTimeSeconds Time at which this method was called, in seconds.
-   * @param gyroAngle The current gyroscope angle.
-   * @param modulePositions The current distance measurements and rotations of the swerve modules.
-   * @return The estimated pose of the robot in meters.
-   */
-  @Override
-   public Pose2d updateWithTime(double currentTimeSeconds, Rotation2d gyroAngle, SwerveModulePosition[] modulePositions) {
-      odometryTracker.updateWithTime(currentTimeSeconds, gyroAngle, modulePositions);
-      return super.updateWithTime(currentTimeSeconds, gyroAngle, modulePositions);
-  }
-  
   /**
-   * 
    * Updates the pose estimator with wheel encoder and gyro information. This should be called every
    * loop.
    *
@@ -119,22 +121,36 @@ public class BobcatSwerveEstimator extends BaseBobcatSwerveEstimator {
    * @param modulePositions The current distance measurements and rotations of the swerve modules.
    * @return The estimated pose of the robot in meters.
    */
-   @Override
-   public Pose2d updateWithTime(
+  public Pose2d updateWithTime(
+      double currentTimeSeconds, Rotation2d gyroAngle, SwerveModulePosition[] modulePositions) {
+    return updateWithTime(
+        currentTimeSeconds, gyroAngle, new SwerveDriveWheelPositions(modulePositions));
+  }
+  /**
+   * Updates the pose estimator with wheel encoder and gyro information. This should be called every
+   * loop.
+   *
+   * @param currentTimeSeconds Time at which this method was called, in seconds.
+   * @param gyroAngle The current gyroscope angle.
+   * @param modulePositions The current distance measurements and rotations of the swerve modules.
+   * @return The estimated pose of the robot in meters.
+   */
+  public Pose2d updateWithTime(
       double currentTimeSeconds, Rotation2d gyroAngle, SwerveModulePosition[] modulePositions, Matrix<N3, N1> stateStdDevs) {
-        odometryTracker.updateWithTime(currentTimeSeconds, gyroAngle,  modulePositions, stateStdDevs);
-        return super.updateWithTime(currentTimeSeconds, gyroAngle,  modulePositions, stateStdDevs);
+      setStateStdDevs(stateStdDevs);
+      return updateWithTime(
+        currentTimeSeconds, gyroAngle, new SwerveDriveWheelPositions(modulePositions));
   }
 
   @Override
   public Pose2d updateWithTime(
       double currentTimeSeconds, Rotation2d gyroAngle, SwerveDriveWheelPositions wheelPositions) {
-        odometryTracker.updateWithTime(currentTimeSeconds, gyroAngle, wheelPositions);
-        return super.updateWithTime(currentTimeSeconds, gyroAngle, wheelPositions);
+    if (wheelPositions.positions.length != m_numModules) {
+      throw new IllegalArgumentException(
+          "Number of modules is not consistent with number of wheel locations provided in "
+              + "constructor");
     }
 
-  public Pose2d getPureOdometry(){
-    return odometryTracker.getEstimatedPosition();
+    return super.updateWithTime(currentTimeSeconds, gyroAngle, wheelPositions);
   }
-
 }

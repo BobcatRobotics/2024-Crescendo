@@ -40,6 +40,7 @@ import frc.lib.util.Quartic;
 import frc.lib.util.BobcatLib.PoseEstimation.BobcatSwerveEstimator;
 import frc.lib.util.BobcatLib.Swerve.SwerveModule;
 import frc.lib.util.BobcatLib.Swerve.SwerveModuleIO;
+import frc.lib.util.swerve.PhoenixOdometryThread;
 import frc.robot.Constants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LimelightConstants;
@@ -84,7 +85,7 @@ public class Swerve extends SubsystemBase {
     private double lastMovingYaw = 0.0;
     private boolean rotating = false;
 
-    static final Lock odometryLock = new ReentrantLock();
+    static final public Lock odometryLock = new ReentrantLock();
 
     Pose2d desiredPose = new Pose2d();
     private Rotation2d lastYaw = new Rotation2d();
@@ -194,7 +195,9 @@ public class Swerve extends SubsystemBase {
 
         Logger.recordOutput("Swerve/YawSetpoint", lastMovingYaw);
         Logger.recordOutput("Swerve/CurrentYaw", getYaw().getRadians());
+        Logger.recordOutput("Swerve/PureOdom", poseEstimator.getPureOdometry());
         Logger.processInputs("Swerve/Gyro", gyroInputs);
+        
 
         // Update odometry
         double[] sampleTimestamps = modules[0].getOdometryTimestamps();

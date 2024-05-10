@@ -11,7 +11,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.Subsystems.Swerve.SwerveModuleIOInputsAutoLogged;
+import frc.lib.util.BobcatLib.Swerve.SwerveModuleIOInputsAutoLogged;
 
 public class SwerveModule {
     private final SwerveModuleIO io;
