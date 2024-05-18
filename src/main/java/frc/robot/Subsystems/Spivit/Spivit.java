@@ -6,6 +6,9 @@ package frc.robot.Subsystems.Spivit;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 
@@ -21,9 +24,16 @@ public class Spivit extends SubsystemBase {
 
   @Override
   public void periodic() {
+    Logger.recordOutput("components", new Pose3d[]{getSpivitPoseAScope()});
     io.updateInputs(inputs);
     Logger.processInputs("Spivit", inputs);
 
+  }
+
+  public Pose3d getSpivitPoseAScope(){
+    Rotation2d rot = Rotation2d.fromDegrees(getAngle());
+    rot = rot.minus(Rotation2d.fromDegrees(ShooterConstants.encoderOffsetFromHorizontal));
+    return new Pose3d(0, -0.16, 0.23, new Rotation3d(rot.getRadians(), 0, 0));
   }
 
   /**
