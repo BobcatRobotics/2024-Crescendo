@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -81,6 +80,7 @@ public class Swerve extends SubsystemBase {
 
     private final PIDController rotationPID;
     private final PIDController autoAlignPID;
+    private final PIDController passPID;
     private double lastMovingYaw = 0.0;
     private boolean rotating = false;
 
@@ -114,6 +114,9 @@ public class Swerve extends SubsystemBase {
         autoAlignPID = new PIDController(SwerveConstants.autoAlignRotationKP, SwerveConstants.autoAlignRotationKI,
                 SwerveConstants.autoAlignRotationKD);
         autoAlignPID.enableContinuousInput(0, 2 * Math.PI);
+        passPID = new PIDController(SwerveConstants.autoAlignRotationKP + 1, SwerveConstants.autoAlignRotationKI,
+                SwerveConstants.autoAlignRotationKD);
+        passPID.enableContinuousInput(0, 2 * Math.PI); 
 
         // Using last year's default deviations, need to tune
 
@@ -233,6 +236,7 @@ public class Swerve extends SubsystemBase {
         Logger.recordOutput("Swerve/ModuleStates", swerveModuleStates);
         Logger.recordOutput("Swerve/Pose", getPose());
         field2d.setRobotPose(getPose());
+        
         Logger.recordOutput("Swerve/ChassisSpeeds", new Translation2d(ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getYaw()).vxMetersPerSecond, ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getYaw()).vyMetersPerSecond));
         if (DriverStation.isDisabled()) {
             for (SwerveModule mod : modules) {
