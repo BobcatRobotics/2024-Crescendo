@@ -33,6 +33,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -56,6 +57,8 @@ public class Swerve extends SubsystemBase {
     private final Vision shooterCenterVision;
     private final Vision IntakeTagVision;
     private final SwerveDrivePoseEstimator poseEstimator;
+    private final Field2d field2d = new Field2d();
+
     // private final SwerveDriveOdometry odometry;
 
     private final double[] swerveModuleStates = new double[8];
@@ -95,6 +98,7 @@ public class Swerve extends SubsystemBase {
         this.shooterCenterVision = shooterCenterVision;
         this.IntakeTagVision = intakeTagVision;
         this.gyroIO = gyroIO;
+        SmartDashboard.putData(field2d);
         modules = new SwerveModule[] {
                 new SwerveModule(flIO, 0),
                 new SwerveModule(frIO, 1),
@@ -228,6 +232,7 @@ public class Swerve extends SubsystemBase {
         Logger.recordOutput("Swerve/DesiredModuleStates", desiredSwerveModuleStates);
         Logger.recordOutput("Swerve/ModuleStates", swerveModuleStates);
         Logger.recordOutput("Swerve/Pose", getPose());
+        field2d.setRobotPose(getPose());
         Logger.recordOutput("Swerve/ChassisSpeeds", new Translation2d(ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getYaw()).vxMetersPerSecond, ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getYaw()).vyMetersPerSecond));
         if (DriverStation.isDisabled()) {
             for (SwerveModule mod : modules) {
