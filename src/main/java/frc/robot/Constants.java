@@ -226,8 +226,8 @@ public class Constants {
         public static final Translation2d redSpeakerPose = new Translation2d(Units.inchesToMeters(652.73 - 12),
                 Units.inchesToMeters(218.42)); // Center of the opening //652.73
 
-        public static final Translation2d bluePassPose = new Translation2d(2.22, 7.21);
-        public static final Translation2d redPassPose = new Translation2d(14.321, 7.21);
+        public static final Translation2d bluePassPose = new Translation2d(2.22, 6.42); //y=7.21;
+        public static final Translation2d redPassPose = new Translation2d(14.321, 6.42); //y=7.21
         
         public static final Translation2d blueSpeakerPoseSpivit = new Translation2d(Units.inchesToMeters(-1.5),
                 Units.inchesToMeters(218.42)); // Center of the opening

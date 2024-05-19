@@ -28,14 +28,17 @@ public class AlignAndShoot extends Command {
   double shootTime;
   private boolean feeding = false;
   private double spivitFudge = 0;
+  private boolean swerveAligned = false;
+  private boolean skipSwerveAlignment = true;
 
-  public AlignAndShoot(Swerve swerve, Spivit spivit, Shooter shooter, Intake intake, double shootTime, double spivitFudge) {
+  public AlignAndShoot(Swerve swerve, Spivit spivit, Shooter shooter, Intake intake, double shootTime, double spivitFudge, boolean skipSwerveCheck) {
     this.swerve = swerve;
     this.spivit = spivit;
     this.shooter = shooter;
     this.intake = intake;
     this.shootTime = shootTime;
     this.spivitFudge = spivitFudge;
+    this.skipSwerveAlignment = skipSwerveCheck;
 
     addRequirements(spivit, shooter, intake, swerve);
   }
@@ -68,7 +71,8 @@ public class AlignAndShoot extends Command {
     Logger.recordOutput("feeding", feeding);
 
 
-    if(spivit.aligned() && swerve.aligned(angle) && shooter.aboveSpeed(4750)){
+    swerveAligned = skipSwerveAlignment ?  true : swerve.aligned(angle);
+    if(spivit.aligned() && swerveAligned && shooter.aboveSpeed(4750)){
       timer.start();
       intake.intakeToShooter();
       Logger.recordOutput("Alignment/feeding", true);

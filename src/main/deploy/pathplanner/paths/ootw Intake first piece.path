@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.36,
-        "y": 3.38
+        "x": 2.7506156436814293,
+        "y": 3.145727545016345
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.231829855605439,
-        "y": 1.6763826537166528
+        "x": 3.622445499286868,
+        "y": 1.4421101987329978
       },
       "isLocked": false,
       "linkedName": "outtathewayshootpoint"

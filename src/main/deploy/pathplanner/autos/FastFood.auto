@@ -20,7 +20,7 @@
         {
           "type": "named",
           "data": {
-            "name": "AlignAndShoot0.5"
+            "name": "AlignAndShoot0.5DontCheckSwerve"
           }
         },
         {

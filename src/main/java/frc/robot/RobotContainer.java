@@ -283,17 +283,18 @@ public class RobotContainer {
                 NamedCommands.registerCommand("ShootWhileBacking",
                                 new AlignAndShootPPOverride(m_swerve, m_Spivit, m_shooter, m_intake, 0.5, -2));
                 NamedCommands.registerCommand("AlignAndShoot1.5",
-                                new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 1.5, 0));
+                                new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 1.5, 0, false));
                 NamedCommands.registerCommand("AlignAndShoot1.5Fudged",
-                                new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 1.5, 2));
+                                new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 1.5, 2, false));
                 NamedCommands.registerCommand("AlignAndShoot1.0",
-                                new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 1.0, 0));
+                                new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 1.0, 0, false));
                 NamedCommands.registerCommand("AlignAndShoot0.5",
-                                new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 0.5, 0));
+                                new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 0.5, 0, false));
                 NamedCommands.registerCommand("AlignAndShoot5.0", 
-                                new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 5.0, 0));
+                                new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 5.0, 0, false));
                 NamedCommands.registerCommand("AutoSpit1.5", 
                                 new AutoSpit(m_swerve, m_Spivit, m_shooter, m_intake, 1.5, 0));
+                NamedCommands.registerCommand("AlignAndShoot0.5DontCheckSwerve", new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 0.5, 0, true));
                 // NamedCommands.registerCommand("LeftBiasedAlignAndShoot", new
                 // LeftBiasedAlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake) );
                 NamedCommands.registerCommand("AlignDontShoot",
@@ -325,6 +326,7 @@ public class RobotContainer {
                 );
                 NamedCommands.registerCommand("SmoothieAlignAndShoot", new SmoothieAlignAndShootPPOverride(m_swerve, m_Spivit, m_shooter, m_intake, 1.25));
                 NamedCommands.registerCommand("PrepareToSmoothie", new PrepareToSmoothie(m_intake, m_shooter, m_Spivit));
+                NamedCommands.registerCommand("AlignAndShoot1.5degreefudge", new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 1.5, 1.5, false));
                 /*
                  * Auto Chooser
                  * 
