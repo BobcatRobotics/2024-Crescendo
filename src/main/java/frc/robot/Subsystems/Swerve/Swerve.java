@@ -2,7 +2,6 @@ package frc.robot.Subsystems.Swerve;
 
 import java.util.Arrays;
 import java.util.Optional;
-
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -31,6 +30,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -83,7 +83,7 @@ public class Swerve extends SubsystemBase {
     private final PIDController passPID;
     private double lastMovingYaw = 0.0;
     private boolean rotating = false;
-
+    Timer timer = new Timer();
     static final Lock odometryLock = new ReentrantLock();
 
     Pose2d desiredPose = new Pose2d();
@@ -343,7 +343,7 @@ public class Swerve extends SubsystemBase {
      */
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean snapToAmp,
             boolean autoAlign, double autoAlignAngle, boolean rotateToNote, double tx) {
-
+                
         // Rotation2d ampVal =
         // BobcatUtil.isBlue()?Constants.FieldConstants.blueAmpCenter.getRotation() :
         // Constants.FieldConstants.redAmpCenter.getRotation();
@@ -377,9 +377,15 @@ public class Swerve extends SubsystemBase {
             lastMovingYaw = getYaw().getRadians();
         } else {
             if (rotation == 0) {
+                timer.reset();
+                timer.start();
                 if (rotating) {
-                    rotating = false;
+                    
                     lastMovingYaw = getYaw().getRadians();
+                    if (timer.hasElapsed(0.25)) {
+                        rotating = false;
+                        timer.stop();    
+                    }
                 }
                 desiredSpeeds.omegaRadiansPerSecond = rotationPID.calculate(get0to2Pi(getYaw().getRadians()),
                         get0to2Pi(lastMovingYaw));

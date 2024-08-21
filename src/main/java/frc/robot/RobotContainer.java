@@ -426,7 +426,7 @@ public class RobotContainer {
                                                 () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine
                                                                                                             // translation
                                                 gp.povRight(), // align to amp
-                                                () -> false,//gp.button(5), // align to speaker
+                                                gp.button(10),//gp.button(5), // align to speaker
                                                 gp.button(4), // pass
                                                 gp.povRight(), // amp aim assist
                                                 gp.povUp()
@@ -532,11 +532,11 @@ public class RobotContainer {
                                                 new StartEndCommand(() -> m_Spivit.setPercent(0.25),
                                                                 m_Spivit::stopMotorFeedforward, m_Spivit));
                 // this sets it to a specific angle
-                //gp.button(5).whileTrue(
-                //                new RunCommand(() -> m_Spivit
-                //                                .setAngle(m_swerve.getShootWhileMoveBallistics(m_Spivit.getAngle())[1]),
-                //                                m_Spivit))
-                //                .onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
+                gp.button(10).whileTrue(
+                                new RunCommand(() -> m_Spivit
+                                                .setAngle(m_swerve.getShootWhileMoveBallistics(m_Spivit.getAngle())[1]),
+                                                m_Spivit))
+                                .onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
                 // gp.button(5).whileTrue(new InstantCommand(() ->
                 // m_shooterCenterVision.setPipeline(LimelightConstants.shooterCenter.fpsPipline))).onFalse(new
                 // InstantCommand(() ->
