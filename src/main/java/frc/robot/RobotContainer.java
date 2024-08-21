@@ -89,7 +89,7 @@ public class RobotContainer {
         private final CommandJoystick rotate = new CommandJoystick(1);
         private final CommandJoystick strafe = new CommandJoystick(0);
         private final CommandJoystick gp = new CommandJoystick(2);
-        private final Trigger shouldIntake = gp.povDown().or(gp.povDownLeft()).or(gp.povDownRight()).or(gp.povUp());
+        private final Trigger shouldIntake = gp.povDown().or(gp.povDownLeft()).or(gp.povDownRight()).or(gp.povUp()).or(gp.button(5));
 
         /* Subsystems */
         public final Swerve m_swerve;
@@ -356,6 +356,10 @@ public class RobotContainer {
                 //autoChooser.addOption("CenterlineFirst5", new PathPlannerAuto("CenterlineFirst5"));
         }
 
+        public void party(){
+                m_LEDs.setLEDs(CANdleState.NOTEHUNTING);
+        }
+
         /**
          * IMPORTANT NOTE:
          * When a gamepad value is needed by a command, don't
@@ -409,20 +413,20 @@ public class RobotContainer {
                 m_swerve.setDefaultCommand(
                                 new TeleopSwerve(
                                                 m_swerve,
-                                                () -> -strafe.getRawAxis(Joystick.AxisType.kY.value)
-                                                                * Math.abs(strafe.getRawAxis(
-                                                                                Joystick.AxisType.kY.value)), // translation
-                                                () -> -strafe.getRawAxis(Joystick.AxisType.kX.value)
-                                                                * Math.abs(strafe.getRawAxis(
-                                                                                Joystick.AxisType.kX.value)), // strafe
-                                                () -> -rotate.getRawAxis(Joystick.AxisType.kX.value), // rotate
+                                                () -> (-gp.getRawAxis(1)*0.5),//-strafe.getRawAxis(Joystick.AxisType.kY.value)
+                                                        //        * Math.abs(strafe.getRawAxis(
+                                                          //                      Joystick.AxisType.kY.value)) * 0.3, // translation
+                                                () -> -(gp.getRawAxis(0)*0.5),//-strafe.getRawAxis(Joystick.AxisType.kX.value)
+                                                      //          * Math.abs(strafe.getRawAxis(
+                                                      //                          Joystick.AxisType.kX.value)) * 0.3, // strafe
+                                                () -> -gp.getRawAxis(4)*0.5,//-rotate.getRawAxis(Joystick.AxisType.kX.value), // rotate
                                                 () -> false, // robot centric
                                                 () -> -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine
                                                                                                             // strafe
                                                 () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine
                                                                                                             // translation
                                                 gp.povRight(), // align to amp
-                                                gp.button(5), // align to speaker
+                                                () -> false,//gp.button(5), // align to speaker
                                                 gp.button(4), // pass
                                                 gp.povRight(), // amp aim assist
                                                 gp.povUp()
@@ -431,7 +435,6 @@ public class RobotContainer {
                 // reset gyro
                 rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro)
                                 .andThen(new InstantCommand(() -> m_LEDs.setLEDs(CANdleState.RESETGYRO, 1))));
-
                 // Amp drive to pose, need to test
                 // strafe.button(1).onTrue(new DriveToPose(m_swerve, BobcatUtil.isBlue()?
                 // FieldConstants.blueAmpCenter: FieldConstants.redAmpCenter));
@@ -455,7 +458,7 @@ public class RobotContainer {
                                                 m_Rumble,
                                                 m_LEDs,
                                                 m_Spivit,
-                                                () -> gp.button(5).getAsBoolean()).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+                                                () -> false)); //gp.button(5).getAsBoolean()).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
                 gp.button(7).whileTrue(new StartEndCommand(() -> m_shooter.setSpeed(-2000, -2000), m_shooter::stop,
                                 m_shooter));
@@ -490,10 +493,11 @@ public class RobotContainer {
                 gp.button(10)
                                 .whileTrue(new RunCommand(
                                                 () -> m_shooter.setSpeed(
-                                                                () -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(),
-                                                                                m_amp.getAngle()),
-                                                                () -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(),
-                                                                                m_amp.getAngle()))))
+                                                        //() -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(),
+                                                        //m_amp.getAngle()),
+                                                        //() -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(),
+                                                        //                        m_amp.getAngle())
+                                                        2000, 2000)))
                                 .onFalse(new InstantCommand(m_shooter::stop)); // back right
 
                 /* feed to opponents */
@@ -528,17 +532,18 @@ public class RobotContainer {
                                                 new StartEndCommand(() -> m_Spivit.setPercent(0.25),
                                                                 m_Spivit::stopMotorFeedforward, m_Spivit));
                 // this sets it to a specific angle
-                gp.button(5).whileTrue(
-                                new RunCommand(() -> m_Spivit
-                                                .setAngle(m_swerve.getShootWhileMoveBallistics(m_Spivit.getAngle())[1]),
-                                                m_Spivit))
-                                .onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
+                //gp.button(5).whileTrue(
+                //                new RunCommand(() -> m_Spivit
+                //                                .setAngle(m_swerve.getShootWhileMoveBallistics(m_Spivit.getAngle())[1]),
+                //                                m_Spivit))
+                //                .onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
                 // gp.button(5).whileTrue(new InstantCommand(() ->
                 // m_shooterCenterVision.setPipeline(LimelightConstants.shooterCenter.fpsPipline))).onFalse(new
                 // InstantCommand(() ->
                 // m_shooterCenterVision.setPipeline(LimelightConstants.shooterCenter.resPipline)));
                 gp.button(9).whileTrue(
-                                new RunCommand(() -> m_Spivit.setAngle(ShooterConstants.subwooferShot), m_Spivit))
+                                new RunCommand(
+                                () -> m_Spivit.setAngle(ShooterConstants.subwooferShot - 30), m_Spivit))
                                 .onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
 
                 /* amp controls */
@@ -558,13 +563,13 @@ public class RobotContainer {
                 // manual
                 // gp.axisGreaterThan(1, .6).whileTrue(new InstantCommand(() ->
                 // m_amp.setPercentOut(0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
-                gp.axisGreaterThan(1, .6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1),
-                                m_amp::stopMotorFeedforward, m_amp));
+                //gp.axisGreaterThan(5, .6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(0.1),
+                //                m_amp::stopMotorFeedforward, m_amp));
                 // this runs it down
                 // gp.axisLessThan(1, -.6).whileTrue(new InstantCommand(() ->
                 // m_amp.setPercentOut(-0.05))).onFalse(new InstantCommand(() -> m_amp.stop()));
-                gp.axisLessThan(1, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1),
-                                m_amp::stopMotorFeedforward, m_amp));
+                //gp.axisLessThan(5, -.6).whileTrue(new StartEndCommand(() -> m_amp.setPercentOut(-0.1),
+                //                m_amp::stopMotorFeedforward, m_amp));
                 gp.button(8).onTrue(
                                 new InstantCommand(() -> m_swerve.resetPose(BobcatUtil.getAlliance() == Alliance.Blue
                                                 ? new Pose2d(FieldConstants.blueSpeakerPose.plus(
@@ -619,9 +624,9 @@ public class RobotContainer {
                 // m_climber.setPercentOut(-gp.getRawAxis(3)), m_climber)).onFalse(new
                 // InstantCommand(m_climber::stop));
                 // this lowers the hooks
-                gp.axisGreaterThan(2, 0.07)
-                                .whileTrue(new RunCommand(() -> m_climber.setPercentOut(gp.getRawAxis(2)), m_climber))
-                                .onFalse(new InstantCommand(m_climber::stop));
+                //gp.axisGreaterThan(2, 0.07)
+                //                .whileTrue(new RunCommand(() -> m_climber.setPercentOut(gp.getRawAxis(2)), m_climber))
+                //                .onFalse(new InstantCommand(m_climber::stop));
                 // climber controls
                 // this raises the hooks
                 // gp.axisGreaterThan(3, 0.07).whileTrue(new RunCommand(() ->

@@ -53,8 +53,8 @@ public class Swerve extends SubsystemBase {
     private final Vision shooterLeftVision;
     private final Vision shooterRightVision;
     private final Vision IntakeVision;
-    private final Vision shooterCenterVision;
-    private final Vision IntakeTagVision;
+    //private final Vision shooterCenterVision;
+    //private final Vision IntakeTagVision;
     private final SwerveDrivePoseEstimator poseEstimator;
     private final Field2d field2d = new Field2d();
 
@@ -95,8 +95,8 @@ public class Swerve extends SubsystemBase {
         this.IntakeVision = intakeVision;
         this.shooterLeftVision = shooterLeftVision;
         this.shooterRightVision = shooterRightVision;
-        this.shooterCenterVision = shooterCenterVision;
-        this.IntakeTagVision = intakeTagVision;
+        //this.shooterCenterVision = shooterCenterVision;
+        //this.IntakeTagVision = intakeTagVision;
         this.gyroIO = gyroIO;
         SmartDashboard.putData(field2d);
         modules = new SwerveModule[] {
@@ -182,11 +182,11 @@ public class Swerve extends SubsystemBase {
         if (BobcatUtil.getAlliance() == Alliance.Blue) {
             shooterLeftVision.setPriorityID(LimelightConstants.blueSpeakerTag, LimelightConstants.shooterLeft.name);
             shooterRightVision.setPriorityID(LimelightConstants.blueSpeakerTag, LimelightConstants.shooterRight.name);
-            shooterCenterVision.setPriorityID(LimelightConstants.blueSpeakerTag, LimelightConstants.shooterCenter.name);
+            //shooterCenterVision.setPriorityID(LimelightConstants.blueSpeakerTag, LimelightConstants.shooterCenter.name);
         } else {
             shooterLeftVision.setPriorityID(LimelightConstants.redSpeakerTag, LimelightConstants.shooterLeft.name);
             shooterRightVision.setPriorityID(LimelightConstants.redSpeakerTag, LimelightConstants.shooterRight.name);
-            shooterCenterVision.setPriorityID(LimelightConstants.redSpeakerTag, LimelightConstants.shooterCenter.name);
+            //shooterCenterVision.setPriorityID(LimelightConstants.redSpeakerTag, LimelightConstants.shooterCenter.name);
 
         }
         odometryLock.lock();
@@ -244,20 +244,20 @@ public class Swerve extends SubsystemBase {
             }
         }
 
-        shooterCenterVision.SetRobotOrientation(getYaw());
+        //shooterCenterVision.SetRobotOrientation(getYaw());
         shooterLeftVision.SetRobotOrientation(getYaw());
         shooterRightVision.SetRobotOrientation(getYaw());
-        IntakeTagVision.SetRobotOrientation(getYaw());
+        //IntakeTagVision.SetRobotOrientation(getYaw());
 
         addVisionMG2(shooterLeftVision);
         addVisionMG2(shooterRightVision);
-        addVisionMG2(IntakeTagVision);
-        addVisionMG2(shooterCenterVision);
+        //addVisionMG2(IntakeTagVision);
+        //addVisionMG2(shooterCenterVision)//;
 
-        shooterCenterVision.tagThrowOut(LimelightConstants.filtertags);
-        shooterLeftVision.tagThrowOut(LimelightConstants.filtertags);
+        //shooterCenterVision.tagThrowOut(LimelightConstants.filtertags);
+        //shooterLeftVision.tagThrowOut(//LimelightConstants.filtertags);
         shooterRightVision.tagThrowOut(LimelightConstants.filtertags);
-        IntakeTagVision.tagThrowOut(LimelightConstants.filtertags);
+        //IntakeTagVision.tagThrowOut(LimelightConstants.filtertags);
 
         // 3015 code
         // poseLookup.addPose(getPose());
@@ -576,27 +576,27 @@ public class Swerve extends SubsystemBase {
     public double getDistanceToSpeakerForSpivit() {
         if (BobcatUtil.getAlliance() == Alliance.Blue) {
             Logger.recordOutput("DistanceToSpeaker/Pose", getPose().getTranslation().getDistance(FieldConstants.blueSpeakerPoseSpivit));
-            Logger.recordOutput("DistanceToSpeaker/SingleTag", shooterCenterVision.getDistToTag() + 0.181);
+            //Logger.recordOutput("DistanceToSpeaker/SingleTag", shooterCenterVision.getDistToTag() + 0.181);
 
-            if (shooterCenterVision.getID() == LimelightConstants.blueSpeakerTag
-                    && (shooterCenterVision.getDistToTag() +
-                            0.181) <= LimelightConstants.throwoutDist) {
-                return (shooterCenterVision.getDistToTag())
-                        + 0.181;
-            } else {
+            //if (shooterCenterVision.getID() == LimelightConstants.blueSpeakerTag
+            //        && (shooterCenterVision.getDistToTag() +
+            //                0.181) <= LimelightConstants.throwoutDist) {
+            //    return (shooterCenterVision.getDistToTag())
+            //            + 0.181;
+            //} else {
                 return getPose().getTranslation().getDistance(FieldConstants.blueSpeakerPoseSpivit);
-            }
+           // }
         } else {
             Logger.recordOutput("SpeakerAlign/SpivitDist/Pose/odometry", getPose().getTranslation().getDistance(FieldConstants.redSpeakerPoseSpivit));
-            Logger.recordOutput("SpeakerAlign/SpivitDist/Pose/SingleTag", shooterCenterVision.getDistToTag() + 0.181);
-            if (shooterCenterVision.getID() == LimelightConstants.redSpeakerTag
-                    && (shooterCenterVision.getDistToTag() +
-                            0.181) <= LimelightConstants.throwoutDist) {
-                return (shooterCenterVision.getDistToTag())
-                        + 0.181;
-            } else {
+           // Logger.recordOutput("SpeakerAlign/SpivitDist/Pose/SingleTag", shooterCenterVision.getDistToTag() + 0.181);
+           // if (shooterCenterVision.getID() == LimelightConstants.redSpeakerTag
+           //         && (shooterCenterVision.getDistToTag() +
+           //                 0.181) <= LimelightConstants.throwoutDist) {
+           //     return (shooterCenterVision.getDistToTag())
+           //             + 0.181;
+           // } else {
                 return getPose().getTranslation().getDistance(FieldConstants.redSpeakerPoseSpivit);
-            }
+           // }
 
         }
     }
@@ -744,16 +744,16 @@ public class Swerve extends SubsystemBase {
 
         Rotation2d odometryValue = Rotation2d.fromRadians(getAngleToSpeaker());
 
-        if (shooterCenterVision.getTV()
-                && getDistanceToSpeakerForSpivit() < ShooterConstants.holonomicAprilTagThrowoutDistance) {
-
-            lastValue = Rotation2d.fromRadians(get0to2Pi((getYaw().getRadians()
-                    - (((shooterCenterVision.getTX().getRadians()))))));
-            Logger.recordOutput("Autoalign/Using Tag", true);
-            return lastValue;
-        }
-
-        else if (Math.abs(odometryValue.minus(lastValue).getDegrees()) < 2.5) { // if we dont see both tags and odometry
+       // if (shooterCenterVision.getTV()
+       //         && getDistanceToSpeakerForSpivit() < ShooterConstants.holonomicAprilTagThrowoutDistance) {
+//
+       //     lastValue = Rotation2d.fromRadians(get0to2Pi((getYaw().getRadians()
+       //             - (((shooterCenterVision.getTX().getRadians()))))));
+       //     Logger.recordOutput("Autoalign/Using Tag", true);
+       //     return lastValue;
+       // }
+        //else if
+        if (Math.abs(odometryValue.minus(lastValue).getDegrees()) < 2.5) { // if we dont see both tags and odometry
                                                                                 // is within
             // 2.5 degrees of the last reported tag value
             Logger.recordOutput("Autoalign/Using Tag", false);
@@ -768,9 +768,9 @@ public class Swerve extends SubsystemBase {
     public Rotation2d getAngleToSpeakerTagAuto() {
         Rotation2d odometryValue = Rotation2d.fromRadians(getAngleToSpeaker());
         Logger.recordOutput("SpeakerAlign/Angle/odometry", odometryValue);
-        if(shooterCenterVision.getTV()){
-        Logger.recordOutput("SpeakerAlign/Angle/LLCenter", shooterCenterVision.getTX());
-        }
+       // if(shooterCenterVision.getTV()){
+       // Logger.recordOutput("SpeakerAlign/Angle/LLCenter", shooterCenterVision.getTX());
+       // }
 
         // Rotation2d leftLimeValue = shooterLeftVision.getTV() ?
         // Rotation2d.fromRadians(get0to2Pi(getYaw().getRadians() -

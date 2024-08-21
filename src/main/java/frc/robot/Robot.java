@@ -114,6 +114,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledInit() {
     CommandScheduler.getInstance().cancelAll();
+    m_robotContainer.party();
     
   }
 
@@ -187,6 +188,7 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    
     m_robotContainer.configureBindings();  
 
     m_robotContainer.m_intakeVision.setCamMode(CamMode.VISION);
