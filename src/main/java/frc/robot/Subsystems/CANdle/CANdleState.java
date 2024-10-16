@@ -26,5 +26,8 @@ public enum CANdleState {
     OUTAKE,
     FEED,
     ALIGNING,
-    ALIGNED
+    ALIGNED,
+    IDLE_NO_FMS,
+    IDLE_FMS_ATTACHED,
+    PARTY
 }

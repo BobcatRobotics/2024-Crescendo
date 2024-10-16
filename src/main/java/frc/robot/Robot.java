@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.LimelightConstants;
+import frc.robot.RobotContainer.PartyType;
 import frc.robot.Subsystems.Vision.CamMode;
 import frc.robot.Util.BobcatUtil;
 
@@ -141,14 +142,23 @@ public class Robot extends LoggedRobot {
     m_robotContainer.m_intakeTagVision.setCamMode(CamMode.VISION);
     m_robotContainer.m_intakeTagVision.setPipeline(LimelightConstants.shooterRight.apriltagPipelineIndex);
 
+    if (DriverStation.isFMSAttached()){
+     m_robotContainer.party(PartyType.IDLE_FMS_ATTACHED); 
+    }else{
+      m_robotContainer.party(PartyType.IDLE_NO_FMS);
+    }
 
   }
 
   @Override
-  public void disabledExit() {}
+  public void disabledExit() {
+    m_robotContainer.party(PartyType.PARTY_FOUL);
+  }
 
   @Override
-  public void autonomousInit() {    
+  public void autonomousInit() { 
+    m_robotContainer.party(PartyType.AUTO);
+
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -174,13 +184,16 @@ public class Robot extends LoggedRobot {
     m_robotContainer.m_intakeTagVision.setCamMode(CamMode.VISION);
     m_robotContainer.m_intakeTagVision.setPipeline(LimelightConstants.shooterRight.apriltagPipelineIndex);
 
+
   }
 
   @Override
   public void autonomousPeriodic() {}
 
   @Override
-  public void autonomousExit() {}
+  public void autonomousExit() {
+    m_robotContainer.party(PartyType.PARTY_FOUL);
+  }
 
   @Override
   public void teleopInit() {

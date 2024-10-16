@@ -250,6 +250,30 @@ public class RobotContainer {
                 return autoChooser.get() != null;
         }
 
+        public enum PartyType{
+                PARTY_FOUL,
+                AUTO,
+                IDLE_NO_FMS,
+                IDLE_FMS_ATTACHED
+        }
+        public void party(PartyType type){
+                switch (type) {
+                        case PARTY_FOUL:
+                                m_LEDs.setLEDs(CANdleState.OFF);
+                                break;
+                        case AUTO:
+                                m_LEDs.setLEDs(CANdleState.PARTY);
+                                break;
+                        case IDLE_NO_FMS:
+                                m_LEDs.setLEDs(CANdleState.IDLE_NO_FMS);
+                        case IDLE_FMS_ATTACHED:
+                                m_LEDs.setLEDs(CANdleState.IDLE_FMS_ATTACHED);
+                        default:
+                                m_LEDs.setLEDs(CANdleState.OFF);
+                                break;
+                }
+        }
+
         /**
          * this should only be called once DS and FMS are attached
          */
@@ -680,6 +704,156 @@ public class RobotContainer {
                 // Commands.sequence(new InstantCommand(() -> m_swerve.setLimeLEDS(true)),
                 // new WaitCommand(2),
                 // new InstantCommand(() -> m_swerve.setLimeLEDS(false))));
+        }
+
+        /**
+        * I am become 6328, driver of robots 
+        */
+        public void configureBindingsOneDriver(){
+                
+
+                /* Drive with joysticks */
+                m_swerve.setDefaultCommand(
+                                new TeleopSwerve(
+                                                m_swerve,
+                                                () -> (-gp.getRawAxis(1)*0.5),// translation
+                                                () -> -(gp.getRawAxis(0)*0.5), // strafe
+                                                () -> -gp.getRawAxis(4)*0.5, // rotate
+                                                () -> false, // robot centric
+                                                () -> -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine
+                                                                                                            // strafe
+                                                () -> -strafe.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine
+                                                                                                            // translation
+                                                gp.povRight(), // align to amp
+                                                gp.button(10), // align to speaker
+                                                gp.button(4), // pass
+                                                gp.povRight(), // amp aim assist
+                                                gp.povUp()
+                                ));
+                // reset gyro
+                rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro)
+                                .andThen(new InstantCommand(() -> m_LEDs.setLEDs(CANdleState.RESETGYRO, 1))));
+                // Amp drive to pose, need to test
+                // strafe.button(1).onTrue(new DriveToPose(m_swerve, BobcatUtil.isBlue()?
+                // FieldConstants.blueAmpCenter: FieldConstants.redAmpCenter));
+
+                /* Intake Controls */
+                m_intake.setDefaultCommand(
+                                new TeleopIntake(
+                                                m_intake,
+                                                shouldIntake, // shooter
+                                                // holding spin up shooter button, run intake to fire
+                                                gp.button(7), // outtake - 'back' button
+                                                () -> true,
+                                                () -> true,
+                                                gp.button(6), // feed to shooter/manual override
+                                                m_Rumble,
+                                                m_LEDs,
+                                                m_Spivit,
+                                                () -> false)); 
+
+                gp.button(7).whileTrue(new StartEndCommand(() -> m_shooter.setSpeed(-2000, -2000), m_shooter::stop,
+                                m_shooter));
+
+
+                gp.povDown().onTrue( // if shooter too low, raise whiles intaking
+                                new ConditionalCommand(
+                                                new InstantCommand(() -> m_Spivit.setAngle(ShooterConstants.stow)),
+                                                Commands.none(),
+                                                () -> m_Spivit.getAngle() < ShooterConstants.stow));
+                gp.povLeft().onTrue( // if shooter too low, raise whiles intaking
+                                new ConditionalCommand(
+                                                new InstantCommand(() -> m_Spivit.setAngle(ShooterConstants.stow)),
+                                                Commands.none(),
+                                                () -> m_Spivit.getAngle() < ShooterConstants.stow));
+
+                gp.button(5).whileTrue(
+                                new CandleAlignment(m_Spivit, m_swerve, m_LEDs, gp.button(6)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
+
+                );
+
+                /* Shooter Controls */
+                // while button is held, rev shooter
+                gp.button(10)
+                                .whileTrue(new RunCommand(
+                                                () -> m_shooter.setSpeed(
+                                                        () -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(),
+                                                        m_amp.getAngle()),
+                                                        () -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(),
+                                                                                m_amp.getAngle()))))
+                                .onFalse(new InstantCommand(m_shooter::stop)); // back right
+
+                /* feed to opponents */
+                gp.button(4).whileTrue(new RunCommand(() -> {
+                        m_Spivit.setAngle(ShooterConstants.ampPosition + m_swerve.velocityTowardsPassingSpot());
+                        m_shooter.setSpeed(3400, 3400);
+                }, m_Spivit, m_shooter)).onFalse(
+                                new InstantCommand(m_shooter::stop)
+                                                .alongWith(new InstantCommand(m_Spivit::stopMotorFeedforward))); // x
+
+                // manual down
+                gp.axisGreaterThan(5, .6)
+                                .whileTrue(new StartEndCommand(() -> m_Spivit.setPercent(-0.25),
+                                                m_Spivit::stopMotorFeedforward,
+
+                                                m_Spivit));
+                // manual up
+                gp.axisLessThan(5, -.6)
+                                .whileTrue(
+
+                                                new StartEndCommand(() -> m_Spivit.setPercent(0.25),
+                                                                m_Spivit::stopMotorFeedforward, m_Spivit));
+                // this sets it to a specific angle
+                gp.button(10).whileTrue(
+                                new RunCommand(() -> m_Spivit
+                                                .setAngle(m_swerve.getShootWhileMoveBallistics(m_Spivit.getAngle())[1]),
+                                                m_Spivit))
+                                .onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
+
+                gp.button(9).whileTrue(
+                                new RunCommand(
+                                () -> m_Spivit.setAngle(ShooterConstants.subwooferShot - 30), m_Spivit))
+                                .onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
+
+                /* amp controls */
+                // retract
+                gp.button(1).onTrue(new SetAmp(m_amp, m_Spivit, false));// .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+                                                                        // // b
+                // deploy
+                gp.button(2).onTrue(new SetAmp(m_amp, m_Spivit, true));// .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+                                                                       // // a
+                // zero
+                gp.button(3).onTrue(new InstantCommand(m_amp::zero)); // y
+
+                
+                gp.button(8).onTrue(
+                                new InstantCommand(() -> m_swerve.resetPose(BobcatUtil.getAlliance() == Alliance.Blue
+                                                ? new Pose2d(FieldConstants.blueSpeakerPose.plus(
+                                                                new Translation2d(1.3, 0)), 
+                                                                m_swerve.getYaw())
+                                                : new Pose2d(FieldConstants.redSpeakerPose
+                                                                .plus(new Translation2d(-1.3, 0)),
+                                                                m_swerve.getYaw().rotateBy(Rotation2d.fromDegrees(180)))))
+                                                .andThen(new InstantCommand(
+                                                                () -> m_LEDs.setLEDs(CANdleState.RESETGYRO, 1))));
+                gp.axisGreaterThan(3, 0.07)
+                                .whileTrue(new ClimbMode(m_climber, m_amp, m_Spivit, () -> -gp.getRawAxis(3)));
+
+                                gp.axisGreaterThan(2, 0.07)
+                                .whileTrue(new RunCommand(() -> m_climber.setPercentOut(gp.getRawAxis(2)), m_climber))
+                                .onFalse(new InstantCommand(m_climber::stop));
+
+                gp.povLeft()
+                                .whileTrue(new GrabNote(m_swerve, m_intakeVision, true, m_intake,
+                                                () -> (-Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value)) // translation
+                                                                * Math.abs(strafe.getRawAxis(
+                                                                                Joystick.AxisType.kY.value))),
+                                                () -> rotate.getRawAxis(Joystick.AxisType.kX.value), // rotation
+                                                () -> Math.abs(strafe.getRawAxis(Joystick.AxisType.kX.value)))
+                                                .alongWith(new InstantCommand(
+                                                                () -> m_LEDs.setLEDs(CANdleState.NOTEHUNTING))))
+                                .onFalse(new InstantCommand(() -> m_LEDs.setLEDs(CANdleState.OFF)));
+                ; // strafe
         }
 
         public Command getAutonomousCommand() {

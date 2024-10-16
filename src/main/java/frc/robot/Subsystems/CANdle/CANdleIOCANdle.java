@@ -1,8 +1,12 @@
 package frc.robot.Subsystems.CANdle;
 
 import com.ctre.phoenix.led.CANdle;
+import com.ctre.phoenix.led.ColorFlowAnimation;
+import com.ctre.phoenix.led.RainbowAnimation;
+import com.ctre.phoenix.led.SingleFadeAnimation;
 import com.ctre.phoenix.led.StrobeAnimation;
 
+import frc.robot.Constants;
 import frc.robot.Constants.CANdleConstants;
 import frc.robot.Util.BobcatUtil;
 
@@ -58,6 +62,15 @@ public class CANdleIOCANdle implements CANdleIO {
                 break;
             case OFF:
                 leds.animate(null);
+                break;
+            case PARTY:
+                leds.animate(new RainbowAnimation(1, 0.75, Constants.CANdleConstants.LedCount));
+                break;
+            case IDLE_NO_FMS:
+                leds.animate(new SingleFadeAnimation(255, 0, 0, 0, 0.5, CANdleConstants.LedCount));
+                break;
+            case IDLE_FMS_ATTACHED:
+                leds.animate(new SingleFadeAnimation(0, 255, 0, 0, 0.4, CANdleConstants.LedCount));
                 break;
             default:
                 leds.animate(null);
