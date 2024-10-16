@@ -716,8 +716,8 @@ public class RobotContainer {
                 m_swerve.setDefaultCommand(
                                 new TeleopSwerve(
                                                 m_swerve,
-                                                () -> (-gp.getRawAxis(1)*0.5),// translation
-                                                () -> -(gp.getRawAxis(0)*0.5), // strafe
+                                                () -> (-gp.getRawAxis(1)),// translation
+                                                () -> -(gp.getRawAxis(0)), // strafe
                                                 () -> -gp.getRawAxis(4)*0.5, // rotate
                                                 () -> false, // robot centric
                                                 () -> -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine
