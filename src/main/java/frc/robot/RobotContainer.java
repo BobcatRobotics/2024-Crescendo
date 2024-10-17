@@ -132,8 +132,7 @@ public class RobotContainer {
                                                 new VisionIOLimelight(LimelightConstants.shooterLeft.constants));
                                 m_shooterCenterVision = new Vision(
                                                 new VisionIOLimelight(LimelightConstants.shooterCenter.constants));
-                                m_intakeTagVision = new Vision(
-                                                new VisionIOLimelight(LimelightConstants.intakeTag.constants));
+                                m_intakeTagVision = new Vision(new VisionIO() {});
                                 m_swerve = new Swerve(new GyroIOPigeon2(),
                                                 new SwerveModuleIOFalcon(SwerveConstants.Module0Constants.constants),
                                                 new SwerveModuleIOFalcon(SwerveConstants.Module1Constants.constants),
