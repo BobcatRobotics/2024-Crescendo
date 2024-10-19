@@ -26,6 +26,10 @@ import frc.robot.Util.BobcatUtil;
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
+
+
+  private boolean fein = false;
+
   private RobotContainer m_robotContainer;
 
   public double visionStdDev;
@@ -200,8 +204,12 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    m_robotContainer.configureBindings();  
 
+    if(fein){
+      m_robotContainer.configureBindingsOneDriver();
+    }else{
+      m_robotContainer.configureBindings();  
+    }
     m_robotContainer.m_intakeVision.setCamMode(CamMode.VISION);
     m_robotContainer.m_intakeVision.setPipeline(LimelightConstants.intake.detectorPiplineIndex);
     m_robotContainer.m_shooterLeftVision.setCamMode(CamMode.VISION);
