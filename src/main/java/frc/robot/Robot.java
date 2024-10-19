@@ -28,7 +28,6 @@ public class Robot extends LoggedRobot {
 
 
 
-  private boolean fein = false;
 
   private RobotContainer m_robotContainer;
 
@@ -205,11 +204,9 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
 
-    if(fein){
-      m_robotContainer.configureBindingsOneDriver();
-    }else{
+    
       m_robotContainer.configureBindings();  
-    }
+    
     m_robotContainer.m_intakeVision.setCamMode(CamMode.VISION);
     m_robotContainer.m_intakeVision.setPipeline(LimelightConstants.intake.detectorPiplineIndex);
     m_robotContainer.m_shooterLeftVision.setCamMode(CamMode.VISION);

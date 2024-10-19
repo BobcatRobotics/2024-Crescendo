@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.fasterxml.jackson.core.sym.Name;
@@ -89,7 +91,8 @@ public class RobotContainer {
         private final CommandJoystick rotate = new CommandJoystick(1);
         private final CommandJoystick strafe = new CommandJoystick(0);
         private final CommandJoystick gp = new CommandJoystick(2);
-        private final Trigger shouldIntake = gp.povDown().or(gp.povDownLeft()).or(gp.povDownRight()).or(gp.povUp());
+        private final Trigger shouldIntake = Constants.fein? gp.povDown().or(gp.povDownLeft()).or(gp.povDownRight()).or(gp.povUp()).or(gp.button(5)) : gp.povDown().or(gp.povDownLeft()).or(gp.povDownRight()).or(gp.povUp());
+
 
         /* Subsystems */
         public final Swerve m_swerve;
@@ -132,7 +135,8 @@ public class RobotContainer {
                                                 new VisionIOLimelight(LimelightConstants.shooterLeft.constants));
                                 m_shooterCenterVision = new Vision(
                                                 new VisionIOLimelight(LimelightConstants.shooterCenter.constants));
-                                m_intakeTagVision = new Vision(new VisionIO() {});
+                                m_intakeTagVision = new Vision(new VisionIO() {
+                                });
                                 m_swerve = new Swerve(new GyroIOPigeon2(),
                                                 new SwerveModuleIOFalcon(SwerveConstants.Module0Constants.constants),
                                                 new SwerveModuleIOFalcon(SwerveConstants.Module1Constants.constants),
@@ -233,7 +237,7 @@ public class RobotContainer {
 
                 }
 
-                // autoChooser.addOption("Odometry Tuning", new PathPlannerAuto("Odometry 
+                // autoChooser.addOption("Odometry Tuning", new PathPlannerAuto("Odometry
                 // Tuning"));
                 // autoChooser.addOption("AdjustedKidsMeal", new
                 // PathPlannerAuto("AdjustedKidsMeal"));
@@ -242,20 +246,22 @@ public class RobotContainer {
                 configureBindings();
         }
 
-        public boolean shouldUseHighResPipelineCenterLimelight(){
-                return autoChooser.get().getName() != "FastFood" || autoChooser.get().getName() != "Leftovers" ;
+        public boolean shouldUseHighResPipelineCenterLimelight() {
+                return autoChooser.get().getName() != "FastFood" || autoChooser.get().getName() != "Leftovers";
         }
-        public boolean autoChooserInitialized(){
+
+        public boolean autoChooserInitialized() {
                 return autoChooser.get() != null;
         }
 
-        public enum PartyType{
+        public enum PartyType {
                 PARTY_FOUL,
                 AUTO,
                 IDLE_NO_FMS,
                 IDLE_FMS_ATTACHED
         }
-        public void party(PartyType type){
+
+        public void party(PartyType type) {
                 switch (type) {
                         case PARTY_FOUL:
                                 m_LEDs.setLEDs(CANdleState.OFF);
@@ -276,24 +282,28 @@ public class RobotContainer {
         /**
          * this should only be called once DS and FMS are attached
          */
-        public void configureAutos(){
-                
+        public void configureAutos() {
+
                 /*
                  * Auto Events
                  * 
                  * Names must match what is in PathPlanner
                  * Please give descriptive names
                  */
-                NamedCommands.registerCommand("SmoothieAlignDontShoot", new SmoothieAlignDontShoot(m_swerve, m_Spivit, m_shooter, m_intake).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+                NamedCommands.registerCommand("SmoothieAlignDontShoot",
+                                new SmoothieAlignDontShoot(m_swerve, m_Spivit, m_shooter, m_intake)
+                                                .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
                 NamedCommands.registerCommand("SmoothieShootOnly", new SmoothieShootOnly(m_intake, shouldIntake, 2.5));
-                NamedCommands.registerCommand("StopSwervePPOverride", new StopSwervePPOverride(m_swerve).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+                NamedCommands.registerCommand("StopSwervePPOverride", new StopSwervePPOverride(m_swerve)
+                                .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
                 NamedCommands.registerCommand("CoolCenterlineSweepShoot", new ParallelCommandGroup(
-                        new InstantCommand(() -> m_Spivit.setAngle(ShooterConstants.stow)),
-                        new InstantCommand(() -> m_intake.intakeToShooter()),
-                        new InstantCommand(() -> m_shooter.setSpeed(500, 500))
-                ));
+                                new InstantCommand(() -> m_Spivit.setAngle(ShooterConstants.stow)),
+                                new InstantCommand(() -> m_intake.intakeToShooter()),
+                                new InstantCommand(() -> m_shooter.setSpeed(500, 500))));
 
-                NamedCommands.registerCommand("SetSourceSideLLPipline", new WaitCommand(.1).andThen(new setSourceSidePipline(m_shooterLeftVision, m_shooterRightVision, m_shooterCenterVision)));
+                NamedCommands.registerCommand("SetSourceSideLLPipline",
+                                new WaitCommand(.1).andThen(new setSourceSidePipline(m_shooterLeftVision,
+                                                m_shooterRightVision, m_shooterCenterVision)));
                 NamedCommands.registerCommand("StartShooting",
                                 new ContinouslyAlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, () -> false,
                                                 5000));
@@ -313,43 +323,50 @@ public class RobotContainer {
                                 new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 1.0, 0, false));
                 NamedCommands.registerCommand("AlignAndShoot0.5",
                                 new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 0.5, 0, false));
-                NamedCommands.registerCommand("AlignAndShoot5.0", 
+                NamedCommands.registerCommand("AlignAndShoot5.0",
                                 new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 5.0, 0, false));
-                NamedCommands.registerCommand("AutoSpit1.5", 
+                NamedCommands.registerCommand("AutoSpit1.5",
                                 new AutoSpit(m_swerve, m_Spivit, m_shooter, m_intake, 1.5, 0));
-                NamedCommands.registerCommand("AlignAndShoot0.5DontCheckSwerve", new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 0.5, 0, true));
+                NamedCommands.registerCommand("AlignAndShoot0.5DontCheckSwerve",
+                                new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 0.5, 0, true));
                 // NamedCommands.registerCommand("LeftBiasedAlignAndShoot", new
                 // LeftBiasedAlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake) );
                 NamedCommands.registerCommand("AlignDontShoot",
-                                new AlignAndRevPPOverride(m_swerve, m_Spivit, m_shooter)); // Aligns and revs but doesnt feed, this command never ends, you will have to end it manually                                                                                                                                         
+                                new AlignAndRevPPOverride(m_swerve, m_Spivit, m_shooter)); // Aligns and revs but doesnt
+                                                                                           // feed, this command never
+                                                                                           // ends, you will have to end
+                                                                                           // it manually
                 NamedCommands.registerCommand("Unhook", new ReleaseHook(m_Spivit));
                 NamedCommands.registerCommand("StopIntake", new InstantCommand(m_intake::stop));
                 NamedCommands.registerCommand("RevToRPM",
                                 new RevToRPM(m_shooter, ShooterConstants.fastShooterRPMSetpoint, 4500));
                 // NamedCommands.registerCommand("Break", new AutoBreak(m_Spivit));
                 NamedCommands.registerCommand("AutoStowe", new InstantCommand(m_amp::retract));
-                NamedCommands.registerCommand("GrabNote", new AutosGrabNote(m_swerve, m_intakeVision, m_intake, m_Spivit, true));
-                NamedCommands.registerCommand("WaitForNoteThenGrab", new AutosGrabNote(m_swerve, m_intakeVision, m_intake, m_Spivit, false));
-                
-                NamedCommands.registerCommand("PathfindSourceSideNoteHunting", 
-                        AutoBuilder.pathfindToPose(
-                                BobcatUtil.isBlue() ? FieldConstants.BluePathfindSourceSideShootPos : FieldConstants.RedPathfindSourceSideShootPos,
-                                new PathConstraints(4, 4, 3*Math.PI, 4*Math.PI),
-                                0,
-                                0
-                        )
-                );
-                NamedCommands.registerCommand("PathfindLeftoversNoteHunting", 
-                        AutoBuilder.pathfindToPose(
-                                BobcatUtil.isBlue() ? FieldConstants.BlueLeftoversShootPos : FieldConstants.RedLeftoversShootPos,
-                                new PathConstraints(4, 4, 3*Math.PI, 4*Math.PI),
-                                0,
-                                0
-                        )
-                );
-                NamedCommands.registerCommand("SmoothieAlignAndShoot", new SmoothieAlignAndShootPPOverride(m_swerve, m_Spivit, m_shooter, m_intake, 1.25));
-                NamedCommands.registerCommand("PrepareToSmoothie", new PrepareToSmoothie(m_intake, m_shooter, m_Spivit));
-                NamedCommands.registerCommand("AlignAndShoot1.5degreefudge", new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 1.5, 1.5, false));
+                NamedCommands.registerCommand("GrabNote",
+                                new AutosGrabNote(m_swerve, m_intakeVision, m_intake, m_Spivit, true));
+                NamedCommands.registerCommand("WaitForNoteThenGrab",
+                                new AutosGrabNote(m_swerve, m_intakeVision, m_intake, m_Spivit, false));
+
+                NamedCommands.registerCommand("PathfindSourceSideNoteHunting",
+                                AutoBuilder.pathfindToPose(
+                                                BobcatUtil.isBlue() ? FieldConstants.BluePathfindSourceSideShootPos
+                                                                : FieldConstants.RedPathfindSourceSideShootPos,
+                                                new PathConstraints(4, 4, 3 * Math.PI, 4 * Math.PI),
+                                                0,
+                                                0));
+                NamedCommands.registerCommand("PathfindLeftoversNoteHunting",
+                                AutoBuilder.pathfindToPose(
+                                                BobcatUtil.isBlue() ? FieldConstants.BlueLeftoversShootPos
+                                                                : FieldConstants.RedLeftoversShootPos,
+                                                new PathConstraints(4, 4, 3 * Math.PI, 4 * Math.PI),
+                                                0,
+                                                0));
+                NamedCommands.registerCommand("SmoothieAlignAndShoot",
+                                new SmoothieAlignAndShootPPOverride(m_swerve, m_Spivit, m_shooter, m_intake, 1.25));
+                NamedCommands.registerCommand("PrepareToSmoothie",
+                                new PrepareToSmoothie(m_intake, m_shooter, m_Spivit));
+                NamedCommands.registerCommand("AlignAndShoot1.5degreefudge",
+                                new AlignAndShoot(m_swerve, m_Spivit, m_shooter, m_intake, 1.5, 1.5, false));
                 /*
                  * Auto Chooser
                  * 
@@ -373,10 +390,16 @@ public class RobotContainer {
                 autoChooser.addOption("AmpFrontNote4Piece", new PathPlannerAuto("AmpSide4Piece"));
                 autoChooser.addOption("SideOfRanch", new PathPlannerAuto("SideOfRanch"));
                 autoChooser.addOption("NoteHuntingSourceSide", new PathPlannerAuto("NoteHuntingSourceSide"));
-                //autoChooser.addOption("real cool auto", new PathPlannerAuto("real cool auto"));
+                // autoChooser.addOption("real cool auto", new PathPlannerAuto("real cool
+                // auto"));
                 autoChooser.addOption("leftovers", new PathPlannerAuto("Leftovers"));
                 autoChooser.addOption("Source Inside Out", new PathPlannerAuto("SourceInsideOut"));
-                //autoChooser.addOption("CenterlineFirst5", new PathPlannerAuto("CenterlineFirst5"));
+                // autoChooser.addOption("CenterlineFirst5", new
+                // PathPlannerAuto("CenterlineFirst5"));
+        }
+
+        public double oneDriverTurnController(){
+                return  gp.getRawAxis(2) - gp.getRawAxis(3); 
         }
 
         /**
@@ -390,6 +413,8 @@ public class RobotContainer {
          * () -> buttonOrAxisValue
          */
         public void configureBindings() {
+
+                if(!Constants.fein){
                 /*
                  * A for amp mode
                  * B for stow (amp)
@@ -478,11 +503,11 @@ public class RobotContainer {
                                                 m_Rumble,
                                                 m_LEDs,
                                                 m_Spivit,
-                                                () -> gp.button(5).getAsBoolean()).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+                                                () -> gp.button(5).getAsBoolean())
+                                                .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
                 gp.button(7).whileTrue(new StartEndCommand(() -> m_shooter.setSpeed(-2000, -2000), m_shooter::stop,
                                 m_shooter));
-
 
                 gp.povDown().onTrue( // if shooter too low, raise whiles intaking
                                 new ConditionalCommand(
@@ -497,14 +522,15 @@ public class RobotContainer {
 
                 gp.button(5).whileTrue(
 
-                                //new RunCommand(() -> {
-                                //        if (m_Spivit.aligned() && m_swerve.aligned()) {
-                                //                m_LEDs.setLEDs(CANdleState.ALIGNED);
-                                //        } else {
-                                //                m_LEDs.setLEDs(CANdleState.ALIGNING);
-                                //        }
-                                //})
-                                new CandleAlignment(m_Spivit, m_swerve, m_LEDs, gp.button(6)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
+                                // new RunCommand(() -> {
+                                // if (m_Spivit.aligned() && m_swerve.aligned()) {
+                                // m_LEDs.setLEDs(CANdleState.ALIGNED);
+                                // } else {
+                                // m_LEDs.setLEDs(CANdleState.ALIGNING);
+                                // }
+                                // })
+                                new CandleAlignment(m_Spivit, m_swerve, m_LEDs, gp.button(6))
+                                                .withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
 
                 );
 
@@ -591,11 +617,12 @@ public class RobotContainer {
                 gp.button(8).onTrue(
                                 new InstantCommand(() -> m_swerve.resetPose(BobcatUtil.getAlliance() == Alliance.Blue
                                                 ? new Pose2d(FieldConstants.blueSpeakerPose.plus(
-                                                                new Translation2d(1.3, 0)), 
+                                                                new Translation2d(1.3, 0)),
                                                                 m_swerve.getYaw())
                                                 : new Pose2d(FieldConstants.redSpeakerPose
                                                                 .plus(new Translation2d(-1.3, 0)),
-                                                                m_swerve.getYaw().rotateBy(Rotation2d.fromDegrees(180)))))
+                                                                m_swerve.getYaw().rotateBy(
+                                                                                Rotation2d.fromDegrees(180)))))
                                                 .andThen(new InstantCommand(
                                                                 () -> m_LEDs.setLEDs(CANdleState.RESETGYRO, 1))));
                 gp.axisGreaterThan(3, 0.07)
@@ -703,21 +730,17 @@ public class RobotContainer {
                 // Commands.sequence(new InstantCommand(() -> m_swerve.setLimeLEDS(true)),
                 // new WaitCommand(2),
                 // new InstantCommand(() -> m_swerve.setLimeLEDS(false))));
-        }
-
-        /**
-        * I am become 6328, driver of robots 
-        */
-        public void configureBindingsOneDriver(){
                 
+
+        }else {
 
                 /* Drive with joysticks */
                 m_swerve.setDefaultCommand(
                                 new TeleopSwerve(
                                                 m_swerve,
-                                                () -> (-gp.getRawAxis(1)),// translation
+                                                () -> (-gp.getRawAxis(1)), // translation
                                                 () -> -(gp.getRawAxis(0)), // strafe
-                                                () -> -gp.getRawAxis(4)*0.5, // rotate
+                                                () -> oneDriverTurnController() * 0.80, // rotate
                                                 () -> false, // robot centric
                                                 () -> -rotate.getRawAxis(Joystick.AxisType.kZ.value) * 0.2, // Fine
                                                                                                             // strafe
@@ -727,14 +750,14 @@ public class RobotContainer {
                                                 gp.button(10), // align to speaker
                                                 gp.button(4), // pass
                                                 gp.povRight(), // amp aim assist
-                                                gp.povUp()
-                                ));
+                                                gp.povUp()));
                 // reset gyro
                 rotate.button(1).onTrue(new InstantCommand(m_swerve::zeroGyro)
                                 .andThen(new InstantCommand(() -> m_LEDs.setLEDs(CANdleState.RESETGYRO, 1))));
                 // Amp drive to pose, need to test
                 // strafe.button(1).onTrue(new DriveToPose(m_swerve, BobcatUtil.isBlue()?
                 // FieldConstants.blueAmpCenter: FieldConstants.redAmpCenter));
+                
 
                 /* Intake Controls */
                 m_intake.setDefaultCommand(
@@ -749,11 +772,10 @@ public class RobotContainer {
                                                 m_Rumble,
                                                 m_LEDs,
                                                 m_Spivit,
-                                                () -> false)); 
+                                                () -> false));
 
                 gp.button(7).whileTrue(new StartEndCommand(() -> m_shooter.setSpeed(-2000, -2000), m_shooter::stop,
                                 m_shooter));
-
 
                 gp.povDown().onTrue( // if shooter too low, raise whiles intaking
                                 new ConditionalCommand(
@@ -766,8 +788,9 @@ public class RobotContainer {
                                                 Commands.none(),
                                                 () -> m_Spivit.getAngle() < ShooterConstants.stow));
 
-                gp.button(5).whileTrue(
-                                new CandleAlignment(m_Spivit, m_swerve, m_LEDs, gp.button(6)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
+                gp.button(10).whileTrue(
+                                new CandleAlignment(m_Spivit, m_swerve, m_LEDs, gp.button(6))
+                                                .withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
 
                 );
 
@@ -776,9 +799,9 @@ public class RobotContainer {
                 gp.button(10)
                                 .whileTrue(new RunCommand(
                                                 () -> m_shooter.setSpeed(
-                                                        () -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(),
-                                                        m_amp.getAngle()),
-                                                        () -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(),
+                                                                () -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(),
+                                                                                m_amp.getAngle()),
+                                                                () -> BobcatUtil.getShooterSpeed(m_Spivit.getAngle(),
                                                                                 m_amp.getAngle()))))
                                 .onFalse(new InstantCommand(m_shooter::stop)); // back right
 
@@ -811,7 +834,7 @@ public class RobotContainer {
 
                 gp.button(9).whileTrue(
                                 new RunCommand(
-                                () -> m_Spivit.setAngle(ShooterConstants.subwooferShot - 30), m_Spivit))
+                                                () -> m_Spivit.setAngle(ShooterConstants.subwooferShot - 30), m_Spivit))
                                 .onFalse(new InstantCommand(m_Spivit::stopMotorFeedforward));
 
                 /* amp controls */
@@ -824,22 +847,22 @@ public class RobotContainer {
                 // zero
                 gp.button(3).onTrue(new InstantCommand(m_amp::zero)); // y
 
-                
                 gp.button(8).onTrue(
                                 new InstantCommand(() -> m_swerve.resetPose(BobcatUtil.getAlliance() == Alliance.Blue
                                                 ? new Pose2d(FieldConstants.blueSpeakerPose.plus(
-                                                                new Translation2d(1.3, 0)), 
+                                                                new Translation2d(1.3, 0)),
                                                                 m_swerve.getYaw())
                                                 : new Pose2d(FieldConstants.redSpeakerPose
                                                                 .plus(new Translation2d(-1.3, 0)),
-                                                                m_swerve.getYaw().rotateBy(Rotation2d.fromDegrees(180)))))
+                                                                m_swerve.getYaw().rotateBy(
+                                                                                Rotation2d.fromDegrees(180)))))
                                                 .andThen(new InstantCommand(
                                                                 () -> m_LEDs.setLEDs(CANdleState.RESETGYRO, 1))));
-                gp.axisGreaterThan(3, 0.07)
-                                .whileTrue(new ClimbMode(m_climber, m_amp, m_Spivit, () -> -gp.getRawAxis(3)));
+                gp.axisGreaterThan(4, 0.07)
+                                .whileTrue(new ClimbMode(m_climber, m_amp, m_Spivit, () -> -gp.getRawAxis(4)));
 
-                                gp.axisGreaterThan(2, 0.07)
-                                .whileTrue(new RunCommand(() -> m_climber.setPercentOut(gp.getRawAxis(2)), m_climber))
+                gp.axisLessThan(4, -0.07)
+                                .whileTrue(new RunCommand(() -> m_climber.setPercentOut(-gp.getRawAxis(4)), m_climber))
                                 .onFalse(new InstantCommand(m_climber::stop));
 
                 gp.povLeft()
@@ -854,6 +877,14 @@ public class RobotContainer {
                                 .onFalse(new InstantCommand(() -> m_LEDs.setLEDs(CANdleState.OFF)));
                 ; // strafe
         }
+
+
+
+}
+
+        /**
+         * I am become 6328, driver of robots
+         */
 
         public Command getAutonomousCommand() {
                 return autoChooser.get();
