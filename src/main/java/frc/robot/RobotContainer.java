@@ -865,7 +865,7 @@ public class RobotContainer {
                                 .whileTrue(new RunCommand(() -> m_climber.setPercentOut(-gp.getRawAxis(4)), m_climber))
                                 .onFalse(new InstantCommand(m_climber::stop));
 
-                gp.povLeft()
+                gp.button(5)
                                 .whileTrue(new GrabNote(m_swerve, m_intakeVision, true, m_intake,
                                                 () -> (-Math.abs(strafe.getRawAxis(Joystick.AxisType.kY.value)) // translation
                                                                 * Math.abs(strafe.getRawAxis(
