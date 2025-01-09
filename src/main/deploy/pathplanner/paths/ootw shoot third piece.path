@@ -1,0 +1,103 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.95406395377698,
+        "y": 4.122214464115091
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.110883722480711,
+        "y": 3.9816844255657124
+      },
+      "isLocked": false,
+      "linkedName": "outtathewaypickup3"
+    },
+    {
+      "anchor": {
+        "x": 5.951510904448341,
+        "y": 4.122214464115091
+      },
+      "prevControl": {
+        "x": 6.396522693188039,
+        "y": 4.04023860829462
+      },
+      "nextControl": {
+        "x": 5.60123321324206,
+        "y": 4.18673930196888
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.440812990042526,
+        "y": 4.836575493407763
+      },
+      "prevControl": {
+        "x": 4.979511471148476,
+        "y": 4.543804579763226
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "smoothie",
+      "waypointRelativePos": 1.4,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SmoothieAlignAndShoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SpinUp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -11.309932474020362,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Out Of The Way 2",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

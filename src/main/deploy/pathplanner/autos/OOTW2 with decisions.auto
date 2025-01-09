@@ -1,0 +1,85 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.53,
+      "y": 3.66
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ootw Shoot preload piece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "centerlineNoteHuntSource"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ootw Shoot first piece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignAndShoot1.5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ootw Intake second piece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "centerlineNoteHuntSource"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ootw Shoot second piece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlignAndShoot1.5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ootw Intake third piece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "centerlineNoteHuntSource"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ootw shoot third piece"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
